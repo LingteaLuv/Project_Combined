@@ -1,0 +1,18 @@
+name: "Bug"
+description: "새로운 이슈(버그) 발견"
+labels: ["Bug"]
+body:
+  - type: textarea
+    attributes:
+      label: 📄 설명
+      description: 새로운 이슈에 대한 설명
+      placeholder: 발생한 이슈를 최대한 자세히 작성해주세요
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: ✅ 원인 및 해결
+      description: 이슈의 원인과 해결
+      placeholder: 위의 내용을 최대한 자세히 작성해주세요
+    validations:
+      required: true
