@@ -77,19 +77,71 @@ public class InventoryController : MonoBehaviour
             _model.InvItemAmounts[index] = 0;
             _model.InvItems[index] = null;
         }
-        _renderer.RenderInventory();
+        if (_model.Inventory.activeSelf) _renderer.RenderInventory();
     }
 
-    public void HoldItem()
+    public void HandleItem(int index)
     {
-
+        if (_model.HeldItem == null)
+        {
+            if (_model.InvItems[index] == null) return;
+            HoldItem(index);
+        }
+        else
+        {
+            if (_model.HeldItem == _model.InvItems[index] && 
+                _model.InvItemAmounts[index] < _model.InvItems[index].MaxInventoryAmount)
+            {
+                
+                CombineItem(index);
+            }
+            else if (_model.InvItems[index] == null)
+            {
+                PlaceItem(index);
+            }
+            else
+            {
+                ReplaceItem(index);
+            }
+        }
     }
-    public void CombineItem()
-    {
 
-    }
-    public void PlaceItem()
+    public void HoldItem(int index)
     {
+        _model.HeldItem = _model.InvItems[index];
+        _model.HeldItemAmount = _model.InvItemAmounts[index];
+        RemoveItemByIndex(index);
+    }
+    public void CombineItem(int index)
+    {
+        int sum = _model.HeldItemAmount + _model.InvItemAmounts[index];
+        if (sum <= _model.InvItems[index].MaxInventoryAmount)
+        {
+            _model.InvItemAmounts[index] = sum;
+            _model.HeldItemAmount = 0;
+            _model.HeldItem = null;
+        }
+        else
+        {
+            _model.InvItemAmounts[index] = _model.InvItems[index].MaxInventoryAmount;
+            _model.HeldItemAmount = sum - _model.InvItems[index].MaxInventoryAmount;
+        }
+    }
+    public void PlaceItem(int index)
+    {
+        _model.InvItems[index] = _model.HeldItem;
+        _model.InvItemAmounts[index] = _model.HeldItemAmount;
+        _model.HeldItem = null;
+        _model.HeldItemAmount = 0;
+    }
+    public void ReplaceItem(int index)
+    {
+        ItemSO tempItem = _model.InvItems[index];
+        int tempAmount = _model.InvItemAmounts[index];
+        _model.InvItems[index] = _model.HeldItem;
+        _model.InvItemAmounts[index] = _model.HeldItemAmount;
+        _model.HeldItem = tempItem;
+        _model.HeldItemAmount = tempAmount;
 
     }
 }

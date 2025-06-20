@@ -38,10 +38,10 @@ public class InventoryModel : MonoBehaviour
     public int[] InvItemAmounts { get { return _invItemAmounts; } }
 
     private ItemSO _heldItem;
-    public ItemSO HeldItem { get { return _heldItem; } }
+    public ItemSO HeldItem { get { return _heldItem; } set { _heldItem = value; } }
 
     private int _heldItemAmount;
-    public int HeldItemAmount { get { return _heldItemAmount; } }
+    public int HeldItemAmount { get { return _heldItemAmount; } set { _heldItemAmount = value; } }
 
     public int slotCount => _inventorySlots.Length;
 
