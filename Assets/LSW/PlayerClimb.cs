@@ -6,6 +6,8 @@ public class PlayerClimb : MonoBehaviour
 {
     [Header("Drag&Drop")] 
     [SerializeField] private float _climbSpeed;
+
+    [SerializeField] private Rigidbody _rigid;
     
     public bool IsOnClimbed
     {
@@ -25,12 +27,19 @@ public class PlayerClimb : MonoBehaviour
             if(hit.collider.CompareTag("Ladder"))
             {
                 IsOnClimbed = true;
+                _rigid.useGravity = false;
                 Climb(isOnGround);
             }
             else
             {
                 IsOnClimbed = false; 
+                _rigid.useGravity = true;
             }
+        }
+        else
+        {
+            IsOnClimbed = false; 
+            _rigid.useGravity = true;
         }
     }
 
@@ -41,20 +50,17 @@ public class PlayerClimb : MonoBehaviour
             transform.position += Vector3.up * (_climbSpeed * Time.deltaTime);
         }
 
-        if (isOnGround)
+        if (Input.GetKey(KeyCode.S))
         {
-            transform.position += Vector3.back * (_climbSpeed * Time.deltaTime);
-        }
-        else
-        {
-            if (Input.GetKey(KeyCode.S))
+            if (isOnGround)
+            {
+                transform.position -= transform.forward * (_climbSpeed * Time.deltaTime);
+            }
+            else
             {
                 transform.position += Vector3.down * (_climbSpeed * Time.deltaTime);
             }
         }
-        
-        
-        
     }
     
     private void Init()

@@ -25,12 +25,9 @@ public class PlayerController : MonoBehaviour
         {
             _playerMovementTemp.InputUpdate();
         }
-        Debug.Log("진입3");
         _playerClimb.ClimbUpdate(_playerMovementTemp.IsGrounded);
     }
     
-    
-
     private void FixedUpdate()
     {
         if (!_playerClimb.IsOnClimbed)
