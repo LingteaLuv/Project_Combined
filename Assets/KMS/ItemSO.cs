@@ -8,6 +8,9 @@ public class ItemSO : ScriptableObject
     [SerializeField] private Sprite _sprite;
     public Sprite Sprite { get { return _sprite; } }
 
+    [SerializeField] private string _name;
+    public string Name { get { return _name; } }
+
     [SerializeField] [TextArea] private string _description;
     public string Description { get { return _description; } }
 
