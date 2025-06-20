@@ -34,5 +34,17 @@ public class InventoryRenderer : MonoBehaviour
                 _model.InvSlotItemAmountTexts[i].enabled = false;
             }
         }
+        if (_model.HeldItem != null)
+        {
+            _model.HoldSlotItemImage.enabled = true;
+            _model.HoldSlotItemAmountText.enabled = true;
+            _model.HoldSlotItemImage.sprite = _model.HeldItem.Sprite;
+            _model.HoldSlotItemAmountText.text = _model.HeldItemAmount.ToString();
+        }
+        else
+        {
+            _model.HoldSlotItemImage.enabled = false;
+            _model.HoldSlotItemAmountText.enabled = false;
+        }
     }
 }
