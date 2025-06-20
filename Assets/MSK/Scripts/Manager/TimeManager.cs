@@ -12,6 +12,8 @@ public class TimeManager : Singleton<TimeManager>
     public Property<float> CurrentMinute { get; private set; } = new Property<float>(0f);
     #endregion
 
+    #region Private Properties
+    #endregion
     #region Serialized Fields
 
     [Header("Time Settings")]
@@ -31,7 +33,6 @@ public class TimeManager : Singleton<TimeManager>
     #endregion
 
     #region Unity MonoBehavior
-
     private void Update()
     {
         UpdateGameTime();
@@ -64,11 +65,13 @@ public class TimeManager : Singleton<TimeManager>
     /// 현재 시간이 낮인지 밤인지 판별하고 변경되면 이벤트 발생.
     /// </summary>
     private void UpdateDayNightCycle()
-    {
+    { 
+        // 조건에 따라 낮 또는 밤 상태 결정
         DayTime newTimeOfDay = (_dayStartHour <= CurrentHour.Value && CurrentHour.Value < _nightStartHour)
             ? DayTime.Day
             : DayTime.Night;
 
+        // 상태가 바뀌었을 경우만 갱신
         if (CurrentTimeOfDay.Value != newTimeOfDay)
         {
             CurrentTimeOfDay.Value = newTimeOfDay;
