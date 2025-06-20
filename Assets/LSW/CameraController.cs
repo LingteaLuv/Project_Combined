@@ -38,11 +38,11 @@ public class CameraController : MonoBehaviour
 
     private void SetCameraRotation()
     {
-        transform.LookAt(_player.transform.position);
+        transform.LookAt(_player.transform.position + _player.transform.forward * 10f);
     }
     
     private void Init()
     {
-        _offset = new Vector3(0, 3, -6);
+        _offset = new Vector3(3, 3, -4);
     }
 }
