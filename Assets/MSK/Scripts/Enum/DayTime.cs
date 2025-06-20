@@ -4,7 +4,9 @@
 /// </summary>
 public enum DayTime
 {
-    Day,    //  ³·
-    Night   //  ¹ã
+    Morning,    //  ¾ÆÄ§
+    Day,        //  ³·
+    Night,      //  ¹ã
+    MidNight    //  ½É¾ß
 }
 

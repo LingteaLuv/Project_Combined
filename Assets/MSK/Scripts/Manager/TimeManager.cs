@@ -24,11 +24,14 @@ public class TimeManager : Singleton<TimeManager>
     [SerializeField] private int _hoursPerDay = 24;
 
     [Header("Thresholds")]
+    [Tooltip("아침이 시작되는 시각입니다.")]
+    [SerializeField] private int _morningStartHour = 6;
     [Tooltip("낮이 시작되는 시각입니다.")]
-    [SerializeField] private int _dayStartHour = 6;
-
+    [SerializeField] private int _dayStartHour = 12;
     [Tooltip("밤이 시작되는 시각입니다.")]
     [SerializeField] private int _nightStartHour = 18;
+    [Tooltip("심야가 시작되는 시각입니다.")]
+    [SerializeField] private int _midnightStartHour = 0;
 
     #endregion
 
@@ -62,16 +65,23 @@ public class TimeManager : Singleton<TimeManager>
     }
 
     /// <summary>
-    /// 현재 시간이 낮인지 밤인지 판별하고 변경되면 이벤트 발생.
+    /// 현재 시간이 어떤 상황인지 판별하고 변경되면 이벤트 발생.
     /// </summary>
     private void UpdateDayNightCycle()
-    { 
-        // 조건에 따라 낮 또는 밤 상태 결정
-        DayTime newTimeOfDay = (_dayStartHour <= CurrentHour.Value && CurrentHour.Value < _nightStartHour)
-            ? DayTime.Day
-            : DayTime.Night;
+    {
+        DayTime newTimeOfDay;
 
-        // 상태가 바뀌었을 경우만 갱신
+        int hour = CurrentHour.Value;
+
+        if (hour >= _midnightStartHour && hour < _morningStartHour)
+            newTimeOfDay = DayTime.MidNight;
+        else if (hour >= _morningStartHour && hour < _dayStartHour)
+            newTimeOfDay = DayTime.Morning;
+        else if (hour >= _dayStartHour && hour < _nightStartHour)
+            newTimeOfDay = DayTime.Day;
+        else
+            newTimeOfDay = DayTime.Night;
+
         if (CurrentTimeOfDay.Value != newTimeOfDay)
         {
             CurrentTimeOfDay.Value = newTimeOfDay;
@@ -95,11 +105,6 @@ public class TimeManager : Singleton<TimeManager>
     #region Test Code
     private void Start()
     {
-        CurrentTimeOfDay.OnChanged += time =>
-        {
-            Debug.Log($"[TimeManager] 낮밤 상태 변경됨: {time}");
-        };
-
         CurrentHour.OnChanged += hour =>
         {
             Debug.Log($"[TimeManager] 현재 시간: {GetFormattedTime()}");
