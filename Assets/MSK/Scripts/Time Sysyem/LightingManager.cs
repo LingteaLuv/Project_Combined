@@ -9,8 +9,10 @@ using UnityEngine;
 public class LightingManager : MonoBehaviour
 {
     #region Serialized Fields
-    [SerializeField] private Light _directionalLight;
-    [SerializeField] private LightingPreset _preset;
+    [SerializeField] private Light _dayLight;
+    [SerializeField] private Light _moonLight;
+    [SerializeField] private LightingPreset _dayPreset;
+    [SerializeField] private LightingPreset _nightPreset;
     #endregion
 
     #region Private Fields
@@ -22,9 +24,10 @@ public class LightingManager : MonoBehaviour
     {
         _timeManager = TimeManager.Instance;
     }
+
     private void Update()
     {
-        if (_preset == null || _timeManager == null)
+        if (_timeManager == null)
             return;
 
         float hour = _timeManager.CurrentHour.Value;
@@ -32,51 +35,80 @@ public class LightingManager : MonoBehaviour
         float normalizedTime = (hour + minute / 60f) / 24f;
 
         UpdateLighting(normalizedTime);
+        UpdateLightSwitch();
     }
     #endregion
 
     #region Private Methods
+
     /// <summary>
     /// 현재 시간 비율에 따라 환경 조명 값(Ambient, Fog, DirectionalLight)을 조정합니다.
     /// </summary>
     /// <param name="timePercent">하루 시간의 정규화 비율 (0.0 ~ 1.0)</param>
     private void UpdateLighting(float timePercent)
     {
-        RenderSettings.ambientLight = _preset.AmbientColor.Evaluate(timePercent);
-        RenderSettings.fogColor = _preset.FogColor.Evaluate(timePercent);
+        bool isDay = _timeManager.CurrentTimeOfDay.Value == DayTime.Day;
 
-        if (_directionalLight != null)
+        // 현재 시간대에 맞는 Preset 선택
+        LightingPreset activePreset = isDay ? _dayPreset : _nightPreset;
+        if (activePreset == null) return;
+
+        // 환경광 및 안개색 설정
+        RenderSettings.ambientLight = activePreset.AmbientColor.Evaluate(timePercent);
+        RenderSettings.fogColor = activePreset.FogColor.Evaluate(timePercent);
+
+        float angle = (timePercent * 360f) - 90f;
+        // 광원 설정
+        if (_dayLight != null)
         {
-            _directionalLight.color = _preset.DirectionalColor.Evaluate(timePercent);
-            _directionalLight.transform.localRotation =
-                Quaternion.Euler(new Vector3((timePercent * 360f) - 90f, 170, 0));
+            _dayLight.color = _dayPreset.DirectionalColor.Evaluate(timePercent);
+            _dayLight.transform.localRotation = Quaternion.Euler(new Vector3(angle, 170f, 0f));
+        }
+
+        if (_moonLight != null)
+        {
+            _moonLight.color = _nightPreset.DirectionalColor.Evaluate(timePercent);
+            _moonLight.transform.localRotation = Quaternion.Euler(new Vector3(angle + 180f, 170f, 0f));
         }
     }
 
     /// <summary>
-    /// 인스펙터에서 Directional Light가 비어 있는 경우 자동으로 씬 내에서 탐색합니다.
+    /// 낮/밤 상태에 따라 태양광(_dayLight)과 달빛(_moonLight)을 전환합니다.
+    /// </summary>
+    private void UpdateLightSwitch()
+    {
+        if (_timeManager == null) return;
+
+        bool isDay = _timeManager.CurrentTimeOfDay.Value == DayTime.Day;
+
+        if (_dayLight != null)
+            _dayLight.enabled = isDay;
+
+        if (_moonLight != null)
+            _moonLight.enabled = !isDay;
+    }
+
+    /// <summary>
+    /// 인스펙터에서 Light가 비어 있는 경우 자동으로 씬 내에서 탐색합니다.
     /// </summary>
     private void OnValidate()
     {
-        if (_directionalLight != null)
-            return;
-
-        if (RenderSettings.sun != null)
+        if (_dayLight == null && RenderSettings.sun != null)
         {
-            _directionalLight = RenderSettings.sun;
+            _dayLight = RenderSettings.sun;
         }
-        else
+        else if (_dayLight == null)
         {
             Light[] lights = GameObject.FindObjectsOfType<Light>();
             foreach (Light light in lights)
             {
                 if (light.type == LightType.Directional)
                 {
-                    _directionalLight = light;
+                    _dayLight = light;
                     return;
                 }
             }
         }
-    }
+    }   
     #endregion
 }
