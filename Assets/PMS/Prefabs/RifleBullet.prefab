@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 654460458092323270}
   - component: {fileID: 3009047399538040111}
   - component: {fileID: -7999860422916286597}
-  - component: {fileID: -7893536023168695151}
+  - component: {fileID: 5073389781195946396}
   m_Layer: 0
   m_Name: RifleBullet
   m_TagString: Untagged
@@ -136,7 +136,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &-7893536023168695151
+--- !u!114 &5073389781195946396
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -145,7 +145,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 7623832579036224237}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d7db4b7a27d4a3f46bf98f5a22a6c913, type: 3}
+  m_Script: {fileID: 11500000, guid: 44dbe2074a7bc254aa62be57d466dc1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _gunData: {fileID: 11400000, guid: b538dc92a63d6414e9ca78ef8e9c381a, type: 2}
+  _currentGun: {fileID: 8086514421188155208, guid: 0dc7668d3cd869048b5704a07a3680a1, type: 3}
+  _currentGunDamage: 0
+  _speed: 10
+  _distance: 50

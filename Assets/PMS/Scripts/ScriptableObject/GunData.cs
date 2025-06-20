@@ -1,38 +1,38 @@
-// 1. ÃÑ±â µ¥ÀÌÅÍ¸¦ ´ã´Â ScriptableObject »ı¼º
+// 1. ì´ê¸° ë°ì´í„°ë¥¼ ë‹´ëŠ” ScriptableObject ìƒì„±
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Gun Data", menuName = "Weapons/Gun Data")]
 public class GunData : ScriptableObject
 {
-    [SerializeField] public GameObject gunPrefab; //ÃÑÀÇ ÇÁ¸®ÆÕ
+    [SerializeField] public GameObject gunPrefab; //ì´ì˜ í”„ë¦¬íŒ¹
 
     [Header("Gun Setting")]
     [Tooltip("Change gun performance value by gun type")]
-    [SerializeField] public string _gunName;  // ÃÑÀÇ ÀÌ¸§
-    [SerializeField] public float _damage;    //ÃÑÀÇ µ¥¹ÌÁö
-    [SerializeField] public float _fireDelay = 0.1f; // ¹ß»ç °£°İ
-    [SerializeField] public float _reloadTime;// ÀçÀåÀü ¼Óµµ. ÃÑÀÇ Á¾·ù¸¶´Ù ´Ù¸§.
+    [SerializeField] public string _gunName;  // ì´ì˜ ì´ë¦„
+    [SerializeField] public float _damage;    //ì´ì˜ ë°ë¯¸ì§€
+    [SerializeField] public float _fireDelay = 0.1f; // ë°œì‚¬ ê°„ê²©
+    [SerializeField] public float _reloadTime;// ì¬ì¥ì „ ì†ë„. ì´ì˜ ì¢…ë¥˜ë§ˆë‹¤ ë‹¤ë¦„.
 
-    //³ªÁß¿¡ Ãß°¡µÉ ¼ö ÀÖÀ» °Íµí
-    //[SerializeField] private float accuracy;  // ÃÑÀÇ Á¤È®µµ. ÃÑÀÇ Á¾·ù¸¶´Ù Á¤È®µµ°¡ ´Ù¸§.
-    //[SerializeField] private float fireRate;  // ¿¬»ç ¼Óµµ. Áï ÇÑ¹ß°ú ÇÑ¹ß°£ÀÇ ½Ã°£ ÅÒ. ³ôÀ¸¸é ³ôÀ» ¼ö·Ï ¿¬»ç°¡ ´À·ÁÁü. ÃÑÀÇ Á¾·ù¸¶´Ù ´Ù¸§.
-    //[SerializeField] private float retroActionForce;  // ¹İµ¿ ¼¼±â. ÃÑÀÇ Á¾·ù¸¶´Ù ´Ù¸§.
+    //ë‚˜ì¤‘ì— ì¶”ê°€ë  ìˆ˜ ìˆì„ ê²ƒë“¯
+    //[SerializeField] private float accuracy;  // ì´ì˜ ì •í™•ë„. ì´ì˜ ì¢…ë¥˜ë§ˆë‹¤ ì •í™•ë„ê°€ ë‹¤ë¦„.
+    //[SerializeField] private float fireRate;  // ì—°ì‚¬ ì†ë„. ì¦‰ í•œë°œê³¼ í•œë°œê°„ì˜ ì‹œê°„ í…€. ë†’ìœ¼ë©´ ë†’ì„ ìˆ˜ë¡ ì—°ì‚¬ê°€ ëŠë ¤ì§. ì´ì˜ ì¢…ë¥˜ë§ˆë‹¤ ë‹¤ë¦„.
+    //[SerializeField] private float retroActionForce;  // ë°˜ë™ ì„¸ê¸°. ì´ì˜ ì¢…ë¥˜ë§ˆë‹¤ ë‹¤ë¦„.
 
     [Header("Gun Bullet Setting")]
-    [SerializeField] public GameObject _bulletPrefab; //ÃÑ¾Ë ÇÁ¸®ÆÕ
-    [SerializeField] public Transform _firePoint; //ÃÑ¾Ë ¹ß»ç ÁöÁ¡
-    [SerializeField] public int _maxLoadedAmmo; //ÃÖ´ë ÀåÀü ÇÒ ¼ö ÀÖ´Â Åº¾à¼ö
-    [SerializeField] public float _bulletSpeed;  //ÃÑ¾Ë ½ºÇÇµå
-    [SerializeField] public float _bulletrange;     // ÃÑ¾Ë À¯È¿ »ç°Å¸®    
+    [SerializeField] public GameObject _bulletPrefab; //ì´ì•Œ í”„ë¦¬íŒ¹
+    [SerializeField] public Transform _firePoint; //ì´ì•Œ ë°œì‚¬ ì§€ì 
+    [SerializeField] public int _maxLoadedAmmo; //ìµœëŒ€ ì¥ì „ í•  ìˆ˜ ìˆëŠ” íƒ„ì•½ìˆ˜
+    [SerializeField] public float _bulletSpeed;  //ì´ì•Œ ìŠ¤í”¼ë“œ
+    [SerializeField] public float _bulletrange;     // ì´ì•Œ ìœ íš¨ ì‚¬ê±°ë¦¬    
 
 
     [Header("Gun Effects Setting")]
-    [SerializeField] public ParticleSystem _muzzleFlash;  // È­¿°±¸ ÀÌÆåÆ® Àç»ıÀ» ´ã´çÇÒ ÆÄÆ¼Å¬ ½Ã½ºÅÛ ÄÄÆ÷³ÍÆ®
-    [SerializeField] public AudioClip _fireSound;    // ÃÑ ¹ß»ç ¼Ò¸® ¿Àµğ¿À Å¬¸³
-    [SerializeField] public AudioClip _reloadSound;  // ÃÑÀÇ ¸®·Îµå »ç¿îµå
-    [SerializeField] public AudioClip _emptySound;  //ºó ÅºÃ¢À½
+    [SerializeField] public ParticleSystem _muzzleFlash;  // í™”ì—¼êµ¬ ì´í™íŠ¸ ì¬ìƒì„ ë‹´ë‹¹í•  íŒŒí‹°í´ ì‹œìŠ¤í…œ ì»´í¬ë„ŒíŠ¸
+    [SerializeField] public AudioClip _fireSound;    // ì´ ë°œì‚¬ ì†Œë¦¬ ì˜¤ë””ì˜¤ í´ë¦½
+    [SerializeField] public AudioClip _reloadSound;  // ì´ì˜ ë¦¬ë¡œë“œ ì‚¬ìš´ë“œ
+    [SerializeField] public AudioClip _emptySound;  //ë¹ˆ íƒ„ì°½ìŒ
 
-    [SerializeField] public int _bulletPoolSize; //¹ß»ç ÇÒ ¼ö ÀÖ´Â ÃÑ ÃÖ´ë Åº¾à °³¼ö Á¦ÇÑ ¹× ¿ÀºêÁ§Æ® Ç® »çÀÌÁî  
+    [SerializeField] public int _bulletPoolSize; //ë°œì‚¬ í•  ìˆ˜ ìˆëŠ” ì´ ìµœëŒ€ íƒ„ì•½ ê°œìˆ˜ ì œí•œ ë° ì˜¤ë¸Œì íŠ¸ í’€ ì‚¬ì´ì¦ˆ  
     private ObjectPool _gunBulletObjectPool;
     public Property<ObjectPool> GunBulletObjectPool;
 }
