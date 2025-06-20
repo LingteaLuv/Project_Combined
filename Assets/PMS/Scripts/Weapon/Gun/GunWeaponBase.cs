@@ -29,7 +29,7 @@ public abstract class GunWeaponBase : MonoBehaviour
     [SerializeField]protected AudioClip fire_Sound;        // 총 발사 소리 오디오 클립
     protected ObjectPool _gunBulletObjectPool;
 
-    public float Damage { get; private set; }
+    public float Damage { get { return _damage; } private set { } }
     public virtual void Init()
     {
         //무기마다 Init() 불릿 풀 사이즈가 다를 것이고,불릿 프리팹이 다르다.

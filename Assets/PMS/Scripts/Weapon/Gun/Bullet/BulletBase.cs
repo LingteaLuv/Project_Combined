@@ -2,16 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BulletBase : MonoBehaviour,IAttackable
+public class BulletBase : MonoBehaviour
 {
-    [SerializeField]public GameObject _currentGun;
-    [SerializeField]public float _currentGunDamage;
-
-    //공격
-    public virtual void Attack(IDamageable target)
-    {
-        _currentGunDamage = _currentGun.GetComponent<GunWeaponBase>().Damage;
-    }
+    [SerializeField] private float _currentBulletDamage;
 
     [SerializeField] private float _speed = 10f; //총알 스피드
     [SerializeField] private float _distance = 50f; //총알 유효 사거리
@@ -28,7 +21,7 @@ public class BulletBase : MonoBehaviour,IAttackable
     private void OnEnable() //Bullet 객체가 활성화 될 때
     {
         _startPosition = transform.position; // 활성화될 때마다 시작 위치 저장
-        _rb.velocity = transform.forward * _speed; // 방향은 transform.forward 기준
+        _rb.velocity = _fireDir * _speed; // 방향은 transform.forward 기준
     }
 
     private void Update()
@@ -54,19 +47,25 @@ public class BulletBase : MonoBehaviour,IAttackable
         _fireDir = direction.normalized;
     }
 
+    public void SetDamage(float damage)
+    {
+        _currentBulletDamage = damage;
+    }
+
     private void OnCollisionEnter(Collision collision)
     { 
         //몬스터 뿐만 아니라 모든 IDamageable을 가지고 있는 모든 객체들
         if(collision.gameObject.GetComponent<IDamageable>() != null)
         {
+            Debug.Log(collision.gameObject.name);
             gameObject.SetActive(false);
-            collision.transform.GetComponent<IDamageable>().Damaged(_currentGunDamage);
+            collision.transform.GetComponent<IDamageable>().Damaged(_currentBulletDamage);
         }
         //벽에 닿으면 없애기
-        if (collision.gameObject.CompareTag("Wall"))
+        /*if (collision.gameObject.CompareTag("Wall"))
         {
             gameObject.SetActive(false);
-        }
+        }*/
         //몬스터 닿으면 데미지 처리
         /*if(collision.gameObject.CompareTag("Monster"))
         {

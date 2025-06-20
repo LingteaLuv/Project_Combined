@@ -45,12 +45,12 @@ public class Rifle : GunWeaponBase //이후 총마다 상속을 시켜 줘야 �
         {
             // 발사 딜레이 시작 (총알이 실제로 발사될 때만)
             StartCoroutine(ShotDelay());
-
             //총알 위치 설정
             bulletObj.transform.position = _firePoint.transform.position;
 
             //총알 방향 설정
             BulletBase bullet = bulletObj.GetComponent<BulletBase>();
+            bullet.SetDamage(Damage);
             if (bullet != null)
             {
                 bullet.SetDirection(_firePoint.forward);
