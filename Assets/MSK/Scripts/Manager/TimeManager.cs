@@ -2,35 +2,36 @@ using System;
 using UnityEngine;
 
 /// <summary>
-/// °ÔÀÓ ³» ½Ã°£ Èå¸§À» °ü¸®ÇÏ°í, ³·/¹ã »óÅÂ¸¦ ÆÇº° ¹× ÀüÈ¯ÇÏ´Â ¸Å´ÏÀú Å¬·¡½º.
+/// ê²Œì„ ë‚´ ì‹œê°„ íë¦„ì„ ê´€ë¦¬í•˜ê³ , ë‚®/ë°¤ ìƒíƒœë¥¼ íŒë³„ ë° ì „í™˜í•˜ëŠ” ë§¤ë‹ˆì € í´ë˜ìŠ¤.
 /// </summary>
 public class TimeManager : Singleton<TimeManager>
 {
     #region Public Properties
-    public Property<DayTime> CurrentTimeOfDay { get; private set; } = new Property<DayTime>(DayTime.Day);
-    public Property<int> CurrentHour { get; private set; } = new Property<int>(6);
-    public Property<float> CurrentMinute { get; private set; } = new Property<float>(0f);
+    public Property<DayTime> CurrentTimeOfDay { get; private set; } = new Property<DayTime>(DayTime.None);   //  ì´ˆê¸°  ì—´ê±°í˜• ê°’
+    public Property<int> CurrentHour { get; private set; } = new Property<int>(6);                              //  ì´ˆê¸°  ì‹œê°„ê°’
+    public Property<float> CurrentMinute { get; private set; } = new Property<float>(0f);                       //  ì´ˆê¸°  ë¶„ê°’
     #endregion
 
     #region Private Properties
     #endregion
+
     #region Serialized Fields
 
     [Header("Time Settings")]
-    [Tooltip("°ÔÀÓ ³» ÇÏ·ç°¡ ¸î ºĞ µ¿¾È Áö¼ÓµÇ´ÂÁö ¼³Á¤ÇÕ´Ï´Ù.")]
-    [SerializeField] private float _dayDurationInMinutes = 10f;
+    [Tooltip("ê²Œì„ ë‚´ í•˜ë£¨ê°€ ëª‡ ë¶„ ë™ì•ˆ ì§€ì†ë˜ëŠ”ì§€ ì„¤ì •í•©ë‹ˆë‹¤.")]
+    [SerializeField] private float _dayDurationInMinutes = 10f; //  ê¸°ë³¸ 10ë¶„ = 1ì¼
 
-    [Tooltip("ÇÏ·ç¸¦ ¸î ½Ã°£À¸·Î ±¸¼ºÇÒÁö ¼³Á¤ÇÕ´Ï´Ù.")]
-    [SerializeField] private int _hoursPerDay = 24;
+    [Tooltip("í•˜ë£¨ë¥¼ ëª‡ ì‹œê°„ìœ¼ë¡œ êµ¬ì„±í• ì§€ ì„¤ì •í•©ë‹ˆë‹¤.")]
+    [SerializeField] private int _hoursPerDay = 24;             //  24H
 
     [Header("Thresholds")]
-    [Tooltip("¾ÆÄ§ÀÌ ½ÃÀÛµÇ´Â ½Ã°¢ÀÔ´Ï´Ù.")]
+    [Tooltip("ì•„ì¹¨ì´ ì‹œì‘ë˜ëŠ” ì‹œê°ì…ë‹ˆë‹¤.")]
     [SerializeField] private int _morningStartHour = 6;
-    [Tooltip("³·ÀÌ ½ÃÀÛµÇ´Â ½Ã°¢ÀÔ´Ï´Ù.")]
+    [Tooltip("ë‚®ì´ ì‹œì‘ë˜ëŠ” ì‹œê°ì…ë‹ˆë‹¤.")]
     [SerializeField] private int _dayStartHour = 12;
-    [Tooltip("¹ãÀÌ ½ÃÀÛµÇ´Â ½Ã°¢ÀÔ´Ï´Ù.")]
+    [Tooltip("ë°¤ì´ ì‹œì‘ë˜ëŠ” ì‹œê°ì…ë‹ˆë‹¤.")]
     [SerializeField] private int _nightStartHour = 18;
-    [Tooltip("½É¾ß°¡ ½ÃÀÛµÇ´Â ½Ã°¢ÀÔ´Ï´Ù.")]
+    [Tooltip("ì‹¬ì•¼ê°€ ì‹œì‘ë˜ëŠ” ì‹œê°ì…ë‹ˆë‹¤.")]
     [SerializeField] private int _midnightStartHour = 0;
 
     #endregion
@@ -47,7 +48,7 @@ public class TimeManager : Singleton<TimeManager>
     #region Private Methods
 
     /// <summary>
-    /// °ÔÀÓ ³» ½Ã°£À» ½Ç½Ã°£(10ºĞ : 1ÀÏ)¿¡ ¸Â°Ô Áõ°¡½ÃÅµ´Ï´Ù.
+    /// ê²Œì„ ë‚´ ì‹œê°„ì„ ì‹¤ì‹œê°„(ê¸°ë³¸ 10ë¶„ = 1ì¼)ì— ë§ê²Œ ì¦ê°€ì‹œí‚µë‹ˆë‹¤.
     /// </summary>
     private void UpdateGameTime()
     {
@@ -65,7 +66,7 @@ public class TimeManager : Singleton<TimeManager>
     }
 
     /// <summary>
-    /// ÇöÀç ½Ã°£ÀÌ ¾î¶² »óÈ²ÀÎÁö ÆÇº°ÇÏ°í º¯°æµÇ¸é ÀÌº¥Æ® ¹ß»ı.
+    /// í˜„ì¬ ì‹œê°„ì´ ì–´ë–¤ ìƒí™©ì¸ì§€ íŒë³„í•˜ê³  ë³€ê²½ë˜ë©´ ì´ë²¤íŠ¸ ë°œìƒ. (ì•„ì¹¨/ ë‚®/ ë°¤/ ì‹¬ì•¼ë¡œ ë³€ê²½ ì´ë²¤íŠ¸ ë°œìƒ)
     /// </summary>
     private void UpdateDayNightCycle()
     {
@@ -73,11 +74,11 @@ public class TimeManager : Singleton<TimeManager>
 
         int hour = CurrentHour.Value;
 
-        if (hour >= _midnightStartHour && hour < _morningStartHour)
+        if (hour >= 0 && hour < 6)
             newTimeOfDay = DayTime.MidNight;
-        else if (hour >= _morningStartHour && hour < _dayStartHour)
+        else if (hour >= 6 && hour < 12)
             newTimeOfDay = DayTime.Morning;
-        else if (hour >= _dayStartHour && hour < _nightStartHour)
+        else if (hour >= 12 && hour < 18)
             newTimeOfDay = DayTime.Day;
         else
             newTimeOfDay = DayTime.Night;
@@ -85,6 +86,7 @@ public class TimeManager : Singleton<TimeManager>
         if (CurrentTimeOfDay.Value != newTimeOfDay)
         {
             CurrentTimeOfDay.Value = newTimeOfDay;
+            Debug.Log($"í˜„ì¬ {newTimeOfDay}ìœ¼ë¡œ ë³€ê²½");
         }
     }
 
@@ -93,7 +95,7 @@ public class TimeManager : Singleton<TimeManager>
     #region Public Methods
 
     /// <summary>
-    /// ÇöÀç ½Ã°¢À» HH:MM Çü½ÄÀÇ ¹®ÀÚ¿­·Î ¹İÈ¯ÇÕ´Ï´Ù.
+    /// ê²Œì„ì—ì„œì˜ í˜„ì¬ ì‹œê°ì„ HH:MM í˜•ì‹ì˜ ë¬¸ìì—´ë¡œ ë°˜í™˜í•©ë‹ˆë‹¤.
     /// </summary>
     public string GetFormattedTime()
     {
@@ -107,7 +109,7 @@ public class TimeManager : Singleton<TimeManager>
     {
         CurrentHour.OnChanged += hour =>
         {
-            Debug.Log($"[TimeManager] ÇöÀç ½Ã°£: {GetFormattedTime()}");
+            Debug.Log($"[TimeManager] í˜„ì¬ ì‹œê°„: {GetFormattedTime()}");
         };
     }
     #endregion

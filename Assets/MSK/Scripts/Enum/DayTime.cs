@@ -1,12 +1,14 @@
 
 /// <summary>
-/// ³·°ú ¹ãÀ» ±¸ºÐÇÏ±â À§ÇÑ ¿­°ÅÇüÀÔ´Ï´Ù.
+/// ë‚®ê³¼ ë°¤ì„ êµ¬ë¶„í•˜ê¸° ìœ„í•œ ì—´ê±°í˜•ìž…ë‹ˆë‹¤.
 /// </summary>
 public enum DayTime
 {
-    Morning,    //  ¾ÆÄ§
-    Day,        //  ³·
-    Night,      //  ¹ã
-    MidNight    //  ½É¾ß
+    None = -1,         //  ê¸°íƒ€
+    Morning = 0,    //  ì•„ì¹¨
+    Day = 1,        //  ë‚®
+    Night = 2,      //  ë°¤
+    MidNight = 3,   //  ì‹¬ì•¼
+
 }
 
