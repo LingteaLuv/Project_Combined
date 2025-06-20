@@ -2,95 +2,133 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [Header("Reference")]
-    public Rigidbody Rb;
-    public Transform PlayerPos;
-    //public Animation Avatar;
-
-
+    // ë‚´ë¶€ì—ì„œë§Œ ì‚¬ìš©í•˜ê³  GetComponentë¡œ ê°€ì ¸ì˜¤ëŠ” ê²½ìš°ì—ëŠ” privateì´ ì¢‹ì„ ê²ƒ ê°™ì•„ìš”! 
+    private Rigidbody _rb;
+    //private Animation Avatar;
+    
     [Header("Move Element")]
     [SerializeField] private float _moveSpeed  = 5f;
     [SerializeField] private float _moveAccel = 15f;
+    [SerializeField] private float _moveDecel = 30f;
+    
     [SerializeField] private float _jumpPower = 5f;
     [SerializeField] private float _jumpAccel = 2f;
     [SerializeField] private float _rotSpeed = 1f;
 
-    // Á¡ÇÁ È®ÀÎ 
-    [SerializeField]private Transform _jumpCheck; // ¹è¿­·Î ÀüÈ¯ÇÏ°í, ¹°Ã¼ È®ÀÎÇØ¼­ ¿©·¯ ¿ÀºêÁ§Æ®¿¡ ´ëÀÀÇÏµµ·Ï
-    [SerializeField]private LayerMask _groundMask;
-    private float _jumpDis = 0.3f;
+    // ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ 
+    //[SerializeField]private Transform _jumpCheck; // ï¿½è¿­ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Ï°ï¿½, ï¿½ï¿½Ã¼ È®ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½
+    //private float _jumpDis = 0.3f;
 
-    // °è´Ü
-    [SerializeField] private Transform _bottmRayOrigin;
+    // ï¿½ï¿½ï¿½
+    [SerializeField] private Transform _bottomRayOrigin;
     [SerializeField] private Transform _upperRayOrigin;
+    [SerializeField]private LayerMask _groundMask;
 
-    // ÇöÀç °¡¼Ó ÀúÀå
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     private float _curAccel;
-    // Á¡ÇÁ È®ÀÎ
-    private bool _isJumped = false;
+    // ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
+    private bool _isJumped;
     
-
+    public bool IsGrounded { get; private set; }
+    
+    
+    // ë°±ë·° ì‹œì  êµ¬í˜„í•˜ê¸° ìœ„í•´ Camera ì—°ë™ ì½”ë“œ ì¶”ê°€
+    // Mathf.MoveToward -> Vector3.MoveTowardë¡œ í†µí•©
+    // ê°ì† ê´€ë ¨ ì½”ë“œ ì¶”ê°€ (else ì´í•˜ ë¶€ë¶„)
     public void SetMove(Vector3 dir)
     {
-        // Çö ¼Óµµ È®ÀÎ
-        Vector3 move = Rb.velocity;
-        // ¼³Á¤ ¼Óµµ
-        Vector3 vec = dir.normalized * _moveSpeed;
+        if (dir != Vector3.zero)
+        { 
+            Camera _playerFollowCam = Camera.main;
+            Vector3 camForward = _playerFollowCam.transform.forward;
+            Vector3 camRight = _playerFollowCam.transform.right;
 
-        // Á¡ÇÁ ½Ã Á¡ÇÁ °¡¼Óµµ·Î ÀüÈ¯ÇÏ°í Á¡ÇÁ Áß ÀÌµ¿ÇÏ´Â ¼Óµµ¸¦ Á¶ÀıÇÑ´Ù.
-        _curAccel = _isJumped ? _jumpAccel : _moveAccel;
-        move.x = Mathf.MoveTowards(move.x, vec.x, _curAccel * Time.deltaTime);
-        move.z = Mathf.MoveTowards(move.z, vec.z, _curAccel * Time.deltaTime);
+            Vector3 moveDir = camForward * dir.z + camRight * dir.x;
+            // ï¿½ï¿½ ï¿½Óµï¿½ È®ï¿½ï¿½
+            // Vector3 move = _rb.velocity;
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½Óµï¿½
+            Vector3 vec = moveDir * _moveSpeed;
 
-        // ÃÖÁ¾ ¼Óµµ¸¦ ¹İ¿µ
-        Rb.velocity = move; 
+            _curAccel = _isJumped ? _jumpAccel : _moveAccel;
+            
+            vec.y = _rb.velocity.y;
+            
+            _rb.velocity = Vector3.MoveTowards(_rb.velocity, vec, _curAccel * Time.fixedDeltaTime);
+            
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ìµï¿½ï¿½Ï´ï¿½ ï¿½Óµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+            // move.x = Mathf.MoveTowards(move.x, vec.x, _curAccel * Time.deltaTime);
+            // move.z = Mathf.MoveTowards(move.z, vec.z, _curAccel * Time.deltaTime);
+
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½Óµï¿½ï¿½ï¿½ ï¿½İ¿ï¿½
+            // _rb.velocity = move; 
+        }
+        else
+        {
+            Vector3 targetV = Vector3.zero;
+            targetV.y = _rb.velocity.y;
+            _rb.velocity = Vector3.MoveTowards(_rb.velocity, targetV, _curAccel * Time.fixedDeltaTime);
+        }
     }
     public void Jump()
     {
-        // 2´Ü Á¡ÇÁ ¹æÁö
-        if (_isJumped == true) return;
+        // 2ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+        if (_isJumped) return;
 
-        // Á¡ÇÁ
-        Rb.AddForce(Vector3.up * _jumpPower, ForceMode.Impulse);
+        // ï¿½ï¿½ï¿½ï¿½
+        _rb.AddForce(Vector3.up * _jumpPower, ForceMode.Impulse);
         _isJumped = true;
 
-        // °¡¼ÓÇÏ¸é¼­ Á¡ÇÁÇßÀ» ¶§ ÀÌµ¿¼Óµµ°¡ »¡¶óÁö´Â °ÍÀ» ¹æÁö
-        Vector3 jumpVel = Rb.velocity;
+        // ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸é¼­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ìµï¿½ï¿½Óµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+        Vector3 jumpVel = _rb.velocity;
         jumpVel.x *= 0.65f;
         jumpVel.z *= 0.65f;
-        Rb.velocity = jumpVel;
+        _rb.velocity = jumpVel;
     }
 
     public void ClimbStairs()
     {
-        // º®¿¡´Ù ÇÃ·¹ÀÌ¾îÀÇ Àü“‡Çâ¿¡ ´ëÇØ ºûÀ» ½î°í ¾Æ·¡ÀÇ ·¹ÀÌ´Â ¸·È÷°í, À§ÀÇ ·¹ÀÌ¿¡¼­´Â ¸·È÷Áö ¾Ê´Â °æ¿ì °è´ÜÀ¸·Î ÀÎ½Ä
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½â¿¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Æ·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î½ï¿½
         Vector3 stairsRay = Vector3.forward;
-        bool bottomRay = Physics.Raycast(_bottmRayOrigin.position, stairsRay, 0.4f, _groundMask);
-        bool upperRay = Physics.Raycast(_bottmRayOrigin.position, stairsRay, 0.4f, _groundMask);
+        bool bottomRay = Physics.Raycast(_bottomRayOrigin.position, stairsRay, 0.4f, _groundMask);
+        bool upperRay = Physics.Raycast(_bottomRayOrigin.position, stairsRay, 0.4f, _groundMask);
 
-        // °è´ÜÀ¸·Î ÀÎ½ÄÇÏ´Â °Í¿¡ ¼º°øÇßÀ» °æ¿ì upper·¹ÀÌ°¡ ÀÖ´Â ÂÊ ¸¸Å­ ¿Ã·ÁÁÜ
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î½ï¿½ï¿½Ï´ï¿½ ï¿½Í¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ upperï¿½ï¿½ï¿½Ì°ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ ï¿½ï¿½Å­ ï¿½Ã·ï¿½ï¿½ï¿½
         if (bottomRay && !upperRay)
         {
             //Rb.position += 
         }
-
+    }
+    
+    public void GetIsGrounded(bool value)
+    {
+        IsGrounded = value;
     }
 
-
-
-
+    public void GetIsJumped(bool value)
+    {
+        _isJumped = !value;
+    }
+    
+    public void Rotate()
+    {
+        float mouseX = Input.GetAxis("Mouse X");
+        transform.Rotate(Vector3.up * mouseX * 5f);
+    }
+    
     private void Awake()
     {
-        Rb = GetComponent<Rigidbody>();
-        PlayerPos = GetComponent<Transform>();
+        _rb = GetComponent<Rigidbody>();
         //Avatar = GetComponent<Animation>();
+        IsGrounded = true;
     }
-
+    
     private void Update()
     {
-        _isJumped = !Physics.CheckSphere(_jumpCheck.position, _jumpDis, _groundMask);
+        // ë°”ë‹¥ì˜ ì¢…ë¥˜ê°€ ë§ì•„ì„œ OnCollisionEnterë¡œ ì²˜ë¦¬í•˜ëŠ”ê±´ ì–´ë–¨ê¹Œ ì‹¶ìŠµë‹ˆë‹¤!
+        //_isJumped = !Physics.CheckSphere(_jumpCheck.position, _jumpDis, _groundMask);
     }
 }

@@ -54,11 +54,14 @@ public class PlayerMovement_Temp : MonoBehaviour
             Vector3 moveDir = camForward * _inputDir.z + camRight * _inputDir.x;
             
             Vector3 targetV = moveDir * _moveSpeed;
+            targetV.y = _rigid.velocity.y;
             _rigid.velocity = Vector3.MoveTowards(_rigid.velocity, targetV, _acceleration * Time.fixedDeltaTime);
         }
         else
         {
-            _rigid.velocity = Vector3.MoveTowards(_rigid.velocity, Vector3.zero, _deceleration * Time.fixedDeltaTime);
+            Vector3 targetV = Vector3.zero;
+            targetV.y = _rigid.velocity.y;
+            _rigid.velocity = Vector3.MoveTowards(_rigid.velocity, targetV, _deceleration * Time.fixedDeltaTime);
         }
     }
 
@@ -71,5 +74,6 @@ public class PlayerMovement_Temp : MonoBehaviour
     private void Init()
     {
         _moveSpeed = 5f;
+        IsGrounded = true;
     }
 }
