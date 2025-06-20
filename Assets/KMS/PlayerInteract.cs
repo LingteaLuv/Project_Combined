@@ -25,6 +25,7 @@ public class PlayerInteract : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
+        if (_colliders.Count == 0) return;
         float distance = float.MaxValue;
         Collider near = null;
         foreach ( Collider c in _colliders)
@@ -42,8 +43,11 @@ public class PlayerInteract : MonoBehaviour
         }
         else
         {
+            
             near.GetComponent<Interactable>().Outlinable.enabled = true;
             _interacting.GetComponent<Interactable>().Outlinable.enabled = false;
+            _interacting = near;
+
         }
     }
     private void OnTriggerExit(Collider other)
@@ -52,6 +56,10 @@ public class PlayerInteract : MonoBehaviour
         {
             _colliders.Remove(other);
         }
-        other.GetComponent<Interactable>().Outlinable.enabled = false;
+        if (_interacting == other)
+        {
+            _interacting = null;
+            other.GetComponent<Interactable>().Outlinable.enabled = false;
+        }
     }
 }

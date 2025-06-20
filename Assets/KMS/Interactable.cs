@@ -13,4 +13,6 @@ public class Interactable : MonoBehaviour
     {
         _outlinable.enabled = false;
     }
+
+
 }
