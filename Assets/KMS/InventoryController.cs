@@ -16,6 +16,8 @@ public class InventoryController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha0)) AddItem(_model.ItemList.ItemList[0]);
         if (Input.GetKeyDown(KeyCode.Alpha1)) AddItem(_model.ItemList.ItemList[1]);
         if (Input.GetKeyDown(KeyCode.Alpha2)) AddItem(_model.ItemList.ItemList[2]);
+        if (Input.GetKeyDown(KeyCode.Alpha3)) AddItem(_model.ItemList.ItemList[3]);
+        _model.HoldSlot.transform.position = Input.mousePosition;
     }
 
     public void ToggleInventory()
@@ -104,13 +106,15 @@ public class InventoryController : MonoBehaviour
                 ReplaceItem(index);
             }
         }
+        _renderer.RenderInventory();
     }
 
     public void HoldItem(int index)
     {
         _model.HeldItem = _model.InvItems[index];
         _model.HeldItemAmount = _model.InvItemAmounts[index];
-        RemoveItemByIndex(index);
+        _model.InvItems[index] = null;
+        _model.InvItemAmounts[index] = 0;
     }
     public void CombineItem(int index)
     {
@@ -129,6 +133,10 @@ public class InventoryController : MonoBehaviour
     }
     public void PlaceItem(int index)
     {
+        if (index > _model.InvSlotIndexBound && !(_model.HeldItem is WeaponSO))
+        {
+            return;
+        }
         _model.InvItems[index] = _model.HeldItem;
         _model.InvItemAmounts[index] = _model.HeldItemAmount;
         _model.HeldItem = null;
@@ -136,6 +144,10 @@ public class InventoryController : MonoBehaviour
     }
     public void ReplaceItem(int index)
     {
+        if (index > _model.InvSlotIndexBound && !(_model.HeldItem is WeaponSO))
+        {
+            return;
+        }
         ItemSO tempItem = _model.InvItems[index];
         int tempAmount = _model.InvItemAmounts[index];
         _model.InvItems[index] = _model.HeldItem;
