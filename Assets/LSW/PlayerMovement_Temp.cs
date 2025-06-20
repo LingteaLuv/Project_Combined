@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,22 +12,29 @@ public class PlayerMovement_Temp : MonoBehaviour
     
     private Vector3 _inputDir;
     private float _moveSpeed;
+    public bool IsGrounded { get; private set; }
     
     private void Awake()
     {
         Init();
     }
 
-    private void Update()
+    public void InputUpdate()
     {
         InputDirection();
         Rotate();
     }
-    private void FixedUpdate()
+    public void MoveUpdate()
     {
         Movement();
     }
 
+    public void GetIsGrounded(bool value)
+    {
+        IsGrounded = value;
+    }
+    
+    
     private void InputDirection()
     {
         float x = Input.GetAxis("Horizontal");
