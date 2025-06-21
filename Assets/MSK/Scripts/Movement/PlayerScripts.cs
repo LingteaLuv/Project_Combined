@@ -12,6 +12,8 @@ public class PlayerScripts : MonoBehaviour
 
     private Quaternion requireRotation;
 
+    [Header("Player Movement")]
+    public Animator animator;
     private void Update()
     {
         PlayerMovement();
@@ -22,7 +24,7 @@ public class PlayerScripts : MonoBehaviour
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
-        float movementAmount = Mathf.Abs(horizontal) + Mathf.Abs(vertical);
+        float movementAmount = Mathf.Clamp01(Mathf.Abs(horizontal) + Mathf.Abs(vertical));
 
         var movementInput = (new Vector3(horizontal,0,vertical)).normalized;
 
@@ -35,5 +37,6 @@ public class PlayerScripts : MonoBehaviour
         }
 
         transform.rotation = Quaternion.RotateTowards(transform.rotation, requireRotation, rotSpeed * Time.deltaTime);
+        animator.SetFloat("movementValue", movementAmount);
     }
 }
