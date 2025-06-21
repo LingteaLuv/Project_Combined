@@ -1,11 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-//using Cinemachine;
+using Cinemachine;
 
 public class MainCameraController : MonoBehaviour
 {
-   // public CinemachineVirtualCamera virCam;
+    public CinemachineVirtualCamera vCam;
     public float rotationY;
 
     private void Start()
@@ -14,8 +14,8 @@ public class MainCameraController : MonoBehaviour
     }
 
     private void Update()
-    {/*
-        var state = virCam.State;
+    {
+        var state = vCam.State;
 
         var rotation = state.FinalOrientation;
 
@@ -24,8 +24,8 @@ public class MainCameraController : MonoBehaviour
         rotationY = euler.y;
 
         var roundedRotationY = Mathf.RoundToInt(rotationY);
-        */
+    
     }
-    public Quaternion floatRotation => Quaternion.Euler(0, rotationY, 0);
+    public Quaternion flatRotation => Quaternion.Euler(0, rotationY, 0);
 }
 

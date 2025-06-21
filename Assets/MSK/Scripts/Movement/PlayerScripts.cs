@@ -7,7 +7,7 @@ public class PlayerScripts : MonoBehaviour
 
     [Header("Player Movement")]
     public float movementSpeed = 4f;
-    public CameraController cameraController;
+    public MainCameraController cameraController;
     public float rotSpeed = 5f;
 
     private Quaternion requireRotation;
@@ -26,7 +26,7 @@ public class PlayerScripts : MonoBehaviour
 
         var movementInput = (new Vector3(horizontal,0,vertical)).normalized;
 
-        var movementDirection = (cameraController.FlatForward * movementInput.z + cameraController.FlatRight * movementInput.x).normalized;
+        var movementDirection = cameraController.flatRotation * movementInput;
 
         if (movementAmount > 0)
         {

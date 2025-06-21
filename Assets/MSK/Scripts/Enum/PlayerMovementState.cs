@@ -15,7 +15,8 @@ public enum PlayerMovementState
     DoorInteract,   // 문 상호작용
     Sleep,          // 특정 조건에서 잠자기
     Hit,            // 피격 시 애니메이션 및 잠시 제어
-    Attack          // 공격 입력 시 실행, Hit 상태에 이벤트 전달 필요?
+    Attack,         // 공격 입력 시 실행, Hit 상태에 이벤트 전달 필요?
+    Die             // 플레이어 죽음 상태
     // 매달리기 등의 상태 추가?
 }
 
