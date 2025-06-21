@@ -1,26 +1,29 @@
 using EPOOutline;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Properties;
 using UnityEngine;
 
-public class PlayerInteract : MonoBehaviour
+public class PlayerLooting : MonoBehaviour
 {
     [SerializeField] LayerMask _interactLayer;
 
     private List<Collider> _colliders = new List<Collider>();
 
-    private Collider _interacting;
-    // Update is called once per frame
-    void Update()
-    {
-    }
+    private Collider _lootableColl = null;
 
+    private Lootable _lootable = null;
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F)) TryLoot();
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.layer == 6)
         {
             _colliders.Add(other);
-        } 
+            
+        }
     }
 
     private void OnTriggerStay(Collider other)
@@ -37,16 +40,20 @@ public class PlayerInteract : MonoBehaviour
                 near = c;
             }
         }
-        if (_interacting == near)
+        if (_lootableColl == near)
         {
             return;
         }
         else
         {
-            
-            near.GetComponent<Interactable>().Outlinable.enabled = true;
-            _interacting.GetComponent<Interactable>().Outlinable.enabled = false;
-            _interacting = near;
+            _lootable = near.GetComponent<Lootable>();
+            _lootable.OnOutline();
+            if (_lootableColl != null)
+            {
+                _lootableColl.GetComponent<Lootable>().OffOutline();
+            }
+            _lootableColl = near;
+            LootManager.Instance.NewLootableChecked(_lootable);
 
         }
     }
@@ -56,10 +63,19 @@ public class PlayerInteract : MonoBehaviour
         {
             _colliders.Remove(other);
         }
-        if (_interacting == other)
+        if (_lootableColl == other)
         {
-            _interacting = null;
-            other.GetComponent<Interactable>().Outlinable.enabled = false;
+            _lootableColl = null;
+            _lootable.OffOutline();
+            _lootable = null;
+            LootManager.Instance.LootableNotExist();
         }
+    }
+
+    public void TryLoot()
+    {
+        if (_lootable == null) return;
+        LootManager.Instance.OpenLootTable();
+
     }
 }
