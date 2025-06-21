@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class GunWeaponBase : MonoBehaviour
+public class GunWeaponBase : WeaponBase
 {
     //총 프리팹
     [SerializeField] protected GameObject _bulletPrefab;
 
     //총 본체 관련 변수
     [SerializeField] protected string _gunName;     // 총의 이름
-    [SerializeField] protected float _damage;       // 총의 데미지
+    [SerializeField] protected int _damage;       // 총의 데미지
     [SerializeField] protected float _range;        // 총의 유효 사거리
     [SerializeField] protected float _accuracy;     // 총의 정확도
 
@@ -19,7 +19,9 @@ public abstract class GunWeaponBase : MonoBehaviour
     [SerializeField] protected float _reloadTime;       // 재장전 속도. 총의 종류마다 다름.
     [SerializeField] protected float _fireDelay = 1.5f; //총 발사 딜레이
     [SerializeField] protected Transform _firePoint;    //총알 발사 지점
+
     protected bool _canShot = true;
+    protected bool _isReload = false;
 
     //총알 오브젝트 풀링 관련 변수
     [Header("Gun other Setting")]
@@ -29,7 +31,7 @@ public abstract class GunWeaponBase : MonoBehaviour
     [SerializeField]protected AudioClip fire_Sound;        // 총 발사 소리 오디오 클립
     protected ObjectPool _gunBulletObjectPool;
 
-    public float Damage { get { return _damage; } private set { } }
+    public int Damage { get { return _damage; } private set { } }
     public virtual void Init()
     {
         //무기마다 Init() 불릿 풀 사이즈가 다를 것이고,불릿 프리팹이 다르다.
@@ -37,4 +39,6 @@ public abstract class GunWeaponBase : MonoBehaviour
     }
 
     protected AudioSource audioSource; //공격 사운드
+
+    public override void Attack() { }
 }
