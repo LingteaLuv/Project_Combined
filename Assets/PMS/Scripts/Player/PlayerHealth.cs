@@ -5,6 +5,7 @@ using UnityEngine.Events;
 
 public class PlayerHealth : MonoBehaviour, IDamageable
 {
+    [SerializeField] private Animator _animator; //피격 애니메이션
     [SerializeField] private float _invincibilityTime = 0.5f;  //무적시간
     private bool _isInvincible = false; //무적 인지 아닌지
 
@@ -96,6 +97,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         OnHealthChanged?.Invoke(_currentHp);        //체력 변경 이벤트 발생 알리기
 
         //플레이어 피격 애니메이션 재생
+        _animator.SetTrigger("Hit");
 
         // 체력이 0 이하가 되면 사망 처리
         if (_currentHp <= 0 && !_isDead)
@@ -117,6 +119,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         yield return new WaitForSeconds(_deathSequenceTime);
 
         //플레이어 죽음 애니메이션 재생
+        //_animator.SetTrigger("");
 
         //게임 매니저 게임 오버 처리 함수
         GameManager.Instance.GameOver();
