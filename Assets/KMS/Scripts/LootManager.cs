@@ -94,6 +94,12 @@ public class LootManager : Singleton<LootManager>
         SetUI();
         LootTableUpdate();
     }
+
+    public void RemoveBlocker(int index)
+    {
+        _lootable.LootItems.ItemBlocked[index] = false;
+        LootTableUpdate();
+    }
     private void LootTableUpdate()
     {
         for (int i = 0; i < _slotCount; i++)
@@ -123,7 +129,7 @@ public class LootManager : Singleton<LootManager>
             if (_lootable.LootItems.ItemDurabilitys[i] != -1)
             {
                 _itemDurSliders[i].gameObject.SetActive(true);
-                _itemDurSliders[i].value = _lootable.LootItems.ItemDurabilitys[i] / _lootable.LootItems.Items[i].MaxDurability;
+                _itemDurSliders[i].value = (float)_lootable.LootItems.ItemDurabilitys[i] / _lootable.LootItems.Items[i].MaxDurability;
 
             }
             else _itemDurSliders[i].gameObject.SetActive(false);
