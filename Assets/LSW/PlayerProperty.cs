@@ -175,7 +175,7 @@ public class PlayerProperty : MonoBehaviour
     }
     
     // 외부에서 음식을 먹을 경우 호출하는 메서드
-    public void Eat(Item item)
+    /*public void Eat(Item item)
     {
         // todo : 아이템의 수치 적용, Timer 시간 초기화(5분)
         // _hunger.Recover(item.value);
@@ -189,6 +189,7 @@ public class PlayerProperty : MonoBehaviour
         // _thirsty.Recover(item.value);
         _drinkTimer = MaxDrinkTimer;
     }
+    */
 
     // 강한 행동에서 호출되는 이벤트에 구독되는 메서드
     public void ExpendAction()
