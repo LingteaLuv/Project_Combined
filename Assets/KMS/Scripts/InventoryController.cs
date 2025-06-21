@@ -11,8 +11,9 @@ public class InventoryController : MonoBehaviour
 
     [SerializeField] private InventoryRenderer _renderer;
 
-    private bool _isHolding;
+    public bool IsHolding;
     private int _holdingIndex;
+    public int NextIndex;
 
     private void Update()
     {
@@ -103,8 +104,9 @@ public class InventoryController : MonoBehaviour
     public void HoldItem(int index)
     {
         if (_model.InvItems[index] == null) return;
+        Debug.Log(_holdingIndex);
         _renderer.HoldRender(index);
-        _isHolding = true;
+        IsHolding = true;
         _holdingIndex = index;
     }
     //public void CombineItem(int index)
@@ -140,38 +142,41 @@ public class InventoryController : MonoBehaviour
     //
     //}
 
-    public void PutItem(int index)
+    public void PutItem()
     {
-        if (!_isHolding) return;
-
-        if (_model.InvItems[index] == null)
+        if (!IsHolding) return;
+        Debug.Log("put");
+        if (_model.InvItems[NextIndex] == null)
         {
-            PlaceItem(index);
+            PlaceItem();
             Debug.Log("place");
         }
         else
         {
-            ReplaceItem(index);
+            ReplaceItem();
             Debug.Log("replace");
         }
         _renderer.HoldClear();
         _renderer.RenderInventory();
     }
 
-    public void PlaceItem(int index)
+    public void PlaceItem()
     {
-        _model.InvItems[index] = _model.InvItems[_holdingIndex];
-        _model.InvItemAmounts[index] = _model.InvItemAmounts[_holdingIndex];
-        _model.InvItemDurabilitys[index] = _model.InvItemDurabilitys[_holdingIndex];
+        _model.InvItems[NextIndex] = _model.InvItems[_holdingIndex];
+        _model.InvItemAmounts[NextIndex] = _model.InvItemAmounts[_holdingIndex];
+        _model.InvItemDurabilitys[NextIndex] = _model.InvItemDurabilitys[_holdingIndex];
+        _model.InvItems[_holdingIndex] = null;
+        _model.InvItemAmounts[_holdingIndex] = 0;
+        _model.InvItemDurabilitys[_holdingIndex] = 0;
     }
-    public void ReplaceItem(int index)
+    public void ReplaceItem()
     {
-        ItemSO tempItem = _model.InvItems[index];
-        int tempAmount = _model.InvItemAmounts[index];
-        int tempDur = _model.InvItemDurabilitys[index];
-        _model.InvItems[index] = _model.InvItems[_holdingIndex];
-        _model.InvItemAmounts[index] = _model.InvItemAmounts[_holdingIndex];
-        _model.InvItemDurabilitys[index] = _model.InvItemDurabilitys[_holdingIndex];
+        ItemSO tempItem = _model.InvItems[NextIndex];
+        int tempAmount = _model.InvItemAmounts[NextIndex];
+        int tempDur = _model.InvItemDurabilitys[NextIndex];
+        _model.InvItems[NextIndex] = _model.InvItems[_holdingIndex];
+        _model.InvItemAmounts[NextIndex] = _model.InvItemAmounts[_holdingIndex];
+        _model.InvItemDurabilitys[NextIndex] = _model.InvItemDurabilitys[_holdingIndex];
         _model.InvItems[_holdingIndex] = tempItem;
         _model.InvItemAmounts[_holdingIndex] = tempAmount;
         _model.InvItemDurabilitys[_holdingIndex] = tempDur;

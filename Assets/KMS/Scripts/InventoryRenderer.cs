@@ -88,8 +88,9 @@ public class InventoryRenderer : MonoBehaviour
         _model.HoldSlotItemImage.enabled = true;
         _model.HoldSlotItemAmountText.enabled = true;
         _model.HoldSlotItemImage.sprite = _model.InvSlotItemImages[index].sprite;
-        _model.HoldSlotItemAmountText.text = _model.InvSlotItemAmountTexts[index].text;
+        _model.HoldSlotItemAmountText.text = _model.InvItemAmounts[index].ToString();
         _model.InvSlotItemImages[index].enabled = false;
         _model.InvSlotItemAmountTexts[index].enabled = false;
+        _model.InvSlotItemDurSliders[index].gameObject.SetActive(false);
     }
 }
