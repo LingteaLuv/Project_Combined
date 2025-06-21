@@ -8,7 +8,7 @@ public class PlayerInputHandler : MonoBehaviour
 {
     // 이동 입력 값
     public Property<Vector3> MoveInput { get; private set; } = new(Vector3.zero);
-    
+
     /// <summary>
     /// 프레임마다 입력 감지 및 값 업데이트
     /// </summary
