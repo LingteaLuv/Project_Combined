@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7478045071795327614}
   - component: {fileID: 345986693690849429}
   - component: {fileID: 4365254721230522017}
+  - component: {fileID: 7334001822989411306}
   m_Layer: 6
   m_Name: LootableObject
   m_TagString: Untagged
@@ -96,7 +97,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _outlinable: {fileID: 90635515201676264}
-  _lootItems: {fileID: 0}
+  LootItems: {fileID: 7334001822989411306}
+--- !u!114 &7334001822989411306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4076454576274543187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26e49cb53bb453c4d99702f5155caf25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Items:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  ItemAmounts: 000000000000000000000000000000000000000000000000
+  ItemDurabilitys: 000000000000000000000000000000000000000000000000
 --- !u!1 &5628817906721821547
 GameObject:
   m_ObjectHideFlags: 0

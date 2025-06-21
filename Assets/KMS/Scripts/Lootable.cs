@@ -7,11 +7,9 @@ using EPOOutline;
 public class Lootable : MonoBehaviour
 {
     [SerializeField] private Outlinable _outlinable;
+    public LootItems LootItems;
     public Outlinable Outlinable { get { return _outlinable; } }
 
-    [SerializeField] private LootItemSO _lootItems;
-
-    public LootItemSO LootItemSO { get { return _lootItems; } }
 
     private void Awake()
     {

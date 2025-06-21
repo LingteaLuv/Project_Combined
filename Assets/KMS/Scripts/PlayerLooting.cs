@@ -74,9 +74,8 @@ public class PlayerLooting : MonoBehaviour
 
     public void TryLoot()
     {
-        if (_lootableColl == null) return;
-
-
+        if (_lootable == null) return;
+        LootManager.Instance.OpenLootTable();
 
     }
 }
