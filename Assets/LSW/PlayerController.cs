@@ -11,7 +11,12 @@ public class PlayerController : MonoBehaviour
     private PlayerMovement _playerMovement;
 
     private Vector3 _moveDir;
-    
+
+
+
+    public Animator Animator { get; private set; }
+    public Rigidbody Rigidbody { get; private set; }
+
     private void Awake()
     {
         Init();
@@ -51,5 +56,7 @@ public class PlayerController : MonoBehaviour
         _playerCollision = GetComponentInChildren<PlayerCollision>();
         _playerInput = GetComponent<PlayerInput>();
         _playerMovement = GetComponent<PlayerMovement>();
+        Animator = GetComponent<Animator>();
+        Rigidbody = GetComponent<Rigidbody>();
     }
 }

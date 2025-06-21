@@ -122,7 +122,7 @@ public class PlayerProperty : MonoBehaviour
         }
         _isOnCorThirsty = false;
     }
-    
+    /*
     public void Eat(Item item)
     {
         // todo : 아이템의 수치 적용, Timer 시간 초기화(5분)
@@ -136,7 +136,7 @@ public class PlayerProperty : MonoBehaviour
         // _thirsty.Recover(item.value);
         _drinkTimer = MaxDrinkTimer;
     }
-    
+    */
     private void Init()
     {
         _hp.Init(100);
