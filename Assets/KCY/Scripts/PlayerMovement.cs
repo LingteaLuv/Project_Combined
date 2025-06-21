@@ -9,7 +9,8 @@ public class PlayerMovement : MonoBehaviour
     // 내부에서만 사용하고 GetComponent로 가져오는 경우에는 private이 좋을 것 같아요! 
     private Rigidbody _rb;
     //private Animation Avatar;
-    
+    [SerializeField] private Transform _player;    
+
     [Header("Move Element")]
     [SerializeField] private float _moveSpeed  = 5f;
     [SerializeField] private float _moveAccel = 15f;
@@ -24,8 +25,7 @@ public class PlayerMovement : MonoBehaviour
     //private float _jumpDis = 0.3f;
 
     // ���
-    [SerializeField] private Transform _bottomRayOrigin;
-    [SerializeField] private Transform _upperRayOrigin;
+    
     [SerializeField]private LayerMask _groundMask;
 
     // ���� ���� ����
@@ -89,7 +89,7 @@ public class PlayerMovement : MonoBehaviour
         _rb.velocity = jumpVel;
     }
 
-    public void ClimbStairs()
+    /*public void ClimbStairs()
     {
         // ������ �÷��̾��� �����⿡ ���� ���� ��� �Ʒ��� ���̴� ������, ���� ���̿����� ������ �ʴ� ��� ������� �ν�
         Vector3 stairsRay = Vector3.forward;
@@ -101,7 +101,7 @@ public class PlayerMovement : MonoBehaviour
         {
             //Rb.position += 
         }
-    }
+    }*/
     
     public void GetIsGrounded(bool value)
     {
@@ -116,7 +116,11 @@ public class PlayerMovement : MonoBehaviour
     public void Rotate()
     {
         float mouseX = Input.GetAxis("Mouse X");
-        transform.Rotate(Vector3.up * mouseX * 5f);
+        if (_player != null)
+        {
+            transform.Rotate(Vector3.up * mouseX * 5f);
+        }
+        
     }
     
     private void Awake()
