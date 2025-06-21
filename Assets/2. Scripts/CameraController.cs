@@ -9,9 +9,11 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float _rotateSpeed;
 
     private Vector3 _offset;
+
     private float _curRotationX;
     private float _curRotationY;
-
+    public Vector3 FlatForward => new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
+    public Vector3 FlatRight => new Vector3(transform.right.x, 0f, transform.right.z).normalized;
     private void Awake()
     {
         Init();
