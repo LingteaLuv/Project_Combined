@@ -12,11 +12,6 @@ public class PlayerInteract : MonoBehaviour
 
     private bool _isInteracted;
 
-    private void Awake()
-    {
-        Init();
-    }
-
     public void Interact(List<Key> playerKeys)
     {
         if (!_isInteracted)
@@ -26,17 +21,12 @@ public class PlayerInteract : MonoBehaviour
 
             if (Physics.Raycast(startPos, direction, out RaycastHit hit, _interactDistance))
             {
-                if (hit.collider.gameObject.layer == 15)
+                if (hit.collider.gameObject.layer == 7)
                 {
                     Door door = hit.collider.GetComponent<Door>();
                     door.Toggle(playerKeys);
                 }
             }
         }
-    }
-
-    private void Init()
-    {
-        
     }
 }

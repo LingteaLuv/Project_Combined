@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Door : MonoBehaviour
@@ -7,11 +8,19 @@ public class Door : MonoBehaviour
     [SerializeField] private DoorType _doorType;
     [SerializeField] private float _openAngle;
     [SerializeField] private float _duration;
+
+    private Quaternion _openedRotation;
+    private Quaternion _closedRotation;
     
     private Key _key;
     private bool _isOpen;
     private bool _isOnRotated;
 
+    private void Awake()
+    {
+        Init();
+    }
+    
     public void Toggle(List<Key> playerKeys)
     {
         if (_isOnRotated) return;
@@ -27,16 +36,16 @@ public class Door : MonoBehaviour
     
     private void TryOpen(List<Key> playerKeys)
     {
-        if (playerKeys.Contains(_key))
+        if (playerKeys.Any(k=>k.KeyId == _key.KeyId))
         {
             _isOnRotated = true;
             switch (_doorType)
             {
                 case DoorType.RotateRight:
-                    RotateDoor(-1);
+                    RotateDoor();
                     break;
                 case DoorType.RotateLeft:
-                    RotateDoor(1);
+                    RotateDoor();
                     break;
                 case DoorType.Slide:
                     SlideOpen();
@@ -51,10 +60,10 @@ public class Door : MonoBehaviour
         switch (_doorType)
         {
             case DoorType.RotateRight:
-                RotateDoor(1);
+                RotateDoor();
                 break;
             case DoorType.RotateLeft:
-                RotateDoor(-1);
+                RotateDoor();
                 break;
             case DoorType.Slide:
                 SlideOpen();
@@ -62,9 +71,9 @@ public class Door : MonoBehaviour
         }
     }
     
-    private void RotateDoor(int rotateDir)
+    private void RotateDoor()
     {
-        Quaternion rotation = Quaternion.Euler(0, rotateDir * _openAngle, 0);
+        Quaternion rotation = _isOpen ? _closedRotation : _openedRotation;
         StartCoroutine(RotateRoutine(rotation));
     }
 
@@ -82,8 +91,16 @@ public class Door : MonoBehaviour
             transform.rotation = Quaternion.Slerp(startRotation, rotation, timer / _duration);
             yield return null;
         }
-
+        transform.rotation = rotation;
+        _isOpen = (rotation == _openedRotation);
         _isOnRotated = false;
+    }
+
+    private void Init()
+    {
+        _closedRotation = transform.rotation;
+        _openedRotation = _closedRotation *
+                          Quaternion.Euler(0, _openAngle * (_doorType == DoorType.RotateRight ? -1 : 1), 0);
     }
 }
 
