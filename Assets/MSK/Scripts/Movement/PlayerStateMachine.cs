@@ -9,46 +9,32 @@ using UnityEngine;
 /// </summary>
 public class PlayerStateMachine
 {
-    private PlayerStateBase _currentState;
-    public PlayerMovementState CurrentStateType { get; private set; }
-
-    private readonly PlayerController _controller;
-
-    public PlayerStateMachine(PlayerController controller)
-    {
-        _controller = controller;
-    }
+    public PlayerStateBase CurrentState { get; private set; }
 
     /// <summary>
-    /// 상태를 변경하고, 기존 상태를 종료(Exit)한 뒤 새 상태의 진입(Enter)을 호출합니다.
-    /// 필요한 상태별 추가 정보(vaultTarget 등)는 조건에 따라 전달합니다.
+    /// 상태를 새로운 상태로 전환합니다.
     /// </summary>
-    public void ChangeState(PlayerMovementState newState, Transform vaultTarget = null)
+    /// <param name="newState">전환할 상태 인스턴스</param>
+    public void ChangeState(PlayerStateBase newState)
     {
-        _currentState?.OnStateExit();
-
-        switch (newState)
-        {
-            case PlayerMovementState.Vault:
-                _currentState = new VaultState(this, _controller, vaultTarget);
-                break;
-
-            case PlayerMovementState.Idle:
-                _currentState = new IdleState(this, _controller);
-                break;
-
-                // ...
-        }
-
-        CurrentStateType = newState;
-        _currentState.OnStateEnter();
+        CurrentState?.OnExit();
+        CurrentState = newState;
+        CurrentState?.OnEnter();
     }
 
     /// <summary>
-    /// 현재 상태의 Update 로직을 호출합니다. 일반적으로 MonoBehaviour의 Update()에서 사용됩니다.
+    /// 현재 상태의 Update 루프를 호출합니다.
     /// </summary>
     public void Update()
     {
-        _currentState?.OnStateUpdate();
+        CurrentState?.OnUpdate();
+    }
+
+    /// <summary>
+    /// 현재 상태의 FixedUpdate 루프를 호출합니다.
+    /// </summary>
+    public void FixedUpdate()
+    {
+        CurrentState?.OnFixedUpdate();
     }
 }

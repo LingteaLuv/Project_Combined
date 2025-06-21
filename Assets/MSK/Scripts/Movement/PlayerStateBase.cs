@@ -8,32 +8,34 @@ using UnityEngine;
 /// </summary>
 public abstract class PlayerStateBase
 {
-    protected PlayerStateMachine _fsm;
-    protected PlayerController _controller;
+    protected readonly PlayerController _controller;
 
     /// <summary>
     /// 상태 생성자: FSM과 PlayerController 참조를 전달받습니다.
     /// </summary>
-    /// <param name="fsm">현재 상태 머신</param>
     /// <param name="controller">플레이어 컨트롤러 참조</param>
-    public PlayerStateBase(PlayerStateMachine fsm, PlayerController controller)
+    protected PlayerStateBase(PlayerController controller)
     {
-        _fsm = fsm;
         _controller = controller;
     }
 
     /// <summary>
     /// 상태 진입 시 호출됩니다. 초기화, 애니메이션 트리거 등을 설정합니다.
     /// </summary>
-    public virtual void OnStateEnter() { }
+    public virtual void OnEnter() { }
 
     /// <summary>
     /// 매 프레임 상태 유지 로직을 처리합니다. 이동, 상태 감지 등.
     /// </summary>
-    public virtual void OnStateUpdate() { }
+    public virtual void OnUpdate() { }
+
+    /// <summary> 
+    /// FixedUpdate에서 호출됩니다. 
+    /// </summary>
+    public virtual void OnFixedUpdate() { }
 
     /// <summary>
     /// 상태 종료 시 호출됩니다. 정리, 상태 초기화 등을 수행합니다.
     /// </summary>
-    public virtual void OnStateExit() { }
+    public virtual void OnExit() { }
 }

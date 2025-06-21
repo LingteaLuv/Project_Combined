@@ -8,50 +8,44 @@ using UnityEngine;
 /// </summary>
 public class VaultState : PlayerStateBase
 {
-    private Animator _animator;
-    private Transform _playerTransform;
-    private Transform _vaultTarget;
+    private readonly int _vaultHash = Animator.StringToHash("isVault");
+    private readonly float _duration;
+    private float _elapsed;
 
-    public VaultState(PlayerStateMachine fsm, PlayerController controller, Transform vaultTarget) : base(fsm, controller)
+    public VaultState(PlayerController controller, float duration = 1.0f) : base(controller)
     {
-        _animator = controller.Animator;
-        _playerTransform = controller.transform;
-        _vaultTarget = vaultTarget;
+        _duration = duration;
     }
 
     /// <summary>
     /// Vault 상태 진입 시 호출됩니다. 애니메이션 재생과 중력 비활성화 처리.
     /// </summary>
-    public override void OnStateEnter()
+    public override void OnEnter()
     {
-        _animator.SetTrigger("Vault");
-        _controller.Rigidbody.useGravity = false;
-        _controller.Rigidbody.velocity = Vector3.zero;
+        _elapsed = 0f;
+        _controller.Animator.SetBool(_vaultHash, true);
     }
 
     /// <summary>
     /// Vault 상태 유지 중 호출됩니다. vaultTarget까지의 이동을 처리합니다.
     /// </summary>
-    public override void OnStateUpdate()
+    public override void OnUpdate()
     {
-        _playerTransform.position = Vector3.MoveTowards(
-            _playerTransform.position,
-            _vaultTarget.position,
-            3.5f * Time.deltaTime
-        );
+        _elapsed += Time.deltaTime;
 
-        float distance = Vector3.Distance(_playerTransform.position, _vaultTarget.position);
-        if (distance < 0.1f)
+        if (_elapsed >= _duration)
         {
-            _fsm.ChangeState(PlayerMovementState.Idle);
+            _controller.Animator.SetBool(_vaultHash, false);
+            _controller.StateMachine.ChangeState(new IdleState(_controller));
         }
     }
 
     /// <summary>
     /// Vault 상태 종료 시 호출됩니다. 중력을 다시 활성화합니다.
     /// </summary>
-    public override void OnStateExit()
+    public override void OnFixedUpdate()
     {
-        _controller.Rigidbody.useGravity = true;
+        // 이 상태에선 움직임 차단
+        _controller.PlayerMovement.SetMove(Vector3.zero);
     }
 }
