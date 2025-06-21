@@ -1,7 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+public enum ItemType
+{
+    Normal,
+    Weapon,
 
+}
 [CreateAssetMenu(fileName = "Item", menuName = "ScriptableObjects/Item", order = 1)]
 public class ItemSO : ScriptableObject
 {
@@ -16,4 +21,9 @@ public class ItemSO : ScriptableObject
 
     [SerializeField] private int _maxInventoryAmount;
     public int MaxInventoryAmount { get { return _maxInventoryAmount; } }
+
+    [SerializeField] private int _maxDurability;
+    public int MaxDurability { get { return _maxDurability; } }
+
+
 }
