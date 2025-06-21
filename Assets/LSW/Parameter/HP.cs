@@ -5,28 +5,36 @@ using UnityEngine;
 
 public class Hp : Parameter
 {
-    public override void Recover(float value)
+    public override void Act(ref float atk, float baseValue, float offset)
     {
-        Value = Value + value > 100 ? 100 : Value + value;
+        switch (State)
+        {
+            case ParamState.Full:
+                Advantage(ref atk, baseValue, offset);
+                break;
+            case ParamState.Basic:
+                ResetValue(ref atk, baseValue, offset);
+                break;
+            case ParamState.Lack:
+                break;
+            case ParamState.Depletion:
+                Penalty();
+                break;
+        } 
     }
-
-    public override void Decrease(float value)
+    
+    public override void Advantage(ref float atk, float baseValue, float offset)
     {
-        Value = Value - value < 0 ? 0 : Value - value;
+        atk = baseValue + offset;
     }
-
-    public override void Penalty()
-    {
-        GameManager.Instance.GameOver();
-    }
-
-    public override void Reset(ref float atk, float baseValue)
+    
+    public override void ResetValue(ref float atk, float baseValue, float offset)
     {
         atk = baseValue;
     }
     
-    public override void Advantage(ref float atk, float value)
+    public override void Penalty()
     {
-        atk = value;
+        GameManager.Instance.GameOver();
     }
 }
