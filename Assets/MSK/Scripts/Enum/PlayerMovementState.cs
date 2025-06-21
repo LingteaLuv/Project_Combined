@@ -1,3 +1,6 @@
+/// <summary>
+/// 플레이어의 움직임(행동) 상태를 구분하기 위한 열거형입니다.   
+/// </summary>
 public enum PlayerMovementState
 {
     Idle,           // 기본 대기 상태

@@ -2,8 +2,8 @@ using System.Collections;
 using UnityEngine;
 
 /// <summary>
-/// TimeManagerÀÇ ÇöÀç ½Ã°£ Á¤º¸¸¦ ±â¹İÀ¸·Î Á¶¸í ¹× È¯°æ ¼³Á¤À» µ¿ÀûÀ¸·Î Á¶ÀıÇÕ´Ï´Ù.
-/// ³·°ú ¹ãÀÇ ½Ã°£´ë¿¡ µû¶ó Ambient Light, Fog Color, Directional LightÀÇ »ö»ó°ú È¸Àü°ªÀ» ½Ç½Ã°£À¸·Î º¯°æÇÕ´Ï´Ù.
+/// TimeManagerì˜ í˜„ì¬ ì‹œê°„ ì •ë³´ë¥¼ ê¸°ë°˜ìœ¼ë¡œ ì¡°ëª… ë° í™˜ê²½ ì„¤ì •ì„ ë™ì ìœ¼ë¡œ ì¡°ì ˆí•©ë‹ˆë‹¤.
+/// ë‚®ê³¼ ë°¤ì˜ ì‹œê°„ëŒ€ì— ë”°ë¼ Ambient Light, Fog Color, Directional Lightì˜ ìƒ‰ìƒê³¼ íšŒì „ê°’ì„ ì‹¤ì‹œê°„ìœ¼ë¡œ ë³€ê²½í•©ë‹ˆë‹¤.
 /// </summary>
 [ExecuteAlways]
 public class LightingManager : MonoBehaviour
@@ -42,23 +42,24 @@ public class LightingManager : MonoBehaviour
     #region Private Methods
 
     /// <summary>
-    /// ÇöÀç ½Ã°£ ºñÀ²¿¡ µû¶ó È¯°æ Á¶¸í °ª(Ambient, Fog, DirectionalLight)À» Á¶Á¤ÇÕ´Ï´Ù.
+    /// í˜„ì¬ ì‹œê°„ ë¹„ìœ¨ì— ë”°ë¼ í™˜ê²½ ì¡°ëª… ê°’(Ambient, Fog, DirectionalLight)ì„ ì¡°ì •í•©ë‹ˆë‹¤.
     /// </summary>
-    /// <param name="timePercent">ÇÏ·ç ½Ã°£ÀÇ Á¤±ÔÈ­ ºñÀ² (0.0 ~ 1.0)</param>
+    /// <param name="timePercent">í•˜ë£¨ ì‹œê°„ì˜ ì •ê·œí™” ë¹„ìœ¨ (0.0 ~ 1.0)</param>
     private void UpdateLighting(float timePercent)
     {
-        bool isDay = _timeManager.CurrentTimeOfDay.Value == DayTime.Day;
+        bool isDay = _timeManager.CurrentTimeOfDay.Value == DayTime.Morning
+                  || _timeManager.CurrentTimeOfDay.Value == DayTime.Day;
 
-        // ÇöÀç ½Ã°£´ë¿¡ ¸Â´Â Preset ¼±ÅÃ
+        // í˜„ì¬ ì‹œê°„ëŒ€ì— ë§ëŠ” Preset ì„ íƒ
         LightingPreset activePreset = isDay ? _dayPreset : _nightPreset;
         if (activePreset == null) return;
 
-        // È¯°æ±¤ ¹× ¾È°³»ö ¼³Á¤
+        // í™˜ê²½ê´‘ ë° ì•ˆê°œìƒ‰ ì„¤ì •
         RenderSettings.ambientLight = activePreset.AmbientColor.Evaluate(timePercent);
         RenderSettings.fogColor = activePreset.FogColor.Evaluate(timePercent);
 
         float angle = (timePercent * 360f) - 90f;
-        // ±¤¿ø ¼³Á¤
+        // ê´‘ì› ì„¤ì •
         if (_dayLight != null)
         {
             _dayLight.color = _dayPreset.DirectionalColor.Evaluate(timePercent);
@@ -73,14 +74,14 @@ public class LightingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ³·/¹ã »óÅÂ¿¡ µû¶ó ÅÂ¾ç±¤(_dayLight)°ú ´Şºû(_moonLight)À» ÀüÈ¯ÇÕ´Ï´Ù.
+    /// ë‚®/ë°¤ ìƒíƒœì— ë”°ë¼ íƒœì–‘ê´‘(_dayLight)ê³¼ ë‹¬ë¹›(_moonLight)ì„ ì „í™˜í•©ë‹ˆë‹¤.
     /// </summary>
     private void UpdateLightSwitch()
     {
         if (_timeManager == null) return;
 
-        bool isDay = _timeManager.CurrentTimeOfDay.Value == DayTime.Day;
-
+        bool isDay = _timeManager.CurrentTimeOfDay.Value == DayTime.Morning
+                  || _timeManager.CurrentTimeOfDay.Value == DayTime.Day;
         if (_dayLight != null)
             _dayLight.enabled = isDay;
 
@@ -89,7 +90,7 @@ public class LightingManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ÀÎ½ºÆåÅÍ¿¡¼­ Light°¡ ºñ¾î ÀÖ´Â °æ¿ì ÀÚµ¿À¸·Î ¾À ³»¿¡¼­ Å½»öÇÕ´Ï´Ù.
+    /// ì¸ìŠ¤í™í„°ì—ì„œ Lightê°€ ë¹„ì–´ ìˆëŠ” ê²½ìš° ìë™ìœ¼ë¡œ ì”¬ ë‚´ì—ì„œ íƒìƒ‰í•©ë‹ˆë‹¤.
     /// </summary>
     private void OnValidate()
     {
