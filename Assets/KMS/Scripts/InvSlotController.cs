@@ -23,11 +23,15 @@ public class InvSlotController : MonoBehaviour
         _hoverImage.enabled = false;
     }
 
-    public void SlotClickEvent()
+    public void TryHold()
     {
-        Debug.Log(1);
         int index = GetSlotIndex();
-        InventoryManager.Instance.Controller.HandleItem(index);
+        InventoryManager.Instance.Controller.HoldItem(index);
+    }
+    public void TryPut()
+    {
+        int index = GetSlotIndex();
+        InventoryManager.Instance.Controller.PutItem(index);
     }
 
     private int GetSlotIndex()

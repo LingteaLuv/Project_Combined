@@ -724,7 +724,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2116729246370362433}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: InvSlotController, Assembly-CSharp
+        m_MethodName: SlotClickEvent
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2116729246370362433
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -772,7 +784,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 4508019572094043398}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: InvSlotController, Assembly-CSharp
           m_MethodName: HoverImageEnable
           m_Mode: 1
@@ -788,41 +800,9 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 4508019572094043398}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: InvSlotController, Assembly-CSharp
           m_MethodName: HoverImageDisable
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 2
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 4508019572094043398}
-          m_TargetAssemblyTypeName: InvSlotController, NewAssembly
-          m_MethodName: TryHold
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 3
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 4508019572094043398}
-          m_TargetAssemblyTypeName: InvSlotController, NewAssembly
-          m_MethodName: TryPut
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -841,9 +821,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3967275510928874518}
-  - component: {fileID: 4508019572094043398}
+  - component: {fileID: 1487576252118914765}
   m_Layer: 5
-  m_Name: InvSlot
+  m_Name: QuickSlot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -874,7 +854,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &4508019572094043398
+--- !u!114 &1487576252118914765
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -883,7 +863,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 9187372133504035939}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c20eac27c6ae85b4b9c814888fde145c, type: 3}
+  m_Script: {fileID: 11500000, guid: c42667a33404da74595c2e3e39c212b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _slotButton: {fileID: 0}
