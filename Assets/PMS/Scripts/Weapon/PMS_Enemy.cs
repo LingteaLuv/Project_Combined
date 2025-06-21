@@ -10,7 +10,7 @@ public class PMS_Enemy : MonoBehaviour, IDamageable
         hp = 50;
     }
 
-    public void Damaged(float aktDamage)
+    public void Damaged(int aktDamage)
     {
         hp -= aktDamage;
     }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BulletBase : MonoBehaviour
 {
-    [SerializeField] private float _currentBulletDamage;
+    [SerializeField] private int _currentBulletDamage;
 
     [SerializeField] private float _speed = 10f; //총알 스피드
     [SerializeField] private float _distance = 50f; //총알 유효 사거리
@@ -47,7 +47,7 @@ public class BulletBase : MonoBehaviour
         _fireDir = direction.normalized;
     }
 
-    public void SetDamage(float damage)
+    public void SetDamage(int damage)
     {
         _currentBulletDamage = damage;
     }
