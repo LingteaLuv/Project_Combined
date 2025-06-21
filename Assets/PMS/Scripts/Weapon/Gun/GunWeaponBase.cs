@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class GunWeaponBase : MonoBehaviour
+public abstract class GunWeaponBase : WeaponBase
 {
     //총 프리팹
     [SerializeField] protected GameObject _bulletPrefab;
@@ -19,7 +19,9 @@ public abstract class GunWeaponBase : MonoBehaviour
     [SerializeField] protected float _reloadTime;       // 재장전 속도. 총의 종류마다 다름.
     [SerializeField] protected float _fireDelay = 1.5f; //총 발사 딜레이
     [SerializeField] protected Transform _firePoint;    //총알 발사 지점
+
     protected bool _canShot = true;
+    protected bool _isReload = false;
 
     //총알 오브젝트 풀링 관련 변수
     [Header("Gun other Setting")]

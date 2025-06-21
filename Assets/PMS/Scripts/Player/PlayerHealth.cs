@@ -95,6 +95,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         OnDamageReceived?.Invoke(hitDamage);        //데미지를 받은 이벤트 - 나중에 플레이어 피격 효과 같은 이펙트 사용할 때 연결해주면 좋을 듯
         OnHealthChanged?.Invoke(_currentHp);        //체력 변경 이벤트 발생 알리기
 
+        //플레이어 피격 애니메이션 재생
+
         // 체력이 0 이하가 되면 사망 처리
         if (_currentHp <= 0 && !_isDead)
         {
@@ -113,6 +115,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     private IEnumerator DeathSequence()
     {
         yield return new WaitForSeconds(_deathSequenceTime);
+
+        //플레이어 죽음 애니메이션 재생
 
         //게임 매니저 게임 오버 처리 함수
         GameManager.Instance.GameOver();

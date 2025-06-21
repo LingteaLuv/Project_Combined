@@ -1,0 +1,60 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class WeaponManager : MonoBehaviour
+{
+    //흠 무기를 일단 등록 해볼까?
+    //List의 장점 연결 - 삭제 O(1)
+    //연결삭제를 자주 할 일이 있을까? 플레이어 무기를 습득하면 잘 안버리지 않을까?
+
+    //Dictionary사용 - key,value
+    [SerializeField] private List<WeaponBase> _availableWeapons; //플레이어 사용가능한 들고 있는 웨폰들
+    [SerializeField] private WeaponBase _currentWeapon;
+    //[SerializeField] private BareHands _bareHands; // 맨손
+
+    //만약 습득을 했다면 사용가능한 웨폰이어여 할 것이다.
+
+    /// <summary>
+    /// 무기아이템 습득함수
+    /// </summary>
+    /// <param name="weapon"> 무기 아이템은</param>
+    public void AddWeapon(WeaponBase weapon)
+    {
+        if (weapon == null) return;
+
+        if (!_availableWeapons.Contains(weapon))
+        {
+            _availableWeapons.Add(weapon);
+            //weapon.gameObject.SetActive(false); // 인벤토리에 있을 때는 비활성화
+            Debug.Log($"{weapon.name} 무기를 획득했습니다!");
+        }
+    }
+
+    /// <summary>
+    /// 사용할 무기를 현재 어떤 무기를 들고있는지
+    /// </summary>
+    /// <param name="weapon"></param>
+    public void SetCurrentWeapon(WeaponBase weapon)
+    {
+        _currentWeapon = weapon;
+    }
+
+    /// <summary>
+    /// 무기 공격함수 호출
+    /// </summary>
+    public void Attack()
+    {
+        if (_currentWeapon != null)
+            Debug.Log("무기로 공격");
+        //_currentWeapon.Attack();
+        else
+            Debug.Log("현재 들고 있는 무기가 존재하지 않습니다");
+            //_bareHands.Attack(); // 무기 없을 때 맨손 공격
+    }
+
+    /*public void SwitchWeapon(WeaponBase weapon);
+    {
+        _currentWeapon = 
+    }*/
+}
