@@ -3,55 +3,66 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Rigidbody 기반의 간단한 플레이어 이동 컨트롤러입니다.
+/// WASD 입력으로 이동하고 마우스 입력으로 회전합니다.
+/// </summary>
+[RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
 {
-    #region Components
+    [Header("Settings")]
+    [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private float rotationSpeed = 5f;
 
-    private PlayerInput _playerInput;
-    private PlayerMovement _playerMovement;
-    private Animator _animator;
-    private Rigidbody _rigid;
+    [Header("References")]
+    [SerializeField] private Animator animator;
 
-    #endregion
-
-    private Vector3 _moveDir;
-    public PlayerInput PlayerInput { get; private set; }
-    public PlayerMovement PlayerMovement { get; private set; }
-    public PlayerStateMachine StateMachine { get; private set; }
-
-    public Animator Animator { get; private set; }
-    public Rigidbody Rigidbody { get; private set; }
-
+    private Rigidbody _rb;
 
     private void Awake()
     {
-        Init();
-    }
+        _rb = GetComponent<Rigidbody>();
 
-    private void Start()
-    {
-        StateMachine = new PlayerStateMachine();
-        StateMachine.ChangeState(new IdleState(this)); // 초기 상태: Idle
+        if (animator == null)
+            animator = GetComponent<Animator>();
     }
 
     private void Update()
     {
-        StateMachine?.FixedUpdate();
+        Rotate();
+        Animate();
     }
-    
+
     private void FixedUpdate()
     {
-        StateMachine?.FixedUpdate();
+        Move();
     }
 
-
-    #region Initialization
-    private void Init()
+    private void Move()
     {
-        _playerInput = GetComponent<PlayerInput>();
-        _playerMovement = GetComponent<PlayerMovement>();
-        _animator = GetComponent<Animator>();
-        _rigid = GetComponent<Rigidbody>();
+        float h = Input.GetAxisRaw("Horizontal");
+        float v = Input.GetAxisRaw("Vertical");
+
+        Vector3 moveDir = new Vector3(h, 0f, v).normalized;
+
+        Vector3 velocity = transform.TransformDirection(moveDir) * moveSpeed;
+        velocity.y = _rb.velocity.y;
+
+        _rb.velocity = velocity;
     }
-    #endregion
+
+    private void Rotate()
+    {
+        float mouseX = Input.GetAxis("Mouse X");
+        transform.Rotate(Vector3.up * mouseX * rotationSpeed);
+    }
+
+    private void Animate()
+    {
+        float h = Input.GetAxisRaw("Horizontal");
+        float v = Input.GetAxisRaw("Vertical");
+        float movement = Mathf.Clamp01(Mathf.Abs(h) + Mathf.Abs(v));
+
+        animator.SetFloat("movementValue", movement, 0.1f, Time.deltaTime);
+    }
 }
