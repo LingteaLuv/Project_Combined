@@ -202,7 +202,7 @@ Animator:
   m_GameObject: {fileID: 1176178930633097186}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: ffdfcb810f2918b4f8fe9f917f07bc78, type: 3}
-  m_Controller: {fileID: 9100000, guid: 73419751237a163469403e25c94938e4, type: 2}
+  m_Controller: {fileID: 9100000, guid: 2cd9338cdd0afbb4e89e0a6d07efd1f2, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -923,6 +923,7 @@ GameObject:
   - component: {fileID: 117173773040047603}
   - component: {fileID: 3456573113470681185}
   - component: {fileID: 6625591888536909559}
+  - component: {fileID: 413476002600700244}
   m_Layer: 0
   m_Name: PMS_Player
   m_TagString: Untagged
@@ -1047,6 +1048,36 @@ MonoBehaviour:
   _groundMask:
     serializedVersion: 2
     m_Bits: 8
+--- !u!114 &413476002600700244
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4665835732825004636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7248f5eddd06b5f40b05b1db563c710f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _animator: {fileID: 6035302442454795821}
+  _invincibilityTime: 0.5
+  _maxHp: 100
+  _currentHp: 0
+  _isDead: 0
+  _deathSequenceTime: 3
+  OnPlayerDeath:
+    m_PersistentCalls:
+      m_Calls: []
+  OnHealthChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnMaxHealthChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDamageReceived:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &4803804759980777030
 GameObject:
   m_ObjectHideFlags: 0

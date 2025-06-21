@@ -16,9 +16,9 @@ public class WeaponManager : MonoBehaviour
     //만약 습득을 했다면 사용가능한 웨폰이어여 할 것이다.
 
     /// <summary>
-    /// 무기아이템 습득함수
+    /// 무기아이템 플레이어가 들고 있는 리스트(사용가능한 무기 리스트)에 추가하는 함수 
     /// </summary>
-    /// <param name="weapon"> 무기 아이템은</param>
+    /// <param name="weapon"> 무기 아이템</param>
     public void AddWeapon(WeaponBase weapon)
     {
         if (weapon == null) return;
@@ -31,8 +31,9 @@ public class WeaponManager : MonoBehaviour
         }
     }
 
+    //같은아이템이 2개있으면 안되는데?
     /// <summary>
-    /// 사용할 무기를 현재 어떤 무기를 들고있는지
+    /// 특정 무기를 
     /// </summary>
     /// <param name="weapon"></param>
     public void SetCurrentWeapon(WeaponBase weapon)

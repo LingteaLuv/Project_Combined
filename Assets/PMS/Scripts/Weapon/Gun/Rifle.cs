@@ -18,7 +18,7 @@ public class Rifle : GunWeaponBase //이후 총마다 상속을 시켜 줘야 �
         //나중에 플레이어 Input으로 Shot()
         if (Input.GetKeyDown(KeyCode.X) && _canShot && _currentAmmoCount > 0)
         {
-            Shot();
+            Attack();
         }
         if (Input.GetKeyDown(KeyCode.R) && !_isReload)
         {
@@ -49,7 +49,7 @@ public class Rifle : GunWeaponBase //이후 총마다 상속을 시켜 줘야 �
     }
 
     //외부에서 사용할 총을 쏘는 함수
-    public void Shot()
+    public override void Attack()
     {
         if (_currentAmmoCount == 0)
         {

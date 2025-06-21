@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class GunWeaponBase : WeaponBase
+public class GunWeaponBase : WeaponBase
 {
     //총 프리팹
     [SerializeField] protected GameObject _bulletPrefab;
@@ -39,4 +39,6 @@ public abstract class GunWeaponBase : WeaponBase
     }
 
     protected AudioSource audioSource; //공격 사운드
+
+    public override void Attack() { }
 }

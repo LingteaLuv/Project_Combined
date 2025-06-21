@@ -14,7 +14,7 @@ public class PlayerAttack : MonoBehaviour
         //공격키 누를시 공격
         if (Input.GetKeyDown(KeyCode.X))
         {
-            //_weaponManager.Attack();
+            _weaponManager.Attack();
         }
         //무기 채인지
         if (Input.GetKeyDown(KeyCode.D))
