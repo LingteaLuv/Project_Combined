@@ -9,8 +9,15 @@ public class LootManager : Singleton<LootManager>
 
     [SerializeField] private GameObject _f;
     [SerializeField] private GameObject _lootTable;
+    [SerializeField] private GameObject _slots;
+    [SerializeField] private GameObject _blocks;
+
 
     private int _slotCount = 6;
+
+    private SlotBlockerController[] _slotBlockers;
+    private LootSlotController[] _lootSlots;
+
     private Image[] _itemImages;
     private TMP_Text[] _itemCountTexts;
     private Slider[] _itemDurSliders;
@@ -21,18 +28,26 @@ public class LootManager : Singleton<LootManager>
     private void Awake()
     {
         SetInstance();
-        _stack = new Stack<GameObject>();
+        
+        Init();
     }
 
     private void Init()
     {
+        _stack = new Stack<GameObject>();
         _itemImages = new Image[_slotCount];
         _itemCountTexts = new TMP_Text[_slotCount];
         _itemDurSliders = new Slider[_slotCount];
+
+        _lootSlots = _slots.GetComponentsInChildren<LootSlotController>();
+        _slotBlockers = _blocks.GetComponentsInChildren<SlotBlockerController>();
+
+
         for (int i = 0; i < _slotCount; i++)
         {
-            //_itemImages[i] = _inventorySlots[i].gameObject.GetComponentsInChildren<Image>()[1];
-            //_itemCountTexts[i] = _inventorySlots[i].gameObject.GetComponentInChildren<TMP_Text>();
+            _itemImages[i] = _lootSlots[i].GetComponentsInChildren<Image>()[1];
+            _itemCountTexts[i] = _lootSlots[i].GetComponentInChildren<TMP_Text>();
+            _itemDurSliders[i] = _lootSlots[i].GetComponentInChildren<Slider>();
         }
 
     }
@@ -81,6 +96,37 @@ public class LootManager : Singleton<LootManager>
     }
     private void LootTableUpdate()
     {
+        for (int i = 0; i < _slotCount; i++)
+        {
+            if (_lootable.LootItems.ItemBlocked[i])
+            {
+                _slotBlockers[i].gameObject.SetActive(true);
+                continue;
+            }
+            _slotBlockers[i].gameObject.SetActive(false);
+            if (_lootable.LootItems.Items[i] == null)
+            {
+                _itemImages[i].enabled = false;
+                _itemCountTexts[i].enabled = false;
+                _itemDurSliders[i].gameObject.SetActive(false);
+                continue;
+            }
+            _itemImages[i].enabled = true;
+            _itemImages[i].sprite = _lootable.LootItems.Items[i].Sprite;
+            if (_lootable.LootItems.ItemAmounts[i] > 1)
+            {
+                _itemCountTexts[i].enabled = true;
+                _itemCountTexts[i].text = _lootable.LootItems.ItemAmounts[i].ToString();
+            }
+            else _itemCountTexts[i].enabled = false;
 
+            if (_lootable.LootItems.ItemDurabilitys[i] != -1)
+            {
+                _itemDurSliders[i].gameObject.SetActive(true);
+                _itemDurSliders[i].value = _lootable.LootItems.ItemDurabilitys[i] / _lootable.LootItems.Items[i].MaxDurability;
+
+            }
+            else _itemDurSliders[i].gameObject.SetActive(false);
+        }
     }
 }
