@@ -4,18 +4,31 @@ using UnityEngine;
 
 public class Stamina : Parameter
 {
-    public override void Recover(float value)
+    public bool IsOnPenalty { get; private set; }
+    
+    public override void Act()
     {
-        Value = Value + value > 100 ? 100 : Value + value;
+        switch (State)
+        {
+            case ParamState.Full:
+                break;
+            case ParamState.Basic:
+                ResetValue();
+                break;
+            case ParamState.Lack:
+                Penalty();
+                break;
+            case ParamState.Depletion:
+                break;
+        } 
     }
-
-    public override void Decrease(float value)
+    public override void ResetValue()
     {
-        Value = Value - value < 0 ? 0 : Value - value;
+        IsOnPenalty = false;
     }
-
+    
     public override void Penalty()
     {
-        // 강한 행동(달리기, 공격 불가) => bool 타입 변수?
+        IsOnPenalty = true;
     }
 }

@@ -4,28 +4,36 @@ using UnityEngine;
 
 public class Hunger : Parameter
 {
-    public override void Recover(float value)
+    public override void Act(ref float atkSpeed, float baseValue, float offset)
     {
-        Value = Value + value > 100 ? 100 : Value + value;
+        switch (State)
+        {
+            case ParamState.Full:
+                Advantage(ref atkSpeed, baseValue, offset);
+                break;
+            case ParamState.Basic:
+                ResetValue(ref atkSpeed, baseValue, offset);
+                break;
+            case ParamState.Lack:
+                Penalty(ref atkSpeed, baseValue, offset);
+                break;
+            case ParamState.Depletion:
+                break;
+        } 
     }
-
-    public override void Decrease(float value)
+    
+    public override void Advantage(ref float atkSpeed, float baseValue, float offset)
     {
-        Value = Value - value < 0 ? 0 : Value - value;
+        atkSpeed = baseValue + offset;
     }
-
-    public override void Penalty(ref float atkSpeed, float value)
-    {
-        atkSpeed = value;
-    }
-
-    public override void Reset(ref float atkSpeed, float baseValue)
+    
+    public override void ResetValue(ref float atkSpeed, float baseValue, float offset)
     {
         atkSpeed = baseValue;
     }
     
-    public override void Advantage(ref float atkSpeed, float value)
+    public override void Penalty(ref float atkSpeed, float baseValue, float offset)
     {
-        atkSpeed = value;
+        atkSpeed = baseValue - offset;
     }
 }

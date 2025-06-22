@@ -14,26 +14,39 @@ public class PlayerProperty : MonoBehaviour
     public Property<float> AtkSpeed;
     public Property<float> AtkDamage;
 
+    private float _moveSpeed;
+    private float _atkSpeed;
+    private float _atkDamage;
+
     [SerializeField] private float _baseMoveSpeed;
     [SerializeField] private float _baseAtkSpeed;
     [SerializeField] private float _baseAtkDamage;
     
+    [SerializeField] private float _moveSpeedOffset;
+    [SerializeField] private float _atkSpeedOffset;
+    [SerializeField] private float _atkDamageOffset;
+
+    // Todo : 외부(강한 행동 메서드)에서 호출하여 행동 제약 조건(PlayerController)에 대입
+    public bool IsOnStaminaPenalty { get; private set; }
+
     private float _eatTimer;
     private float _drinkTimer;
+    private float _staminaTimer;
 
     private const float MaxEatTimer = 300f;
     private const float MaxDrinkTimer = 300f;
+    private const float MaxStaminaTimer = 2f;
     
     private WaitForSeconds _delay;
 
     private bool _isOnCorHunger;
     private bool _isOnCorThirsty;
+    private bool _isOnCorStamina;
     private bool _isOnCorRecoverHp;
     private bool _isOnCorDecreaseHp;
 
     private bool _isOnLack;
     private bool _isOnDepletion;
-    
     
     private void Start()
     {
@@ -42,18 +55,39 @@ public class PlayerProperty : MonoBehaviour
 
     private void Update()
     {
+        FieldUpdate();
+        ParameterUpdate();
+        ParameterAct();
+    }
+
+    private void ParameterAct()
+    {
+        _hp.Act(ref _atkDamage, _baseAtkDamage, _atkDamageOffset);
+        AtkDamage.Value = _atkDamage;
+        _hunger.Act(ref _atkSpeed, _baseAtkSpeed, _atkSpeedOffset);
+        AtkSpeed.Value = _atkSpeed;
+        _thirsty.Act(ref _moveSpeed, _baseMoveSpeed, _moveSpeedOffset);
+        MoveSpeed.Value = _moveSpeed;
+        _stamina.Act();
+        IsOnStaminaPenalty = _stamina.IsOnPenalty;
+    }
+    
+    private void FieldUpdate()
+    {
         _isOnLack = (_hunger.State == ParamState.Lack) || 
-                         (_thirsty.State == ParamState.Lack) ||
-                         (_stamina.State == ParamState.Lack);
+                    (_thirsty.State == ParamState.Lack) ||
+                    (_stamina.State == ParamState.Lack);
         
         _isOnDepletion =  (_hunger.State == ParamState.Depletion) || 
                           (_thirsty.State == ParamState.Depletion) ||
                           (_stamina.State == ParamState.Depletion);
         
         if (_eatTimer > 0) _eatTimer -= Time.deltaTime;
-        
         if (_drinkTimer > 0) _drinkTimer -= Time.deltaTime;
-        
+    }
+    
+    private void ParameterUpdate()
+    {
         if (_eatTimer <= 0 && !_isOnCorHunger)
         {
             StartCoroutine(DecreaseHunger());
@@ -72,6 +106,11 @@ public class PlayerProperty : MonoBehaviour
         if (_isOnDepletion && !_isOnCorDecreaseHp)
         {
             StartCoroutine(DecreaseHp());
+        }
+        
+        if (_staminaTimer <= 0 && !_isOnCorStamina)
+        {
+            StartCoroutine(RecoverStamina());
         }
     }
 
@@ -122,14 +161,28 @@ public class PlayerProperty : MonoBehaviour
         }
         _isOnCorThirsty = false;
     }
-    /*
-    public void Eat(Item item)
+    
+    private IEnumerator RecoverStamina()
+    {
+        _isOnCorStamina = true;
+        while (true)
+        {
+            if (_staminaTimer > 0) break;
+            _stamina.Recover(5f);
+            yield return _delay;
+        }
+        _isOnCorStamina = false;
+    }
+    
+    // 외부에서 음식을 먹을 경우 호출하는 메서드
+    /*public void Eat(Item item)
     {
         // todo : 아이템의 수치 적용, Timer 시간 초기화(5분)
         // _hunger.Recover(item.value);
         _eatTimer = MaxEatTimer;
     }
-
+    
+    // 외부에서 물을 마실 경우 호출하는 메서드
     public void Drink(Item item)
     {
         // todo : 아이템의 수치 적용, Timer 시간 초기화(5분)
@@ -137,6 +190,14 @@ public class PlayerProperty : MonoBehaviour
         _drinkTimer = MaxDrinkTimer;
     }
     */
+
+    // 강한 행동에서 호출되는 이벤트에 구독되는 메서드
+    public void ExpendAction()
+    {
+        _stamina.Decrease(15f);
+        _staminaTimer = 2f;
+    }
+    
     private void Init()
     {
         _hp.Init(100);
@@ -144,10 +205,11 @@ public class PlayerProperty : MonoBehaviour
         _thirsty.Init(100);
         _stamina.Init(100);
 
-        _delay = new WaitForSeconds(5f);
+        _delay = new WaitForSeconds(1f);
 
         _eatTimer = MaxEatTimer;
         _drinkTimer = MaxDrinkTimer;
+        _staminaTimer = 0f;
 
         AtkSpeed = new Property<float>(_baseAtkSpeed);
         MoveSpeed = new Property<float>(_baseMoveSpeed);

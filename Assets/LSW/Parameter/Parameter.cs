@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Parameter : MonoBehaviour
+public class Parameter : MonoBehaviour
 {
     private float _value;
     public float Value
@@ -27,6 +27,7 @@ public abstract class Parameter : MonoBehaviour
     public void Init(float value)
     {
         _value = value;
+        StateUpdate();
     }
 
     private void StateUpdate()
@@ -48,16 +49,25 @@ public abstract class Parameter : MonoBehaviour
             State = ParamState.Depletion;
         }
     }
-    
-    public abstract void Recover(float value);
-    public abstract void Decrease(float value);
 
-    public virtual void Penalty(ref float stat, float value) { }
-    public virtual void Penalty() { }
+    public virtual void Act() { }
     
-    public virtual void Reset(ref float stat, float value) { }
-    public virtual void Reset() { }
-    public virtual void Advantage(ref float stat, float value) { }
+    public virtual void Act(ref float stat, float baseValue, float offset) { }
+
+    public void Recover(float value)
+    {
+        Value = Value + value > 100 ? 100 : Value + value;
+    }
+    public void Decrease(float value)
+    {
+        Value = Value - value < 0 ? 0 : Value - value;
+    }
+
+    public virtual void Penalty(ref float stat, float baseValue, float offset) { }
+    public virtual void Penalty() { }
+    public virtual void ResetValue(ref float stat, float baseValue, float offset) { }
+    public virtual void ResetValue() { }
+    public virtual void Advantage(ref float stat, float baseValue, float offset) { }
     public virtual void Advantage() { }
 }
 
