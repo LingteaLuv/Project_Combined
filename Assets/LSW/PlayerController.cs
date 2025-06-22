@@ -1,55 +1,69 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 플레이어 상태머신과 애니메이션을 관리하는 컨트롤러입니다.
+/// </summary>
+[RequireComponent(typeof(PlayerMovement))]
 public class PlayerController : MonoBehaviour
 {
-    private PlayerCollision _playerCollision;
-    private PlayerClimb _playerClimb;
-    private PlayerInput _playerInput;
-    private PlayerMovement _playerMovement;
+    [SerializeField] private Animator _animator;
 
-    private Vector3 _moveDir;
-    
+    public PlayerIdleState IdleState { get; private set; }
+    public PlayerMoveState MoveState { get; private set; }
+    public PlayerJumpState JumpState { get; private set; }
+
+    private PlayerMovement _movement;
+    private PlayerStateMachine _fsm;
+
+    private Vector3 _lastMoveInput = Vector3.zero;
+    private bool _isJumping = false;
+
     private void Awake()
     {
-        Init();
+        _fsm = new PlayerStateMachine();
+        _movement = GetComponent<PlayerMovement>();
+        _movement.Controller = this;
+
+        IdleState = new PlayerIdleState(_fsm, _movement);
+        MoveState = new PlayerMoveState(_fsm, _movement);
+        JumpState = new PlayerJumpState(_fsm, _movement);
     }
 
     private void Start()
     {
-        _playerCollision.IsGrounded.OnChanged += _playerMovement.GetIsGrounded;
-        _playerCollision.IsGrounded.OnChanged += _playerMovement.GetIsJumped;
+        _fsm.ChangeState(IdleState);
     }
 
     private void Update()
     {
-        if (!_playerClimb.IsOnClimbed)
-        {
-            _playerMovement.Rotate();
-            _moveDir = _playerInput.GetInputDir();
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                _playerMovement.Jump();
-            }
-        }
-        _playerClimb.ClimbUpdate(_playerMovement.IsGrounded);
+        _fsm.Update();
+        UpdateMoveAnimation();
     }
-    
     private void FixedUpdate()
     {
-        if (!_playerClimb.IsOnClimbed)
+        _fsm.FixedUpdate();
+    }
+    /// <summary>
+    /// 이동 애니메이션 상태를 갱신합니다.
+    /// </summary>
+    private void UpdateMoveAnimation()
+    {
+        Vector3 currentInput = _movement.MoveInput;
+        bool isMoving = currentInput != Vector3.zero;
+
+        if ((_lastMoveInput != Vector3.zero) != isMoving)
         {
-            _playerMovement.SetMove(_moveDir);
+            _animator.SetBool("IsMove", isMoving);
         }
+
+        _lastMoveInput = currentInput;
     }
 
-    private void Init()
+    /// <summary>
+    /// 점프 애니메이션 상태를 외부 상태에서 직접 설정합니다.
+    /// </summary>
+    public void PlayJumpAnimation()
     {
-        _playerClimb = GetComponent<PlayerClimb>();
-        _playerCollision = GetComponentInChildren<PlayerCollision>();
-        _playerInput = GetComponent<PlayerInput>();
-        _playerMovement = GetComponent<PlayerMovement>();
+        _animator.SetTrigger("IsJump");
     }
 }
