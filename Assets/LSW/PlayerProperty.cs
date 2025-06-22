@@ -5,10 +5,10 @@ using UnityEngine.Rendering;
 
 public class PlayerProperty : MonoBehaviour
 {
-    private Hp _hp;
-    private Hunger _hunger;
-    private Thirsty _thirsty;
-    private Stamina _stamina;
+    [SerializeField] private Hp _hp;
+    [SerializeField] private Hunger _hunger;
+    [SerializeField] private Thirsty _thirsty;
+    [SerializeField] private Stamina _stamina;
 
     public Property<float> MoveSpeed;
     public Property<float> AtkSpeed;

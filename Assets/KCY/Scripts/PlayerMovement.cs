@@ -1,74 +1,71 @@
 using UnityEngine;
 
 /// <summary>
-/// 입력을 기반으로 실제 이동 처리
+/// 플레이어의 이동과 점프를 처리합니다.
 /// </summary>
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerMovement : MonoBehaviour
 {
-    public Property<Vector3> MoveInput { get; private set; } = new(Vector3.zero);
+    [Header("References")]
+    [SerializeField] private PlayerInputHandler _inputHandler;
+    [SerializeField] private PlayerProperty _property;
+
+    public PlayerController Controller { get; set; }
 
     private Rigidbody _rb;
-    private PlayerStateMachine _fsm;
+    private bool _jumpConsumedThisFrame;
 
-    [Header("Move Settings")]
-    [SerializeField] private float _moveSpeed = 5f;
+    [Header("Settings")]
     [SerializeField] private float _jumpForce = 5f;
-    public float JumpForce => _jumpForce;
-    public Rigidbody Rigidbody => _rb;
+    [SerializeField] private float _groundCheckDistance = 0.1f;
 
-    public bool IsGrounded => Physics.Raycast(transform.position, Vector3.down, 1.1f);
+    public Vector3 MoveInput => _inputHandler.MoveInput;
+    public bool JumpPressed => _inputHandler.JumpPressed;
+    public bool IsGrounded => Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, _groundCheckDistance + 0.1f);
+
+
+
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>();
     }
 
-    private void Start()
-    {
-        _fsm = new PlayerStateMachine();
-        _fsm.ChangeState(new PlayerIdleState(_fsm, this));
-    }
-
     private void Update()
     {
-        Vector3 input = new Vector3(
-            Input.GetAxisRaw("Horizontal"),
-            0f,
-            Input.GetAxisRaw("Vertical")
-        ).normalized;
-
-        MoveInput.Value = input;
-
-        _fsm.Update();
+        _jumpConsumedThisFrame = false;
     }
-
     /// <summary>
-    /// 카메라 기준 방향으로 이동 처리
+    /// 입력 방향에 따라 관성 없이 이동합니다.
     /// </summary>
-    /// <param name="dir">이동 방향</param>
-    public void Move(Vector3 dir)
+    public void Move(Vector3 inputDir)
     {
-        if (dir == Vector3.zero)
-        {
-            Vector3 stop = new Vector3(0f, _rb.velocity.y, 0f);
-            _rb.velocity = stop;
-            return;
-        }
+        if (inputDir == Vector3.zero) return;
 
         Camera cam = Camera.main;
-        if (cam == null)
-        {
-            Debug.LogWarning("Main Camera not found.");
-            return;
-        }
+        if (cam == null) return;
 
-        Vector3 moveDir = cam.transform.forward * dir.z + cam.transform.right * dir.x;
+        Vector3 moveDir = cam.transform.forward * inputDir.z + cam.transform.right * inputDir.x;
         moveDir.y = 0f;
         moveDir.Normalize();
 
-        Vector3 velocity = moveDir * _moveSpeed;
-        velocity.y = _rb.velocity.y;
+        transform.position += moveDir * _property.MoveSpeed.Value * Time.deltaTime;
 
+        Quaternion targetRot = Quaternion.LookRotation(moveDir);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 10f);
+    }
+    public bool CanJump()
+    {
+        return !_jumpConsumedThisFrame && JumpPressed && IsGrounded;
+    }
+
+    /// <summary>
+    /// Rigidbody를 이용해 점프를 실행합니다.
+    /// </summary>
+    public void Jump()
+    {
+        _jumpConsumedThisFrame = true;
+        Vector3 velocity = _rb.velocity;
+        velocity.y = _jumpForce;
         _rb.velocity = velocity;
     }
 }

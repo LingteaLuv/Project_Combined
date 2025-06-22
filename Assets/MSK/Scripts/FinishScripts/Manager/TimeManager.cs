@@ -86,7 +86,6 @@ public class TimeManager : Singleton<TimeManager>
         if (CurrentTimeOfDay.Value != newTimeOfDay)
         {
             CurrentTimeOfDay.Value = newTimeOfDay;
-            Debug.Log($"현재 {newTimeOfDay}으로 변경");
         }
     }
 
@@ -105,12 +104,5 @@ public class TimeManager : Singleton<TimeManager>
     #endregion
 
     #region Test Code
-    private void Start()
-    {
-        CurrentHour.OnChanged += hour =>
-        {
-            Debug.Log($"[TimeManager] 현재 시간: {GetFormattedTime()}");
-        };
-    }
     #endregion
 }

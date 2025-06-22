@@ -1,68 +1,69 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Rigidbody 기반의 간단한 플레이어 이동 컨트롤러입니다.
-/// WASD 입력으로 이동하고 마우스 입력으로 회전합니다.
+/// 플레이어 상태머신과 애니메이션을 관리하는 컨트롤러입니다.
 /// </summary>
-[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(PlayerMovement))]
 public class PlayerController : MonoBehaviour
 {
-    [Header("Settings")]
-    [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private float rotationSpeed = 5f;
+    [SerializeField] private Animator _animator;
 
-    [Header("References")]
-    [SerializeField] private Animator animator;
+    public PlayerIdleState IdleState { get; private set; }
+    public PlayerMoveState MoveState { get; private set; }
+    public PlayerJumpState JumpState { get; private set; }
 
-    private Rigidbody _rb;
+    private PlayerMovement _movement;
+    private PlayerStateMachine _fsm;
+
+    private Vector3 _lastMoveInput = Vector3.zero;
+    private bool _isJumping = false;
 
     private void Awake()
     {
-        _rb = GetComponent<Rigidbody>();
+        _fsm = new PlayerStateMachine();
+        _movement = GetComponent<PlayerMovement>();
+        _movement.Controller = this;
 
-        if (animator == null)
-            animator = GetComponent<Animator>();
+        IdleState = new PlayerIdleState(_fsm, _movement);
+        MoveState = new PlayerMoveState(_fsm, _movement);
+        JumpState = new PlayerJumpState(_fsm, _movement);
+    }
+
+    private void Start()
+    {
+        _fsm.ChangeState(IdleState);
     }
 
     private void Update()
     {
-        Rotate();
-        Animate();
+        _fsm.Update();
+        UpdateMoveAnimation();
     }
-
     private void FixedUpdate()
     {
-        Move();
+        _fsm.FixedUpdate();
+    }
+    /// <summary>
+    /// 이동 애니메이션 상태를 갱신합니다.
+    /// </summary>
+    private void UpdateMoveAnimation()
+    {
+        Vector3 currentInput = _movement.MoveInput;
+        bool isMoving = currentInput != Vector3.zero;
+
+        if ((_lastMoveInput != Vector3.zero) != isMoving)
+        {
+            _animator.SetBool("IsMove", isMoving);
+        }
+
+        _lastMoveInput = currentInput;
     }
 
-    private void Move()
+    /// <summary>
+    /// 점프 애니메이션 상태를 외부 상태에서 직접 설정합니다.
+    /// </summary>
+    public void PlayJumpAnimation()
     {
-        float h = Input.GetAxisRaw("Horizontal");
-        float v = Input.GetAxisRaw("Vertical");
-
-        Vector3 moveDir = new Vector3(h, 0f, v).normalized;
-
-        Vector3 velocity = transform.TransformDirection(moveDir) * moveSpeed;
-        velocity.y = _rb.velocity.y;
-
-        _rb.velocity = velocity;
-    }
-
-    private void Rotate()
-    {
-        float mouseX = Input.GetAxis("Mouse X");
-        transform.Rotate(Vector3.up * mouseX * rotationSpeed);
-    }
-
-    private void Animate()
-    {
-        float h = Input.GetAxisRaw("Horizontal");
-        float v = Input.GetAxisRaw("Vertical");
-        float movement = Mathf.Clamp01(Mathf.Abs(h) + Mathf.Abs(v));
-
-        animator.SetFloat("movementValue", movement, 0.1f, Time.deltaTime);
+        _animator.SetTrigger("IsJump");
     }
 }

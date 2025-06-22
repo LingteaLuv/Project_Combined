@@ -1,31 +1,25 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 플레이어가 가만히 서 있는 상태입니다.
+/// </summary>
 public class PlayerIdleState : PlayerState
 {
     public PlayerIdleState(PlayerStateMachine fsm, PlayerMovement movement)
         : base(fsm, movement) { }
 
-    public override void Enter()
-    {
-        Debug.Log("Enter Idle");
-    }
-
-    public override void Exit()
-    {
-        Debug.Log("Exit Idle");
-    }
-
+    public override void Enter() { Debug.Log("Enter Idle"); }
+    public override void Exit() { Debug.Log("Exit Idle"); }
+    public override void FixedTick() { }
     public override void Tick()
     {
-        // 입력이 있으면 이동 상태로 전이
-        if (_movement.MoveInput.Value != Vector3.zero)
-            _fsm.ChangeState(new PlayerMoveState(_fsm, _movement));
-
-        if (Input.GetButtonDown("Jump") && _movement.IsGrounded)
+        if (_movement.MoveInput != Vector3.zero)
         {
-            _fsm.ChangeState(new PlayerJumpState(_fsm, _movement));
+            _fsm.ChangeState(_movement.Controller.MoveState);
+            return;
         }
+
+        if (HandleJumpTransition()) return;
     }
 }
+
