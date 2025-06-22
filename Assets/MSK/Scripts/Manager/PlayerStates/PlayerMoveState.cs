@@ -18,7 +18,16 @@ public class PlayerMoveState : PlayerState
             _fsm.ChangeState(_movement.Controller.IdleState);
             return;
         }
-
+        if (_movement.CrouchHeld)
+        {
+            _fsm.ChangeState(_movement.Controller.CrouchState);
+            return;
+        }
+        if (_movement.CrouchHeld && _movement.MoveInput != Vector3.zero)
+        {
+            _fsm.ChangeState(_movement.Controller.IdleCrouchState);
+            return;
+        }
         if (HandleJumpTransition()) return;
     }
     public override void FixedTick()

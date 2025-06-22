@@ -1,3 +1,4 @@
+using EPOOutline.Demo;
 using UnityEngine;
 
 /// <summary>
@@ -6,28 +7,36 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerMovement))]
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private Animator _animator;
+    [SerializeField] public Animator _animator;
+    [SerializeField] private PlayerCameraController _cameraController;
 
     public PlayerIdleState IdleState { get; private set; }
     public PlayerMoveState MoveState { get; private set; }
     public PlayerJumpState JumpState { get; private set; }
+    public PlayerCrouchState CrouchState { get; private set; }
+    public PlayerIdleCrouchState IdleCrouchState { get; private set; }
+
 
     private PlayerMovement _movement;
     private PlayerStateMachine _fsm;
-
     private Vector3 _lastMoveInput = Vector3.zero;
     private bool _isJumping = false;
 
-    private void Awake()
+
+    private void Init() 
     {
         _fsm = new PlayerStateMachine();
         _movement = GetComponent<PlayerMovement>();
+        _cameraController = GetComponent<PlayerCameraController>();
         _movement.Controller = this;
 
         IdleState = new PlayerIdleState(_fsm, _movement);
         MoveState = new PlayerMoveState(_fsm, _movement);
         JumpState = new PlayerJumpState(_fsm, _movement);
+        CrouchState = new PlayerCrouchState(_fsm, _movement);
+        IdleCrouchState = new PlayerIdleCrouchState(_fsm, _movement);
     }
+    private void Awake() => Init();
 
     private void Start()
     {
@@ -37,11 +46,16 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         _fsm.Update();
+        if (_cameraController != null)
+        {
+            _movement.SetRotation(_cameraController.CurrentRotation);
+        }
         UpdateMoveAnimation();
     }
     private void FixedUpdate()
     {
         _fsm.FixedUpdate();
+        
     }
     /// <summary>
     /// 이동 애니메이션 상태를 갱신합니다.
@@ -54,8 +68,9 @@ public class PlayerController : MonoBehaviour
         if ((_lastMoveInput != Vector3.zero) != isMoving)
         {
             _animator.SetBool("IsMove", isMoving);
+            _animator.speed = _animator.speed = _movement.GetAnimatorSpeedMultiplier();
         }
-
+        UpdateGroundParameter();
         _lastMoveInput = currentInput;
     }
 
@@ -65,5 +80,10 @@ public class PlayerController : MonoBehaviour
     public void PlayJumpAnimation()
     {
         _animator.SetTrigger("IsJump");
+    }
+    private void UpdateGroundParameter()
+    {
+        bool isGrounded = _movement.IsGrounded;
+        _animator.SetBool("IsGround", isGrounded);
     }
 }
