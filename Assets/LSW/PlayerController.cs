@@ -14,9 +14,11 @@ public class PlayerController : MonoBehaviour
     public PlayerMoveState MoveState { get; private set; }
     public PlayerJumpState JumpState { get; private set; }
     public PlayerCrouchState CrouchState { get; private set; }
+    public PlayerIdleCrouchState IdleCrouchState { get; private set; }
+
+
     private PlayerMovement _movement;
     private PlayerStateMachine _fsm;
-
     private Vector3 _lastMoveInput = Vector3.zero;
     private bool _isJumping = false;
 
@@ -32,6 +34,7 @@ public class PlayerController : MonoBehaviour
         MoveState = new PlayerMoveState(_fsm, _movement);
         JumpState = new PlayerJumpState(_fsm, _movement);
         CrouchState = new PlayerCrouchState(_fsm, _movement);
+        IdleCrouchState = new PlayerIdleCrouchState(_fsm, _movement);
     }
     private void Awake() => Init();
 
