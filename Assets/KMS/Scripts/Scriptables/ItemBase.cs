@@ -11,7 +11,7 @@ public enum ItemTypeT
 
 }
 [CreateAssetMenu(fileName = "Item", menuName = "ScriptableObjects/Item", order = 1)]
-public class ItemSO : ScriptableObject
+public class ItemBaseLegacy : ScriptableObject
 {
     [SerializeField] private Sprite _sprite;
     public Sprite Sprite { get { return _sprite; } }

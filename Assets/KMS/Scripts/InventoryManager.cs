@@ -56,7 +56,7 @@ public class InventoryManager : SingletonT<InventoryManager>
 
     }
 
-    public bool AddItem(ItemSO item, int amount, int dur)
+    public bool AddItem(ItemBase item, int amount, int dur)
     {
         bool canAdd = Controller.AddItem(item, amount, dur);
         _renderer.RenderInventory();
@@ -65,9 +65,9 @@ public class InventoryManager : SingletonT<InventoryManager>
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape)) InventoryManager.Instance.ToggleInventory();
-        if (Input.GetKeyDown(KeyCode.Alpha3)) AddItem(_model.ItemList.ItemList[6], 2, 30);
-        if (Input.GetKeyDown(KeyCode.Alpha2)) AddItem(_model.ItemList.ItemList[6], 2, 10);
-        if (Input.GetKeyDown(KeyCode.Alpha4)) AddItem(_model.ItemList.ItemList[2], 3, -1);
+        if (Input.GetKeyDown(KeyCode.Alpha1)) AddItem(_model.ItemList.ItemList[0], 2, 30);
+        if (Input.GetKeyDown(KeyCode.Alpha2)) AddItem(_model.ItemList.ItemList[1], 2, 10);
+        if (Input.GetKeyDown(KeyCode.Alpha3)) AddItem(_model.ItemList.ItemList[2], 3, -1);
         HoldSlot.transform.position = Input.mousePosition;
     }
 

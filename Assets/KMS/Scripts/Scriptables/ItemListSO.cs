@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "ItemList", menuName = "ScriptableObjects/ItemList", order = 2)]
 public class ItemListSO : ScriptableObject
 {
-    [SerializeField] private List<ItemSO> _itemList;
+    [SerializeField] private List<ItemBase> _itemList;
 
-    public List<ItemSO> ItemList { get { return _itemList; }}
+    public List<ItemBase> ItemList { get { return _itemList; }}
 }

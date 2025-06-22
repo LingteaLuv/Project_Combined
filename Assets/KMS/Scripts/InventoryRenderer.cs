@@ -20,8 +20,6 @@ public class InventoryRenderer : MonoBehaviour
     /// </summary>
     public void RenderInventory()
     {
-
-
         for (int i = 0; i < _model.SlotCount; i++)
         {
             if (_model.InvItems[i] == null)
@@ -41,10 +39,10 @@ public class InventoryRenderer : MonoBehaviour
             }
             else _model.InvSlotItemAmountTexts[i].enabled = false;
 
-            if (_model.InvItems[i].Data.MaxDurability != -1)
+            if (_model.InvItems[i].MaxDurability != -1)
             {
                 _model.InvSlotItemDurSliders[i].gameObject.SetActive(true);
-                _model.InvSlotItemDurSliders[i].value = (float)_model.InvItems[i].Durability / _model.InvItems[i].Data.MaxDurability;
+                _model.InvSlotItemDurSliders[i].value = (float)_model.InvItems[i].Durability / _model.InvItems[i].MaxDurability;
 
             }
             else _model.InvSlotItemDurSliders[i].gameObject.SetActive(false);
@@ -61,7 +59,7 @@ public class InventoryRenderer : MonoBehaviour
     {
         _model.HoldSlotItemImage.enabled = true;
         _model.HoldSlotItemImage.sprite = _model.InvSlotItemImages[index].sprite;
-        if (_model.InvItems[index].StackCount > 1)
+        if (_model.InvItems[index].Data.Type == ItemType.ETC)
         {
             _model.HoldSlotItemAmountText.enabled = true;
             _model.HoldSlotItemAmountText.text = _model.InvItems[index].StackCount.ToString();
