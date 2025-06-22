@@ -24,7 +24,6 @@ public class PlayerMovement : MonoBehaviour
     public bool IsGrounded => Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, _groundCheckDistance + 0.1f);
 
 
-
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>();
@@ -40,6 +39,12 @@ public class PlayerMovement : MonoBehaviour
     public void Move(Vector3 inputDir)
     {
         if (inputDir == Vector3.zero) return;
+
+        if (_property.MoveSpeed.Value == 0) 
+        { 
+            Debug.Log("현재 이동 속도: " + _property.MoveSpeed.Value);
+            _property.MoveSpeed.Value = 3;
+        }
 
         Camera cam = Camera.main;
         if (cam == null) return;
@@ -67,5 +72,12 @@ public class PlayerMovement : MonoBehaviour
         Vector3 velocity = _rb.velocity;
         velocity.y = _jumpForce;
         _rb.velocity = velocity;
+    }
+
+
+    //TODO : 애니메이션 스피드 조정용 코드 추가 예정
+    public float GetAnimatorSpeedMultiplier()
+    {
+        return Mathf.Clamp01(MoveInput.magnitude) * (_property?.MoveSpeed?.Value ?? 0f)+1;
     }
 }

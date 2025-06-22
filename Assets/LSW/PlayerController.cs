@@ -55,6 +55,7 @@ public class PlayerController : MonoBehaviour
         if ((_lastMoveInput != Vector3.zero) != isMoving)
         {
             _animator.SetBool("IsMove", isMoving);
+            _animator.speed = _animator.speed = _movement.GetAnimatorSpeedMultiplier();
         }
         UpdateGroundParameter();
         _lastMoveInput = currentInput;
