@@ -4,15 +4,13 @@ using UnityEngine;
 
 public class LootSlotController : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public void TryGet()
     {
-        
+        LootManager.Instance.GetItem(GetSlotIndex());
     }
-
-    // Update is called once per frame
-    void Update()
+    private int GetSlotIndex()
     {
-        
+        int.TryParse(gameObject.name, out int index);
+        return index;
     }
 }
