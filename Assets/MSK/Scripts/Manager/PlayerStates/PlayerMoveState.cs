@@ -18,6 +18,11 @@ public class PlayerMoveState : PlayerState
             _fsm.ChangeState(_movement.Controller.IdleState);
             return;
         }
+        if (_movement.CrouchHeld)
+        {
+            _fsm.ChangeState(_movement.Controller.CrouchState);
+            return;
+        }
 
         if (HandleJumpTransition()) return;
     }

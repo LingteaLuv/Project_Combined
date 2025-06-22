@@ -7,8 +7,7 @@ public class PlayerInputHandler : MonoBehaviour
 {
     public Vector3 MoveInput { get; private set; }
     public bool JumpPressed { get; private set; }
-
-    // 점프 입력 → 내부 플래그로 변경
+    public bool CrouchHeld { get; private set; }
 
     private void Update()
     {
@@ -19,5 +18,6 @@ public class PlayerInputHandler : MonoBehaviour
         ).normalized;
 
         JumpPressed = Input.GetButtonDown("Jump");
+        CrouchHeld = Input.GetKey(KeyCode.LeftControl);
     }
 }

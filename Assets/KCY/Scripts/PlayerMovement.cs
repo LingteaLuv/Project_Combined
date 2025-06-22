@@ -14,14 +14,18 @@ public class PlayerMovement : MonoBehaviour
     public PlayerController Controller { get; set; }
     private Rigidbody _rb;
     private bool _jumpConsumedThisFrame;
+
     private Vector2 _currentRotation;
+    private bool _isCrouching;
 
     [Header("Settings")]
     [SerializeField] private float _jumpForce = 5f;
     [SerializeField] private float _groundCheckDistance = 0.05f;
+    [SerializeField] private float _crouchSpeedMultiplier = 0.5f;
 
     public Vector3 MoveInput => _inputHandler.MoveInput;
     public bool JumpPressed => _inputHandler.JumpPressed;
+    public bool CrouchHeld => _inputHandler.CrouchHeld;
     public bool IsGrounded => Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, _groundCheckDistance + 0.1f);
 
 
@@ -43,10 +47,8 @@ public class PlayerMovement : MonoBehaviour
     {
         if (inputDir == Vector3.zero) return;
 
-        // TODO : 임시 속도 고정용 코드
-        if (_property.MoveSpeed.Value == 0) 
-        { 
-            Debug.Log("현재 이동 속도: " + _property.MoveSpeed.Value);
+        if (_property.MoveSpeed.Value == 0)
+        {
             _property.MoveSpeed.Value = 3;
         }
 
@@ -57,7 +59,8 @@ public class PlayerMovement : MonoBehaviour
         moveDir.y = 0f;
         moveDir.Normalize();
 
-        transform.position += moveDir * _property.MoveSpeed.Value * Time.deltaTime;
+        float speed = _property.MoveSpeed.Value * (_isCrouching ? _crouchSpeedMultiplier : 1f);
+        transform.position += moveDir * speed * Time.deltaTime;
 
         Quaternion targetRot = Quaternion.LookRotation(moveDir);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 10f);
@@ -77,8 +80,10 @@ public class PlayerMovement : MonoBehaviour
         velocity.y = _jumpForce;
         _rb.velocity = velocity;
     }
-
-
+    public void SetCrouch(bool crouch)
+    {
+        _isCrouching = crouch;
+    }
 
     public void SetRotation(Vector2 rotation)
     {

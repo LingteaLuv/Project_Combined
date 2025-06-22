@@ -7,13 +7,13 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerMovement))]
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private Animator _animator;
+    [SerializeField] public Animator _animator;
     [SerializeField] private PlayerCameraController _cameraController;
 
     public PlayerIdleState IdleState { get; private set; }
     public PlayerMoveState MoveState { get; private set; }
     public PlayerJumpState JumpState { get; private set; }
-
+    public PlayerCrouchState CrouchState { get; private set; }
     private PlayerMovement _movement;
     private PlayerStateMachine _fsm;
 
@@ -27,10 +27,11 @@ public class PlayerController : MonoBehaviour
         _movement = GetComponent<PlayerMovement>();
         _cameraController = GetComponent<PlayerCameraController>();
         _movement.Controller = this;
-        
+
         IdleState = new PlayerIdleState(_fsm, _movement);
         MoveState = new PlayerMoveState(_fsm, _movement);
         JumpState = new PlayerJumpState(_fsm, _movement);
+        CrouchState = new PlayerCrouchState(_fsm, _movement);
     }
     private void Awake() => Init();
 
