@@ -1,3 +1,4 @@
+using EPOOutline.Demo;
 using UnityEngine;
 
 /// <summary>
@@ -7,6 +8,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private Animator _animator;
+    [SerializeField] private PlayerCameraController _cameraController;
 
     public PlayerIdleState IdleState { get; private set; }
     public PlayerMoveState MoveState { get; private set; }
@@ -18,16 +20,19 @@ public class PlayerController : MonoBehaviour
     private Vector3 _lastMoveInput = Vector3.zero;
     private bool _isJumping = false;
 
-    private void Awake()
+
+    private void Init() 
     {
         _fsm = new PlayerStateMachine();
         _movement = GetComponent<PlayerMovement>();
+        _cameraController = GetComponent<PlayerCameraController>();
         _movement.Controller = this;
-
+        
         IdleState = new PlayerIdleState(_fsm, _movement);
         MoveState = new PlayerMoveState(_fsm, _movement);
         JumpState = new PlayerJumpState(_fsm, _movement);
     }
+    private void Awake() => Init();
 
     private void Start()
     {
@@ -37,6 +42,10 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         _fsm.Update();
+        if (_cameraController != null)
+        {
+            _movement.SetRotation(_cameraController.CurrentRotation);
+        }
         UpdateMoveAnimation();
     }
     private void FixedUpdate()

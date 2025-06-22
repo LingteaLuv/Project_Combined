@@ -9,11 +9,12 @@ public class PlayerMovement : MonoBehaviour
     [Header("References")]
     [SerializeField] private PlayerInputHandler _inputHandler;
     [SerializeField] private PlayerProperty _property;
+    [SerializeField] private Transform _aim;
 
     public PlayerController Controller { get; set; }
-
     private Rigidbody _rb;
     private bool _jumpConsumedThisFrame;
+    private Vector2 _currentRotation;
 
     [Header("Settings")]
     [SerializeField] private float _jumpForce = 5f;
@@ -24,10 +25,12 @@ public class PlayerMovement : MonoBehaviour
     public bool IsGrounded => Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, _groundCheckDistance + 0.1f);
 
 
-    private void Awake()
+    private void Init()
     {
         _rb = GetComponent<Rigidbody>();
     }
+
+    private void Awake() => Init();
 
     private void Update()
     {
@@ -40,6 +43,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (inputDir == Vector3.zero) return;
 
+        // TODO : 임시 속도 고정용 코드
         if (_property.MoveSpeed.Value == 0) 
         { 
             Debug.Log("현재 이동 속도: " + _property.MoveSpeed.Value);
@@ -75,6 +79,19 @@ public class PlayerMovement : MonoBehaviour
     }
 
 
+
+    public void SetRotation(Vector2 rotation)
+    {
+        _currentRotation = rotation;
+
+        transform.rotation = Quaternion.Euler(0f, rotation.x, 0f);
+
+        if (_aim != null)
+        {
+            Vector3 aimEuler = _aim.localEulerAngles;
+            _aim.localEulerAngles = new Vector3(rotation.y, aimEuler.y, aimEuler.z);
+        }
+    }
     //TODO : 애니메이션 스피드 조정용 코드 추가 예정
     public float GetAnimatorSpeedMultiplier()
     {
