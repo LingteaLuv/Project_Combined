@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+
+using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using static UnityEditor.Progress;
 
-public class InventoryManager : Singleton<InventoryManager>
+public class InventoryManager : SingletonT<InventoryManager>
 {
-
     [SerializeField] private GameObject _inventory;
     public GameObject Inventory { get { return _inventory; }}
     [SerializeField] private GameObject _quickslot;
@@ -53,6 +54,21 @@ public class InventoryManager : Singleton<InventoryManager>
             _renderer.RenderInventory();
         }
 
+    }
+
+    public bool AddItem(ItemSO item, int amount, int dur)
+    {
+        bool canAdd = Controller.AddItem(item, amount, dur);
+        _renderer.RenderInventory();
+        return canAdd;
+    }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape)) InventoryManager.Instance.ToggleInventory();
+        if (Input.GetKeyDown(KeyCode.Alpha3)) AddItem(_model.ItemList.ItemList[6], 2, 30);
+        if (Input.GetKeyDown(KeyCode.Alpha2)) AddItem(_model.ItemList.ItemList[6], 2, 10);
+        if (Input.GetKeyDown(KeyCode.Alpha4)) AddItem(_model.ItemList.ItemList[2], 3, -1);
+        HoldSlot.transform.position = Input.mousePosition;
     }
 
 

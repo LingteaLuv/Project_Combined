@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LootManager : Singleton<LootManager>
+public class LootManager : SingletonT<LootManager>
 {
 
     [SerializeField] private GameObject _f;
@@ -13,7 +13,7 @@ public class LootManager : Singleton<LootManager>
     [SerializeField] private GameObject _blocks;
 
 
-    private int _slotCount = 6;
+    public int SlotCount = 6;
 
     private SlotBlockerController[] _slotBlockers;
     private LootSlotController[] _lootSlots;
@@ -35,15 +35,15 @@ public class LootManager : Singleton<LootManager>
     private void Init()
     {
         _stack = new Stack<GameObject>();
-        _itemImages = new Image[_slotCount];
-        _itemCountTexts = new TMP_Text[_slotCount];
-        _itemDurSliders = new Slider[_slotCount];
+        _itemImages = new Image[SlotCount];
+        _itemCountTexts = new TMP_Text[SlotCount];
+        _itemDurSliders = new Slider[SlotCount];
 
         _lootSlots = _slots.GetComponentsInChildren<LootSlotController>();
         _slotBlockers = _blocks.GetComponentsInChildren<SlotBlockerController>();
 
 
-        for (int i = 0; i < _slotCount; i++)
+        for (int i = 0; i < SlotCount; i++)
         {
             _itemImages[i] = _lootSlots[i].GetComponentsInChildren<Image>()[1];
             _itemCountTexts[i] = _lootSlots[i].GetComponentInChildren<TMP_Text>();
@@ -102,7 +102,7 @@ public class LootManager : Singleton<LootManager>
     }
     private void LootTableUpdate()
     {
-        for (int i = 0; i < _slotCount; i++)
+        for (int i = 0; i < SlotCount; i++)
         {
             if (_lootable.LootItems.ItemBlocked[i])
             {
@@ -118,21 +118,32 @@ public class LootManager : Singleton<LootManager>
                 continue;
             }
             _itemImages[i].enabled = true;
-            _itemImages[i].sprite = _lootable.LootItems.Items[i].Sprite;
-            if (_lootable.LootItems.ItemAmounts[i] > 1)
+            _itemImages[i].sprite = _lootable.LootItems.Items[i].Data.Sprite;
+            if (_lootable.LootItems.Items[i].StackCount > 1)
             {
                 _itemCountTexts[i].enabled = true;
-                _itemCountTexts[i].text = _lootable.LootItems.ItemAmounts[i].ToString();
+                _itemCountTexts[i].text = _lootable.LootItems.Items[i].StackCount.ToString();
             }
             else _itemCountTexts[i].enabled = false;
 
-            if (_lootable.LootItems.ItemDurabilitys[i] != -1)
+            if (_lootable.LootItems.Items[i].Durability != -1)
             {
                 _itemDurSliders[i].gameObject.SetActive(true);
-                _itemDurSliders[i].value = (float)_lootable.LootItems.ItemDurabilitys[i] / _lootable.LootItems.Items[i].MaxDurability;
+                _itemDurSliders[i].value = (float)_lootable.LootItems.Items[i].Durability / _lootable.LootItems.Items[i].Data.MaxDurability;
 
             }
             else _itemDurSliders[i].gameObject.SetActive(false);
+        }
+    }
+
+    public void GetItem(int index)
+    {
+        ItemSO data = _lootable.LootItems.Items[index].Data;
+        int count = _lootable.LootItems.Items[index].StackCount;
+        int dur = _lootable.LootItems.Items[index].Durability;
+        if (InventoryManager.Instance.AddItem(data, count, dur))
+        {
+
         }
     }
 }

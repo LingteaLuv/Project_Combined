@@ -20,33 +20,6 @@ public class InventoryRenderer : MonoBehaviour
     /// </summary>
     public void RenderInventory()
     {
-        //for (int i = 0; i < _model.SlotCount; i++)
-        //{
-        //    if (_model.InvItems[i] != null)
-        //    {
-        //        _model.InvSlotItemImages[i].enabled = true;
-        //        _model.InvSlotItemAmountTexts[i].enabled = true;
-        //        _model.InvSlotItemImages[i].sprite = _model.InvItems[i].Sprite;
-        //        _model.InvSlotItemAmountTexts[i].text = _model.InvItemAmounts[i].ToString();
-        //    }
-        //    else
-        //    {
-        //        _model.InvSlotItemImages[i].enabled = false;
-        //        _model.InvSlotItemAmountTexts[i].enabled = false;
-        //    }
-        //}
-        //if (_model.HeldItem != null)
-        //{
-        //    _model.HoldSlotItemImage.enabled = true;
-        //    _model.HoldSlotItemAmountText.enabled = true;
-        //    _model.HoldSlotItemImage.sprite = _model.HeldItem.Sprite;
-        //    _model.HoldSlotItemAmountText.text = _model.HeldItemAmount.ToString();
-        //}
-        //else
-        //{
-        //    _model.HoldSlotItemImage.enabled = false;
-        //    _model.HoldSlotItemAmountText.enabled = false;
-        //}
 
 
         for (int i = 0; i < _model.SlotCount; i++)
@@ -60,18 +33,18 @@ public class InventoryRenderer : MonoBehaviour
             }
             if (i == InventoryManager.Instance.Controller.HoldingIndex && InventoryManager.Instance.Controller.IsHolding) continue;
             _model.InvSlotItemImages[i].enabled = true;
-            _model.InvSlotItemImages[i].sprite = _model.InvItems[i].Sprite;
-            if (_model.InvItemAmounts[i] > 1)
+            _model.InvSlotItemImages[i].sprite = _model.InvItems[i].Data.Sprite;
+            if (_model.InvItems[i].StackCount > 1)
             {
                 _model.InvSlotItemAmountTexts[i].enabled = true;
-                _model.InvSlotItemAmountTexts[i].text = _model.InvItemAmounts[i].ToString();
+                _model.InvSlotItemAmountTexts[i].text = _model.InvItems[i].StackCount.ToString();
             }
             else _model.InvSlotItemAmountTexts[i].enabled = false;
 
-            if (_model.InvItems[i].MaxDurability != -1)
+            if (_model.InvItems[i].Data.MaxDurability != -1)
             {
                 _model.InvSlotItemDurSliders[i].gameObject.SetActive(true);
-                _model.InvSlotItemDurSliders[i].value = (float)_model.InvItemDurabilitys[i] / _model.InvItems[i].MaxDurability;
+                _model.InvSlotItemDurSliders[i].value = (float)_model.InvItems[i].Durability / _model.InvItems[i].Data.MaxDurability;
 
             }
             else _model.InvSlotItemDurSliders[i].gameObject.SetActive(false);
@@ -88,10 +61,10 @@ public class InventoryRenderer : MonoBehaviour
     {
         _model.HoldSlotItemImage.enabled = true;
         _model.HoldSlotItemImage.sprite = _model.InvSlotItemImages[index].sprite;
-        if (_model.InvItemAmounts[index] > 1)
+        if (_model.InvItems[index].StackCount > 1)
         {
             _model.HoldSlotItemAmountText.enabled = true;
-            _model.HoldSlotItemAmountText.text = _model.InvItemAmounts[index].ToString();
+            _model.HoldSlotItemAmountText.text = _model.InvItems[index].StackCount.ToString();
         }
         _model.InvSlotItemImages[index].enabled = false;
         _model.InvSlotItemAmountTexts[index].enabled = false;

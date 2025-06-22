@@ -11,6 +11,7 @@ public class InventoryModel : MonoBehaviour
     [SerializeField] private ItemListSO _itemList;
     public ItemListSO ItemList { get { return _itemList; } }
 
+    public Item[] InvItems { get; private set; }
 
     public InvSlotController[] InventorySlots { get; private set; }
     public InvSlotController[] QuickSlotSlots { get; private set; }
@@ -21,10 +22,6 @@ public class InventoryModel : MonoBehaviour
 
     public Image HoldSlotItemImage { get; set; }
     public TMP_Text HoldSlotItemAmountText { get; set; }
-
-    public ItemSO[] InvItems { get; private set; }
-    public int[] InvItemAmounts { get; private set; }
-    public int[] InvItemDurabilitys { get; private set; }
 
     public Color SlotColor { get; private set; }
 
@@ -44,9 +41,7 @@ public class InventoryModel : MonoBehaviour
         InvSlotItemAmountTexts = new TMP_Text[SlotCount];
         InvSlotItemDurSliders = new Slider[SlotCount];
 
-        InvItems = new ItemSO[SlotCount];
-        InvItemAmounts = new int[SlotCount];
-        InvItemDurabilitys = new int[SlotCount];
+        InvItems = new Item[SlotCount];
         int i = 0;
         for (i = i; i < QuickSlotSlots.Length; i++)
         {
