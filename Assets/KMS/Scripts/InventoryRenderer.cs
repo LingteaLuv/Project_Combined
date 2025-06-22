@@ -12,39 +12,85 @@ public class InventoryRenderer : MonoBehaviour
     private void Start()
     {
         RenderInventory();
+        HoldClear();
     }
 
     /// <summary>
-    /// ¸ğµ¨ ³»¿¡ ¹è¿­ ÇüÅÂ·Î ÀúÀåµÈ ¾ÆÀÌÅÛÀÇ Á¤º¸¸¦ UI »ó¿¡ ¶ç¿ò.
+    /// ëª¨ë¸ ë‚´ì— ë°°ì—´ í˜•íƒœë¡œ ì €ì¥ëœ ì•„ì´í…œì˜ ì •ë³´ë¥¼ UI ìƒì— ë„ì›€.
     /// </summary>
     public void RenderInventory()
     {
-        for (int i = 0; i < _model.slotCount; i++)
+        //for (int i = 0; i < _model.SlotCount; i++)
+        //{
+        //    if (_model.InvItems[i] != null)
+        //    {
+        //        _model.InvSlotItemImages[i].enabled = true;
+        //        _model.InvSlotItemAmountTexts[i].enabled = true;
+        //        _model.InvSlotItemImages[i].sprite = _model.InvItems[i].Sprite;
+        //        _model.InvSlotItemAmountTexts[i].text = _model.InvItemAmounts[i].ToString();
+        //    }
+        //    else
+        //    {
+        //        _model.InvSlotItemImages[i].enabled = false;
+        //        _model.InvSlotItemAmountTexts[i].enabled = false;
+        //    }
+        //}
+        //if (_model.HeldItem != null)
+        //{
+        //    _model.HoldSlotItemImage.enabled = true;
+        //    _model.HoldSlotItemAmountText.enabled = true;
+        //    _model.HoldSlotItemImage.sprite = _model.HeldItem.Sprite;
+        //    _model.HoldSlotItemAmountText.text = _model.HeldItemAmount.ToString();
+        //}
+        //else
+        //{
+        //    _model.HoldSlotItemImage.enabled = false;
+        //    _model.HoldSlotItemAmountText.enabled = false;
+        //}
+
+
+        for (int i = 0; i < _model.SlotCount; i++)
         {
-            if (_model.InvItems[i] != null)
-            {
-                _model.InvSlotItemImages[i].enabled = true;
-                _model.InvSlotItemAmountTexts[i].enabled = true;
-                _model.InvSlotItemImages[i].sprite = _model.InvItems[i].Sprite;
-                _model.InvSlotItemAmountTexts[i].text = _model.InvItemAmounts[i].ToString();
-            }
-            else
+            if (_model.InvItems[i] == null)
             {
                 _model.InvSlotItemImages[i].enabled = false;
                 _model.InvSlotItemAmountTexts[i].enabled = false;
+                _model.InvSlotItemDurSliders[i].gameObject.SetActive(false);
+                continue;
             }
+            _model.InvSlotItemImages[i].enabled = true;
+            _model.InvSlotItemImages[i].sprite = _model.InvItems[i].Sprite;
+            if (_model.InvItemAmounts[i] > 1)
+            {
+                _model.InvSlotItemAmountTexts[i].enabled = true;
+                _model.InvSlotItemAmountTexts[i].text = _model.InvItemAmounts[i].ToString();
+            }
+            else _model.InvSlotItemAmountTexts[i].enabled = false;
+
+            if (_model.InvItems[i].MaxDurability != -1)
+            {
+                _model.InvSlotItemDurSliders[i].gameObject.SetActive(true);
+                _model.InvSlotItemDurSliders[i].value = (float)_model.InvItemDurabilitys[i] / _model.InvItems[i].MaxDurability;
+
+            }
+            else _model.InvSlotItemDurSliders[i].gameObject.SetActive(false);
         }
-        if (_model.HeldItem != null)
-        {
-            _model.HoldSlotItemImage.enabled = true;
-            _model.HoldSlotItemAmountText.enabled = true;
-            _model.HoldSlotItemImage.sprite = _model.HeldItem.Sprite;
-            _model.HoldSlotItemAmountText.text = _model.HeldItemAmount.ToString();
-        }
-        else
-        {
-            _model.HoldSlotItemImage.enabled = false;
-            _model.HoldSlotItemAmountText.enabled = false;
-        }
+    }
+
+    public void HoldClear()
+    {
+        _model.HoldSlotItemImage.enabled = false;
+        _model.HoldSlotItemAmountText.enabled = false;
+    }
+
+    public void HoldRender(int index)
+    {
+        _model.HoldSlotItemImage.enabled = true;
+        _model.HoldSlotItemAmountText.enabled = true;
+        _model.HoldSlotItemImage.sprite = _model.InvSlotItemImages[index].sprite;
+        _model.HoldSlotItemAmountText.text = _model.InvItemAmounts[index].ToString();
+        _model.InvSlotItemImages[index].enabled = false;
+        _model.InvSlotItemAmountTexts[index].enabled = false;
+        _model.InvSlotItemDurSliders[index].gameObject.SetActive(false);
     }
 }

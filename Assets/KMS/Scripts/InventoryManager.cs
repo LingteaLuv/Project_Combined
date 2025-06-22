@@ -5,9 +5,16 @@ using UnityEngine;
 using UnityEngine.UI;
 using static UnityEditor.Progress;
 
-public class InventoryManager : MonoBehaviour
+public class InventoryManager : Singleton<InventoryManager>
 {
-    public static InventoryManager Instance;
+
+    [SerializeField] private GameObject _inventory;
+    public GameObject Inventory { get { return _inventory; }}
+    [SerializeField] private GameObject _quickslot;
+    public GameObject Quickslot { get { return _quickslot; } }
+    [SerializeField] private GameObject _holdSlot;
+    public GameObject HoldSlot { get { return _holdSlot; } }
+
     private InventoryModel _model;
     public InventoryModel Model => _model;
 
@@ -17,17 +24,34 @@ public class InventoryManager : MonoBehaviour
     private InventoryController _controller;
     public InventoryController Controller => _controller;
 
+    public bool IsinventoryOpened => Inventory.activeSelf;
+
 
     private void Awake()
     {
-        Instance = this;
         Init();
     }
-    public void Init()
+    private void Init()
     {
         _renderer = GetComponent<InventoryRenderer>();
         _controller = GetComponent<InventoryController>();
         _model = GetComponent<InventoryModel>();
+        SetInstance();
+        _model.Init();
+    }
+
+    public void ToggleInventory()
+    {
+        if (IsinventoryOpened)
+        {
+            Inventory.SetActive(false);
+        }
+        else
+        {
+            Inventory.SetActive(true);
+            _renderer.RenderInventory();
+        }
+
     }
 
 

@@ -13,12 +13,6 @@ public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     {
         get
         {
-            if (instance == null)
-            {
-                GameObject gameManager = new GameObject(typeof(T).Name);
-                instance = gameManager.AddComponent<T>();
-                DontDestroyOnLoad(gameManager);
-            }
             return instance;
         }
     }

@@ -11,83 +11,58 @@ public class InventoryModel : MonoBehaviour
     [SerializeField] private ItemListSO _itemList;
     public ItemListSO ItemList { get { return _itemList; } }
 
-    [SerializeField] private GameObject _inventory;
-    public GameObject Inventory { get { return _inventory; } }
 
-    [SerializeField] private GameObject _holdSlot;
-    public GameObject HoldSlot { get { return _holdSlot; } }
+    public InvSlotController[] InventorySlots { get; private set; }
+    public InvSlotController[] QuickSlotSlots { get; private set; }
 
-    //[SerializeField] private GameObject _invSlotPanel;
-    //[SerializeField] private GameObject _weaponSlotPanel;
-    //
-    //[SerializeField] private int _invSlotCount;
-    //[SerializeField] private int _weaponSlotCount;
-    //
-    //[SerializeField] private GameObject _slot; 
+    public Image[] InvSlotItemImages { get; private set; }
+    public TMP_Text[] InvSlotItemAmountTexts { get; private set; }
+    public Slider[] InvSlotItemDurSliders { get; private set; }
 
-    private InvSlotController[] _inventorySlots;
-    public InvSlotController[] InventorySlots { get { return _inventorySlots; } }
+    public Image HoldSlotItemImage { get; set; }
+    public TMP_Text HoldSlotItemAmountText { get; set; }
 
-    private Image[] _invSlotItemImages;
-    public Image[] InvSlotItemImages { get { return _invSlotItemImages; } }
+    public ItemSO[] InvItems { get; private set; }
+    public int[] InvItemAmounts { get; private set; }
+    public int[] InvItemDurabilitys { get; private set; }
 
-    private TMP_Text[] _invSlotItemAmountTexts;
-    public TMP_Text[] InvSlotItemAmountTexts { get { return _invSlotItemAmountTexts; } }
+    //public ItemSO HeldItem { get; set; }
+    //public int HeldItemAmount { get; set; }
+    //public int HeldItemDurability { get; set; }
 
-    private Image _holdSlotItemImage;
-    public Image HoldSlotItemImage { get { return _holdSlotItemImage; } set { _holdSlotItemImage = value; } }
+    public int SlotCount => InventorySlots.Length + QuickSlotSlots.Length;
 
-    private TMP_Text _holdSlotItemAmountText;
-    public TMP_Text HoldSlotItemAmountText { get { return _holdSlotItemAmountText; } set { _holdSlotItemAmountText = value; } }
-
-    private ItemSO[] _invItems;
-    public ItemSO[] InvItems { get { return _invItems; } }
-
-    private int[] _invItemAmounts;
-    public int[] InvItemAmounts { get { return _invItemAmounts; } }
-
-    private ItemSO _heldItem;
-    public ItemSO HeldItem { get { return _heldItem; } set { _heldItem = value; } }
-
-    private int _heldItemAmount;
-    public int HeldItemAmount { get { return _heldItemAmount; } set { _heldItemAmount = value; } }
-
-    public int slotCount => _inventorySlots.Length;
-
-    public int InvSlotIndexBound = 13;
-    public int WeaponSlotIndexBound = 17;
-
-    private void Awake()
+    public void Init()
     {
-        Init();
-    }
-    private void Init()
-    {
-        //int ie;
-        //for (ie = 0; ie < _invSlotCount; ie++)
-        //{
-        //    GameObject s = Instantiate(_slot, _invSlotPanel.transform);
-        //    s.name = ie.ToString();
-        //}
-        //for (ie = ie; ie < _weaponSlotCount; ie++)
-        //{
-        //    GameObject s = Instantiate(_slot, _weaponSlotPanel.transform);
-        //    s.name = ie.ToString();
-        //}
-        _inventorySlots = _inventory.GetComponentsInChildren<InvSlotController>();
-        _invSlotItemImages = new Image[slotCount];
-        _invSlotItemAmountTexts = new TMP_Text[slotCount];
-        _invItems = new ItemSO[slotCount];
-        _invItemAmounts = new int[slotCount];
-        for (int i = 0; i < _inventorySlots.Length; i++)
+        InventorySlots = InventoryManager.Instance.Inventory.GetComponentsInChildren<InvSlotController>();
+        QuickSlotSlots = InventoryManager.Instance.Quickslot.GetComponentsInChildren<InvSlotController>();
+
+        InvSlotItemImages = new Image[SlotCount];
+        InvSlotItemAmountTexts = new TMP_Text[SlotCount];
+        InvSlotItemDurSliders = new Slider[SlotCount];
+
+        InvItems = new ItemSO[SlotCount];
+        InvItemAmounts = new int[SlotCount];
+        InvItemDurabilitys = new int[SlotCount];
+        int i = 0;
+        for (i = i; i < QuickSlotSlots.Length; i++)
         {
-            _invSlotItemImages[i] = _inventorySlots[i].gameObject.GetComponentsInChildren<Image>()[1];
-            _invSlotItemAmountTexts[i] = _inventorySlots[i].gameObject.GetComponentInChildren<TMP_Text>();
+            InvSlotItemImages[i] = QuickSlotSlots[i].gameObject.GetComponentsInChildren<Image>()[1];
+            InvSlotItemAmountTexts[i] = QuickSlotSlots[i].gameObject.GetComponentInChildren<TMP_Text>();
+            InvSlotItemDurSliders[i] = QuickSlotSlots[i].gameObject.GetComponentInChildren<Slider>();
         }
-        _heldItem = null;
-        _heldItemAmount = 0;
-        _holdSlotItemImage = _holdSlot.GetComponentInChildren<Image>();
-        _holdSlotItemAmountText = _holdSlot.GetComponentInChildren<TMP_Text>();
+        for (i = i; i < SlotCount; i++)
+        {
+            InvSlotItemImages[i] = InventorySlots[i - QuickSlotSlots.Length].gameObject.GetComponentsInChildren<Image>()[1];
+            InvSlotItemAmountTexts[i] = InventorySlots[i - QuickSlotSlots.Length].gameObject.GetComponentInChildren<TMP_Text>();
+            InvSlotItemDurSliders[i] = InventorySlots[i - QuickSlotSlots.Length].gameObject.GetComponentInChildren<Slider>();
+        }
+
+        //HeldItem = null;
+        //HeldItemAmount = 0;
+        //HeldItemDurability = 0;
+        HoldSlotItemImage = InventoryManager.Instance.HoldSlot.GetComponentInChildren<Image>();
+        HoldSlotItemAmountText = InventoryManager.Instance.HoldSlot.GetComponentInChildren<TMP_Text>();
     }
 
 
