@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class InvSlotController : MonoBehaviour, IPointerEnterHandler
+public class InvSlotController : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] Button _slotButton;
 
@@ -44,6 +44,11 @@ public class InvSlotController : MonoBehaviour, IPointerEnterHandler
     {
         if (InventoryManager.Instance.Controller.IsHolding)
             InventoryManager.Instance.Controller.NextIndex = GetSlotIndex();
-        Debug.Log(GetSlotIndex());
+    }
+
+    public void OnPointerExit(PointerEventData eventData) 
+    {
+        if (InventoryManager.Instance.Controller.IsHolding)
+            InventoryManager.Instance.Controller.NextIndex = InventoryManager.Instance.Controller.HoldingIndex;
     }
 }
