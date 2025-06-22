@@ -42,6 +42,7 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         _fsm.FixedUpdate();
+        
     }
     /// <summary>
     /// 이동 애니메이션 상태를 갱신합니다.
@@ -55,7 +56,7 @@ public class PlayerController : MonoBehaviour
         {
             _animator.SetBool("IsMove", isMoving);
         }
-
+        UpdateGroundParameter();
         _lastMoveInput = currentInput;
     }
 
@@ -65,5 +66,10 @@ public class PlayerController : MonoBehaviour
     public void PlayJumpAnimation()
     {
         _animator.SetTrigger("IsJump");
+    }
+    private void UpdateGroundParameter()
+    {
+        bool isGrounded = _movement.IsGrounded;
+        _animator.SetBool("IsGround", isGrounded);
     }
 }

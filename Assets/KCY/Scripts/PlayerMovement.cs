@@ -17,7 +17,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Settings")]
     [SerializeField] private float _jumpForce = 5f;
-    [SerializeField] private float _groundCheckDistance = 0.1f;
+    [SerializeField] private float _groundCheckDistance = 0.05f;
 
     public Vector3 MoveInput => _inputHandler.MoveInput;
     public bool JumpPressed => _inputHandler.JumpPressed;
