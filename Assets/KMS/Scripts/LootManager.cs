@@ -129,7 +129,7 @@ public class LootManager : SingletonT<LootManager>
             if (_lootable.LootItems.Items[i].Durability != -1)
             {
                 _itemDurSliders[i].gameObject.SetActive(true);
-                _itemDurSliders[i].value = (float)_lootable.LootItems.Items[i].Durability / _lootable.LootItems.Items[i].Data.MaxDurability;
+                _itemDurSliders[i].value = (float)_lootable.LootItems.Items[i].Durability / _lootable.LootItems.Items[i].MaxDurability;
 
             }
             else _itemDurSliders[i].gameObject.SetActive(false);
@@ -138,7 +138,7 @@ public class LootManager : SingletonT<LootManager>
 
     public void GetItem(int index)
     {
-        ItemSO data = _lootable.LootItems.Items[index].Data;
+        ItemBase data = _lootable.LootItems.Items[index].Data;
         int count = _lootable.LootItems.Items[index].StackCount;
         int dur = _lootable.LootItems.Items[index].Durability;
         if (InventoryManager.Instance.AddItem(data, count, dur))

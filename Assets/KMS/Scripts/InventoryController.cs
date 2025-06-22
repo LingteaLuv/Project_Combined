@@ -29,7 +29,7 @@ public class InventoryController : MonoBehaviour
     }
 
 
-    private bool[] GetFlags(ItemSO item)
+    private bool[] GetFlags(ItemBase item)
     {
         bool[] flags = new bool[18]; //false 인 경우에만 들어갈 수 있음
         flags[0] = true;
@@ -57,12 +57,15 @@ public class InventoryController : MonoBehaviour
         }
         return flags;
     }
-    public bool AddItem(ItemSO item, int amount, int durability)
+    public bool AddItem(ItemBase item, int amount, int durability)
     {
         int a = amount; // 넣을 개수
         List<int> itemExist = new List<int>();
         List<int> nullindexs = new List<int>();
         bool[] flags = GetFlags(item);
+
+        int MaxStack = 1;
+        if (item is EtcItem) MaxStack = (item as EtcItem).MaxStackSize;
         for (int i = 0; i < _model.SlotCount; i++)
         {
             if (flags[i]) continue; // 아이템 종류에 따른 flag 스킵
@@ -71,23 +74,23 @@ public class InventoryController : MonoBehaviour
                 nullindexs.Add(i);
                 continue;
             }
-            if (_model.InvItems[i].Data == item && _model.InvItems[i].StackCount < item.MaxInventoryAmount) //같은 아이템이 존재하는데, 최대 개수보다 부족함
+            if (_model.InvItems[i].Data == item && _model.InvItems[i].StackCount < MaxStack) //같은 아이템이 존재하는데, 최대 개수보다 부족함
             {
-                int temp = item.MaxInventoryAmount - _model.InvItems[i].StackCount; //부족한 수량
+                int temp = MaxStack - _model.InvItems[i].StackCount; //부족한 수량
                 if (temp == a) // 부족한 개수와 넣을 개수가 같음
                 {
                     if (itemExist.Count > 0)
                     {
-                        foreach( int j in itemExist) _model.InvItems[j].StackCount = item.MaxInventoryAmount;
+                        foreach( int j in itemExist) _model.InvItems[j].StackCount = MaxStack;
                     }
-                    _model.InvItems[i].StackCount = item.MaxInventoryAmount;
+                    _model.InvItems[i].StackCount = MaxStack;
                     return true;
                 }
                 else if (temp > a) // 부족한 개수가 넣을 개수보다 많음
                 {
                     if (itemExist.Count > 0)
                     {
-                        foreach (int j in itemExist) _model.InvItems[j].StackCount = item.MaxInventoryAmount;
+                        foreach (int j in itemExist) _model.InvItems[j].StackCount = MaxStack;
                     }
                     _model.InvItems[i].StackCount += a;
                     return true;
@@ -108,7 +111,7 @@ public class InventoryController : MonoBehaviour
             for (int i = 0; i < nullindexs.Count; i++)
             {
                 addables.Add(nullindexs[i]);
-                temp -= item.MaxInventoryAmount; // 각 칸마다 최대 개수식 빼본다.
+                temp -= MaxStack; // 각 칸마다 최대 개수식 빼본다.
                 if (temp > 0) // 그래도 남는다면
                 {
                     if (i == nullindexs.Count - 1) // 현재 마지막 빈 공간을 조사중?
@@ -122,21 +125,26 @@ public class InventoryController : MonoBehaviour
                     break;
                 }
             }
-            temp += item.MaxInventoryAmount; // 마지막 빈 공간에 들어갈 개수
+            temp += MaxStack; // 마지막 빈 공간에 들어갈 개수
             Debug.Log(temp);
             if (itemExist.Count > 0) // 우선 스택가능한 영역 채움
             {
-                foreach (int j in itemExist) _model.InvItems[j].StackCount = item.MaxInventoryAmount;
+                foreach (int j in itemExist) _model.InvItems[j].StackCount = MaxStack;
             }
             for (int i = 0; i < addables.Count; i++) // 이후 빈 공간에 채워넣음
             {
                 if (i == addables.Count - 1) // 마지막 부분
                 {
-                    _model.InvItems[addables[i]] = new Item(item, temp, durability);
+                    _model.InvItems[addables[i]] = new Item(item);
+                    _model.InvItems[addables[i]].StackCount = temp;
+                    _model.InvItems[addables[i]].Durability = durability;
                 }
                 else
                 {
-                    _model.InvItems[addables[i]] = new Item(item, item.MaxInventoryAmount, durability);
+                    _model.InvItems[addables[i]] = new Item(item);
+                    _model.InvItems[addables[i]].StackCount = MaxStack;
+                    _model.InvItems[addables[i]].Durability = durability;
+
 
                 }
             }
