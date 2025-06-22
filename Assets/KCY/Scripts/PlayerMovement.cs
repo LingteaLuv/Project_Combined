@@ -1,134 +1,100 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Serialization;
 
+/// <summary>
+/// 플레이어의 이동과 점프를 처리합니다.
+/// </summary>
+[RequireComponent(typeof(Rigidbody))]
 public class PlayerMovement : MonoBehaviour
 {
-    // 내부에서만 사용하고 GetComponent로 가져오는 경우에는 private이 좋을 것 같아요! 
+    [Header("References")]
+    [SerializeField] private PlayerInputHandler _inputHandler;
+    [SerializeField] private PlayerProperty _property;
+    [SerializeField] private Transform _aim;
+
+    public PlayerController Controller { get; set; }
     private Rigidbody _rb;
-    //private Animation Avatar;
-    
-    [Header("Move Element")]
-    [SerializeField] private float _moveSpeed  = 5f;
-    [SerializeField] private float _moveAccel = 15f;
-    [SerializeField] private float _moveDecel = 30f;
-    
-    [SerializeField] private float _jumpPower = 5f;
-    [SerializeField] private float _jumpAccel = 2f;
-    [SerializeField] private float _rotSpeed = 1f;
+    private bool _jumpConsumedThisFrame;
+    private Vector2 _currentRotation;
 
-    // ���� Ȯ�� 
-    //[SerializeField]private Transform _jumpCheck; // �迭�� ��ȯ�ϰ�, ��ü Ȯ���ؼ� ���� ������Ʈ�� �����ϵ���
-    //private float _jumpDis = 0.3f;
+    [Header("Settings")]
+    [SerializeField] private float _jumpForce = 5f;
+    [SerializeField] private float _groundCheckDistance = 0.05f;
 
-    // ���
-    [SerializeField] private Transform _bottomRayOrigin;
-    [SerializeField] private Transform _upperRayOrigin;
-    [SerializeField]private LayerMask _groundMask;
+    public Vector3 MoveInput => _inputHandler.MoveInput;
+    public bool JumpPressed => _inputHandler.JumpPressed;
+    public bool IsGrounded => Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, _groundCheckDistance + 0.1f);
 
-    // ���� ���� ����
-    private float _curAccel;
-    // ���� Ȯ��
-    private bool _isJumped;
-    
-    public bool IsGrounded { get; private set; }
-    
-    
-    // 백뷰 시점 구현하기 위해 Camera 연동 코드 추가
-    // Mathf.MoveToward -> Vector3.MoveToward로 통합
-    // 감속 관련 코드 추가 (else 이하 부분)
-    public void SetMove(Vector3 dir)
-    {
-        if (dir != Vector3.zero)
-        { 
-            Camera _playerFollowCam = Camera.main;
-            Vector3 camForward = _playerFollowCam.transform.forward;
-            Vector3 camRight = _playerFollowCam.transform.right;
 
-            Vector3 moveDir = camForward * dir.z + camRight * dir.x;
-            // �� �ӵ� Ȯ��
-            // Vector3 move = _rb.velocity;
-            // ���� �ӵ�
-            Vector3 vec = moveDir * _moveSpeed;
-
-            _curAccel = _isJumped ? _jumpAccel : _moveAccel;
-            
-            vec.y = _rb.velocity.y;
-            
-            _rb.velocity = Vector3.MoveTowards(_rb.velocity, vec, _curAccel * Time.fixedDeltaTime);
-            
-            // ���� �� ���� ���ӵ��� ��ȯ�ϰ� ���� �� �̵��ϴ� �ӵ��� �����Ѵ�.
-            // move.x = Mathf.MoveTowards(move.x, vec.x, _curAccel * Time.deltaTime);
-            // move.z = Mathf.MoveTowards(move.z, vec.z, _curAccel * Time.deltaTime);
-
-            // ���� �ӵ��� �ݿ�
-            // _rb.velocity = move; 
-        }
-        else
-        {
-            Vector3 targetV = Vector3.zero;
-            targetV.y = _rb.velocity.y;
-            _rb.velocity = Vector3.MoveTowards(_rb.velocity, targetV, _curAccel * Time.fixedDeltaTime);
-        }
-    }
-    public void Jump()
-    {
-        // 2�� ���� ����
-        if (_isJumped) return;
-
-        // ����
-        _rb.AddForce(Vector3.up * _jumpPower, ForceMode.Impulse);
-        _isJumped = true;
-
-        // �����ϸ鼭 �������� �� �̵��ӵ��� �������� ���� ����
-        Vector3 jumpVel = _rb.velocity;
-        jumpVel.x *= 0.65f;
-        jumpVel.z *= 0.65f;
-        _rb.velocity = jumpVel;
-    }
-
-    public void ClimbStairs()
-    {
-        // ������ �÷��̾��� �����⿡ ���� ���� ��� �Ʒ��� ���̴� ������, ���� ���̿����� ������ �ʴ� ��� ������� �ν�
-        Vector3 stairsRay = Vector3.forward;
-        bool bottomRay = Physics.Raycast(_bottomRayOrigin.position, stairsRay, 0.4f, _groundMask);
-        bool upperRay = Physics.Raycast(_bottomRayOrigin.position, stairsRay, 0.4f, _groundMask);
-
-        // ������� �ν��ϴ� �Ϳ� �������� ��� upper���̰� �ִ� �� ��ŭ �÷���
-        if (bottomRay && !upperRay)
-        {
-            //Rb.position += 
-        }
-    }
-    
-    public void GetIsGrounded(bool value)
-    {
-        IsGrounded = value;
-    }
-
-    public void GetIsJumped(bool value)
-    {
-        _isJumped = !value;
-    }
-    
-    public void Rotate()
-    {
-        float mouseX = Input.GetAxis("Mouse X");
-        transform.Rotate(Vector3.up * mouseX * 5f);
-    }
-    
-    private void Awake()
+    private void Init()
     {
         _rb = GetComponent<Rigidbody>();
-        //Avatar = GetComponent<Animation>();
-        IsGrounded = true;
     }
-    
+
+    private void Awake() => Init();
+
     private void Update()
     {
-        // 바닥의 종류가 많아서 OnCollisionEnter로 처리하는건 어떨까 싶습니다!
-        //_isJumped = !Physics.CheckSphere(_jumpCheck.position, _jumpDis, _groundMask);
+        _jumpConsumedThisFrame = false;
+    }
+    /// <summary>
+    /// 입력 방향에 따라 관성 없이 이동합니다.
+    /// </summary>
+    public void Move(Vector3 inputDir)
+    {
+        if (inputDir == Vector3.zero) return;
+
+        // TODO : 임시 속도 고정용 코드
+        if (_property.MoveSpeed.Value == 0) 
+        { 
+            Debug.Log("현재 이동 속도: " + _property.MoveSpeed.Value);
+            _property.MoveSpeed.Value = 3;
+        }
+
+        Camera cam = Camera.main;
+        if (cam == null) return;
+
+        Vector3 moveDir = cam.transform.forward * inputDir.z + cam.transform.right * inputDir.x;
+        moveDir.y = 0f;
+        moveDir.Normalize();
+
+        transform.position += moveDir * _property.MoveSpeed.Value * Time.deltaTime;
+
+        Quaternion targetRot = Quaternion.LookRotation(moveDir);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 10f);
+    }
+    public bool CanJump()
+    {
+        return !_jumpConsumedThisFrame && JumpPressed && IsGrounded;
+    }
+
+    /// <summary>
+    /// Rigidbody를 이용해 점프를 실행합니다.
+    /// </summary>
+    public void Jump()
+    {
+        _jumpConsumedThisFrame = true;
+        Vector3 velocity = _rb.velocity;
+        velocity.y = _jumpForce;
+        _rb.velocity = velocity;
+    }
+
+
+
+    public void SetRotation(Vector2 rotation)
+    {
+        _currentRotation = rotation;
+
+        transform.rotation = Quaternion.Euler(0f, rotation.x, 0f);
+
+        if (_aim != null)
+        {
+            Vector3 aimEuler = _aim.localEulerAngles;
+            _aim.localEulerAngles = new Vector3(rotation.y, aimEuler.y, aimEuler.z);
+        }
+    }
+    //TODO : 애니메이션 스피드 조정용 코드 추가 예정
+    public float GetAnimatorSpeedMultiplier()
+    {
+        return Mathf.Clamp01(MoveInput.magnitude) * (_property?.MoveSpeed?.Value ?? 0f)+1;
     }
 }

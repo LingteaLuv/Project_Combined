@@ -4,23 +4,29 @@ using UnityEngine;
 
 public class Thirsty : Parameter
 {
-    public override void Recover(float value)
+    public override void Act(ref float speed, float baseValue, float offset)
     {
-        Value = Value + value > 100 ? 100 : Value + value;
+        switch (State)
+        {
+            case ParamState.Full:
+                break;
+            case ParamState.Basic:
+                ResetValue(ref speed, baseValue, offset);
+                break;
+            case ParamState.Lack:
+                Penalty(ref speed, baseValue, offset);
+                break;
+            case ParamState.Depletion:
+                break;
+        } 
     }
-
-    public override void Decrease(float value)
-    {
-        Value = Value - value < 0 ? 0 : Value - value;
-    }
-
-    public override void Reset(ref float speed, float baseValue)
+    public override void ResetValue(ref float speed, float baseValue, float offset)
     {
         speed = baseValue;
     }
     
-    public override void Penalty(ref float speed, float value)
+    public override void Penalty(ref float speed, float baseValue, float offset)
     {
-        speed = value;
+        speed = baseValue - offset;
     }
 }
