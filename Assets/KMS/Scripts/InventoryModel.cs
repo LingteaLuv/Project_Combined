@@ -14,7 +14,7 @@ public class InventoryModel : MonoBehaviour
 
     public InvSlotController[] InventorySlots { get; private set; }
     public InvSlotController[] QuickSlotSlots { get; private set; }
-
+    public Image[] InvSlotPanelImages { get; private set; }
     public Image[] InvSlotItemImages { get; private set; }
     public TMP_Text[] InvSlotItemAmountTexts { get; private set; }
     public Slider[] InvSlotItemDurSliders { get; private set; }
@@ -25,6 +25,8 @@ public class InventoryModel : MonoBehaviour
     public ItemSO[] InvItems { get; private set; }
     public int[] InvItemAmounts { get; private set; }
     public int[] InvItemDurabilitys { get; private set; }
+
+    public Color SlotColor { get; private set; }
 
     //public ItemSO HeldItem { get; set; }
     //public int HeldItemAmount { get; set; }
@@ -37,6 +39,7 @@ public class InventoryModel : MonoBehaviour
         InventorySlots = InventoryManager.Instance.Inventory.GetComponentsInChildren<InvSlotController>();
         QuickSlotSlots = InventoryManager.Instance.Quickslot.GetComponentsInChildren<InvSlotController>();
 
+        InvSlotPanelImages = new Image[SlotCount];
         InvSlotItemImages = new Image[SlotCount];
         InvSlotItemAmountTexts = new TMP_Text[SlotCount];
         InvSlotItemDurSliders = new Slider[SlotCount];
@@ -47,12 +50,14 @@ public class InventoryModel : MonoBehaviour
         int i = 0;
         for (i = i; i < QuickSlotSlots.Length; i++)
         {
+            InvSlotPanelImages[i] = QuickSlotSlots[i].gameObject.GetComponentsInChildren<Image>()[0];
             InvSlotItemImages[i] = QuickSlotSlots[i].gameObject.GetComponentsInChildren<Image>()[1];
             InvSlotItemAmountTexts[i] = QuickSlotSlots[i].gameObject.GetComponentInChildren<TMP_Text>();
             InvSlotItemDurSliders[i] = QuickSlotSlots[i].gameObject.GetComponentInChildren<Slider>();
         }
         for (i = i; i < SlotCount; i++)
         {
+            InvSlotPanelImages[i] = InventorySlots[i - QuickSlotSlots.Length].gameObject.GetComponentsInChildren<Image>()[0];
             InvSlotItemImages[i] = InventorySlots[i - QuickSlotSlots.Length].gameObject.GetComponentsInChildren<Image>()[1];
             InvSlotItemAmountTexts[i] = InventorySlots[i - QuickSlotSlots.Length].gameObject.GetComponentInChildren<TMP_Text>();
             InvSlotItemDurSliders[i] = InventorySlots[i - QuickSlotSlots.Length].gameObject.GetComponentInChildren<Slider>();
@@ -63,6 +68,8 @@ public class InventoryModel : MonoBehaviour
         //HeldItemDurability = 0;
         HoldSlotItemImage = InventoryManager.Instance.HoldSlot.GetComponentInChildren<Image>();
         HoldSlotItemAmountText = InventoryManager.Instance.HoldSlot.GetComponentInChildren<TMP_Text>();
+
+        SlotColor = InvSlotPanelImages[0].color;
     }
 
 

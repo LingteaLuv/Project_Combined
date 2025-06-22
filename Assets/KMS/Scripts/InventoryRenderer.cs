@@ -58,6 +58,7 @@ public class InventoryRenderer : MonoBehaviour
                 _model.InvSlotItemDurSliders[i].gameObject.SetActive(false);
                 continue;
             }
+            if (i == InventoryManager.Instance.Controller.HoldingIndex && InventoryManager.Instance.Controller.IsHolding) continue;
             _model.InvSlotItemImages[i].enabled = true;
             _model.InvSlotItemImages[i].sprite = _model.InvItems[i].Sprite;
             if (_model.InvItemAmounts[i] > 1)
@@ -86,11 +87,22 @@ public class InventoryRenderer : MonoBehaviour
     public void HoldRender(int index)
     {
         _model.HoldSlotItemImage.enabled = true;
-        _model.HoldSlotItemAmountText.enabled = true;
         _model.HoldSlotItemImage.sprite = _model.InvSlotItemImages[index].sprite;
-        _model.HoldSlotItemAmountText.text = _model.InvItemAmounts[index].ToString();
+        if (_model.InvItemAmounts[index] > 1)
+        {
+            _model.HoldSlotItemAmountText.enabled = true;
+            _model.HoldSlotItemAmountText.text = _model.InvItemAmounts[index].ToString();
+        }
         _model.InvSlotItemImages[index].enabled = false;
         _model.InvSlotItemAmountTexts[index].enabled = false;
         _model.InvSlotItemDurSliders[index].gameObject.SetActive(false);
+    }
+
+    public void SelectRender(int before, int current)
+    {
+        if (before == -1) ;
+        else _model.InvSlotPanelImages[before].color = _model.SlotColor;
+        if (current == -1) ;
+        else _model.InvSlotPanelImages[current].color = new Color(1f, 0f, 0f);
     }
 }

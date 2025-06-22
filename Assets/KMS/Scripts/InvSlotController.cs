@@ -33,7 +33,11 @@ public class InvSlotController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     {
         InventoryManager.Instance.Controller.PutItem();
     }
-
+    public void TrySelect()
+    {
+        int index = GetSlotIndex();
+        InventoryManager.Instance.Controller.SelectSlot(index);
+    }
     private int GetSlotIndex()
     {
         int.TryParse(gameObject.name, out int index);

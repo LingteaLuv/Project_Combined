@@ -5,6 +5,9 @@ public enum ItemType
 {
     Normal,
     Weapon,
+    Shield,
+    Special,
+    Consumable
 
 }
 [CreateAssetMenu(fileName = "Item", menuName = "ScriptableObjects/Item", order = 1)]
@@ -24,6 +27,9 @@ public class ItemSO : ScriptableObject
 
     [SerializeField] private int _maxDurability;
     public int MaxDurability { get { return _maxDurability; } }
+
+    [SerializeField] private ItemType _type;
+    public ItemType Type { get { return _type; } }
 
 
 }

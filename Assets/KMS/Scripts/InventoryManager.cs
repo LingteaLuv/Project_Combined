@@ -45,6 +45,7 @@ public class InventoryManager : Singleton<InventoryManager>
         if (IsinventoryOpened)
         {
             Inventory.SetActive(false);
+            _controller.CancelHolding();
         }
         else
         {

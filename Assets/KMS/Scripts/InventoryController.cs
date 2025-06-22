@@ -15,6 +15,18 @@ public class InventoryController : MonoBehaviour
     public int HoldingIndex;
     public int NextIndex;
 
+    public int SelectedIndex;
+    private int _beforeSelectedIndex;
+
+    private void Awake()
+    {
+        IsHolding = false;
+        HoldingIndex = -1;
+        NextIndex = -1;
+        SelectedIndex = -1;
+        _beforeSelectedIndex = -1;
+
+    }
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape)) InventoryManager.Instance.ToggleInventory();
@@ -110,6 +122,17 @@ public class InventoryController : MonoBehaviour
         HoldingIndex = index;
         NextIndex = HoldingIndex;
     }
+
+    public void CancelHolding()
+    {
+        if (IsHolding)
+        {
+            IsHolding = false;
+            HoldingIndex = -1;
+            NextIndex = -1;
+            _renderer.HoldClear();
+        }
+    }
     //public void CombineItem(int index)
     //{
     //    int sum = _model.HeldItemAmount + _model.InvItemAmounts[index];
@@ -125,24 +148,15 @@ public class InventoryController : MonoBehaviour
     //        _model.HeldItemAmount = sum - _model.InvItems[index].MaxInventoryAmount;
     //    }
     //}
-    //public void PlaceItem(int index)
-    //{
-    //    _model.InvItems[index] = _model.HeldItem;
-    //    _model.InvItemAmounts[index] = _model.HeldItemAmount;
-    //    _model.HeldItem = null;
-    //    _model.HeldItemAmount = 0;
-    //}
-    //public void ReplaceItem(int index)
-    //{
-    //    ItemSO tempItem = _model.InvItems[index];
-    //    int tempAmount = _model.InvItemAmounts[index];
-    //    _model.InvItems[index] = _model.HeldItem;
-    //    _model.InvItemAmounts[index] = _model.HeldItemAmount;
-    //    _model.HeldItem = tempItem;
-    //    _model.HeldItemAmount = tempAmount;
-    //
-    //}
 
+    public void SelectSlot(int index)
+    {
+        _beforeSelectedIndex = SelectedIndex;
+        SelectedIndex = index;
+        _renderer.SelectRender(_beforeSelectedIndex, SelectedIndex);
+
+
+    }
     public void PutItem()
     {
         if (!IsHolding) return;
@@ -155,12 +169,14 @@ public class InventoryController : MonoBehaviour
         }
         else
         {
-            ReplaceItem();
+            SwitchItem();
             Debug.Log("replace");
         }
+        IsHolding = false;
+        HoldingIndex = -1;
+        NextIndex = -1;
         _renderer.HoldClear();
         _renderer.RenderInventory();
-        IsHolding = false;
     }
 
     public void PlaceItem()
@@ -172,7 +188,7 @@ public class InventoryController : MonoBehaviour
         _model.InvItemAmounts[HoldingIndex] = 0;
         _model.InvItemDurabilitys[HoldingIndex] = 0;
     }
-    public void ReplaceItem()
+    public void SwitchItem()
     {
         ItemSO tempItem = _model.InvItems[NextIndex];
         int tempAmount = _model.InvItemAmounts[NextIndex];
