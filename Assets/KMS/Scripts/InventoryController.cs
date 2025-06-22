@@ -40,7 +40,7 @@ public class InventoryController : MonoBehaviour
         flags[5] = true;
         switch (item.Type)
         {
-            case ItemType.Weapon:
+            case ItemType.Gun:
                 flags[0] = false;
                 break;
             case ItemType.Shield:

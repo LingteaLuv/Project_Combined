@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using static UnityEditor.Progress;
 
-public class InventoryManager : Singleton<InventoryManager>
+public class InventoryManager : SingletonT<InventoryManager>
 {
     [SerializeField] private GameObject _inventory;
     public GameObject Inventory { get { return _inventory; }}

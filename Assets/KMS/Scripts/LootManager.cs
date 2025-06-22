@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LootManager : Singleton<LootManager>
+public class LootManager : SingletonT<LootManager>
 {
 
     [SerializeField] private GameObject _f;
