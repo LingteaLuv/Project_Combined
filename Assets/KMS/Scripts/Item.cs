@@ -11,6 +11,7 @@ public class Item
 
     public int MaxDurability { get; private set; }
     public int MaxStackSize { get; private set; }
+
     public Item(ItemBase data)
     {
         Data = data;

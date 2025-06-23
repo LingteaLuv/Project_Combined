@@ -21,6 +21,8 @@ public class InventoryController : MonoBehaviour
     public int SelectedIndex;
     private int _beforeSelectedIndex;
 
+    public int[] EquippedSlotIndex;
+
     private void Awake()
     {
         IsHolding = false;
@@ -29,6 +31,7 @@ public class InventoryController : MonoBehaviour
         SelectedIndex = -1;
         _beforeSelectedIndex = -1;
 
+        EquippedSlotIndex = new int[] { -1, -1 };
     }
 
 
@@ -46,6 +49,71 @@ public class InventoryController : MonoBehaviour
             flags[5] = true;
         }
         return flags;
+    }
+
+    public void Equip(int index) //해당 칸에 대한 장착 시도
+    {
+        Item exist = _model.InvItems[index];
+        if (exist == null) return;
+        if (exist.Data.Type == ItemType.Consumable)
+        {
+            return;
+        }
+        else if (exist.Data.Type == ItemType.Melee)
+        {
+            if (EquippedSlotIndex[0] != -1 && EquippedSlotIndex[0] == EquippedSlotIndex[1]) //양손장비가 선택되어 있는 상황
+            {
+                EquippedSlotIndex[1] = -1;
+            }
+            EquippedSlotIndex[0] = index;
+
+        }
+        else if (exist.Data.Type == ItemType.Shield)
+        {
+            if (EquippedSlotIndex[1] != -1 && EquippedSlotIndex[0] == EquippedSlotIndex[1]) //양손장비가 선택되어 있는 상황
+            {
+                EquippedSlotIndex[0] = -1;
+            }
+            EquippedSlotIndex[1] = index;
+
+        }
+        else if (exist.Data.Type == ItemType.Gun)
+        {
+            EquippedSlotIndex[0] = index;
+            EquippedSlotIndex[1] = index;
+
+        }
+        else if (exist.Data.Type == ItemType.Special)
+        {
+            EquippedSlotIndex[0] = index;
+            EquippedSlotIndex[1] = index;
+
+        }
+        _renderer.RenderEquip(EquippedSlotIndex);
+
+    }
+    public void AutoEquip(int index) // 아무것도 선택되어 있지 않거나, 
+    {
+        Item exist = _model.InvItems[index];
+
+        if (EquippedSlotIndex[0] == -1 && EquippedSlotIndex[1] == -1) // 아무 것도 선택되어있지 않다면
+        {
+            Equip(index); //선택
+            return;
+        }
+        if (EquippedSlotIndex[0] != -1 && EquippedSlotIndex[1] != -1) //양손무기가 있거나, 무기, 방패 둘다 선택됨
+        {
+            return; //못넣음
+        }
+        else if (EquippedSlotIndex[0] != -1 && EquippedSlotIndex[1] == -1) //무기칸에만 있음 (방패만 선택됨)
+        {
+            if (exist.Data.Type == ItemType.Shield) Equip(index);
+        }
+        else if (EquippedSlotIndex[0] == -1 && EquippedSlotIndex[1] != -1) //방패칸에만 있음 (무기만 선택됨)
+        {
+            if (exist.Data.Type == ItemType.Melee) Equip(index);
+        }
+
     }
     public bool AddItem(ItemBase item, int amount, int durability)
     {
@@ -138,6 +206,10 @@ public class InventoryController : MonoBehaviour
 
                 }
             }
+            if (addables[0] < 6 && item.Type != ItemType.Consumable)
+            {
+                AutoEquip(addables[0]); // 소모품이 아니고, 아이템이 들어온 첫 번째 칸이 퀵슬롯에 포함되어 있을 경우, 퀵슬롯 인덱스
+            }
             return true;
         }
         else // 빈 공간도 없음 -> 못넣음
@@ -172,7 +244,6 @@ public class InventoryController : MonoBehaviour
         _beforeSelectedIndex = SelectedIndex;
         SelectedIndex = index;
         _renderer.SelectRender(_beforeSelectedIndex, SelectedIndex);
-        _renderer.RenderDescription(SelectedIndex);
     }
     public void PutItem()
     {

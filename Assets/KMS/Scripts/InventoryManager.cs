@@ -71,9 +71,17 @@ public class InventoryManager : SingletonT<InventoryManager>
     {
         if (Input.GetKeyDown(KeyCode.I)) ToggleInventory();
         if (Input.GetKeyDown(KeyCode.Escape)) CloseInventory();
-        if (Input.GetKeyDown(KeyCode.Alpha1)) AddItem(_model.ItemList.ItemList[0], 2, 30);
-        if (Input.GetKeyDown(KeyCode.Alpha2)) AddItem(_model.ItemList.ItemList[1], 2, 10);
-        if (Input.GetKeyDown(KeyCode.Alpha3)) AddItem(_model.ItemList.ItemList[2], 3, -1);
+        if (Input.GetKeyDown(KeyCode.Z)) AddItem(_model.ItemList.ItemList[0], 3, -1);
+        if (Input.GetKeyDown(KeyCode.X)) AddItem(_model.ItemList.ItemList[1], 1, 50);
+        if (Input.GetKeyDown(KeyCode.C)) AddItem(_model.ItemList.ItemList[2], 1, 25);
+        if (Input.GetKeyDown(KeyCode.V)) AddItem(_model.ItemList.ItemList[3], 1, 100);
+        if (Input.GetKeyDown(KeyCode.B)) AddItem(_model.ItemList.ItemList[4], 1, -1);
+        if (Input.GetKeyDown(KeyCode.Alpha1)) Controller.Equip(0);
+        if (Input.GetKeyDown(KeyCode.Alpha2)) Controller.Equip(1);
+        if (Input.GetKeyDown(KeyCode.Alpha3)) Controller.Equip(2);
+        if (Input.GetKeyDown(KeyCode.Alpha4)) Controller.Equip(3);
+        if (Input.GetKeyDown(KeyCode.Alpha5)) Controller.Equip(4);
+        if (Input.GetKeyDown(KeyCode.Alpha6)) Controller.Equip(5);
         HoldSlot.transform.position = Input.mousePosition;
     }
 

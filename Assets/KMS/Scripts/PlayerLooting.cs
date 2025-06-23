@@ -17,7 +17,7 @@ public class PlayerLooting : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.F)) TryLoot();
     }
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other) //레이어 6 콜라이더랑 만났을 경우 리스트에 추가
     {
         if (other.gameObject.layer == 6)
         {

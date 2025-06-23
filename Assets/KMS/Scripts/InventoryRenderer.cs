@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR;
+using static Codice.CM.Common.CmCallContext;
 
 public class InventoryRenderer : MonoBehaviour
 {
@@ -13,7 +14,6 @@ public class InventoryRenderer : MonoBehaviour
     private void Start()
     {
         RenderInventory();
-        RenderDescription(-1);
         SelectRender(-1, -1);
         HoldClear();
     }
@@ -72,7 +72,7 @@ public class InventoryRenderer : MonoBehaviour
         _model.InvSlotItemDurSliders[index].gameObject.SetActive(false);
     }
 
-    public void SelectRender(int before, int current)
+    public void SelectRender(int before, int current) //선택된 칸, 쓰레기버튼
     {
         if (before != -1)
         {
@@ -87,6 +87,8 @@ public class InventoryRenderer : MonoBehaviour
         {
             _model.TrashButton.SetActive(false);
         }
+        RenderDescription(current);
+        RenderUtilButton(current);
     }
 
     public void RenderDescription(int index)
@@ -99,6 +101,45 @@ public class InventoryRenderer : MonoBehaviour
         _model.Desc.enabled = true;
         string desc = _model.InvItems[index].Data.Description;
         _model.Desc.text = desc;
+    }
 
+    public void RenderUtilButton(int index)
+    {
+        if (index == -1)
+        {
+            _model.UtilButton.SetActive(false);
+            return;
+        }
+        ItemType type = _model.InvItems[index].Data.Type;
+        if (type == ItemType.Stuff || type == ItemType.ETC)
+        {
+            _model.UtilButton.SetActive(false);
+            return;
+        }
+        _model.UtilButton.SetActive(true);
+        if (type == ItemType.Gun || type == ItemType.Melee || type == ItemType.Special || type == ItemType.Shield)
+        {
+            _model.UtilButtonText.text = "Equip";
+        }
+        else
+        {
+            _model.UtilButtonText.text = "Use";
+        }
+
+    }
+
+    public void RenderEquip(int[] indices)
+    {
+        for (int i = 0; i < 6; i++)
+        {
+            if (i == indices[0] || i == indices[1])
+            {
+                _model.InvSlotPanelImages[i].color = new Color(0f, 1f, 0f);
+            }
+            else
+            {
+                _model.InvSlotPanelImages[i].color = _model.SlotColor;
+            }
+        }
     }
 }
