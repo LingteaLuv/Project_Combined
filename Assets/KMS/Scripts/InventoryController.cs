@@ -228,5 +228,12 @@ public class InventoryController : MonoBehaviour
         }
 
     }
+
+    public void RemoveSelectedItem()
+    {
+        _model.InvItems[SelectedIndex] = null;
+        SelectSlot(-1);
+        _renderer.RenderInventory();
+    }
 }
  

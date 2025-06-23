@@ -14,6 +14,7 @@ public class InventoryRenderer : MonoBehaviour
     {
         RenderInventory();
         RenderDescription(-1);
+        SelectRender(-1, -1);
         HoldClear();
     }
 
@@ -73,10 +74,19 @@ public class InventoryRenderer : MonoBehaviour
 
     public void SelectRender(int before, int current)
     {
-        if (before == -1) ;
-        else _model.InvSlotPanelImages[before].color = _model.SlotColor;
-        if (current == -1) ;
-        else _model.InvSlotPanelImages[current].color = new Color(1f, 0f, 0f);
+        if (before != -1)
+        {
+            _model.InvSlotPanelImages[before].color = _model.SlotColor;
+        }
+        if (current != -1)
+        {
+            _model.InvSlotPanelImages[current].color = new Color(1f, 0f, 0f);
+            _model.TrashButton.SetActive(true);
+        }
+        else
+        {
+            _model.TrashButton.SetActive(false);
+        }
     }
 
     public void RenderDescription(int index)
