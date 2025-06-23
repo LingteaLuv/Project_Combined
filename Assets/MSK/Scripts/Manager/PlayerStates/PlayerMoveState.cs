@@ -8,7 +8,15 @@ public class PlayerMoveState : PlayerState
     public PlayerMoveState(PlayerStateMachine fsm, PlayerMovement movement)
         : base(fsm, movement) { }
 
-    public override void Enter() { Debug.Log("Enter Move"); }
+    public override void Enter() 
+    { 
+        Debug.Log("Enter Move");
+        if (_movement.Controller.IsCrouch)
+        {
+            _movement.Controller._animator.SetTrigger("CrouchUp");
+            _movement.Controller.IsCrouch = false;
+        }
+    }
 
     public override void Exit() { Debug.Log("Exit Move"); }
     public override void Tick()
