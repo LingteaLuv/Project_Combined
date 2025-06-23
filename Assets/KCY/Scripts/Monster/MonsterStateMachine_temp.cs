@@ -2,12 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MonsterStateMachine_temp 
+public class MonsterStateMachine_temp
 {
     // 상태 전이용
     public Dictionary<Estate, BaseState_temp> StateDic;
 
     public BaseState_temp CurState;
+
+    public MonsterStateMachine_temp()
+    {
+        StateDic = new Dictionary<Estate, BaseState_temp>();
+    }
 
     public void ChangeState(BaseState_temp changedState)
     {

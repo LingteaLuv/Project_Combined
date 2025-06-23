@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class MonsterState_temp : BaseState_temp
 {
+    protected Monster_temp monster;
+    public MonsterState_temp(Monster_temp _monster)
+    {
+        monster = _monster;
+    }
 
     public override void Enter()
     {

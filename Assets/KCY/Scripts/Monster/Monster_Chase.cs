@@ -3,43 +3,36 @@ using UnityEngine.AI;
 
 public class Monster_Chase : MonsterState_temp
 {
+    public Monster_Chase(Monster_temp _monster) : base(_monster) { }
+
     private Transform _targetPos;
     private NavMeshAgent _agent;
-    private float _detectRadius = 10f;
-    private float _maxDistnace = 10f; // 처음 false 시작 오류 방지
-    private LayerMask _playerLayer;
     protected MonsterStateMachine_temp stateMachine;
 
 
-    public override void Enter()
+    // 실 입력값 초기화
+    public void MonsterChaseInit()
     {
-        // idle모드에서 전환되는 것을 고려하여 새롭게 초기화 상대 추적 시작
+        _targetPos = monster.TargetPosition;
+        _agent = monster.MonsterAgent;
+        stateMachine = monster._monsterMerchine;
+
+        //// idle모드에서 전환되는 것을 고려하여 새롭게 초기화 상대 추적 시작
         _agent.enabled = true;
         _agent.SetDestination(_targetPos.position);
     }
+
+    public override void Enter()
+    {
+        MonsterChaseInit();
+    }
+
+    // 감지형 콜라이더 필요
     public override void Update()
     {
-        // 프레임 마다 직속 탐색
+        // 탐지는 몬스터에게 부착된 새로운 콜라이더에서 업데이트로 지속적으로 확인
+        // 인지 되면 해당 스크립트로 전환되어 추적로직 작용
         _agent.SetDestination(_targetPos.position);
-        Collider[] hits = Physics.OverlapSphere(_agent.transform.position, _detectRadius, _playerLayer);
-
-        bool playerDetect = false;
-        foreach (Collider hit in hits)
-        {
-            if (hit.transform == _targetPos)
-            {
-                playerDetect = true;
-                break;
-            }
-        }
-
-        // 감지 실패
-        float distance = Vector3.Distance(_agent.transform.position, _targetPos.position);
-        if (!playerDetect && distance > _maxDistnace)
-        {
-            _agent.enabled = false;
-            stateMachine.ChangeState(stateMachine.StateDic[Estate.Idle]);
-        }
     }
 
     public override void Exit()

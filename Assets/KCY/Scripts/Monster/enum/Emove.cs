@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Estate
+public enum Emove
 {
-    Patrol, Chase, Idle
+    Crawl, Walking,  Running
 }
