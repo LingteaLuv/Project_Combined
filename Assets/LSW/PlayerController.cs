@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -6,8 +7,8 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerMovement))]
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] public Animator _animator;
-    [SerializeField] private PlayerCameraController _cameraController;
+    public Animator _animator;
+    private PlayerCameraController _cameraController;
 
     public PlayerIdleState IdleState { get; private set; }
     public PlayerMoveState MoveState { get; private set; }
@@ -27,6 +28,7 @@ public class PlayerController : MonoBehaviour
         _fsm = new PlayerStateMachine();
         _movement = GetComponent<PlayerMovement>();
         _cameraController = GetComponent<PlayerCameraController>();
+        _animator = GetComponent<Animator>();
         _movement.Controller = this;
 
         IdleState = new PlayerIdleState(_fsm, _movement);
@@ -47,14 +49,13 @@ public class PlayerController : MonoBehaviour
         _fsm.Update();
         if (_cameraController != null)
         {
-            _movement.SetRotation(_cameraController.CurrentRotation);
+            _movement.SetRotation(_cameraController.Offset);
         }
         UpdateMoveAnimation();
     }
     private void FixedUpdate()
     {
         _fsm.FixedUpdate();
-        
     }
     /// <summary>
     /// 이동 애니메이션 상태를 갱신합니다.
@@ -67,7 +68,7 @@ public class PlayerController : MonoBehaviour
         if ((_lastMoveInput != Vector3.zero) != isMoving)
         {
             _animator.SetBool("IsMove", isMoving);
-            _animator.speed = _animator.speed = _movement.GetAnimatorSpeedMultiplier();
+            //_animator.speed = _animator.speed = _movement.GetAnimatorSpeedMultiplier();
         }
         UpdateGroundParameter();
         _lastMoveInput = currentInput;

@@ -5,10 +5,10 @@ using UnityEngine.Rendering;
 
 public class PlayerProperty : MonoBehaviour
 {
-    [SerializeField] private Hp _hp;
-    [SerializeField] private Hunger _hunger;
-    [SerializeField] private Thirsty _thirsty;
-    [SerializeField] private Stamina _stamina;
+    private Hp _hp;
+    private Hunger _hunger;
+    private Thirsty _thirsty;
+    private Stamina _stamina;
 
     public Property<float> MoveSpeed;
     public Property<float> AtkSpeed;
@@ -65,7 +65,11 @@ public class PlayerProperty : MonoBehaviour
         _hp.Act(ref _atkDamage, _baseAtkDamage, _atkDamageOffset);
         AtkDamage.Value = _atkDamage;
         _hunger.Act(ref _atkSpeed, _baseAtkSpeed, _atkSpeedOffset);
-        AtkSpeed.Value = _atkSpeed;
+        if(AtkSpeed.Value != _atkSpeed)
+        {
+            AtkSpeed.Value = _atkSpeed;
+        }
+        
         _thirsty.Act(ref _moveSpeed, _baseMoveSpeed, _moveSpeedOffset);
         MoveSpeed.Value = _moveSpeed;
         _stamina.Act();
@@ -200,10 +204,10 @@ public class PlayerProperty : MonoBehaviour
     
     private void Init()
     {
-        _hp.Init(100);
-        _hunger.Init(100);
-        _thirsty.Init(100);
-        _stamina.Init(100);
+        _hp = new Hp(100);
+        _hunger = new Hunger(100);
+        _thirsty = new Thirsty(100);
+        _stamina = new Stamina(100);
 
         _delay = new WaitForSeconds(1f);
 

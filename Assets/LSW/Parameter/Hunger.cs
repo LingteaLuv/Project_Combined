@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class Hunger : Parameter
 {
+    public Hunger(float value)
+    {
+        Init(value);
+    }
+    
     public override void Act(ref float atkSpeed, float baseValue, float offset)
     {
         switch (State)
@@ -18,6 +23,7 @@ public class Hunger : Parameter
                 Penalty(ref atkSpeed, baseValue, offset);
                 break;
             case ParamState.Depletion:
+                Penalty(ref atkSpeed, baseValue, offset);
                 break;
         } 
     }

@@ -4,11 +4,17 @@ using UnityEngine;
 
 public class Thirsty : Parameter
 {
+    public Thirsty(float value)
+    {
+        Init(value);
+    }
+    
     public override void Act(ref float speed, float baseValue, float offset)
     {
         switch (State)
         {
             case ParamState.Full:
+                ResetValue(ref speed, baseValue, offset);
                 break;
             case ParamState.Basic:
                 ResetValue(ref speed, baseValue, offset);
@@ -17,6 +23,7 @@ public class Thirsty : Parameter
                 Penalty(ref speed, baseValue, offset);
                 break;
             case ParamState.Depletion:
+                Penalty(ref speed, baseValue, offset);
                 break;
         } 
     }

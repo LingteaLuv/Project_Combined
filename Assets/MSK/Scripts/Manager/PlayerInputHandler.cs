@@ -11,11 +11,10 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void Update()
     {
-        MoveInput = new Vector3(
-            Input.GetAxisRaw("Horizontal"),
-            0f,
-            Input.GetAxisRaw("Vertical")
-        ).normalized;
+        float x = Input.GetAxis("Horizontal");
+        float z = Input.GetAxis("Vertical");
+
+        MoveInput = new Vector3(x, 0, z).normalized;
 
         JumpPressed = Input.GetButtonDown("Jump");
         CrouchHeld = Input.GetKey(KeyCode.LeftControl);
