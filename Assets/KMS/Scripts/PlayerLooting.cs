@@ -38,7 +38,7 @@ public class PlayerLooting : MonoBehaviour
             {
                 distance = temp;
                 near = c;
-            }
+            } // 리스트 내 콜라이더 중 가장 가까운 것 구해서 near에 저장
         }
         if (_lootableColl == near)
         {
@@ -48,9 +48,12 @@ public class PlayerLooting : MonoBehaviour
         {
             _lootable = near.GetComponent<Lootable>();
             _lootable.OnOutline();
+            _lootable.FUIController.OffDark();
             if (_lootableColl != null)
             {
-                _lootableColl.GetComponent<Lootable>().OffOutline();
+                Lootable temp = _lootableColl.GetComponent<Lootable>();
+                temp.OffOutline();
+                temp.FUIController.OnDark();
             }
             _lootableColl = near;
             LootManager.Instance.NewLootableChecked(_lootable);
@@ -67,6 +70,7 @@ public class PlayerLooting : MonoBehaviour
         {
             _lootableColl = null;
             _lootable.OffOutline();
+            _lootable.FUIController.OnDark();
             _lootable = null;
             LootManager.Instance.LootableNotExist();
         }

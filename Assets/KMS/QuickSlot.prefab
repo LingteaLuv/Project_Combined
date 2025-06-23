@@ -725,9 +725,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: InvSlotController, Assembly-CSharp
-        m_MethodName: SlotClickEvent
+      - m_Target: {fileID: 1487576252118914765}
+        m_TargetAssemblyTypeName: QuickSlotSlotController, NewAssembly
+        m_MethodName: TryEquip
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -786,7 +786,7 @@ MonoBehaviour:
         m_Calls:
         - m_Target: {fileID: 1487576252118914765}
           m_TargetAssemblyTypeName: InvSlotController, NewAssembly
-          m_MethodName: HoverImageDisable
+          m_MethodName: HoverImageEnable
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}

@@ -7,6 +7,7 @@ using UnityEngine.UIElements;
 using static Codice.CM.Common.Purge.PurgeReport;
 using System.Diagnostics.CodeAnalysis;
 using System;
+using System.Linq;
 
 public class InventoryController : MonoBehaviour
 {
@@ -51,7 +52,74 @@ public class InventoryController : MonoBehaviour
         return flags;
     }
 
-    public void Equip(int index) //해당 칸에 대한 장착 시도
+    private void Swap(int a, int b)
+    {
+        Item tempItem = _model.InvItems[a];
+        _model.InvItems[a] = _model.InvItems[b];
+        _model.InvItems[b] = tempItem;
+    }
+    public void EquipButton(int index) //해당 인벤토리 칸 아이템(선택된)을 장착시도
+    {
+        Item exist = _model.InvItems[index];
+        if (EquippedSlotIndex[0] == -1 && EquippedSlotIndex[1] == -1) // 선택된게 아예없다면
+        {
+            for (int i= 0; i < 6; i++) // 빈 칸 추척
+            {
+                if (_model.InvItems[i] == null)
+                {
+                    _model.InvItems[i] = _model.InvItems[index];
+                    _model.InvItems[index] = null;
+                    Equip(i);
+                    _renderer.RenderInventory();
+                    return;
+                }
+            } // 위에서 리턴안됨 -> 꽉차 있으니 첫칸과 스왑
+            Swap(0, index);
+            Equip(0);
+        }
+        else if (EquippedSlotIndex[0] != -1 && EquippedSlotIndex[1] != -1)
+        {
+            if (EquippedSlotIndex[0] == EquippedSlotIndex[1]) // 두손장비가 선택된상태
+            {
+                Swap(EquippedSlotIndex[0], index);
+                Equip(EquippedSlotIndex[0]);
+
+            }
+            else // 한손장비 두개 선택된상태
+            {
+                if (exist.Data.Type == ItemType.Melee)
+                {
+                    Swap(EquippedSlotIndex[0], index);
+                    Equip(EquippedSlotIndex[0]);
+
+                }
+                else if (exist.Data.Type == ItemType.Shield)
+                {
+                    Swap(EquippedSlotIndex[1], index);
+                    Equip(EquippedSlotIndex[1]);
+                }
+                else
+                {
+                    int min = EquippedSlotIndex.Min();
+                    Swap(min, index);
+                    Equip(min);
+                }
+            }
+        }
+        else if (EquippedSlotIndex[0] != -1 && EquippedSlotIndex[1] == -1) //무기칸에만 있음 (방패만 선택됨)
+        {
+            Swap(EquippedSlotIndex[0], index);
+            Equip(EquippedSlotIndex[0]);
+        }
+        else if (EquippedSlotIndex[0] == -1 && EquippedSlotIndex[1] != -1) //방패칸에만 있음 (무기만 선택됨)
+        {
+            Swap(EquippedSlotIndex[1], index);
+            Equip(EquippedSlotIndex[1]);
+        }
+        _renderer.RenderInventory();
+
+    }
+    public void Equip(int index) //해당 칸 아이템에 대한 장착 시도
     {
         Item exist = _model.InvItems[index];
         if (exist == null) return;
@@ -92,7 +160,7 @@ public class InventoryController : MonoBehaviour
         _renderer.RenderEquip(EquippedSlotIndex);
 
     }
-    public void AutoEquip(int index) // 아무것도 선택되어 있지 않거나, 
+    private void AutoEquip(int index) // 아무것도 선택되어 있지 않거나, 
     {
         Item exist = _model.InvItems[index];
 
@@ -221,7 +289,7 @@ public class InventoryController : MonoBehaviour
     public void HoldItem(int index)
     {
         if (_model.InvItems[index] == null) return;
-        Debug.Log(HoldingIndex);
+        if (index == EquippedSlotIndex[0] || index == EquippedSlotIndex[1]) return;
         _renderer.HoldRender(index);
         IsHolding = true;
         HoldingIndex = index;
@@ -242,14 +310,21 @@ public class InventoryController : MonoBehaviour
     public void SelectSlot(int index)
     {
         _beforeSelectedIndex = SelectedIndex;
-        SelectedIndex = index;
+        if (index < 6) // 퀵슬롯 내 슬롯을 선택하려고 할 경우 선택 취소
+        {
+            SelectedIndex = -1;
+        }
+        else
+        {
+            SelectedIndex = index;
+        }
         _renderer.SelectRender(_beforeSelectedIndex, SelectedIndex);
     }
     public void PutItem()
     {
         if (!IsHolding) return;
         bool[] flags = GetFlags(_model.InvItems[HoldingIndex].Data);
-        if (flags[NextIndex])
+        if (flags[NextIndex] || NextIndex == EquippedSlotIndex[0] || NextIndex == EquippedSlotIndex[1])
         {
             CancelHolding();
         }
