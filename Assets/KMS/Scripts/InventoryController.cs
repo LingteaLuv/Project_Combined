@@ -172,6 +172,7 @@ public class InventoryController : MonoBehaviour
         _beforeSelectedIndex = SelectedIndex;
         SelectedIndex = index;
         _renderer.SelectRender(_beforeSelectedIndex, SelectedIndex);
+        _renderer.RenderDescription(SelectedIndex);
     }
     public void PutItem()
     {
@@ -217,6 +218,14 @@ public class InventoryController : MonoBehaviour
         Item tempItem = _model.InvItems[NextIndex];
         _model.InvItems[NextIndex] = _model.InvItems[HoldingIndex];
         _model.InvItems[HoldingIndex] = tempItem;
+        if (SelectedIndex == HoldingIndex) 
+        {
+            SelectSlot(NextIndex);
+        }
+        else if (SelectedIndex == NextIndex)
+        {
+            SelectSlot(HoldingIndex);
+        }
 
     }
 }

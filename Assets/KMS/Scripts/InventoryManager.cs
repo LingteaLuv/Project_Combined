@@ -56,6 +56,11 @@ public class InventoryManager : SingletonT<InventoryManager>
 
     }
 
+    public void CloseInventory()
+    {
+        if (IsinventoryOpened) Inventory.SetActive(false);
+    }
+
     public bool AddItem(ItemBase item, int amount, int dur)
     {
         bool canAdd = Controller.AddItem(item, amount, dur);
@@ -64,7 +69,8 @@ public class InventoryManager : SingletonT<InventoryManager>
     }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape)) ToggleInventory();
+        if (Input.GetKeyDown(KeyCode.I)) ToggleInventory();
+        if (Input.GetKeyDown(KeyCode.Escape)) CloseInventory();
         if (Input.GetKeyDown(KeyCode.Alpha1)) AddItem(_model.ItemList.ItemList[0], 2, 30);
         if (Input.GetKeyDown(KeyCode.Alpha2)) AddItem(_model.ItemList.ItemList[1], 2, 10);
         if (Input.GetKeyDown(KeyCode.Alpha3)) AddItem(_model.ItemList.ItemList[2], 3, -1);

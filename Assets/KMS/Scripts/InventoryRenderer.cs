@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -12,6 +13,7 @@ public class InventoryRenderer : MonoBehaviour
     private void Start()
     {
         RenderInventory();
+        RenderDescription(-1);
         HoldClear();
     }
 
@@ -75,5 +77,18 @@ public class InventoryRenderer : MonoBehaviour
         else _model.InvSlotPanelImages[before].color = _model.SlotColor;
         if (current == -1) ;
         else _model.InvSlotPanelImages[current].color = new Color(1f, 0f, 0f);
+    }
+
+    public void RenderDescription(int index)
+    {
+        if (index == -1)
+        {
+            _model.Desc.enabled = false;
+            return;
+        }
+        _model.Desc.enabled = true;
+        string desc = _model.InvItems[index].Data.Description;
+        _model.Desc.text = desc;
+
     }
 }
