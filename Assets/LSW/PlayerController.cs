@@ -15,8 +15,8 @@ public class PlayerController : MonoBehaviour
     public PlayerJumpState JumpState { get; private set; }
     public PlayerCrouchState CrouchState { get; private set; }
     public PlayerIdleCrouchState IdleCrouchState { get; private set; }
-
-
+    public PlayerClimbState ClimbState { get; private set; }
+    
     private PlayerMovement _movement;
     private PlayerStateMachine _fsm;
     private Vector3 _lastMoveInput = Vector3.zero;
@@ -36,6 +36,7 @@ public class PlayerController : MonoBehaviour
         JumpState = new PlayerJumpState(_fsm, _movement);
         CrouchState = new PlayerCrouchState(_fsm, _movement);
         IdleCrouchState = new PlayerIdleCrouchState(_fsm, _movement);
+        ClimbState = new PlayerClimbState(_fsm, _movement);
     }
     private void Awake() => Init();
 
@@ -65,7 +66,7 @@ public class PlayerController : MonoBehaviour
         Vector3 currentInput = _movement.MoveInput;
         bool isMoving = currentInput != Vector3.zero;
 
-        if ((_lastMoveInput != Vector3.zero) != isMoving)
+        if ((_lastMoveInput != Vector3.zero) != isMoving && !_movement.IsOnLadder)
         {
             _animator.SetBool("IsMove", isMoving);
             //_animator.speed = _animator.speed = _movement.GetAnimatorSpeedMultiplier();
@@ -81,9 +82,24 @@ public class PlayerController : MonoBehaviour
     {
         _animator.SetTrigger("IsJump");
     }
+    public void PlayClimbAnimation()
+    {
+        _animator.SetBool("IsClimb",true);
+    }
+    
+    public void StopClimbAnimation()
+    {
+        _animator.SetBool("IsClimb",false);
+    }
+    
     private void UpdateGroundParameter()
     {
         bool isGrounded = _movement.IsGrounded;
         _animator.SetBool("IsGround", isGrounded);
+    }
+
+    public void SetAnimatorSpeed()
+    {
+        _animator.speed = Mathf.Abs(Input.GetAxis("Vertical"));
     }
 }
