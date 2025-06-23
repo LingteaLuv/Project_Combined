@@ -19,8 +19,10 @@ public class MeleeWeapon : WeaponBase
     [SerializeField] private LayerMask _targetLayer; //타겟 대상 레이어 -> 추후 몬스터가 레이어로 관리되지 않을까?
 
     //1번:Physics.OverlapSphere + 범위 + 각도 체크
-    public override void Attack() 
+    public override void Attack()
     {
+        _animator.SetTrigger("DownwardAttack");
+
         // 8. 주변 범위 내, 몬스터 레이어 오브젝트의 충돌체를 배열로 저장
         Collider[] _colliders = Physics.OverlapSphere(transform.position, _attackRange, _targetLayer);
 
@@ -51,13 +53,35 @@ public class MeleeWeapon : WeaponBase
             // +@ 피격 시 색깔 변화
             StartCoroutine(DamageRoutine(target.gameObject));
         }
+
     }
 
-    //2번 애니메이션
+    //2번 애니메이션 그냥 콜라이더 추가해버리면 공격하지 않아도 닿으면 몹들이 맞은걸로 인식하게 된다.
     public void Attack2()
     {
         Attack();
         //SetTrigger("Attack"); //플레이어가 공격을 하는 애니메이션을 재생한다
+    }
+
+    //2번 애니메이션
+    public void Attack3()
+    {
+        // 1. 공격 애니메이션을 재생한다.
+        // animator.SetTrigger("Attack");
+
+        // 2. 애니메이션 클립의 특정 타이밍에 Animation Event를 추가하여,
+        //    공격 판정(콜라이더 생성 및 활성화) 함수를 호출한다.
+
+        // 3. 해당 함수에서 공격 범위 내 적을 감지하고 데미지를 적용한다.
+
+        // 4. 공격 처리 후, 콜라이더 컴포넌트를 비활성화하거나 제거하여
+        //    불필요한 충돌 처리를 방지한다.
+    }
+
+    //3번 애니메이션 키프레임을 활용한 감지
+    public void AttackEvent()
+    {
+
     }
 
     private void OnTirrigerEnter(Collision collision)
