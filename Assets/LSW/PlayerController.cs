@@ -7,37 +7,29 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerMovement))]
 public class PlayerController : MonoBehaviour
 {
+    #region Public 
     public Animator _animator;
-    private PlayerCameraController _cameraController;
+    public bool IsCrouch { get; set; } = false;
+    #endregion
 
+    #region Player State
     public PlayerIdleState IdleState { get; private set; }
     public PlayerMoveState MoveState { get; private set; }
     public PlayerJumpState JumpState { get; private set; }
     public PlayerCrouchState CrouchState { get; private set; }
     public PlayerIdleCrouchState IdleCrouchState { get; private set; }
     public PlayerClimbState ClimbState { get; private set; }
-    
+    #endregion
+
+    #region Private
+    private PlayerCameraController _cameraController;
     private PlayerMovement _movement;
     private PlayerStateMachine _fsm;
     private Vector3 _lastMoveInput = Vector3.zero;
     private bool _isJumping = false;
+    #endregion
 
-
-    private void Init() 
-    {
-        _fsm = new PlayerStateMachine();
-        _movement = GetComponent<PlayerMovement>();
-        _cameraController = GetComponent<PlayerCameraController>();
-        _animator = GetComponent<Animator>();
-        _movement.Controller = this;
-
-        IdleState = new PlayerIdleState(_fsm, _movement);
-        MoveState = new PlayerMoveState(_fsm, _movement);
-        JumpState = new PlayerJumpState(_fsm, _movement);
-        CrouchState = new PlayerCrouchState(_fsm, _movement);
-        IdleCrouchState = new PlayerIdleCrouchState(_fsm, _movement);
-        ClimbState = new PlayerClimbState(_fsm, _movement);
-    }
+    #region Unity MonoBehaviour
     private void Awake() => Init();
 
     private void Start()
@@ -58,6 +50,25 @@ public class PlayerController : MonoBehaviour
     {
         _fsm.FixedUpdate();
     }
+    #endregion
+
+    # region Private Mathood
+    private void Init()
+    {
+        _fsm = new PlayerStateMachine();
+        _movement = GetComponent<PlayerMovement>();
+        _cameraController = GetComponent<PlayerCameraController>();
+        _animator = GetComponent<Animator>();
+        _movement.Controller = this;
+
+        IdleState = new PlayerIdleState(_fsm, _movement);
+        MoveState = new PlayerMoveState(_fsm, _movement);
+        JumpState = new PlayerJumpState(_fsm, _movement);
+        CrouchState = new PlayerCrouchState(_fsm, _movement);
+        IdleCrouchState = new PlayerIdleCrouchState(_fsm, _movement);
+        ClimbState = new PlayerClimbState(_fsm, _movement);
+    }
+
     /// <summary>
     /// 이동 애니메이션 상태를 갱신합니다.
     /// </summary>
@@ -74,7 +85,14 @@ public class PlayerController : MonoBehaviour
         UpdateGroundParameter();
         _lastMoveInput = currentInput;
     }
+    private void UpdateGroundParameter()
+    {
+        bool isGrounded = _movement.IsGrounded;
+        _animator.SetBool("IsGround", isGrounded);
+    }
+    #endregion
 
+    #region Public Mathood
     /// <summary>
     /// 점프 애니메이션 상태를 외부 상태에서 직접 설정합니다.
     /// </summary>
@@ -91,15 +109,10 @@ public class PlayerController : MonoBehaviour
     {
         _animator.SetBool("IsClimb",false);
     }
-    
-    private void UpdateGroundParameter()
-    {
-        bool isGrounded = _movement.IsGrounded;
-        _animator.SetBool("IsGround", isGrounded);
-    }
 
     public void SetAnimatorSpeed()
     {
         _animator.speed = Mathf.Abs(Input.GetAxis("Vertical"));
     }
+    #endregion
 }

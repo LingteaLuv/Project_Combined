@@ -11,7 +11,12 @@ public class PlayerIdleCrouchState : PlayerState
     public override void Enter()
     {
         Debug.Log("Enter IdleCrouch");
-        _movement.Controller._animator.SetTrigger("CrouchDown");
+
+        if (!_movement.Controller.IsCrouch)
+        {
+            _movement.Controller._animator.SetTrigger("CrouchDown");
+            _movement.Controller.IsCrouch = true;
+        }
         _movement.Controller._animator.SetBool("IsCrouch", true);
         _movement.SetCrouch(true);
     }
@@ -19,7 +24,6 @@ public class PlayerIdleCrouchState : PlayerState
     public override void Exit()
     {
         Debug.Log("Exit IdleCrouch");
-        _movement.Controller._animator.SetTrigger("CrouchUp");
         _movement.Controller._animator.SetBool("IsCrouch", false);
         _movement.SetCrouch(false);
     }
