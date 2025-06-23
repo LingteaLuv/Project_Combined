@@ -4,6 +4,9 @@ using UnityEngine;
 using static UnityEditor.Progress;
 using UnityEngine.XR;
 using UnityEngine.UIElements;
+using static Codice.CM.Common.Purge.PurgeReport;
+using System.Diagnostics.CodeAnalysis;
+using System;
 
 public class InventoryController : MonoBehaviour
 {
@@ -32,28 +35,15 @@ public class InventoryController : MonoBehaviour
     private bool[] GetFlags(ItemBase item)
     {
         bool[] flags = new bool[18]; //false 인 경우에만 들어갈 수 있음
-        flags[0] = true;
-        flags[1] = true;
-        flags[2] = true;
-        flags[3] = true;
-        flags[4] = true;
-        flags[5] = true;
-        switch (item.Type)
+
+        if (item.Type == ItemType.ETC || item.Type == ItemType.Stuff)
         {
-            case ItemType.Gun:
-                flags[0] = false;
-                break;
-            case ItemType.Shield:
-                flags[1] = false;
-                break;
-            case ItemType.Special:
-                flags[2] = false;
-                break;
-            case ItemType.Consumable:
-                flags[3] = false;
-                flags[4] = false;
-                flags[5] = false;
-                break;
+            flags[0] = true;
+            flags[1] = true;
+            flags[2] = true;
+            flags[3] = true;
+            flags[4] = true;
+            flags[5] = true;
         }
         return flags;
     }
@@ -186,8 +176,15 @@ public class InventoryController : MonoBehaviour
     public void PutItem()
     {
         if (!IsHolding) return;
-        Debug.Log("put");
-        if (NextIndex == HoldingIndex) ;
+        bool[] flags = GetFlags(_model.InvItems[HoldingIndex].Data);
+        if (flags[NextIndex])
+        {
+            CancelHolding();
+        }
+        else if (NextIndex == HoldingIndex)
+        {
+            SelectSlot(HoldingIndex);
+        }
         else if (_model.InvItems[NextIndex] == null)
         {
             PlaceItem();
@@ -198,10 +195,7 @@ public class InventoryController : MonoBehaviour
             SwitchItem();
             Debug.Log("replace");
         }
-        IsHolding = false;
-        HoldingIndex = -1;
-        NextIndex = -1;
-        _renderer.HoldClear();
+        CancelHolding();
         _renderer.RenderInventory();
     }
 
@@ -209,10 +203,17 @@ public class InventoryController : MonoBehaviour
     {
         _model.InvItems[NextIndex] = _model.InvItems[HoldingIndex];
         _model.InvItems[HoldingIndex] = null;
+        if (SelectedIndex == HoldingIndex) SelectSlot(NextIndex);
 
     }
     public void SwitchItem()
     {
+        bool[] flags = GetFlags(_model.InvItems[NextIndex].Data);
+        if (flags[HoldingIndex])
+        {
+            CancelHolding();
+            return;
+        }
         Item tempItem = _model.InvItems[NextIndex];
         _model.InvItems[NextIndex] = _model.InvItems[HoldingIndex];
         _model.InvItems[HoldingIndex] = tempItem;

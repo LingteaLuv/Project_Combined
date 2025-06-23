@@ -46,6 +46,6 @@ public class Item
     }
     public void SetDur(int c)
     {
-        if (Data.Type == ItemType.Melee || Data.Type == ItemType.Melee || Data.Type == ItemType.Melee) Durability = c;
+        if (Data.Type == ItemType.Melee || Data.Type == ItemType.Shield || Data.Type == ItemType.Special) Durability = c;
     }
 }

@@ -64,7 +64,7 @@ public class InventoryManager : SingletonT<InventoryManager>
     }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape)) InventoryManager.Instance.ToggleInventory();
+        if (Input.GetKeyDown(KeyCode.Escape)) ToggleInventory();
         if (Input.GetKeyDown(KeyCode.Alpha1)) AddItem(_model.ItemList.ItemList[0], 2, 30);
         if (Input.GetKeyDown(KeyCode.Alpha2)) AddItem(_model.ItemList.ItemList[1], 2, 10);
         if (Input.GetKeyDown(KeyCode.Alpha3)) AddItem(_model.ItemList.ItemList[2], 3, -1);

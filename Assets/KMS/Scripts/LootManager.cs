@@ -126,7 +126,7 @@ public class LootManager : SingletonT<LootManager>
             }
             else _itemCountTexts[i].enabled = false;
 
-            if (_lootable.LootItems.Items[i].Durability != -1)
+            if (_lootable.LootItems.Items[i].MaxDurability != -1)
             {
                 _itemDurSliders[i].gameObject.SetActive(true);
                 _itemDurSliders[i].value = (float)_lootable.LootItems.Items[i].Durability / _lootable.LootItems.Items[i].MaxDurability;
@@ -138,12 +138,14 @@ public class LootManager : SingletonT<LootManager>
 
     public void GetItem(int index)
     {
+        if (_lootable.LootItems.Items[index] == null) return;
         ItemBase data = _lootable.LootItems.Items[index].Data;
         int count = _lootable.LootItems.Items[index].StackCount;
         int dur = _lootable.LootItems.Items[index].Durability;
         if (InventoryManager.Instance.AddItem(data, count, dur))
         {
-
+           _lootable.LootItems.Items[index] = null;
+            LootTableUpdate();
         }
     }
 }
