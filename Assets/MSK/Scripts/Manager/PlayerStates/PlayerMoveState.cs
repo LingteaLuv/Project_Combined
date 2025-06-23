@@ -28,6 +28,11 @@ public class PlayerMoveState : PlayerState
             _fsm.ChangeState(_movement.Controller.IdleCrouchState);
             return;
         }
+        if (_movement.IsOnLadder)
+        {
+            _fsm.ChangeState(_movement.Controller.ClimbState);
+            return;
+        }
         if (HandleJumpTransition()) return;
     }
     public override void FixedTick()

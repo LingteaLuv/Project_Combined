@@ -11,6 +11,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private PlayerProperty _property;
     [SerializeField] private Transform _aim;
 
+    public PlayerClimb PlayerClimbHandler { get; private set; }
+
     public PlayerController Controller { get; set; }
     private Rigidbody _rb;
     private bool _jumpConsumedThisFrame;
@@ -26,13 +28,14 @@ public class PlayerMovement : MonoBehaviour
     public Vector3 MoveInput => _inputHandler.MoveInput;
     public bool JumpPressed => _inputHandler.JumpPressed;
     public bool CrouchHeld => _inputHandler.CrouchHeld;
-    
+    public bool IsOnLadder { get; private set; }
     public bool IsGrounded { get; private set; }
 
 
     private void Init()
     {
         _rb = GetComponent<Rigidbody>();
+        PlayerClimbHandler = GetComponent<PlayerClimb>();
     }
 
     private void Awake() => Init();
@@ -41,6 +44,7 @@ public class PlayerMovement : MonoBehaviour
     {
         _jumpConsumedThisFrame = false;
         IsGrounded = Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, _groundCheckDistance + 0.1f);
+        IsOnLadder = _inputHandler.IsOnLadder;
     }
     /// <summary>
     /// 입력 방향에 따라 관성 없이 이동합니다.
@@ -116,5 +120,10 @@ public class PlayerMovement : MonoBehaviour
     public float GetAnimatorSpeedMultiplier()
     {
         return Mathf.Clamp01(MoveInput.magnitude) * (_property?.MoveSpeed?.Value ?? 0f)+1;
+    }
+    
+    public void SetGravity(bool enabled)
+    {
+        _rb.useGravity = enabled;
     }
 }
