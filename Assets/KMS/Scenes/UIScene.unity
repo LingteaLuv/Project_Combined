@@ -1488,6 +1488,7 @@ GameObject:
   - component: {fileID: 440224768}
   - component: {fileID: 440224767}
   - component: {fileID: 440224766}
+  - component: {fileID: 440224769}
   m_Layer: 5
   m_Name: Util
   m_TagString: Untagged
@@ -1558,7 +1559,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 440224767}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 440224769}
+        m_TargetAssemblyTypeName: UtilButtonController, NewAssembly
+        m_MethodName: TryEquip
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &440224767
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1597,6 +1610,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 440224764}
   m_CullTransparentMesh: 1
+--- !u!114 &440224769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 440224764}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c40af0258f1a9e47a94cc8928e17ada, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &444353736
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2226,18 +2251,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 562810429}
     m_Modifications:
-    - target: {fileID: 3479022225719877451, guid: 178e90c7707fa7d48993a16960bdd7d6, type: 3}
-      propertyPath: m_Color.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3479022225719877451, guid: 178e90c7707fa7d48993a16960bdd7d6, type: 3}
-      propertyPath: m_Color.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3479022225719877451, guid: 178e90c7707fa7d48993a16960bdd7d6, type: 3}
-      propertyPath: m_Color.r
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 3938843735865269558, guid: 178e90c7707fa7d48993a16960bdd7d6, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -4907,6 +4920,7 @@ MonoBehaviour:
   HoldingIndex: 0
   NextIndex: 0
   SelectedIndex: 0
+  EquippedSlotIndex: 
 --- !u!114 &1635624738
 MonoBehaviour:
   m_ObjectHideFlags: 0
