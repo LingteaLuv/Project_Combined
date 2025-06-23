@@ -5,7 +5,7 @@ using UnityEngine;
 //최상위 부모
 public abstract class WeaponBase : MonoBehaviour
 {
-    private float _weaponBaseid; //?
+    private float _weaponBaseid; //
 
     public abstract void Attack();
 }
