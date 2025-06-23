@@ -7,8 +7,7 @@ public class FUIController : MonoBehaviour
 {
     [SerializeField] private Transform _f;
     private Transform _camera;
-
-    public Image Dark { get; set; }
+    [SerializeField] public Image Dark;
     public Image Fill { get; set; }
 
     private void Start()
@@ -26,5 +25,13 @@ public class FUIController : MonoBehaviour
     public void OffDark()
     {
         Dark.enabled = false;
+    }
+    public void OnFUI()
+    {
+        _f.gameObject.SetActive(true);
+    }
+    public void OffFUI()
+    {
+        _f.gameObject.SetActive(false);
     }
 }
