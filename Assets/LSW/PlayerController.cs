@@ -1,4 +1,3 @@
-using EPOOutline.Demo;
 using UnityEngine;
 
 /// <summary>
