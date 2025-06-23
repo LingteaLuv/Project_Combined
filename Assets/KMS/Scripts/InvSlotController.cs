@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class InvSlotController : MonoBehaviour
+public class InvSlotController : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] Button _slotButton;
 
@@ -23,16 +24,35 @@ public class InvSlotController : MonoBehaviour
         _hoverImage.enabled = false;
     }
 
-    public void SlotClickEvent()
+    public void TryHold()
     {
-        Debug.Log(1);
         int index = GetSlotIndex();
-        InventoryManager.Instance.Controller.HandleItem(index);
+        InventoryManager.Instance.Controller.HoldItem(index);
     }
-
+    public void TryPut()
+    {
+        InventoryManager.Instance.Controller.PutItem();
+    }
+    public void TrySelect()
+    {
+        int index = GetSlotIndex();
+        InventoryManager.Instance.Controller.SelectSlot(index);
+    }
     private int GetSlotIndex()
     {
         int.TryParse(gameObject.name, out int index);
         return index;
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (InventoryManager.Instance.Controller.IsHolding)
+            InventoryManager.Instance.Controller.NextIndex = GetSlotIndex();
+    }
+
+    public void OnPointerExit(PointerEventData eventData) 
+    {
+        if (InventoryManager.Instance.Controller.IsHolding)
+            InventoryManager.Instance.Controller.NextIndex = InventoryManager.Instance.Controller.HoldingIndex;
     }
 }

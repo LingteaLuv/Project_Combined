@@ -1745,7 +1745,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1117758433}
-  - component: {fileID: 1117758432}
+  - component: {fileID: 1117758434}
   m_Layer: 0
   m_Name: UISceneLoader
   m_TagString: Untagged
@@ -1753,18 +1753,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1117758432
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1117758431}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 25fe0ccfb83582740b87160f2f5770b8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1117758433
 Transform:
   m_ObjectHideFlags: 0
@@ -1780,6 +1768,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1117758434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1117758431}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb6c477cc4e415349b8fdcd7d8018b1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1122656376
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2616,6 +2616,18 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 64bce667e0fc81c41b57d8d2ce8b70ef, type: 2}
     - target: {fileID: 7334001822989411306, guid: 2ebf9688395503e4aa628e17ffbc2010, type: 3}
+      propertyPath: ItemDatas.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: bbae9fd4785cd5d428d37af9fae98508, type: 2}
+    - target: {fileID: 7334001822989411306, guid: 2ebf9688395503e4aa628e17ffbc2010, type: 3}
+      propertyPath: ItemDatas.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: eedc3ca0368ec29478e9bf5902e6e6e0, type: 2}
+    - target: {fileID: 7334001822989411306, guid: 2ebf9688395503e4aa628e17ffbc2010, type: 3}
+      propertyPath: ItemDatas.Array.data[2]
+      value: 
+      objectReference: {fileID: 11400000, guid: 09f30c79410703347a976378e19ed731, type: 2}
+    - target: {fileID: 7334001822989411306, guid: 2ebf9688395503e4aa628e17ffbc2010, type: 3}
       propertyPath: ItemAmounts.Array.data[0]
       value: 4
       objectReference: {fileID: 0}
@@ -2629,7 +2641,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7334001822989411306, guid: 2ebf9688395503e4aa628e17ffbc2010, type: 3}
       propertyPath: ItemDurabilitys.Array.data[0]
-      value: 14
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

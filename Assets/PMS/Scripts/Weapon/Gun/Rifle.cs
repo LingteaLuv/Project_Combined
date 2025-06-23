@@ -18,7 +18,12 @@ public class Rifle : GunWeaponBase //이후 총마다 상속을 시켜 줘야 �
         //나중에 플레이어 Input으로 Shot()
         if (Input.GetKeyDown(KeyCode.X) && _canShot && _currentAmmoCount > 0)
         {
-            Shot();
+            Attack();
+        }
+        if (Input.GetKeyDown(KeyCode.R) && !_isReload)
+        {
+            StartCoroutine(ReloadCorutine());
+            Debug.Log("총 재장전중");
         }
     }
 
@@ -29,9 +34,22 @@ public class Rifle : GunWeaponBase //이후 총마다 상속을 시켜 줘야 �
         yield return new WaitForSeconds(_fireDelay);
         _canShot = true;
     }
+    private IEnumerator ReloadCorutine()
+    {
+        //장전 애니메이션 재생 추가
+
+        _isReload = true;
+
+        _currentAmmoCount = _maxAmmoCount;
+
+        yield return new WaitForSeconds(_reloadTime);
+
+
+        _isReload = false;
+    }
 
     //외부에서 사용할 총을 쏘는 함수
-    public void Shot()
+    public override void Attack()
     {
         if (_currentAmmoCount == 0)
         {
@@ -41,7 +59,7 @@ public class Rifle : GunWeaponBase //이후 총마다 상속을 시켜 줘야 �
         //발사 할 수 있는 총알이 있는지 총알풀 검사
         GameObject bulletObj = _gunBulletObjectPool.GetInactive();
 
-        if (bulletObj != null)  //만약 들고 왔다면 
+        if (bulletObj != null && _currentAmmoCount > 0)  //만약 들고 왔다면 
         {
             // 발사 딜레이 시작 (총알이 실제로 발사될 때만)
             StartCoroutine(ShotDelay());
@@ -56,6 +74,8 @@ public class Rifle : GunWeaponBase //이후 총마다 상속을 시켜 줘야 �
                 bullet.SetDirection(_firePoint.forward);
             }
             bulletObj.SetActive(true); //해당 총알을 활성화시킴
+
+            _currentAmmoCount--; //총알 한발씩 제거
         }
         else
         {

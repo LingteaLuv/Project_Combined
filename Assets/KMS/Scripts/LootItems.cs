@@ -1,27 +1,24 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
 public class LootItems : MonoBehaviour
 {
 
-    public ItemSO[] Items = new ItemSO[6];
+    public ItemBase[] ItemDatas = new ItemBase[6];
     public int[] ItemAmounts = new int[6];
-    public int[] ItemDurabilitys = new int[6];
+    public bool[] ItemBlocked = new bool[6];
+
+    public Item[] Items;
 
     private void Awake()
     {
+        Items = new Item[6];
         for (int i = 0; i < Items.Length; i++)
         {
-            if (Items[i] == null) continue;
-            if (Items[i].MaxDurability == -1) 
-            { 
-                ItemDurabilitys[i] = -1;
-                continue;
-            } 
+            if (ItemDatas[i] == null) continue;
+            ItemBlocked[i] = true;
+            Items[i] = new Item(ItemDatas[i]);
+            Items[i].SetCount(ItemAmounts[i]);
             float a = UnityEngine.Random.Range(0.6f, 1.0f);
-            ItemDurabilitys[i] = (int)(Items[i].MaxDurability * a);
+            Items[i].SetDur((int)(Items[i].MaxDurability * a));
         }
     }
 }

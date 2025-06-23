@@ -9,10 +9,10 @@ public class TextLoader : MonoBehaviour
 
     private void Awake()
     {
-        Init();
+        PopUpTextLoad();
     }
     
-    private void Init()
+    private void PopUpTextLoad()
     {
     	// 데이터 저장을 위한 Dictionary 초기화
         _popupTexts = new Dictionary<string, string>();
