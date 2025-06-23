@@ -11,6 +11,7 @@ public class Item
 
     public int MaxDurability { get; private set; }
     public int MaxStackSize { get; private set; }
+
     public Item(ItemBase data)
     {
         Data = data;
@@ -46,6 +47,6 @@ public class Item
     }
     public void SetDur(int c)
     {
-        if (Data.Type == ItemType.Melee || Data.Type == ItemType.Melee || Data.Type == ItemType.Melee) Durability = c;
+        if (Data.Type == ItemType.Melee || Data.Type == ItemType.Shield || Data.Type == ItemType.Special) Durability = c;
     }
 }
