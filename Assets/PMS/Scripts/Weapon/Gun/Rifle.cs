@@ -7,7 +7,6 @@ public class Rifle : GunWeaponBase //이후 총마다 상속을 시켜 줘야 �
     private void Awake()
     {
         Init();     //나중에 플레이어 해당 사용할려고 할 때
-        SetInit();
     }
     public override void Init()
     {
@@ -17,13 +16,39 @@ public class Rifle : GunWeaponBase //이후 총마다 상속을 시켜 줘야 �
 
     private void Update()
     {
-        //나중에 플레이어 Input으로 Shot()
-        if(Input.GetKeyDown(KeyCode.X) && _canShot && _currentAmmoCount > 0) 
+        // 마우스 우클릭을 누르는 순간 (조준 시작)
+        if (Input.GetMouseButtonDown(1))
         {
-            GameObject bulletObj = _gunBulletObjectPool.GetInactive();
-            UpdateTrajectory(bulletObj, bulletObj.GetComponent<BulletBase>()._speed);
-            //Attack();
+            // 총알 궤적 미리보기를 위한 로직 (옵션)
+            _lineRenderer.enabled = true; // 라인 렌더러 활성화
+            GameObject bulletObj = _gunBulletObjectPool.GetInactive(); // 궤적 미리보기를 위해 임시 객체 가져오기 (실제 발사 아님)
+            UpdateTrajectory(bulletObj, bulletObj.GetComponent<BulletBase>()._speed); // 궤적 업데이트
         }
+        // 마우스 우클릭이 눌려 있는 동안 (조준 유지)
+        if (Input.GetMouseButton(1))
+        {
+            // 여기서는 궤적 미리보기를 계속 업데이트할 수 있습니다.
+            if (_lineRenderer != null && showTrajectory) // showTrajectory 변수를 활용하여 궤적 표시 여부 제어
+            {
+                _lineRenderer.enabled = true; // 라인 렌더러 활성화
+                // 발사될 총알의 예상 속도를 사용하거나, BulletBase에서 직접 속성을 가져와 사용
+                // bulletObj가 null일 수 있으므로 null 체크를 하거나, 실제 발사될 총알의 타입을 가정
+                // 현재 코드에서는 발사되지 않는 상태에서 임시 bulletObj를 가져오기 어려우므로,
+                // BulletBase의 _speed를 직접 사용하는 것이 더 현실적일 수 있습니다.
+                // 또는 DummyBulletPrefab 같은 것을 만들어 사용하는 방법도 있습니다.
+                UpdateTrajectory(null, _bulletPrefab.GetComponent<BulletBase>()._speed); // 궤적 미리보기 업데이트
+            }
+        }
+        // 마우스 우클릭을 떼는 순간 (조준 해제)
+        if (Input.GetMouseButtonUp(1))
+        {
+            if (_lineRenderer != null)
+            {
+                _lineRenderer.enabled = false; // 라인 렌더러 비활성화
+                _lineRenderer.positionCount = 0; // 혹시 모를 잔상을 위해 정점 개수를 0으로 설정
+            }
+        }
+
         if (Input.GetKeyDown(KeyCode.R) && !_isReload)
         {
             StartCoroutine(ReloadCorutine());

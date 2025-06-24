@@ -13,23 +13,8 @@ public class MeleeWeapon : WeaponBase
     [SerializeField] private float _attackAngle; //근거리 무기 유효 각도
     [SerializeField] private float _attackInterval = 1.0f; // 1초에 한 번 0.5f 값이 1초에 2번때림
 
-    [Header("플레이어 Animator")]
-    [SerializeField] Animator _animator; //플레이어의 애니메이터가 필요 -> 공격시 플레이어 애니메이션 재생하기 위하여
-
     [Header("Attack Target Layer")]
     [SerializeField] private LayerMask _targetLayer; //타겟 대상 레이어 -> 추후 몬스터가 레이어로 관리되지 않을까?
-
-    public Animator Animator
-    {
-        get
-        {
-            if (_animator == null)
-            {
-                _animator = GetComponent<Animator>();
-            }
-            return _animator;
-        }
-    }
 
     /* 
      * 기획팀에서 어떤부분을 요구할지 몰라 여러가지 공격 로직을 구현했습니다.
@@ -44,8 +29,6 @@ public class MeleeWeapon : WeaponBase
     /// </summary>
     public override void Attack()
     {
-        _animator.SetTrigger("DownwardAttack");
-
         //무기에 달려있는 _attack를 중심으로 범위를 설정하고 타겟레이어와 충돌검사
         Collider[] _colliders = Physics.OverlapSphere(_attackPointPos.position, _attackRange, _targetLayer);
 
