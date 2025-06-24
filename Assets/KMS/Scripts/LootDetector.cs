@@ -13,7 +13,7 @@ public class LootDetector : MonoBehaviour
     {
         if (other.gameObject.layer == 6)
         {
-            _lootables.Add(other.GetComponent<Lootable>());
+            _lootables.Add(other.GetComponentInChildren<Lootable>());
             Debug.Log(1);
         }
     }
@@ -23,7 +23,10 @@ public class LootDetector : MonoBehaviour
         if (_lootables.Count == 0) return;
         foreach ( Lootable c in _lootables)
         {
-            c.FUIController.OnFUI();
+            if (c.IsLootable)
+            {
+                c.FUIController.OnFUI();
+            }
 
         }
     }
@@ -31,7 +34,7 @@ public class LootDetector : MonoBehaviour
     {
         if (other.gameObject.layer == 6)
         {
-            Lootable temp = other.GetComponent<Lootable>();
+            Lootable temp = other.GetComponentInChildren<Lootable>();
             temp.FUIController.OffFUI();
             _lootables.Remove(temp);
         }

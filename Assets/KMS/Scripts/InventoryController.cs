@@ -36,6 +36,8 @@ public class InventoryController : MonoBehaviour
     }
 
 
+
+
     private bool[] GetFlags(ItemBase item)
     {
         bool[] flags = new bool[18]; //false 인 경우에만 들어갈 수 있음
