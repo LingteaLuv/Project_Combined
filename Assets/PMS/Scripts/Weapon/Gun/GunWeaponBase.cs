@@ -21,9 +21,8 @@ public class GunWeaponBase : WeaponBase
     [SerializeField] protected Transform _firePoint;    //총알 발사 지점
 
     //궤적 설정 관련 변수
-    private LineRenderer _lineRenderer;
+    protected LineRenderer _lineRenderer;
     [SerializeField] protected bool showTrajectory = true;
-    private Camera _camera; //에임 카메라 인듯
 
     protected bool _canShot = true;
     protected bool _isReload = false;
@@ -40,9 +39,10 @@ public class GunWeaponBase : WeaponBase
 
     public override bool IsAttack => throw new System.NotImplementedException();
 
+    //무기마다 Init() 불릿 풀 사이즈가 다를 것이고,불릿 프리팹이 다르다. 총 아래에 Bullet 오브젝트가 생성
     public virtual void Init()
-    {
-        //무기마다 Init() 불릿 풀 사이즈가 다를 것이고,불릿 프리팹이 다르다.
+    {       
+        _lineRenderer = GetComponent<LineRenderer>();
         _gunBulletObjectPool = new ObjectPool(_bulletPoolSize, _bulletPrefab, gameObject);
     }
 
@@ -50,6 +50,7 @@ public class GunWeaponBase : WeaponBase
 
     public override void Attack() { }
 
+    #region 총알 궤적을 보여주는 함수
     /// <summary>
     /// 총알 궤적을 보여주는 함수
     /// </summary>
@@ -86,9 +87,5 @@ public class GunWeaponBase : WeaponBase
     {
         return startPos + startVel * time;
     }
-    protected void SetInit()
-    {
-        _lineRenderer = GetComponent<LineRenderer>();
-        _camera = Camera.main;//transform.parent.GetComponentInChildren<Camera>();
-    }
+    #endregion
 }

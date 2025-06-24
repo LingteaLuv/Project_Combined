@@ -13,11 +13,6 @@ public class PMS_Enemy : MonoBehaviour, IDamageable
     public void Damaged(int aktDamage)
     {
         hp -= aktDamage;
+        Debug.Log($"[{gameObject.name}] Current HP: {hp}");
     }
-
-    public void Update()
-    {
-        Debug.Log(hp);
-    }
-
 }
