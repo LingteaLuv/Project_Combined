@@ -109,7 +109,6 @@ public class PlayerController : MonoBehaviour
     {
         _animator.SetBool("IsClimb",false);
     }
-
     public void SetAnimatorSpeed()
     {
         _animator.speed = Mathf.Abs(Input.GetAxis("Vertical"));
