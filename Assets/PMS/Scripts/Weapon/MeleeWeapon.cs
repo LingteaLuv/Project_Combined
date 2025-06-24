@@ -19,9 +19,23 @@ public class MeleeWeapon : WeaponBase
     [Header("Attack Target Layer")]
     [SerializeField] private LayerMask _targetLayer; //타겟 대상 레이어 -> 추후 몬스터가 레이어로 관리되지 않을까?
 
+    public Animator Animator
+    {
+        get
+        {
+            if (_animator == null)
+            {
+                _animator = GetComponent<Animator>();
+            }
+            return _animator;
+        }
+    }
+
     /* 
      * 기획팀에서 어떤부분을 요구할지 몰라 여러가지 공격 로직을 구현했습니다.
      * TODO - 공격속도에 대한 코드 부분이 존재하지 않네요,추가해야 할 것 같습니다.
+     * 현재 몬스터가 다중 공격이 가능함, 감지된 몬스터 한마리만 데미지 줄 수 있도록 변경필요
+     * Corutine을 활용한 애니메이션 Event 함수 호출도 고려 할만한 상황
      */
 
     /// <summary>
@@ -82,21 +96,29 @@ public class MeleeWeapon : WeaponBase
             {
                 damageable.Damaged(_attackDamage); //TakeDamage함수명이 더좋을듯
             }
-            // +@ 피격 시 색깔 변화
+            // +@ 피격 시 색깔 변화 - 디버깅용
             StartCoroutine(DamageRoutine(target.gameObject));
         }
 
     }*/
 
-    //2번 애니메이션 그냥 콜라이더 추가해버리면 공격하지 않아도 닿으면 몹들이 맞은걸로 인식하게 된다.
-    public void Attack2()
+    //2번
+    /// <summary>
+    /// Physics.OverlapSphere + 범위 + 각도 체크 - 플레이어기준
+    /// </summary>
+    //문제점:무기에 그냥 콜라이더 추가해버리면 공격하지 않아도 닿으면 몹들이 맞은걸로 인식하게 된다. 
+    /*private void OnTirrigerEnter(Collision collision)
     {
-        Attack();
-        //SetTrigger("Attack"); //플레이어가 공격을 하는 애니메이션을 재생한다
-    }
+        if(collision.gameObject.layer == _targetLayer)
+        {
+            collision.gameObject.GetComponent<IDamageable>().Damaged(_attackDamage);
+        }
+    }*/
 
-    //2번 애니메이션
-    public void Attack3()
+    //3번
+    //2번+ 애니메이션 Event를 활용하여 특정 프레임에서 충돌감지
+    //문제점:플레이어 공격 범위가 제한적이게 된다. 
+    /*public void Attack3()
     {
         // 1. 공격 애니메이션을 재생한다.
         // animator.SetTrigger("Attack");
@@ -109,40 +131,9 @@ public class MeleeWeapon : WeaponBase
 
         // 4. 공격 처리 후, 콜라이더 컴포넌트를 비활성화하거나 제거하여
         //    불필요한 충돌 처리를 방지한다.
-    }
+    }*/
 
-    //3번 애니메이션 키프레임을 활용한 감지
-    public void AttackEvent()
-    {
-
-    }
-
-    //3번
-    private void OnTirrigerEnter(Collision collision)
-    {
-        if(collision.gameObject.layer == _targetLayer)
-        {
-            collision.gameObject.GetComponent<IDamageable>().Damaged(_attackDamage);
-        }
-    }
-
-
-    public Animator Animator
-    {
-        get
-        {
-            if (_animator == null)
-            {
-                _animator = GetComponent<Animator>();
-            }
-            return _animator;
-        }
-    }
-
-
-
-    #region 기즈모 출력
-    //플레이어 기준
+    #region 기즈모 출력 - 플레이어 기준
     /*private void OnDrawGizmos()
     {
         //왼쪽 라인 플레이어로 부터 
@@ -155,22 +146,17 @@ public class MeleeWeapon : WeaponBase
         //오버랩 스피어 범위
         Gizmos.DrawWireSphere(_playerPos.transform.transform.position, _attackRange);
     }*/
+    #endregion
 
+    #region 기즈모 출력 - 무기 기준
     private void OnDrawGizmos()
     {
-        //왼쪽 라인 플레이어로 부터 
-        /*Vector3 leftDir = Quaternion.Euler(0, -_attackAngle * 0.5f, 0) * _attackPointPos.transform.forward;
-        Gizmos.DrawLine(_attackPointPos.transform.position, _attackPointPos.transform.position + leftDir * _attackRange);
-
-        Vector3 rightDir = Quaternion.Euler(0, _attackAngle * 0.5f, 0) * _attackPointPos.transform.forward;
-        Gizmos.DrawLine(_attackPointPos.transform.position, _attackPointPos.transform.position + rightDir * _attackRange);*/
-
         //오버랩 스피어 범위
         Gizmos.DrawWireSphere(_attackPointPos.transform.transform.position, _attackRange);
     }
     #endregion
 
-    #region 피격 시 색깔 변화 코루틴
+    #region 피격 시 색깔 변화 코루틴 - 디버깅용
     WaitForSeconds delay = new(0.2f);
     IEnumerator DamageRoutine(GameObject gameObject)
     {
