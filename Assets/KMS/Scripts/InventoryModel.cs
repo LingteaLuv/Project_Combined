@@ -48,7 +48,7 @@ public class InventoryModel : MonoBehaviour
 
         InvItems = new Item[SlotCount];
         int i = 0;
-        for (i = i; i < QuickSlotSlots.Length; i++)
+        for (i = 0; i < QuickSlotSlots.Length; i++)
         {
             InvSlotPanelImages[i] = QuickSlotSlots[i].gameObject.GetComponentsInChildren<Image>()[0];
             InvSlotItemImages[i] = QuickSlotSlots[i].gameObject.GetComponentsInChildren<Image>()[1];
