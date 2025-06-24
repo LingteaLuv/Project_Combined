@@ -16,6 +16,10 @@ public class Rifle : GunWeaponBase //이후 총마다 상속을 시켜 줘야 �
 
     private void Update()
     {
+        if(Input.GetMouseButtonDown(0))
+        {
+            Attack();
+        }
         // 마우스 우클릭을 누르는 순간 (조준 시작)
         if (Input.GetMouseButtonDown(1))
         {
@@ -26,7 +30,7 @@ public class Rifle : GunWeaponBase //이후 총마다 상속을 시켜 줘야 �
         }
         // 마우스 우클릭이 눌려 있는 동안 (조준 유지)
         if (Input.GetMouseButton(1))
-        {
+        {           
             // 여기서는 궤적 미리보기를 계속 업데이트
             if (_lineRenderer != null && showTrajectory) // showTrajectory 변수를 활용하여 궤적 표시 여부 제어
             {
@@ -99,6 +103,7 @@ public class Rifle : GunWeaponBase //이후 총마다 상속을 시켜 줘야 �
                 bullet.SetDirection(_firePoint.forward);
             }
             bulletObj.SetActive(true); //해당 총알을 활성화시킴
+            _bulletcaseParticle.Play();
 
             _currentAmmoCount--; //총알 한발씩 제거
         }
