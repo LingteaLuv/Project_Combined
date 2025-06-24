@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//참고용 스크립트
 public class Trajectory : MonoBehaviour
 {
     // 궤적을 그리기 위한 LineRenderer
