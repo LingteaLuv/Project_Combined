@@ -41,25 +41,12 @@ public class InventoryManager : SingletonT<InventoryManager>
         _model.Init();
     }
 
-    public void ToggleInventory()
+    public void ToggleUI()
     {
-        if (IsinventoryOpened)
-        {
-            Inventory.SetActive(false);
-            _controller.CancelHolding();
-        }
-        else
-        {
-            Inventory.SetActive(true);
-            _renderer.RenderInventory();
-        }
-
+        UIManage.Instance.ToggleUI(ModalUI.inventory);
+        _renderer.RenderInventory();
     }
 
-    public void CloseInventory()
-    {
-        if (IsinventoryOpened) Inventory.SetActive(false);
-    }
 
     public bool AddItem(ItemBase item, int amount, int dur)
     {
@@ -69,8 +56,10 @@ public class InventoryManager : SingletonT<InventoryManager>
     }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.I)) ToggleInventory();
-        if (Input.GetKeyDown(KeyCode.Escape)) CloseInventory();
+        if (Input.GetKeyDown(KeyCode.I)) ToggleUI();
+
+
+
         if (Input.GetKeyDown(KeyCode.Z)) AddItem(_model.ItemList.ItemList[0], 3, -1);
         if (Input.GetKeyDown(KeyCode.X)) AddItem(_model.ItemList.ItemList[1], 1, 50);
         if (Input.GetKeyDown(KeyCode.C)) AddItem(_model.ItemList.ItemList[2], 1, 25);
