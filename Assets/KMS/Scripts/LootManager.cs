@@ -49,9 +49,13 @@ public class LootManager : SingletonT<LootManager>
             _itemCountTexts[i] = _lootSlots[i].GetComponentInChildren<TMP_Text>();
             _itemDurSliders[i] = _lootSlots[i].GetComponentInChildren<Slider>();
         }
+    }
+    public void ToggleUI()
+    {
+        UIManage.Instance.ToggleUI(ModalUI.lootTable);
+        LootTableUpdate();
 
     }
-
     public void ClearUI()
     {
         _stack.Clear();
@@ -62,9 +66,9 @@ public class LootManager : SingletonT<LootManager>
     public void NewLootableChecked(Lootable _lootable)
     {
         this._lootable = _lootable;
-        ClearUI();
-        _stack.Push(_f);
-        SetUI();
+        //ClearUI();
+        //_stack.Push(_f);
+        //SetUI();
     }
 
     public void SetUI()
@@ -85,7 +89,10 @@ public class LootManager : SingletonT<LootManager>
 
     public void LootableNotExist()
     {
-        ClearUI();
+        if (UIManage.Instance.Current == ModalUI.lootTable)
+        {
+            UIManage.Instance.CloseUI();
+        }
     }
 
     public void OpenLootTable()
@@ -126,7 +133,7 @@ public class LootManager : SingletonT<LootManager>
             }
             else _itemCountTexts[i].enabled = false;
 
-            if (_lootable.LootItems.Items[i].Durability != -1)
+            if (_lootable.LootItems.Items[i].MaxDurability != -1)
             {
                 _itemDurSliders[i].gameObject.SetActive(true);
                 _itemDurSliders[i].value = (float)_lootable.LootItems.Items[i].Durability / _lootable.LootItems.Items[i].MaxDurability;
@@ -138,12 +145,14 @@ public class LootManager : SingletonT<LootManager>
 
     public void GetItem(int index)
     {
+        if (_lootable.LootItems.Items[index] == null) return;
         ItemBase data = _lootable.LootItems.Items[index].Data;
         int count = _lootable.LootItems.Items[index].StackCount;
         int dur = _lootable.LootItems.Items[index].Durability;
         if (InventoryManager.Instance.AddItem(data, count, dur))
         {
-
+           _lootable.LootItems.Items[index] = null;
+            LootTableUpdate();
         }
     }
 }

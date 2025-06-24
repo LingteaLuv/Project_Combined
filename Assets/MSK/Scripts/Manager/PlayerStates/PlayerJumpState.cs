@@ -22,7 +22,7 @@ public class PlayerJumpState : PlayerState
         _hangTimer = _hangTime;
 
         _movement.Controller.PlayJumpAnimation();
-        _movement.Jump();
+        _movement. Jump();
     }
 
     /// <summary>

@@ -13,13 +13,37 @@ public class Rifle : GunWeaponBase //이후 총마다 상속을 시켜 줘야 �
        base.Init();
     }
 
+
     private void Update()
     {
-        //나중에 플레이어 Input으로 Shot()
-        if (Input.GetKeyDown(KeyCode.X) && _canShot && _currentAmmoCount > 0)
+        // 마우스 우클릭을 누르는 순간 (조준 시작)
+        if (Input.GetMouseButtonDown(1))
         {
-            Attack();
+            // 총알 궤적 미리보기를 위한 로직 (옵션)
+            _lineRenderer.enabled = true; // 라인 렌더러 활성화
+            GameObject bulletObj = _gunBulletObjectPool.GetInactive(); // 궤적 미리보기를 위해 임시 객체 가져오기 (실제 발사 아님)
+            UpdateTrajectory(bulletObj, bulletObj.GetComponent<BulletBase>()._speed); // 궤적 업데이트
         }
+        // 마우스 우클릭이 눌려 있는 동안 (조준 유지)
+        if (Input.GetMouseButton(1))
+        {
+            // 여기서는 궤적 미리보기를 계속 업데이트
+            if (_lineRenderer != null && showTrajectory) // showTrajectory 변수를 활용하여 궤적 표시 여부 제어
+            {
+                _lineRenderer.enabled = true; // 라인 렌더러 활성화
+                UpdateTrajectory(null, _bulletPrefab.GetComponent<BulletBase>()._speed); // 궤적 미리보기 업데이트
+            }
+        }
+        // 마우스 우클릭을 떼는 순간 (조준 해제)
+        if (Input.GetMouseButtonUp(1))
+        {
+            if (_lineRenderer != null)
+            {
+                _lineRenderer.enabled = false; // 라인 렌더러 비활성화
+                _lineRenderer.positionCount = 0; // 혹시 모를 잔상을 위해 정점 개수를 0으로 설정
+            }
+        }
+
         if (Input.GetKeyDown(KeyCode.R) && !_isReload)
         {
             StartCoroutine(ReloadCorutine());
@@ -54,6 +78,7 @@ public class Rifle : GunWeaponBase //이후 총마다 상속을 시켜 줘야 �
         if (_currentAmmoCount == 0)
         {
             Debug.Log("R키를 눌러 장전하세요");
+            return;
         }
 
         //발사 할 수 있는 총알이 있는지 총알풀 검사

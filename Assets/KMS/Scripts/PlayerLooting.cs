@@ -17,7 +17,7 @@ public class PlayerLooting : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.F)) TryLoot();
     }
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other) //레이어 6 콜라이더랑 만났을 경우 리스트에 추가
     {
         if (other.gameObject.layer == 6)
         {
@@ -29,6 +29,7 @@ public class PlayerLooting : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         if (_colliders.Count == 0) return;
+        if (UIManage.Instance.IsModalUIOpened) return;
         float distance = float.MaxValue;
         Collider near = null;
         foreach ( Collider c in _colliders)
@@ -38,7 +39,7 @@ public class PlayerLooting : MonoBehaviour
             {
                 distance = temp;
                 near = c;
-            }
+            } // 리스트 내 콜라이더 중 가장 가까운 것 구해서 near에 저장
         }
         if (_lootableColl == near)
         {
@@ -48,9 +49,12 @@ public class PlayerLooting : MonoBehaviour
         {
             _lootable = near.GetComponent<Lootable>();
             _lootable.OnOutline();
+            _lootable.FUIController.OffDark();
             if (_lootableColl != null)
             {
-                _lootableColl.GetComponent<Lootable>().OffOutline();
+                Lootable temp = _lootableColl.GetComponent<Lootable>();
+                temp.OffOutline();
+                temp.FUIController.OnDark();
             }
             _lootableColl = near;
             LootManager.Instance.NewLootableChecked(_lootable);
@@ -67,6 +71,7 @@ public class PlayerLooting : MonoBehaviour
         {
             _lootableColl = null;
             _lootable.OffOutline();
+            _lootable.FUIController.OnDark();
             _lootable = null;
             LootManager.Instance.LootableNotExist();
         }
@@ -75,7 +80,7 @@ public class PlayerLooting : MonoBehaviour
     public void TryLoot()
     {
         if (_lootable == null) return;
-        LootManager.Instance.OpenLootTable();
+        LootManager.Instance.ToggleUI();
 
     }
 }

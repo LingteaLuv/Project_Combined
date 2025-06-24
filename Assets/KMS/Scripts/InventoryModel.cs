@@ -11,6 +11,11 @@ public class InventoryModel : MonoBehaviour
     [SerializeField] private ItemListSO _itemList;
     public ItemListSO ItemList { get { return _itemList; } }
 
+    [SerializeField] public TMP_Text Desc;
+    [SerializeField] public GameObject TrashButton;
+    [SerializeField] public GameObject UtilButton;
+    [SerializeField] public TMP_Text UtilButtonText;
+
     public Item[] InvItems { get; private set; }
 
     public InvSlotController[] InventorySlots { get; private set; }

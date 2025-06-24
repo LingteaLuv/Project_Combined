@@ -5,10 +5,10 @@ using UnityEngine.Rendering;
 
 public class PlayerProperty : MonoBehaviour
 {
-    [SerializeField] private Hp _hp;
-    [SerializeField] private Hunger _hunger;
-    [SerializeField] private Thirsty _thirsty;
-    [SerializeField] private Stamina _stamina;
+    public Hp Hp;
+    public Hunger Hunger;
+    public Thirsty Thirsty;
+    public Stamina Stamina;
 
     public Property<float> MoveSpeed;
     public Property<float> AtkSpeed;
@@ -33,8 +33,8 @@ public class PlayerProperty : MonoBehaviour
     private float _drinkTimer;
     private float _staminaTimer;
 
-    private const float MaxEatTimer = 300f;
-    private const float MaxDrinkTimer = 300f;
+    private const float MaxEatTimer = 3f;
+    private const float MaxDrinkTimer = 3f;
     private const float MaxStaminaTimer = 2f;
     
     private WaitForSeconds _delay;
@@ -48,7 +48,7 @@ public class PlayerProperty : MonoBehaviour
     private bool _isOnLack;
     private bool _isOnDepletion;
     
-    private void Start()
+    private void Awake()
     {
         Init();
     }
@@ -58,32 +58,55 @@ public class PlayerProperty : MonoBehaviour
         FieldUpdate();
         ParameterUpdate();
         ParameterAct();
+
+        if (Input.GetKeyDown(KeyCode.J))
+        {
+            ExpendAction();
+        }
+        
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            Hunger.Recover(20f);
+            _eatTimer = MaxEatTimer;
+        }
+        
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            Thirsty.Recover(30f);
+            _drinkTimer = MaxDrinkTimer;
+        }
     }
 
     private void ParameterAct()
     {
-        _hp.Act(ref _atkDamage, _baseAtkDamage, _atkDamageOffset);
+        Hp.Act(ref _atkDamage, _baseAtkDamage, _atkDamageOffset);
         AtkDamage.Value = _atkDamage;
-        _hunger.Act(ref _atkSpeed, _baseAtkSpeed, _atkSpeedOffset);
-        AtkSpeed.Value = _atkSpeed;
-        _thirsty.Act(ref _moveSpeed, _baseMoveSpeed, _moveSpeedOffset);
+        Hunger.Act(ref _atkSpeed, _baseAtkSpeed, _atkSpeedOffset);
+        if(AtkSpeed.Value != _atkSpeed)
+        {
+            AtkSpeed.Value = _atkSpeed;
+        }
+        
+        Thirsty.Act(ref _moveSpeed, _baseMoveSpeed, _moveSpeedOffset);
         MoveSpeed.Value = _moveSpeed;
-        _stamina.Act();
-        IsOnStaminaPenalty = _stamina.IsOnPenalty;
+        Stamina.Act();
+        IsOnStaminaPenalty = Stamina.IsOnPenalty;
     }
     
     private void FieldUpdate()
     {
-        _isOnLack = (_hunger.State == ParamState.Lack) || 
-                    (_thirsty.State == ParamState.Lack) ||
-                    (_stamina.State == ParamState.Lack);
+        _isOnLack = (Hunger.State == ParamState.Lack) || 
+                    (Thirsty.State == ParamState.Lack) ||
+                    (Stamina.State == ParamState.Lack);
         
-        _isOnDepletion =  (_hunger.State == ParamState.Depletion) || 
-                          (_thirsty.State == ParamState.Depletion) ||
-                          (_stamina.State == ParamState.Depletion);
+        _isOnDepletion =  (Hunger.State == ParamState.Depletion) || 
+                          (Thirsty.State == ParamState.Depletion) ||
+                          (Stamina.State == ParamState.Depletion);
+        
         
         if (_eatTimer > 0) _eatTimer -= Time.deltaTime;
         if (_drinkTimer > 0) _drinkTimer -= Time.deltaTime;
+        if (_staminaTimer > 0) _staminaTimer -= Time.deltaTime;
     }
     
     private void ParameterUpdate()
@@ -119,8 +142,8 @@ public class PlayerProperty : MonoBehaviour
         _isOnCorRecoverHp = true;
         while (true)
         {
-            if (_isOnLack) break;
-            _hp.Recover(1f);
+            if (_isOnLack || _isOnDepletion) break;
+            Hp.Recover(1f);
             yield return _delay;
         }
         _isOnCorRecoverHp = false;
@@ -132,7 +155,7 @@ public class PlayerProperty : MonoBehaviour
         while (true)
         {
             if (!_isOnDepletion) break;
-            _hp.Decrease(1f);
+            Hp.Decrease(1f);
             yield return _delay;
         }
         _isOnCorDecreaseHp = false;
@@ -144,7 +167,7 @@ public class PlayerProperty : MonoBehaviour
         while (true)
         {
             if (_eatTimer > 0) break;
-            _hunger.Decrease(1f);
+            Hunger.Decrease(1f);
             yield return _delay;
         }
         _isOnCorHunger = false;
@@ -156,7 +179,7 @@ public class PlayerProperty : MonoBehaviour
         while (true)
         {
             if (_drinkTimer > 0) break;
-            _thirsty.Decrease(1f);
+            Thirsty.Decrease(1f);
             yield return _delay;
         }
         _isOnCorThirsty = false;
@@ -168,7 +191,7 @@ public class PlayerProperty : MonoBehaviour
         while (true)
         {
             if (_staminaTimer > 0) break;
-            _stamina.Recover(5f);
+            Stamina.Recover(5f);
             yield return _delay;
         }
         _isOnCorStamina = false;
@@ -178,7 +201,7 @@ public class PlayerProperty : MonoBehaviour
     /*public void Eat(Item item)
     {
         // todo : 아이템의 수치 적용, Timer 시간 초기화(5분)
-        // _hunger.Recover(item.value);
+        // Hunger.Recover(item.value);
         _eatTimer = MaxEatTimer;
     }
     
@@ -186,7 +209,7 @@ public class PlayerProperty : MonoBehaviour
     public void Drink(Item item)
     {
         // todo : 아이템의 수치 적용, Timer 시간 초기화(5분)
-        // _thirsty.Recover(item.value);
+        // Thirsty.Recover(item.value);
         _drinkTimer = MaxDrinkTimer;
     }
     */
@@ -194,16 +217,16 @@ public class PlayerProperty : MonoBehaviour
     // 강한 행동에서 호출되는 이벤트에 구독되는 메서드
     public void ExpendAction()
     {
-        _stamina.Decrease(15f);
+        Stamina.Decrease(15f);
         _staminaTimer = 2f;
     }
     
     private void Init()
     {
-        _hp.Init(100);
-        _hunger.Init(100);
-        _thirsty.Init(100);
-        _stamina.Init(100);
+        Hp = new Hp(100);
+        Hunger = new Hunger(100);
+        Thirsty = new Thirsty(100);
+        Stamina = new Stamina(100);
 
         _delay = new WaitForSeconds(1f);
 

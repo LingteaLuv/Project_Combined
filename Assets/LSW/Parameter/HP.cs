@@ -5,6 +5,11 @@ using UnityEngine;
 
 public class Hp : Parameter
 {
+    public Hp(float value)
+    {
+        Init(value);
+    }
+    
     public override void Act(ref float atk, float baseValue, float offset)
     {
         switch (State)

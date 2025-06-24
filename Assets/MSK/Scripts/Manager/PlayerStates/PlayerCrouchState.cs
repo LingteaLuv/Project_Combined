@@ -13,17 +13,18 @@ public class PlayerCrouchState : PlayerState
     {
         Debug.Log("Enter Crouch");
 
-        _movement.Controller._animator.SetTrigger("CrouchDown");
+        if (!_movement.Controller.IsCrouch)
+        {
+            _movement.Controller._animator.SetTrigger("CrouchDown");
+            _movement.Controller.IsCrouch = true;
+        }
         _movement.Controller._animator.SetBool("IsCrouch", true);
-        _movement.SetCrouch(true);
-
     }
 
     public override void Exit()
     {
         Debug.Log("Exit Crouch");
 
-        _movement.Controller._animator.SetTrigger("CrouchUp");
         _movement.Controller._animator.SetBool("IsCrouch", false);
         _movement.SetCrouch(false);
     }

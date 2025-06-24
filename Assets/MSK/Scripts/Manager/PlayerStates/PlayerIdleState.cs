@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -8,7 +9,15 @@ public class PlayerIdleState : PlayerState
     public PlayerIdleState(PlayerStateMachine fsm, PlayerMovement movement)
         : base(fsm, movement) { }
 
-    public override void Enter() { Debug.Log("Enter Idle"); }
+    public override void Enter() 
+    { 
+        Debug.Log("Enter Idle");
+        if (_movement.Controller.IsCrouch)
+        {
+            _movement.Controller._animator.SetTrigger("CrouchUp");
+            _movement.Controller.IsCrouch = false;
+        }
+    }
     public override void Exit() { Debug.Log("Exit Idle"); }
     public override void FixedTick() { }
     public override void Tick()
