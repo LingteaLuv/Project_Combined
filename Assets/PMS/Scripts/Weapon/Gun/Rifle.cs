@@ -7,18 +7,22 @@ public class Rifle : GunWeaponBase //이후 총마다 상속을 시켜 줘야 �
     private void Awake()
     {
         Init();     //나중에 플레이어 해당 사용할려고 할 때
+        SetInit();
     }
     public override void Init()
     {
        base.Init();
     }
 
+
     private void Update()
     {
         //나중에 플레이어 Input으로 Shot()
-        if (Input.GetKeyDown(KeyCode.X) && _canShot && _currentAmmoCount > 0)
+        if(Input.GetKeyDown(KeyCode.X) && _canShot && _currentAmmoCount > 0) 
         {
-            Attack();
+            GameObject bulletObj = _gunBulletObjectPool.GetInactive();
+            UpdateTrajectory(bulletObj, bulletObj.GetComponent<BulletBase>()._speed);
+            //Attack();
         }
         if (Input.GetKeyDown(KeyCode.R) && !_isReload)
         {
@@ -54,6 +58,7 @@ public class Rifle : GunWeaponBase //이후 총마다 상속을 시켜 줘야 �
         if (_currentAmmoCount == 0)
         {
             Debug.Log("R키를 눌러 장전하세요");
+            return;
         }
 
         //발사 할 수 있는 총알이 있는지 총알풀 검사

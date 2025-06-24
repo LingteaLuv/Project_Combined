@@ -6,7 +6,7 @@ public class BulletBase : MonoBehaviour
 {
     [SerializeField] private int _currentBulletDamage;
 
-    [SerializeField] private float _speed = 10f; //총알 스피드
+    [SerializeField] public float _speed = 10f; //총알 스피드
     [SerializeField] private float _distance = 50f; //총알 유효 사거리
 
     private Rigidbody _rb;
@@ -61,6 +61,7 @@ public class BulletBase : MonoBehaviour
             gameObject.SetActive(false);
             collision.transform.GetComponent<IDamageable>().Damaged(_currentBulletDamage);
         }
+        gameObject.SetActive(false);
         //벽에 닿으면 없애기
         /*if (collision.gameObject.CompareTag("Wall"))
         {

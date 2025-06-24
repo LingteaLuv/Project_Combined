@@ -20,6 +20,11 @@ public class GunWeaponBase : WeaponBase
     [SerializeField] protected float _fireDelay = 1.5f; //총 발사 딜레이
     [SerializeField] protected Transform _firePoint;    //총알 발사 지점
 
+    //궤적 설정 관련 변수
+    private LineRenderer _lineRenderer;
+    [SerializeField] protected bool showTrajectory = true;
+    private Camera _camera; //에임 카메라 인듯
+
     protected bool _canShot = true;
     protected bool _isReload = false;
 
@@ -41,4 +46,46 @@ public class GunWeaponBase : WeaponBase
     protected AudioSource audioSource; //공격 사운드
 
     public override void Attack() { }
+
+    /// <summary>
+    /// 총알 궤적을 보여주는 함수
+    /// </summary>
+    /// <param name="bullet"> bullet 객체 </param>
+    /// <param name="bulletSpeed">bullet 객체의 스피드 </param>
+    public void UpdateTrajectory(GameObject bullet, float bulletSpeed)
+    {
+        // 궤적을 그리는데 사용될 정점 개수
+        int pointCount = 30;
+        // 정점 간의 시간차
+        float deltaTime = 0.1f;
+        Vector3[] trajectorys = new Vector3[pointCount];
+        // 궤적의 시작점
+        Vector3 startPos = _firePoint.transform.position;
+        // 무기 방향 → 카메라 방향
+        /*transform.rotation = Quaternion.Euler
+        (_camera.transform.eulerAngles.x, _camera.transform.eulerAngles.y, 0);*/
+        // 발사체 방향 = 무기 방향
+        //bullet.transform.rotation = transform.rotation;
+        float speed = bulletSpeed;
+        // 궤적 및 발사체 시작 속도
+        Vector3 startVel = transform.forward * speed;
+        // 궤적 발사체 운동 동기화, 계산
+        for (int i = 0; i < pointCount; i++)
+        {
+            trajectorys[i] = CalculatePoint(startPos, startVel, deltaTime * i);
+        }
+        // 
+        _lineRenderer.positionCount = pointCount;
+        // 렌더러로 계산된 궤적 표시
+        _lineRenderer.SetPositions(trajectorys);
+    }
+    private Vector3 CalculatePoint(Vector3 startPos, Vector3 startVel, float time)
+    {
+        return startPos + startVel * time;
+    }
+    protected void SetInit()
+    {
+        _lineRenderer = GetComponent<LineRenderer>();
+        _camera = Camera.main;//transform.parent.GetComponentInChildren<Camera>();
+    }
 }
