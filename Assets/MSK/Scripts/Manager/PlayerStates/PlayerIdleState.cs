@@ -37,6 +37,11 @@ public class PlayerIdleState : PlayerState
             _fsm.ChangeState(_movement.Controller.IdleCrouchState);
             return;
         }
+        if (_movement.InteractPressed)
+        {
+            _fsm.ChangeState(_movement.Controller.InteractState);
+            return;
+        }
 
         if (HandleJumpTransition()) return;
     }

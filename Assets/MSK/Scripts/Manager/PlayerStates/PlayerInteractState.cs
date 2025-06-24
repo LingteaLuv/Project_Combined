@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerInteractState : PlayerState
@@ -9,21 +8,48 @@ public class PlayerInteractState : PlayerState
 
     public override void Enter()
     {
-        throw new System.NotImplementedException();
+        if (HasInteractable(out IInteractable target))
+        {
+            _movement.Controller.PlayInteractAnimation();
+            _movement.StartCoroutine(InteractRoutine(target));
+        }
+        else
+        {
+            _fsm.ChangeState(_movement.Controller.IdleState);
+        }
     }
-
     public override void Exit()
     {
-        throw new System.NotImplementedException();
+        Debug.Log("Exit Interact");
     }
 
-    public override void FixedTick()
+    public override void FixedTick() { }
+
+    public override void Tick() { }
+
+    private IEnumerator InteractRoutine(IInteractable target)
     {
-        throw new System.NotImplementedException();
+        yield return new WaitForSeconds(0.3f);
+        target.Interact();
+
+        _movement.Controller.StopInteractAnimation();
+        _fsm.ChangeState(_movement.Controller.IdleState);
     }
 
-    public override void Tick()
+    private bool HasInteractable(out IInteractable target)
     {
-        throw new System.NotImplementedException();
+        Vector3 origin = _movement.transform.position + Vector3.up * 1.0f;
+        Vector3 direction = _movement.transform.forward;
+
+        if (Physics.Raycast(origin, direction, out RaycastHit hit, 2f))
+        {
+            if (hit.collider.TryGetComponent<IInteractable>(out target))
+            {
+                return true;
+            }
+        }
+
+        target = null;
+        return false;
     }
 }

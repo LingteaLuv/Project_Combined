@@ -1852,9 +1852,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cameraTransform: {fileID: 0}
   _avatarTransform: {fileID: 7968610536923932529}
-  _mouseMinPitch: 0
-  _mouseMaxPitch: 0
-  _mouseSensitivity: 1
+  _mainCamera: {fileID: 0}
+  _mouseMinPitch: -60
+  _mouseMaxPitch: 50
+  _mouseSensitivity: 5
+  _cameraDistance: 3
+  _cameraHeight: 1.5
 --- !u!114 &3937840786780297525
 MonoBehaviour:
   m_ObjectHideFlags: 0
