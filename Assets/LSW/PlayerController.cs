@@ -115,5 +115,13 @@ public class PlayerController : MonoBehaviour
     {
         _animator.speed = Mathf.Abs(Input.GetAxis("Vertical"));
     }
+    public void PlayInteractAnimation()
+    {
+        _animator.SetBool("IsInteracting", true);
+    }
+    public void StopInteractAnimation()
+    {
+        _animator.SetBool("IsInteracting", false);
+    }
     #endregion
 }
