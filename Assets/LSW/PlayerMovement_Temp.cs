@@ -76,4 +76,18 @@ public class PlayerMovement_Temp : MonoBehaviour
         _moveSpeed = 5f;
         IsGrounded = true;
     }
+
+
+
+    public void OnClick()
+    {
+        // 오전
+        // Recipe recipe = GiveRecipe();
+        // 제작(recipe)
+    }
+
+    public void Craft(Recipe recipe)
+    {
+        
+    }
 }
