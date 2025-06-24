@@ -6,7 +6,7 @@ public class MeleeWeapon : WeaponBase
 {
     //[SerializeField] private PMS_Enemy _enemy;
     [SerializeField] private Transform _playerPos; //플레이어의 위치
-
+    public override bool IsAttack { get; }
     [Header("근접무기 셋팅값")]
     [SerializeField] private int _attackDamage; //근거리 무기의 공격력
     [SerializeField] private float _attackRange;  //근거리 무기의 유효 범위

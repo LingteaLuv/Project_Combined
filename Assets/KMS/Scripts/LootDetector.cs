@@ -8,7 +8,6 @@ public class LootDetector : MonoBehaviour
 {
     [SerializeField] LayerMask _interactLayer;
 
-    private List<Collider> _colliders = new List<Collider>();
     private List<Lootable> _lootables = new List<Lootable>();
     private void OnTriggerEnter(Collider other) //레이어 6 콜라이더랑 만났을 경우 리스트에 추가
     {
