@@ -8,7 +8,8 @@ public class PlayerInputHandler : MonoBehaviour
     public Vector3 MoveInput { get; private set; }
     public bool JumpPressed { get; private set; }
     public bool CrouchHeld { get; private set; }
-
+    public bool IsOnLadder { get; private set;} 
+    public bool InteractPressed { get; private set; }
     private void Update()
     {
         MoveInput = new Vector3(
@@ -19,5 +20,22 @@ public class PlayerInputHandler : MonoBehaviour
 
         JumpPressed = Input.GetButtonDown("Jump");
         CrouchHeld = Input.GetKey(KeyCode.LeftControl);
+        InteractPressed = Input.GetKeyDown(KeyCode.E);
+
+        if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, 0.6f))
+        {
+            if (hit.collider.CompareTag("Ladder"))
+            {
+                IsOnLadder = true;
+            }
+            else
+            {
+                IsOnLadder = false;
+            }
+        }
+        else
+        {
+            IsOnLadder = false;
+        }
     }
 }

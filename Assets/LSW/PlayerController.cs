@@ -15,6 +15,9 @@ public class PlayerController : MonoBehaviour
     public PlayerJumpState JumpState { get; private set; }
     public PlayerCrouchState CrouchState { get; private set; }
     public PlayerIdleCrouchState IdleCrouchState { get; private set; }
+    public PlayerClimbState ClimbState { get; private set; }
+    public PlayerInteractState InteractState { get; private set; }
+    #endregion
 
 
     private PlayerMovement _movement;
@@ -57,6 +60,26 @@ public class PlayerController : MonoBehaviour
         _fsm.FixedUpdate();
         
     }
+    #endregion
+
+    # region Private Mathood
+    private void Init()
+    {
+        _fsm = new PlayerStateMachine();
+        _movement = GetComponent<PlayerMovement>();
+        _cameraController = GetComponent<PlayerCameraController>();
+        _animator = GetComponent<Animator>();
+        _movement.Controller = this;
+
+        InteractState = new PlayerInteractState(_fsm, _movement);
+        IdleState = new PlayerIdleState(_fsm, _movement);
+        MoveState = new PlayerMoveState(_fsm, _movement);
+        JumpState = new PlayerJumpState(_fsm, _movement);
+        CrouchState = new PlayerCrouchState(_fsm, _movement);
+        IdleCrouchState = new PlayerIdleCrouchState(_fsm, _movement);
+        ClimbState = new PlayerClimbState(_fsm, _movement);
+    }
+
     /// <summary>
     /// 이동 애니메이션 상태를 갱신합니다.
     /// </summary>
