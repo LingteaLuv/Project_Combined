@@ -30,7 +30,7 @@ public class MeleeWeapon : WeaponBase
     public override void Attack()
     {
         //무기에 달려있는 _attack를 중심으로 범위를 설정하고 타겟레이어와 충돌검사
-        Collider[] _colliders = Physics.OverlapSphere(_attackPointPos.position, _attackRange, _targetLayer);
+        /*Collider[] _colliders = Physics.OverlapSphere(_attackPointPos.position, _attackRange, _targetLayer);
 
         // 9. 충돌체를 저장한 배열을 순회하며 데미지 부여 로직 실행
         foreach (Collider target in _colliders)
@@ -42,8 +42,46 @@ public class MeleeWeapon : WeaponBase
                 damageable.Damaged(_attackDamage); //TakeDamage함수명이 더좋을듯
                 StartCoroutine(DamageRoutine(target.gameObject));
             }
+        }*/
+        // 무기에 달려있는 _attack를 중심으로 범위를 설정하고 타겟레이어와 충돌검사
+        Collider[] colliders = Physics.OverlapSphere(_attackPointPos.position, _attackRange, _targetLayer);
+
+        // 가장 가까운 타겟을 찾기 위한 변수 초기화
+        //IDamageable closestDamageable = null;
+        GameObject closeGameObject = null;
+
+        float minDistance = float.MaxValue; // 초기 최소 거리는 무한대로 설정
+
+        // 9. 충돌체를 저장한 배열을 순회하며 가장 가까운 적 찾기
+        foreach (Collider targetCollider in colliders)
+        {
+            IDamageable damageable = targetCollider.GetComponent<IDamageable>();
+            if (damageable != null)
+            {
+                // 현재 공격 지점과 타겟 간의 거리 계산
+                float distance = Vector3.Distance(_attackPointPos.position, targetCollider.transform.position);
+
+                // 만약 현재 타겟이 이전에 찾은 타겟보다 더 가깝다면
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    //closestDamageable = damageable;
+                    closeGameObject = targetCollider.gameObject;
+                }
+            }
         }
 
+        // 가장 가까운 적이 있다면 데미지 부여 로직 실행
+        if (closeGameObject != null)//(closestDamageable != null)
+        {
+            closeGameObject.GetComponent<IDamageable>().Damaged(_attackDamage);
+            StartCoroutine(DamageRoutine(closeGameObject.gameObject));
+            //closestDamageable.Damaged(_attackDamage);
+        }
+        else
+        {
+            Debug.Log("공격 범위 내에 적이 없습니다.");
+        }
     }
     /// <summary>
     /// Physics.OverlapSphere + 범위 + 각도 체크 - 플레이어기준

@@ -27,15 +27,10 @@ public class Rifle : GunWeaponBase //이후 총마다 상속을 시켜 줘야 �
         // 마우스 우클릭이 눌려 있는 동안 (조준 유지)
         if (Input.GetMouseButton(1))
         {
-            // 여기서는 궤적 미리보기를 계속 업데이트할 수 있습니다.
+            // 여기서는 궤적 미리보기를 계속 업데이트
             if (_lineRenderer != null && showTrajectory) // showTrajectory 변수를 활용하여 궤적 표시 여부 제어
             {
                 _lineRenderer.enabled = true; // 라인 렌더러 활성화
-                // 발사될 총알의 예상 속도를 사용하거나, BulletBase에서 직접 속성을 가져와 사용
-                // bulletObj가 null일 수 있으므로 null 체크를 하거나, 실제 발사될 총알의 타입을 가정
-                // 현재 코드에서는 발사되지 않는 상태에서 임시 bulletObj를 가져오기 어려우므로,
-                // BulletBase의 _speed를 직접 사용하는 것이 더 현실적일 수 있습니다.
-                // 또는 DummyBulletPrefab 같은 것을 만들어 사용하는 방법도 있습니다.
                 UpdateTrajectory(null, _bulletPrefab.GetComponent<BulletBase>()._speed); // 궤적 미리보기 업데이트
             }
         }
