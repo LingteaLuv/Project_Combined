@@ -6,6 +6,7 @@ public class PlayerInteractState : PlayerState
 {
     public PlayerInteractState(PlayerStateMachine fsm, PlayerMovement movement)
         : base(fsm, movement) { }
+
     public override void Enter()
     {
         throw new System.NotImplementedException();
