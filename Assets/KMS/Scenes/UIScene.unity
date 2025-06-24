@@ -1267,6 +1267,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 423406118}
+  - component: {fileID: 423406119}
   m_Layer: 5
   m_Name: Inventory
   m_TagString: Untagged
@@ -1294,6 +1295,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!225 &423406119
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 423406117}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1001 &436611177
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2793,6 +2806,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 893375144}
+  - component: {fileID: 893375145}
   m_Layer: 5
   m_Name: LootTable
   m_TagString: Untagged
@@ -2820,6 +2834,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!225 &893375145
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 893375143}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1001 &902268612
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2935,6 +2961,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 906797618}
+  - component: {fileID: 906797619}
   m_Layer: 5
   m_Name: Modal
   m_TagString: Untagged
@@ -2964,6 +2991,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!225 &906797619
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 906797617}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &921770054
 GameObject:
   m_ObjectHideFlags: 0
@@ -4543,6 +4582,7 @@ MonoBehaviour:
   ModalBase: {fileID: 906797617}
   LootUI: {fileID: 893375143}
   InvUI: {fileID: 423406117}
+  UIGroup: {fileID: 906797619}
 --- !u!4 &1356716545
 Transform:
   m_ObjectHideFlags: 0

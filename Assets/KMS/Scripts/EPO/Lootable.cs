@@ -9,13 +9,19 @@ public class Lootable : MonoBehaviour
     [SerializeField] private Outlinable _outlinable;
     public LootItems LootItems;
     public Outlinable Outlinable { get { return _outlinable; } }
+
+    //[SerializeField] private FUIController _FUIController;
     public FUIController FUIController { get; set; }
+
+    public bool IsLootable { get; set; }
 
 
     private void Awake()
     {
-        OffOutline();
+        _outlinable = GetComponentInParent<Outlinable>();
         FUIController = GetComponent<FUIController>();
+        OffOutline();
+        IsLootable = false;
     }
 
     public void OnOutline()
