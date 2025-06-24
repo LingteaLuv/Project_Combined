@@ -3536,6 +3536,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2068034261}
+  - {fileID: 6311955839788557666}
   - {fileID: 6401617274485340219}
   - {fileID: 893375144}
   m_Father: {fileID: 1352433877}
@@ -5465,6 +5466,7 @@ MonoBehaviour:
   ModalBase: {fileID: 906797617}
   LootUI: {fileID: 893375143}
   InvUI: {fileID: 6401617274485340218}
+  CraftUI: {fileID: 6311955839788557665}
   UIGroup: {fileID: 906797619}
 --- !u!4 &1356716545
 Transform:
@@ -6099,10 +6101,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _itemList: {fileID: 11400000, guid: 429e723979bff89478d6659d2383b7aa, type: 2}
-  Desc: {fileID: 526039621}
+  Desc: {fileID: 1175378870338219236}
   TrashButton: {fileID: 1350527571}
   UtilButton: {fileID: 440224764}
-  UtilButtonText: {fileID: 1175378870338219236}
+  UtilButtonText: {fileID: 1110736046}
 --- !u!114 &1635624740
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11421,6 +11423,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 1635624740}
+        m_TargetAssemblyTypeName: InventoryManager, NewAssembly
+        m_MethodName: AlignCraftWithInv
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 6401617274485340218}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
@@ -13059,7 +13073,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8394001743753788893}
-  - {fileID: 6311955839788557666}
   - {fileID: 3895843670801525800}
   - {fileID: 6456264280021797948}
   m_Father: {fileID: 0}
@@ -16840,7 +16853,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 3598601491866103392}
+    m_TransformParent: {fileID: 906797618}
     m_Modifications:
     - target: {fileID: 1269989424488830, guid: 656e81c1467148042962149a5f168b50, type: 3}
       propertyPath: m_IsActive
@@ -16942,13 +16955,17 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 0.42352942
       objectReference: {fileID: 0}
+    - target: {fileID: 224655866789995584, guid: 656e81c1467148042962149a5f168b50, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -30
+      objectReference: {fileID: 0}
     - target: {fileID: 224692036432462928, guid: 656e81c1467148042962149a5f168b50, type: 3}
       propertyPath: m_Pivot.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224692036432462928, guid: 656e81c1467148042962149a5f168b50, type: 3}
       propertyPath: m_Pivot.y
-      value: 0
+      value: 0.283
       objectReference: {fileID: 0}
     - target: {fileID: 224692036432462928, guid: 656e81c1467148042962149a5f168b50, type: 3}
       propertyPath: m_AnchorMax.x
@@ -17004,11 +17021,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 224692036432462928, guid: 656e81c1467148042962149a5f168b50, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 874
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224692036432462928, guid: 656e81c1467148042962149a5f168b50, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.0014648438
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224692036432462928, guid: 656e81c1467148042962149a5f168b50, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -17551,6 +17568,18 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 1635624740}
+        m_TargetAssemblyTypeName: InventoryManager, NewAssembly
+        m_MethodName: AlignInvWithCraft
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 6311955839788557665}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine

@@ -13,7 +13,8 @@ public class Lootable : MonoBehaviour
     //[SerializeField] private FUIController _FUIController;
     public FUIController FUIController { get; set; }
 
-    public bool IsLootable { get; set; }
+
+    [SerializeField] public bool IsLootable;
 
 
     private void Awake()
@@ -21,7 +22,6 @@ public class Lootable : MonoBehaviour
         _outlinable = GetComponentInParent<Outlinable>();
         FUIController = GetComponent<FUIController>();
         OffOutline();
-        IsLootable = false;
     }
 
     public void OnOutline()
