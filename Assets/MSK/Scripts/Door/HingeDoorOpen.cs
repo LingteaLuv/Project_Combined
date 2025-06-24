@@ -1,64 +1,115 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class HingeDoorOpen : MonoBehaviour
 {
-    [SerializeField] private float openAngle = 90f;
-    [SerializeField] private float openDuration = 1f;
+    [SerializeField] private DoorType _doorType;
+    [SerializeField] private float _openAngle = 90f;
+    [SerializeField] private float _duration = 1f;
 
-    private Quaternion _initialRotation;
-    private Quaternion _targetRotation;
+    private Quaternion _openedRotation;
+    private Quaternion _closedRotation;
+
+    private Key _key;
     private bool _isOpen = false;
-    private bool _isMoving = false;
+    private bool _isOnRotated = false;
 
-    private void Start()
+    private void Awake()
     {
-        _initialRotation = transform.rotation;
-        _targetRotation = Quaternion.Euler(transform.eulerAngles + new Vector3(0f, openAngle, 0f));
+        Init();
+    }
+    private void Init()
+    {
+        _closedRotation = transform.rotation;
+        _openedRotation = _closedRotation * Quaternion.Euler(0, _openAngle * (_doorType == DoorType.RotateRight ? -1 : 1), 0);
     }
 
-    public void Toggle()
+    public void Toggle(List<Key> playerKeys)
     {
-        if (_isMoving) return;
-
-        if (_isOpen)
-            StartCoroutine(CloseDoorRoutine());
+        if (_isOnRotated) return;
+        if (!_isOpen)
+        {
+            TryOpen(playerKeys);
+        }
         else
-            StartCoroutine(OpenDoorRoutine());
+        {
+            Close();
+        }
+    }
+    private void TryOpen(List<Key> playerKeys)
+    {
+        if (_key == null)
+        {
+            Debug.Log("TryOpen : 그냥 열리는지 체크");
+            RotateDoor();
+            return;
+        }
+
+        if (playerKeys.Any(k => k.KeyId == _key.KeyId))
+        {
+            _isOnRotated = true;
+            switch (_doorType)
+            {
+                case DoorType.RotateRight:
+                    RotateDoor();
+                    break;
+                case DoorType.RotateLeft:
+                    RotateDoor();
+                    break;
+                case DoorType.Slide:
+                    SlideOpen();
+                    break;
+            }
+        }
+        else 
+        {
+            Debug.Log("TryOpen : 열쇠 미보유");
+        }
     }
 
-    private System.Collections.IEnumerator OpenDoorRoutine()
+    private void Close()
     {
-        _isMoving = true;
-
-        float time = 0f;
-        while (time < openDuration)
+        _isOnRotated = true;
+        switch (_doorType)
         {
-            float t = time / openDuration;
-            transform.rotation = Quaternion.Slerp(_initialRotation, _targetRotation, t);
-            time += Time.deltaTime;
+            case DoorType.RotateRight:
+                RotateDoor();
+                break;
+            case DoorType.RotateLeft:
+                RotateDoor();
+                break;
+            case DoorType.Slide:
+                SlideOpen();
+                break;
+        }
+    }
+    private void SlideOpen()
+    {
+        // 슬라이드 문 여는 메서드
+    }
+    private void RotateDoor()
+    {
+        Quaternion rotation = _isOpen ? _closedRotation : _openedRotation;
+        StartCoroutine(RotateRoutine(rotation));
+    }
+
+    private IEnumerator RotateRoutine(Quaternion rotation)
+    {
+        Quaternion startRotation = transform.rotation;
+        float timer = 0f;
+
+        while (timer < _duration)
+        {
+            float t = timer / _duration;
+            transform.rotation = Quaternion.Slerp(startRotation, rotation, t);
+            timer += Time.deltaTime;
             yield return null;
         }
 
-        transform.rotation = _targetRotation;
-        _isOpen = true;
-        _isMoving = false;
-    }
-
-    private System.Collections.IEnumerator CloseDoorRoutine()
-    {
-        _isMoving = true;
-
-        float time = 0f;
-        while (time < openDuration)
-        {
-            float t = time / openDuration;
-            transform.rotation = Quaternion.Slerp(_targetRotation, _initialRotation, t);
-            time += Time.deltaTime;
-            yield return null;
-        }
-
-        transform.rotation = _initialRotation;
-        _isOpen = false;
-        _isMoving = false;
+        transform.rotation = rotation;
+        _isOpen = (rotation == _openedRotation);
+        _isOnRotated = false;
     }
 }

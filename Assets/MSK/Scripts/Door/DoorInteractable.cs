@@ -1,7 +1,9 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class DoorInteractable : MonoBehaviour, IInteractable
 {
+    [SerializeField] private List<Key> testKeys;
     private HingeDoorOpen _door;
 
     private void Awake()
@@ -11,7 +13,7 @@ public class DoorInteractable : MonoBehaviour, IInteractable
 
     public void Interact()
     {
-        _door.Toggle();
+        _door.Toggle(testKeys);
     }
 }
 
