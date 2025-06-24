@@ -30,7 +30,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         // 시작 시 체력을 최대체력으로 설정
         _currentHp = _maxHp;
         OnHealthChanged?.Invoke(_currentHp);
-        _animator = gameObject.GetComponent<Animator>();
+        //_animator = gameObject.GetComponent<Animator>();
     }
 
     private void Die()

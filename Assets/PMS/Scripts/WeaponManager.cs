@@ -38,7 +38,7 @@ public class WeaponManager : MonoBehaviour
     /// <param name="weapon"></param>
     public void SetCurrentWeapon(WeaponBase weapon)
     {
-        _currentWeapon = weapon;
+        _currentWeapon = weapon; //나중에 플레이어의 인벤토리에서 꺼내오도록 해야함
     }
 
     /// <summary>
