@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
     public PlayerCrouchState CrouchState { get; private set; }
     public PlayerIdleCrouchState IdleCrouchState { get; private set; }
     public PlayerClimbState ClimbState { get; private set; }
+    public PlayerInteractState InteractState { get; private set; }
     #endregion
 
     #region Private
@@ -61,6 +62,7 @@ public class PlayerController : MonoBehaviour
         _animator = GetComponent<Animator>();
         _movement.Controller = this;
 
+        InteractState = new PlayerInteractState(_fsm, _movement);
         IdleState = new PlayerIdleState(_fsm, _movement);
         MoveState = new PlayerMoveState(_fsm, _movement);
         JumpState = new PlayerJumpState(_fsm, _movement);
