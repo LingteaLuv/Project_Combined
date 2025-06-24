@@ -15,6 +15,8 @@ public class CreateSO : EditorWindow
     private TextAsset _consumableCsvFile;
     private TextAsset _etcCsvFile;
 
+    private TextAsset _recipeCsvFile;
+
     [MenuItem("Tools/CSV to ScriptableObjects")]
     public static void ShowWindow()
     {
@@ -31,6 +33,7 @@ public class CreateSO : EditorWindow
         _specialCsvFile = (TextAsset)EditorGUILayout.ObjectField("Special CSV", _specialCsvFile, typeof(TextAsset), false);
         _consumableCsvFile = (TextAsset)EditorGUILayout.ObjectField("Consumable CSV", _consumableCsvFile, typeof(TextAsset), false);
         _etcCsvFile = (TextAsset)EditorGUILayout.ObjectField("ETC CSV", _etcCsvFile, typeof(TextAsset), false);
+        _recipeCsvFile = (TextAsset)EditorGUILayout.ObjectField("Recipe CSV", _recipeCsvFile, typeof(TextAsset), false);
         
         if (GUILayout.Button("Generate ScriptableObjects"))
         {
@@ -40,7 +43,7 @@ public class CreateSO : EditorWindow
             }
             else
             {
-                Debug.LogWarning("CSV 파일이 지정되지 않았습니다.");
+                Debug.LogWarning("공용 CSV 파일이 지정되지 않았습니다.");
             }
         }
     }

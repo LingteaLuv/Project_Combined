@@ -1,18 +1,19 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DoorInteractable : MonoBehaviour
+public class DoorInteractable : MonoBehaviour, IInteractable
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private List<Key> testKeys;
+    private HingeDoorOpen _door;
+
+    private void Awake()
     {
-        
+        _door = GetComponent<HingeDoorOpen>();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Interact()
     {
-        
+        _door.Toggle(testKeys);
     }
 }
+
