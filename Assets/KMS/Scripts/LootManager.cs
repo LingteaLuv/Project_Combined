@@ -49,9 +49,13 @@ public class LootManager : SingletonT<LootManager>
             _itemCountTexts[i] = _lootSlots[i].GetComponentInChildren<TMP_Text>();
             _itemDurSliders[i] = _lootSlots[i].GetComponentInChildren<Slider>();
         }
+    }
+    public void ToggleUI()
+    {
+        UIManage.Instance.ToggleUI(ModalUI.lootTable);
+        LootTableUpdate();
 
     }
-
     public void ClearUI()
     {
         _stack.Clear();
@@ -62,9 +66,9 @@ public class LootManager : SingletonT<LootManager>
     public void NewLootableChecked(Lootable _lootable)
     {
         this._lootable = _lootable;
-        ClearUI();
-        _stack.Push(_f);
-        SetUI();
+        //ClearUI();
+        //_stack.Push(_f);
+        //SetUI();
     }
 
     public void SetUI()
@@ -85,7 +89,10 @@ public class LootManager : SingletonT<LootManager>
 
     public void LootableNotExist()
     {
-        ClearUI();
+        if (UIManage.Instance.Current == ModalUI.lootTable)
+        {
+            UIManage.Instance.CloseUI();
+        }
     }
 
     public void OpenLootTable()

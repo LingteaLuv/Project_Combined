@@ -29,6 +29,7 @@ public class PlayerLooting : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         if (_colliders.Count == 0) return;
+        if (UIManage.Instance.IsModalUIOpened) return;
         float distance = float.MaxValue;
         Collider near = null;
         foreach ( Collider c in _colliders)
@@ -79,7 +80,7 @@ public class PlayerLooting : MonoBehaviour
     public void TryLoot()
     {
         if (_lootable == null) return;
-        LootManager.Instance.OpenLootTable();
+        LootManager.Instance.ToggleUI();
 
     }
 }
