@@ -35,6 +35,8 @@ public class GunWeaponBase : WeaponBase
     [SerializeField]protected AudioClip fire_Sound;        // 총 발사 소리 오디오 클립
     protected ObjectPool _gunBulletObjectPool;
 
+    [SerializeField] protected ParticleSystem _bulletcaseParticle;  // 탄피가 떨어지는 이펙트를 재생하는 파티클 시스템
+
     public int Damage { get { return _damage; } private set { } }
 
     public override bool IsAttack => throw new System.NotImplementedException();
