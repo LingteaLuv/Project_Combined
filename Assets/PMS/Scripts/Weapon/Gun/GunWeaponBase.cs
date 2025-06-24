@@ -37,6 +37,9 @@ public class GunWeaponBase : WeaponBase
     protected ObjectPool _gunBulletObjectPool;
 
     public int Damage { get { return _damage; } private set { } }
+
+    public override bool IsAttack => throw new System.NotImplementedException();
+
     public virtual void Init()
     {
         //무기마다 Init() 불릿 풀 사이즈가 다를 것이고,불릿 프리팹이 다르다.
