@@ -50,10 +50,12 @@ public class InventoryManager : SingletonT<InventoryManager>
     public void AlignInvWithCraft()
     {
         UIManage.Instance.InvUI.transform.position = UIManage.Instance.CraftUI.transform.position;
+        //Debug.Log(111);
     }
     public void AlignCraftWithInv()
     {
         UIManage.Instance.CraftUI.transform.position = UIManage.Instance.InvUI.transform.position;
+        //Debug.Log(222);
     }
 
     public bool AddItem(ItemBase item, int amount, int dur)
@@ -87,5 +89,8 @@ public class InventoryManager : SingletonT<InventoryManager>
         HoldSlot.transform.position = Input.mousePosition;
     }
 
-
+    public bool FindItem(int ID, bool remove)
+    {
+        return false;
+    }
 }
