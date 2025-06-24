@@ -17,19 +17,33 @@ public class Monster_Patrol: MonsterState_temp
         _agent = monster.MonsterAgent;
         _wayPoints = monster.PatrolPoints;
 
-        if (_agent == null) { return; }
-
         //  오류 방지
-        if (_wayPoints == null || _wayPoints.Length == 0) { return; }
+        if (_agent == null || _wayPoints == null || _wayPoints.Length == 0) { return; }
 
         // agent를 확성화해 waypoint를 따라가게 한다.
+
+        if (!_agent.isOnNavMesh)
+        {
+            if (NavMesh.SamplePosition(monster.transform.position, out NavMeshHit hit, 2f, NavMesh.AllAreas))
+            {
+                _agent.Warp(hit.position);
+            }
+            else { return; }
+        }
+
+        _agent.enabled = true;
+        _agent.ResetPath();
+
         _curIndex = 0;
         MoveToCurrentPoint();
     }
 
     private void MoveToCurrentPoint()
     {
-        _agent.SetDestination(_wayPoints[_curIndex].position);
+        if (_agent.enabled && _agent.isOnNavMesh)
+        {
+            _agent.SetDestination(_wayPoints[_curIndex].position);
+        }  
     }
 
     public override void Enter()
@@ -39,6 +53,8 @@ public class Monster_Patrol: MonsterState_temp
 
     public override void Update()
     {
+
+        if (!_agent.enabled || !_agent.isOnNavMesh) return;
         // 몬스터가 아직 경로를 계산 중이면 대기
         if (_agent.pathPending) return;
 
@@ -55,7 +71,11 @@ public class Monster_Patrol: MonsterState_temp
     // Chase 씬으로 돌아가는 것은 monster_temp에 있기 때문에 씬 전환은 필요 없다.
     public override void Exit()
     {
-        _agent.ResetPath();
+
+        if (_agent.enabled && _agent.isOnNavMesh)
+        {
+            _agent.ResetPath();
+        }
     }
 
 }
