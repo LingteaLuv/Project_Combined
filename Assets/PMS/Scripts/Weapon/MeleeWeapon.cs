@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class MeleeWeapon : WeaponBase
 {
-    //[SerializeField] private PMS_Enemy _enemy;
     [SerializeField] private Transform _playerPos; //플레이어의 위치
+    [SerializeField] private Transform _attackPointPos; //공격의 충돌을 감지할 Pivot Transform
     public override bool IsAttack { get; }
     [Header("근접무기 셋팅값")]
     [SerializeField] private int _attackDamage; //근거리 무기의 공격력
@@ -13,13 +13,45 @@ public class MeleeWeapon : WeaponBase
     [SerializeField] private float _attackAngle; //근거리 무기 유효 각도
     [SerializeField] private float _attackInterval = 1.0f; // 1초에 한 번 0.5f 값이 1초에 2번때림
 
+    [Header("플레이어 Animator")]
     [SerializeField] Animator _animator; //플레이어의 애니메이터가 필요 -> 공격시 플레이어 애니메이션 재생하기 위하여
 
-    [Header("Attack")]
+    [Header("Attack Target Layer")]
     [SerializeField] private LayerMask _targetLayer; //타겟 대상 레이어 -> 추후 몬스터가 레이어로 관리되지 않을까?
 
-    //1번:Physics.OverlapSphere + 범위 + 각도 체크
+    /* 
+     * 기획팀에서 어떤부분을 요구할지 몰라 여러가지 공격 로직을 구현했습니다.
+     * TODO - 공격속도에 대한 코드 부분이 존재하지 않네요,추가해야 할 것 같습니다.
+     */
+
+    /// <summary>
+    /// Physics.OverlapSphere + 범위 + 애니메이션 Event를 통한 특정 프레임 이벤트 호출, 각도 체크X - 무기기준 
+    /// 추후 콜라이더 변경으로 각도가 해결되지 않을 경우에 플레이어 기준으로 각도체크 하는 부분 추가하면 될 것 같다.
+    /// </summary>
     public override void Attack()
+    {
+        _animator.SetTrigger("DownwardAttack");
+
+        //무기에 달려있는 _attack를 중심으로 범위를 설정하고 타겟레이어와 충돌검사
+        Collider[] _colliders = Physics.OverlapSphere(_attackPointPos.position, _attackRange, _targetLayer);
+
+        // 9. 충돌체를 저장한 배열을 순회하며 데미지 부여 로직 실행
+        foreach (Collider target in _colliders)
+        {
+            //타겟의 IDamageable 인터페이스를 받아와서 데미지 부여
+            IDamageable damageable = target.GetComponent<IDamageable>();
+            if (damageable != null)
+            {
+                damageable.Damaged(_attackDamage); //TakeDamage함수명이 더좋을듯
+                StartCoroutine(DamageRoutine(target.gameObject));
+            }
+        }
+
+    }
+    /// <summary>
+    /// Physics.OverlapSphere + 범위 + 각도 체크 - 플레이어기준
+    /// </summary>
+    /*public override void Attack()
     {
         _animator.SetTrigger("DownwardAttack");
 
@@ -54,7 +86,7 @@ public class MeleeWeapon : WeaponBase
             StartCoroutine(DamageRoutine(target.gameObject));
         }
 
-    }
+    }*/
 
     //2번 애니메이션 그냥 콜라이더 추가해버리면 공격하지 않아도 닿으면 몹들이 맞은걸로 인식하게 된다.
     public void Attack2()
@@ -68,6 +100,7 @@ public class MeleeWeapon : WeaponBase
     {
         // 1. 공격 애니메이션을 재생한다.
         // animator.SetTrigger("Attack");
+        _animator.SetTrigger("DownwardAttack");
 
         // 2. 애니메이션 클립의 특정 타이밍에 Animation Event를 추가하여,
         //    공격 판정(콜라이더 생성 및 활성화) 함수를 호출한다.
@@ -84,6 +117,7 @@ public class MeleeWeapon : WeaponBase
 
     }
 
+    //3번
     private void OnTirrigerEnter(Collision collision)
     {
         if(collision.gameObject.layer == _targetLayer)
@@ -105,10 +139,11 @@ public class MeleeWeapon : WeaponBase
         }
     }
 
-    
+
 
     #region 기즈모 출력
-    private void OnDrawGizmos()
+    //플레이어 기준
+    /*private void OnDrawGizmos()
     {
         //왼쪽 라인 플레이어로 부터 
         Vector3 leftDir = Quaternion.Euler(0, -_attackAngle * 0.5f, 0) * _playerPos.transform.forward;
@@ -119,6 +154,19 @@ public class MeleeWeapon : WeaponBase
 
         //오버랩 스피어 범위
         Gizmos.DrawWireSphere(_playerPos.transform.transform.position, _attackRange);
+    }*/
+
+    private void OnDrawGizmos()
+    {
+        //왼쪽 라인 플레이어로 부터 
+        /*Vector3 leftDir = Quaternion.Euler(0, -_attackAngle * 0.5f, 0) * _attackPointPos.transform.forward;
+        Gizmos.DrawLine(_attackPointPos.transform.position, _attackPointPos.transform.position + leftDir * _attackRange);
+
+        Vector3 rightDir = Quaternion.Euler(0, _attackAngle * 0.5f, 0) * _attackPointPos.transform.forward;
+        Gizmos.DrawLine(_attackPointPos.transform.position, _attackPointPos.transform.position + rightDir * _attackRange);*/
+
+        //오버랩 스피어 범위
+        Gizmos.DrawWireSphere(_attackPointPos.transform.transform.position, _attackRange);
     }
     #endregion
 
