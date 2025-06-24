@@ -14,6 +14,7 @@ public class UIManage : SingletonT<UIManage>
     [SerializeField] public GameObject ModalBase;
     [SerializeField] public GameObject LootUI;
     [SerializeField] public GameObject InvUI;
+    [SerializeField] public GameObject CraftUI;
 
     [SerializeField] public CanvasGroup UIGroup;
 
@@ -114,6 +115,7 @@ public class UIManage : SingletonT<UIManage>
         UIGroup.alpha = 0f;
         LootUI.SetActive(false);
         InvUI.SetActive(false);
+        CraftUI.SetActive(false);
         ModalBase.SetActive(false);
         IsModalUIOpened = false;
         Current = ModalUI.nothing;
