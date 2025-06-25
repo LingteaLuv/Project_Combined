@@ -14,8 +14,10 @@ public class PlayerMovement : MonoBehaviour
     public PlayerClimb PlayerClimbHandler { get; private set; }
 
     public PlayerController Controller { get; set; }
-    private Rigidbody _rb;
+    public Rigidbody Rigidbody { get; private set; }
     private bool _jumpConsumedThisFrame;
+    private float _airTime;
+    private bool _wasGrounded;
 
     private Vector3 _currentRotation;
     private bool _isCrouching;
@@ -37,7 +39,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Init()
     {
-        _rb = GetComponent<Rigidbody>();
+        Rigidbody = GetComponent<Rigidbody>();
         PlayerClimbHandler = GetComponent<PlayerClimb>();
     }
 
@@ -46,9 +48,32 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         _jumpConsumedThisFrame = false;
+        _wasGrounded = IsGrounded;
         IsGrounded = Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, _groundCheckDistance + 0.1f);
         IsOnLadder = _inputHandler.IsOnLadder;
+        
+        // 채공 시간 누적
+        if (!IsGrounded)
+        {
+            TrackAirTime(); 
+        }
+        //  착지 여부 판단
+        if (! _wasGrounded && IsGrounded)
+        {
+            ApplyFallDamage();
+            _airTime = 0;   // 채공 시간 초기화
+        }
     }
+
+    private void ApplyFallDamage()
+    {
+        //  TODO : 데미지 입히는 로직
+    }
+    private void TrackAirTime()
+    {
+        _airTime += Time.deltaTime;
+    }
+
     /// <summary>
     /// 입력 방향에 따라 관성 없이 이동합니다.
     /// </summary>
@@ -65,9 +90,9 @@ public class PlayerMovement : MonoBehaviour
         {
             float speed = _property.MoveSpeed.Value * (_isCrouching ? _crouchSpeedMultiplier : 1f);
             Vector3 targetVel = moveDir * speed;
-            Vector3 velocity = _rb.velocity;
+            Vector3 velocity = Rigidbody.velocity;
             targetVel.y = velocity.y; // 유지
-            _rb.velocity = Vector3.MoveTowards(_rb.velocity, targetVel, 100* Time.deltaTime);
+            Rigidbody.velocity = Vector3.MoveTowards(Rigidbody.velocity, targetVel, 100* Time.deltaTime);
         
             bool downRay = Physics.Raycast(transform.position + Vector3.up * 0.01f, transform.forward, 0.5f);
             bool middleRay = Physics.Raycast(transform.position + Vector3.up * 0.1f, transform.forward, 0.5f);
@@ -77,7 +102,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 if (!upRay)
                 {
-                    _rb.position += Vector3.up * 0.1f;
+                    Rigidbody.position += Vector3.up * 0.1f;
                 } 
             }
             
@@ -85,15 +110,15 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            Vector3 targetVel = new Vector3(0, _rb.velocity.y, 0);
-            _rb.velocity = Vector3.MoveTowards(_rb.velocity, targetVel, 100* Time.deltaTime);
+            Vector3 targetVel = new Vector3(0, Rigidbody.velocity.y, 0);
+            Rigidbody.velocity = Vector3.MoveTowards(Rigidbody.velocity, targetVel, 100* Time.deltaTime);
         }
         Quaternion targetRot = Quaternion.LookRotation(moveDir);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 10f);
 
-        if (_rb.velocity.y < 0)
+        if (Rigidbody.velocity.y < 0)
         {
-            _rb.velocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1f) * Time.fixedDeltaTime;
+            Rigidbody.velocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1f) * Time.fixedDeltaTime;
         }
     }
     public bool CanJump()
@@ -107,7 +132,7 @@ public class PlayerMovement : MonoBehaviour
     public void Jump()
     {
         _jumpConsumedThisFrame = true;
-        _rb.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
+        Rigidbody.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
     }
     public void SetCrouch(bool crouch)
     {
@@ -132,6 +157,6 @@ public class PlayerMovement : MonoBehaviour
     
     public void SetGravity(bool enabled)
     {
-        _rb.useGravity = enabled;
+        Rigidbody.useGravity = enabled;
     }
 }

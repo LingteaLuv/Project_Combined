@@ -40,6 +40,11 @@ public class PlayerMoveState : PlayerState
             _fsm.ChangeState(_movement.Controller.ClimbState);
             return;
         }
+        if (!_movement.IsGrounded && _movement.Rigidbody.velocity.y < -0.1f)
+        {
+            _fsm.ChangeState(_movement.Controller.FallState);
+            return;
+        }
         if (HandleJumpTransition()) return;
     }
     public override void FixedTick()
