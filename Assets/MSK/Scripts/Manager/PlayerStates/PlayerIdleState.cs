@@ -14,7 +14,6 @@ public class PlayerIdleState : PlayerState
         Debug.Log("Enter Idle");
         if (_movement.Controller.IsCrouch)
         {
-            _movement.Controller._animator.SetTrigger("CrouchUp");
             _movement.Controller.IsCrouch = false;
         }
     }

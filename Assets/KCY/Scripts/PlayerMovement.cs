@@ -56,6 +56,7 @@ public class PlayerMovement : MonoBehaviour
         IsGrounded = Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, _groundCheckDistance + 0.1f);
         IsOnLadder = _inputHandler.IsOnLadder;
         
+        /*
         // 채공 시간 누적
         if (!IsGrounded)
         {
@@ -73,9 +74,11 @@ public class PlayerMovement : MonoBehaviour
             Debug.Log($"높이차는 : {_lastYPos} - {currentY} = {_lastYPos - currentY} 입니다.");
             ApplyFallDamage();
             _airTime = 0;   // 채공 시간 초기화
-        }
+        }*/
     }
 
+
+    /*
     private void ApplyFallDamage()
     {
         //  TODO : 데미지 입히는 로직
@@ -85,6 +88,7 @@ public class PlayerMovement : MonoBehaviour
     {
         _airTime += Time.deltaTime;
     }
+    */
 
     /// <summary>
     /// 입력 방향에 따라 관성 없이 이동합니다.

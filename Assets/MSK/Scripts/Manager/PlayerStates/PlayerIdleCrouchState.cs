@@ -14,7 +14,6 @@ public class PlayerIdleCrouchState : PlayerState
 
         if (!_movement.Controller.IsCrouch)
         {
-            _movement.Controller._animator.SetTrigger("CrouchDown");
             _movement.Controller.IsCrouch = true;
         }
         _movement.Controller._animator.SetBool("IsCrouch", true);
