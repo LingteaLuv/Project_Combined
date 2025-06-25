@@ -11,14 +11,12 @@ public class PlayerIdleState : PlayerState
 
     public override void Enter() 
     { 
-        Debug.Log("Enter Idle");
         if (_movement.Controller.IsCrouch)
         {
-            _movement.Controller._animator.SetTrigger("CrouchUp");
             _movement.Controller.IsCrouch = false;
         }
     }
-    public override void Exit() { Debug.Log("Exit Idle"); }
+    public override void Exit() { }
     public override void FixedTick() { }
     public override void Tick()
     {
@@ -42,6 +40,12 @@ public class PlayerIdleState : PlayerState
             _fsm.ChangeState(_movement.Controller.InteractState);
             return;
         }
+        if (!_movement.IsGrounded && _movement.Rigidbody.velocity.y < -0.1f)
+        {
+            _fsm.ChangeState(_movement.Controller.FallState);
+            return;
+        }
+
 
         if (HandleJumpTransition()) return;
     }
