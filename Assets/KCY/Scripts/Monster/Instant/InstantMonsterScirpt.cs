@@ -1,127 +1,130 @@
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 
 public class InstantMonsterScirpt : MonoBehaviour
 {
-    public int MonsterHp = 10;
-    public int MoveSpeed = 1;
-    public int attackDamage = 10;
-    public float detectRange = 7f;
-    public float detectRadius = 1.5f;
-    public float attackRange = 2f;
-    public float attackRadius = 0.6f;
-
-
-    public Rigidbody rb;
-    public Collider col;
-    public Animator anime;
-    public LayerMask PlayerLayerMask;
-
-    private float coolTime = 1f;
-    private float lastAttack;
-    private bool isDead = false;
+    public int MonsterHp = 10;  // 몬스터 체력
+    public int MoveSpeed = 1;  // 몬스터 속도
+    public int attackDamage = 1; // 몬스터 데미지
+    public Rigidbody rb; // 충돌 및 감지용 콜라이더
+    public LayerMask PlayerLayerMask; // 플레이어 감지를 위한 플레이어 레이어를 가져오기
+    private bool _isDead = false;
+    private InstantAnimation ani;
+    private bool isDetecting = false;
+    public bool IsFrozen = false;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        anime = GetComponent<Animator>();
-        col = GetComponent<Collider>();
+        ani = GetComponentInChildren<InstantAnimation>();
+        PlayerLayerMask = LayerMask.GetMask("Player");
     }
 
-    private void Update()
+    private void OnTriggerEnter(Collider other)
     {
-        if (isDead) return;
-
-        Vector3 origin = transform.position + Vector3.up * 1f;
-        Vector3 direction = transform.forward;
-
-        if (Physics.SphereCast(origin, detectRadius, direction, out RaycastHit detectHit, detectRange, PlayerLayerMask))
+        if (_isDead) return;
+        DetectAndMove(other);
+    }
+    private void OnTriggerStay(Collider other)
+    {
+        if (_isDead) return;
+        DetectAndMove(other);
+        Attack(other);
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (_isDead) return;
+        if ((PlayerLayerMask.value & (1 << other.gameObject.layer)) != 0)
         {
-            Transform player = detectHit.transform;
+            ani.ani.SetBool("IsDetect", false);
+        }
+    }
 
-            anime.SetBool("IsDetect", true);
 
-            Vector3 dir = (player.position - transform.position).normalized;
+
+    public void DetectAndMove(Collider other)
+    {
+        if (_isDead || IsFrozen) return;
+
+        if ((PlayerLayerMask.value & (1 << other.gameObject.layer)) != 0)
+        {
+
+            if (!ani.isAttacking && ani.ani.GetBool("IsDetect") == false)
+            {
+                ani.ani.SetBool("IsDetect", true);
+            }
+
+            Vector3 dir = other.transform.position - transform.position;
             dir.y = 0;
-            if (dir.sqrMagnitude > 0.001f)
+            dir = dir.normalized;
+
+            if (dir.sqrMagnitude > 0)
             {
                 Quaternion lookRot = Quaternion.LookRotation(dir);
-                transform.rotation = Quaternion.Slerp(transform.rotation, lookRot, Time.deltaTime * 2f);
+                transform.rotation = Quaternion.Slerp(transform.rotation, lookRot, Time.deltaTime * 3f);
             }
 
-            Vector3 velocity = dir * MoveSpeed;
-            rb.velocity = new Vector3(velocity.x, rb.velocity.y, velocity.z);
+            rb.MovePosition(transform.position + dir * MoveSpeed * Time.deltaTime);
 
-            if (Physics.SphereCast(origin, attackRadius, direction, out RaycastHit attackHit, attackRange, PlayerLayerMask))
+            if (!isDetecting)
             {
-                Vector3 dirToPlayer = (attackHit.transform.position - transform.position).normalized;
-                dirToPlayer.y = 0;
-                float angle = Vector3.Angle(transform.forward, dirToPlayer);
-                float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-
-                if (distanceToPlayer <= attackRange && angle <= 45f && Time.time - lastAttack > coolTime)
-                {
-                    rb.velocity = Vector3.zero;
-                    anime.SetBool("IsAttack", true);
-
-                    PlayerHealth playerHealth = attackHit.transform.GetComponent<PlayerHealth>();
-                    if (playerHealth != null)
-                    {
-                        playerHealth.Damaged(attackDamage);
-                        lastAttack = Time.time;
-                    }
-                }
-                // 대체 왜 이렇게 마구잡이로 꺼야 되는거지;
-                else
-                {
-                    anime.SetBool("IsAttack", false);
-                }
-            }
-            else
-            {
-                anime.SetBool("IsAttack", false);
+                isDetecting = true;
+                ani.ani.SetBool("IsDetect", true);
+                Debug.Log("IsDetect true");
             }
         }
-        else
-        {
-            anime.SetBool("IsDetect", false);
-            anime.SetBool("IsAttack", false);
-            rb.velocity = Vector3.zero;
-        }
-
-
-       if (Input.GetKeyDown(KeyCode.Space))
-        {
-            TakeDamage(1);
-            
-            anime.SetTrigger("IsHit");
-           
-        }
-       
     }
 
-    private void TakeDamage(int damage)
+    public void Attack(Collider other)
     {
-        // 나중에 관련 로직 생길 시 추가
+        if (_isDead||ani.isAttacking) return;
 
-        if (isDead) return;
+        if ((PlayerLayerMask.value & (1 << other.gameObject.layer)) != 0)
+        {
+            // 몬스터와 플레이어 사이의 거리
+            float distance = Vector3.Distance(transform.position, other.transform.position);
+
+            // 둘 사이의 방향
+            Vector3 direction = other.transform.position - transform.position;
+            direction.y = 0;
+            direction = direction.normalized;
+
+            float angle = Vector3.Angle(direction, transform.forward);
+            //거리가 가까우면
+            if (distance < 1.5f && angle < 45f)
+            {
+                PlayerHealth2 playerHealth = other.GetComponent<PlayerHealth2>();
+                if (playerHealth != null)
+                {
+                    ani.ani.SetBool("IsDetect", false);
+                    Debug.Log("코루틴 시작 시도");
+                    StartCoroutine(ani.AttackRoutine(other));
+                   
+
+                }
+            }
+        }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        if (_isDead) return;
 
         MonsterHp -= damage;
+        ani.ani.SetTrigger("IsHit");
+
         if (MonsterHp <= 0)
         {
-            isDead = true;
+            _isDead = true;
             Die();
         }
     }
-
     private void Die()
     {
-        anime.SetBool("Dead", true);
-        anime.SetTrigger("IsDead");
-        anime.SetBool("IsAttack", false);
         rb.velocity = Vector3.zero;
-        rb.isKinematic = true;
-        col.isTrigger = true;
+        ani.ani.SetTrigger("Dead");
+        Destroy(gameObject, 10f);
+        Debug.Log("몬스터가 소멸했어요");
     }
-    
+
 }
+
