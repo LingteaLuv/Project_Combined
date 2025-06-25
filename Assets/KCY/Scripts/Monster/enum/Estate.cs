@@ -4,5 +4,5 @@ using UnityEngine;
 
 public enum Estate
 {
-    Patrol, Chase, Idle
+    Reset, Patrol, Chase, Idle
 }

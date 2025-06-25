@@ -10,15 +10,20 @@ public class Monster_temp : MonoBehaviour
     [SerializeField] public NavMeshAgent MonsterAgent;
     [SerializeField] public Transform TargetPosition;
     [SerializeField] public LayerMask PlayerLayerMask;
-    [SerializeField] public float MoveSpeed;
+    [SerializeField] public float WalkSpeed;
     [SerializeField] public float RunningSpeed;
     [SerializeField] public float CrawlSpeed;
     [SerializeField] public Transform[] PatrolPoints;
     [SerializeField] public Collider DetectRange;
+    [SerializeField] public Transform SpawnPoint; // 좀비 시작 위치 설정 
 
     public Animator Ani;
-    public Rigidbody Rigid; 
+    public Rigidbody Rigid;
     public MonsterStateMachine_temp _monsterMerchine;
+
+
+    // 애니메이션 실행
+   
 
     private void StateMachineInit()
     {
@@ -26,22 +31,10 @@ public class Monster_temp : MonoBehaviour
         _monsterMerchine.StateDic.Add(Estate.Idle, new Monster_Idle(this));
         _monsterMerchine.StateDic.Add(Estate.Chase, new Monster_Chase(this));
         _monsterMerchine.StateDic.Add(Estate.Patrol, new Monster_Patrol(this));
-
+        _monsterMerchine.StateDic.Add(Estate.Reset, new Monster_Reset(this));
 
         // 시작은 idle 모드에서 시작
         _monsterMerchine.CurState = _monsterMerchine.StateDic[Estate.Idle];
-    }
-
-
-    // 디버그용 추후 삭제
-    private void OnDrawGizmosSelected()
-    {
-        if (DetectRange != null)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(DetectRange.bounds.center, DetectRange.bounds.extents.magnitude);
-        }
-
     }
 
 
@@ -54,7 +47,7 @@ public class Monster_temp : MonoBehaviour
 
     void Update()
     {
-        _monsterMerchine.Update();
+        _monsterMerchine.Update(); 
     }
     void FixedUpdate()
     {
@@ -62,28 +55,47 @@ public class Monster_temp : MonoBehaviour
     }
 
     // 몬스터에 추가한 콜라이더와 레이어를 활요하여 추적로직
-    private void OnTriggerEnter(Collider other)
+    private void DetectPlayer(Collider other)
     {
+        Debug.Log("if문 진입");
         // 설정한 플레이어 레이어 숫자와 부딫힌 오브젝트의 레이어가 겹칠때 추적로직 작동
         if ((PlayerLayerMask.value & (1 << other.gameObject.layer)) != 0)
         {
-            _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.Chase]);
+            Debug.Log($"[Trigger] 충돌: {other.name}, Layer: {other.gameObject.layer}");
 
-            // 체크 되면 몸체 돌리기
-            Vector3 dir = TargetPosition.position - transform.position;
-            dir.y = 0;
-            if (dir.sqrMagnitude > 0.001f)
+            if ((PlayerLayerMask.value & (1 << other.gameObject.layer)) != 0)
             {
-                Quaternion lookRot = Quaternion.LookRotation(dir.normalized);
-                transform.rotation = Quaternion.Slerp(transform.rotation, lookRot, Time.deltaTime);
+                Debug.Log(" 플레이어 감지됨 → 상태 전이 시도");
+
+                _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.Chase]);
+                Debug.Log("상태 전이 → Chase");
+
+                // 체크 되면 몸체 돌리기
+                Vector3 dir = TargetPosition.position - transform.position;
+                dir.y = 0;
+                if (dir.sqrMagnitude > 0.001f)
+                {
+                    Quaternion lookRot = Quaternion.LookRotation(dir.normalized);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, lookRot, Time.deltaTime);
+                }
             }
         }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        DetectPlayer(other);
+    }
+    private void OnTriggerStay(Collider other)
+    {
+        DetectPlayer(other);
     }
 
     private void OnTriggerExit(Collider other)
     {
         if ((PlayerLayerMask.value & (1 << other.gameObject.layer)) != 0)
         {
+            Debug.Log($"[TriggerExit] {other.name} 플레이어가 감지 범위에서 벗어남 → Idle 상태로 전이");
             _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.Idle]);
         }
     }
