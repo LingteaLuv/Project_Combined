@@ -10,7 +10,7 @@ public class Monster_temp : MonoBehaviour
     [SerializeField] public NavMeshAgent MonsterAgent;
     [SerializeField] public Transform TargetPosition;
     [SerializeField] public LayerMask PlayerLayerMask;
-    [SerializeField] public float MoveSpeed;
+    [SerializeField] public float WalkSpeed;
     [SerializeField] public float RunningSpeed;
     [SerializeField] public float CrawlSpeed;
     [SerializeField] public Transform[] PatrolPoints;
@@ -21,13 +21,17 @@ public class Monster_temp : MonoBehaviour
     public Rigidbody Rigid;
     public MonsterStateMachine_temp _monsterMerchine;
 
+
+    // 애니메이션 실행
+   
+
     private void StateMachineInit()
     {
         _monsterMerchine = new MonsterStateMachine_temp();
         _monsterMerchine.StateDic.Add(Estate.Idle, new Monster_Idle(this));
         _monsterMerchine.StateDic.Add(Estate.Chase, new Monster_Chase(this));
         _monsterMerchine.StateDic.Add(Estate.Patrol, new Monster_Patrol(this));
-        _monsterMerchine.StateDic.Add(Estate.Reset, new Monster_Patrol(this));
+        _monsterMerchine.StateDic.Add(Estate.Reset, new Monster_Reset(this));
 
         // 시작은 idle 모드에서 시작
         _monsterMerchine.CurState = _monsterMerchine.StateDic[Estate.Idle];
@@ -43,8 +47,7 @@ public class Monster_temp : MonoBehaviour
 
     void Update()
     {
-        _monsterMerchine.Update();
-        TransitiontoResetState();
+        _monsterMerchine.Update(); 
     }
     void FixedUpdate()
     {
@@ -54,6 +57,7 @@ public class Monster_temp : MonoBehaviour
     // 몬스터에 추가한 콜라이더와 레이어를 활요하여 추적로직
     private void DetectPlayer(Collider other)
     {
+        Debug.Log("if문 진입");
         // 설정한 플레이어 레이어 숫자와 부딫힌 오브젝트의 레이어가 겹칠때 추적로직 작동
         if ((PlayerLayerMask.value & (1 << other.gameObject.layer)) != 0)
         {
@@ -64,6 +68,7 @@ public class Monster_temp : MonoBehaviour
                 Debug.Log(" 플레이어 감지됨 → 상태 전이 시도");
 
                 _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.Chase]);
+                Debug.Log("상태 전이 → Chase");
 
                 // 체크 되면 몸체 돌리기
                 Vector3 dir = TargetPosition.position - transform.position;
@@ -90,20 +95,9 @@ public class Monster_temp : MonoBehaviour
     {
         if ((PlayerLayerMask.value & (1 << other.gameObject.layer)) != 0)
         {
+            Debug.Log($"[TriggerExit] {other.name} 플레이어가 감지 범위에서 벗어남 → Idle 상태로 전이");
             _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.Idle]);
         }
     }
-
-    private void TransitiontoResetState()
-    {
-        if (!MonsterAgent.isOnNavMesh ||
-            MonsterAgent.pathStatus == NavMeshPathStatus.PathInvalid ||
-            (MonsterAgent.hasPath && MonsterAgent.remainingDistance > 0 && MonsterAgent.velocity.sqrMagnitude < 0.01f))
-        {
-            _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.Reset]);
-        }
-    }
-
-
 
 }

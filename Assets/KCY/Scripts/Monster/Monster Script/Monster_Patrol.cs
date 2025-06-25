@@ -26,7 +26,7 @@ public class Monster_Patrol: MonsterState_temp
         {
             if (NavMesh.SamplePosition(monster.transform.position, out NavMeshHit hit, 2f, NavMesh.AllAreas))
             {
-                _agent.Warp(hit.position);
+                _agent.SetDestination(hit.position);
             }
             else { return; }
         }
@@ -48,6 +48,8 @@ public class Monster_Patrol: MonsterState_temp
 
     public override void Enter()
     {
+        monster.Ani.SetBool("isPatrol", true);
+        monster.MonsterAgent.speed = monster.WalkSpeed;
         Init();
     }
 
@@ -75,6 +77,7 @@ public class Monster_Patrol: MonsterState_temp
         if (_agent.enabled && _agent.isOnNavMesh)
         {
             _agent.ResetPath();
+            monster.Ani.SetBool("isPatrol", false);
         }
     }
 

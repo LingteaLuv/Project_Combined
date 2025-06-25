@@ -4,7 +4,7 @@ using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Monster_reset : MonsterState_temp
+public class Monster_Reset : MonsterState_temp
 {
     private Vector3 _spawnPoint;
     private NavMeshAgent _agent;
@@ -12,7 +12,7 @@ public class Monster_reset : MonsterState_temp
     private MonsterStateMachine_temp _stateMachine;
 
 
-    public Monster_reset(Monster_temp _monster) : base(_monster)
+    public Monster_Reset(Monster_temp _monster) : base(_monster)
     {
         _spawnPoint = monster.SpawnPoint.position; // 어디서 스폰할 건지 따로 정하기
         _agent = monster.MonsterAgent;
