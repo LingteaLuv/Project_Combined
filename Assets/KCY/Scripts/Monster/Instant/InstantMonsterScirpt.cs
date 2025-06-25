@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 public class InstantMonsterScirpt : MonoBehaviour
 {
@@ -10,7 +11,9 @@ public class InstantMonsterScirpt : MonoBehaviour
     public float attackRange = 2f;
     public float attackRadius = 0.6f;
 
+
     public Rigidbody rb;
+    public Collider col;
     public Animator anime;
     public LayerMask PlayerLayerMask;
 
@@ -22,6 +25,7 @@ public class InstantMonsterScirpt : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         anime = GetComponent<Animator>();
+        col = GetComponent<Collider>();
     }
 
     private void Update()
@@ -84,13 +88,25 @@ public class InstantMonsterScirpt : MonoBehaviour
             anime.SetBool("IsAttack", false);
             rb.velocity = Vector3.zero;
         }
+
+
+       if (Input.GetKeyDown(KeyCode.Space))
+        {
+            TakeDamage(1);
+            
+            anime.SetTrigger("IsHit");
+           
+        }
+       
     }
 
-    private void TakeDamage(PlayerAttack attack)
+    private void TakeDamage(int damage)
     {
+        // 나중에 관련 로직 생길 시 추가
+
         if (isDead) return;
 
-        MonsterHp -= 1;
+        MonsterHp -= damage;
         if (MonsterHp <= 0)
         {
             isDead = true;
@@ -100,9 +116,12 @@ public class InstantMonsterScirpt : MonoBehaviour
 
     private void Die()
     {
-        anime.SetTrigger("isDead");
-        anime.SetBool("isDead", false);
-        anime.SetBool("isAttack", false);
+        anime.SetBool("Dead", true);
+        anime.SetTrigger("IsDead");
+        anime.SetBool("IsAttack", false);
         rb.velocity = Vector3.zero;
+        rb.isKinematic = true;
+        col.isTrigger = true;
     }
+    
 }
