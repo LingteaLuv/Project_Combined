@@ -32,7 +32,7 @@ public class PlayerJumpState : PlayerState
     public override void Exit() { }
     public override void FixedTick()
     {
-        _movement.Move(_movement.MoveInput);
+        _movement.HandleMovement(_movement.MoveInput);
     }
 
     /// <summary>

@@ -43,6 +43,6 @@ public class PlayerCrouchState : PlayerState
 
     public override void FixedTick()
     {
-        _movement.Move(_movement.MoveInput);
+        _movement.HandleMovement(_movement.MoveInput);
     }
 }
