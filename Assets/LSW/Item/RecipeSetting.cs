@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class RecipeSetting : MonoBehaviour
 {
     [Header("Drag&Drop")] 
+    // ScriptableObjects - New Item Dictionary 드래그
     [SerializeField] private ItemDictionary _itemDictionary;
     
     private Recipe _recipe;
