@@ -1,18 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class PlayerHitState : MonoBehaviour
+public class PlayerHitState : PlayerState
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public PlayerHitState(PlayerStateMachine fsm, PlayerMovement movement)
+            : base(fsm, movement) { }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public override void Enter() { }
+
+    public override void Exit() { }
+
+    public override void FixedTick() { }
+
+    public override void Tick() { }
 }
