@@ -14,6 +14,7 @@ public class CreateSO : EditorWindow
     private TextAsset _specialCsvFile;
     private TextAsset _consumableCsvFile;
     private TextAsset _etcCsvFile;
+    private TextAsset _throwCsvFile;
 
     private TextAsset _recipeCsvFile;
 
@@ -33,6 +34,7 @@ public class CreateSO : EditorWindow
         _specialCsvFile = (TextAsset)EditorGUILayout.ObjectField("Special CSV", _specialCsvFile, typeof(TextAsset), false);
         _consumableCsvFile = (TextAsset)EditorGUILayout.ObjectField("Consumable CSV", _consumableCsvFile, typeof(TextAsset), false);
         _etcCsvFile = (TextAsset)EditorGUILayout.ObjectField("ETC CSV", _etcCsvFile, typeof(TextAsset), false);
+        _throwCsvFile = (TextAsset)EditorGUILayout.ObjectField("Throw CSV", _throwCsvFile, typeof(TextAsset), false);
         _recipeCsvFile = (TextAsset)EditorGUILayout.ObjectField("Recipe CSV", _recipeCsvFile, typeof(TextAsset), false);
         
         if (GUILayout.Button("Generate ScriptableObjects"))
@@ -151,6 +153,16 @@ public class CreateSO : EditorWindow
                         Debug.LogWarning("ETC CSV파일이 등록되지 않았습니다.");
                     }
                     break;
+                case ItemType.Throw:
+                    if (_throwCsvFile != null)
+                    {
+                        item = CreateThrowItem(itemId);
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Throw CSV파일이 등록되지 않았습니다.");
+                    }
+                    break;
                 default:
                     break;
             }
@@ -164,7 +176,7 @@ public class CreateSO : EditorWindow
             item.Name = name;
             item.Description = description;
             item.Type = (ItemType)Enum.Parse(typeof(ItemType),itemType);
-            //weaponItem.Icon = BringIcon(icon)
+            item.Sprite = SpriteFinder.FindSpriteByName(icon);
             
             string assetPath = $"{folderPath}/Item_{itemId}_{name}.Asset";
             AssetDatabase.CreateAsset(item, assetPath);
@@ -241,8 +253,9 @@ public class CreateSO : EditorWindow
         if (meleeData.ContainsKey(int.Parse(itemId)))
         {
             string[] weaponParts = meleeData[int.Parse(itemId)];
-            meleeItem.MaxDurability = int.Parse(weaponParts[1]);
-            meleeItem.AtkDamage = int.Parse(weaponParts[2]);
+            meleeItem.MaxDurability = int.Parse(weaponParts[2]);
+            meleeItem.AtkDamage = int.Parse(weaponParts[3]);
+            meleeItem.AtkSpeed = int.Parse(weaponParts[4]);
         }
         
         return meleeItem;
@@ -256,14 +269,18 @@ public class CreateSO : EditorWindow
         if (gunData.ContainsKey(id))
         {
             string[] gunDataParts = gunData[id];
-            gunItem.AtkDamage = int.Parse(gunDataParts[1]);
-            gunItem.Rof = int.Parse(gunDataParts[2]);
-            gunItem.BulletPerShot = int.Parse(gunDataParts[3]);
-            gunItem.Range = float.Parse(gunDataParts[4]);
-            gunItem.AmmoID = int.Parse(gunDataParts[5]);
-            gunItem.AmmoCapacity = int.Parse(gunDataParts[6]);
-            gunItem.ShotSoundResource = gunDataParts[7];
-            gunItem.ReloadSoundResource = gunDataParts[8];
+            gunItem.AtkDamage = int.Parse(gunDataParts[2]);
+            gunItem.Rof = int.Parse(gunDataParts[3]);
+            gunItem.BulletPerShot = int.Parse(gunDataParts[4]);
+            gunItem.Range = float.Parse(gunDataParts[5]);
+            gunItem.AmmoID = int.Parse(gunDataParts[6]);
+            gunItem.AmmoCapacity = int.Parse(gunDataParts[7]);
+            gunItem.ShotSoundResource = gunDataParts[8];
+            gunItem.ReloadSoundResource = gunDataParts[9];
+            if (float.TryParse(gunDataParts[10], out float noiseLevel))
+            {
+                gunItem.NoiseLevel = noiseLevel;
+            }
         }
 
         return gunItem;
@@ -276,8 +293,8 @@ public class CreateSO : EditorWindow
         if (shieldData.ContainsKey(int.Parse(itemId)))
         {
             string[] shieldDataParts = shieldData[int.Parse(itemId)];
-            shieldItem.MaxDurability = int.Parse(shieldDataParts[1]);
-            shieldItem.DefenseAmount = int.Parse(shieldDataParts[2]);
+            shieldItem.MaxDurability = int.Parse(shieldDataParts[2]);
+            shieldItem.DefenseAmount = int.Parse(shieldDataParts[3]);
         }
         
         return shieldItem;
@@ -289,9 +306,8 @@ public class CreateSO : EditorWindow
         if (specialData.ContainsKey(int.Parse(itemId)))
         {
             string[] specialDataParts = specialData[int.Parse(itemId)];
-            specialItem.MaxDurability = int.Parse(specialDataParts[1]);
-            specialItem.ConDurability = int.Parse(specialDataParts[2]);
-            specialItem.ConDurabilitySec = int.Parse(specialDataParts[3]);
+            specialItem.MaxDurability = int.Parse(specialDataParts[2]);
+            specialItem.DurabilitySec = int.Parse(specialDataParts[3]);
             specialItem.SoundResource = specialDataParts[4];
         }
         
@@ -304,10 +320,11 @@ public class CreateSO : EditorWindow
         if (consumableData.ContainsKey(int.Parse(itemId)))
         {
             string[] consumableDataParts = consumableData[int.Parse(itemId)];
-            consumableItem.HpAmount = int.Parse(consumableDataParts[1]);
-            consumableItem.MoistureAmount = int.Parse(consumableDataParts[2]);
+            consumableItem.HpAmount = int.Parse(consumableDataParts[2]);
             consumableItem.HungerAmount = int.Parse(consumableDataParts[3]);
-            consumableItem.SoundResource = consumableDataParts[4];
+            consumableItem.MoistureAmount = int.Parse(consumableDataParts[4]);
+            consumableItem.StaminaAmount = int.Parse(consumableDataParts[5]);
+            consumableItem.SoundResource = consumableDataParts[6];
         }
         
         return consumableItem;
@@ -319,13 +336,30 @@ public class CreateSO : EditorWindow
         if (etcData.ContainsKey(int.Parse(itemId)))
         {
             string[] etcDataParts = etcData[int.Parse(itemId)];
-            etcItem.EtcType = etcDataParts[1];
-            etcItem.MaxStackSize = int.Parse(etcDataParts[2]);
-            etcItem.SoundResource = etcDataParts[3];
-            etcItem.StrParam = etcDataParts[4];
-            etcItem.IntParam = int.Parse(etcDataParts[5]);
+            etcItem.EtcType = etcDataParts[2];
+            etcItem.MaxStackSize = int.Parse(etcDataParts[3]);
+            etcItem.SoundResource = etcDataParts[4];
+            etcItem.StrParam = etcDataParts[5];
+            etcItem.IntParam = int.Parse(etcDataParts[6]);
         }
         
         return etcItem;
+    }
+
+    private ThrowItem CreateThrowItem(string itemId)
+    {
+        Dictionary<int, string[]> throwData = LoadData(_throwCsvFile);
+        ThrowItem throwItem = ScriptableObject.CreateInstance<ThrowItem>();
+        if (throwData.ContainsKey(int.Parse(itemId)))
+        {
+            string[] throwDataParts = throwData[int.Parse(itemId)];
+            throwItem.AtkDamage = int.Parse(throwDataParts[2]);
+            throwItem.Rof = int.Parse(throwDataParts[3]);
+            throwItem.Range = float.Parse(throwDataParts[4]);
+            throwItem.MaxStack = int.Parse(throwDataParts[5]);
+            throwItem.ThrowSoundResource = throwDataParts[6];
+        }
+        
+        return throwItem;
     }
 }

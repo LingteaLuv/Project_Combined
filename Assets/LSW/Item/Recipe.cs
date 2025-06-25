@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [CreateAssetMenu(menuName = "Recipe")]
 public class Recipe : ScriptableObject
 {
-    public int ItemId;
+    public int ItemID;
     public int ResultItemId;
     public int ResultQuantity;
     public int MaterialItemId1;
@@ -19,7 +20,7 @@ public class Recipe : ScriptableObject
 
     public void Init(int[] array)
     {
-        ItemId = array[0];
+        ItemID = array[0];
         ResultItemId = array[1];
         ResultQuantity = array[2];
         MaterialItemId1 = array[3];

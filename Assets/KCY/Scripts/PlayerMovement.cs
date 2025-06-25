@@ -11,98 +11,136 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private PlayerProperty _property;
     [SerializeField] private Transform _aim;
 
-    public PlayerClimb PlayerClimbHandler { get; private set; }
-
+    public PlayerClimb PlayerClimbHandler { get; private set; } 
     public PlayerController Controller { get; set; }
-    private Rigidbody _rb;
-    private bool _jumpConsumedThisFrame;
+    public Rigidbody Rigidbody { get; private set; }
+    public bool IsOnLadder { get; private set; }
+    public bool IsGrounded { get; private set; }
 
-    private Vector3 _currentRotation;
+    private bool _jumpConsumedThisFrame;
     private bool _isCrouching;
+    private Vector3 _currentRotation;
 
     [Header("Settings")]
-    [SerializeField] private float _jumpForce = 5f;
+    [SerializeField] private float _jumpForce = 10f;
     [SerializeField] private float _groundCheckDistance = 0.05f;
     [SerializeField] private float _crouchSpeedMultiplier = 0.5f;
+    [SerializeField] private float fallMultiplier = 5f;
 
     public Vector3 MoveInput => _inputHandler.MoveInput;
     public bool JumpPressed => _inputHandler.JumpPressed;
     public bool CrouchHeld => _inputHandler.CrouchHeld;
     public bool InteractPressed => _inputHandler.InteractPressed;
 
-    public bool IsOnLadder { get; private set; }
-    public bool IsGrounded { get; private set; }
-
+    private void Awake() => Init();
 
     private void Init()
     {
-        _rb = GetComponent<Rigidbody>();
+        Rigidbody = GetComponent<Rigidbody>();
         PlayerClimbHandler = GetComponent<PlayerClimb>();
     }
-
-    private void Awake() => Init();
 
     private void Update()
     {
         _jumpConsumedThisFrame = false;
+
+        // Raycast로 지면 체크
         IsGrounded = Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, _groundCheckDistance + 0.1f);
         IsOnLadder = _inputHandler.IsOnLadder;
     }
-    /// <summary>
-    /// 입력 방향에 따라 관성 없이 이동합니다.
-    /// </summary>
-    public void Move(Vector3 inputDir)
+
+    private void FixedUpdate()
+    {
+        HandleMovement(MoveInput); // 이동 처리
+        HandleGravity(); // 중력 처리
+    }
+
+    public void HandleMovement(Vector3 inputDir)
     {
         Camera cam = Camera.main;
         if (cam == null) return;
 
+        // 카메라 기준 이동 벡터
         Vector3 moveDir = cam.transform.forward * inputDir.z + cam.transform.right * inputDir.x;
         moveDir.y = 0f;
         moveDir.Normalize();
-        
-        if (inputDir.magnitude > 0.1f)
+
+        if (inputDir.sqrMagnitude < 0.01f)
         {
-            float speed = _property.MoveSpeed.Value * (_isCrouching ? _crouchSpeedMultiplier : 1f);
-            Vector3 targetVel = moveDir * speed;
-            Vector3 velocity = _rb.velocity;
-            targetVel.y = velocity.y; // 유지
-            _rb.velocity = Vector3.MoveTowards(_rb.velocity, targetVel, 100* Time.deltaTime);
-        
-            bool downRay = Physics.Raycast(transform.position + Vector3.up * 0.01f, transform.forward, 0.5f);
-            bool middleRay = Physics.Raycast(transform.position + Vector3.up * 0.1f, transform.forward, 0.5f);
-            bool upRay = Physics.Raycast(transform.position + Vector3.up * 0.3f, transform.forward, 0.5f);
-            
-            if (downRay && middleRay)
-            {
-                if (!upRay)
-                {
-                    _rb.position += Vector3.up * 0.1f;
-                } 
-            }
-            
-            //transform.position += moveDir * speed * Time.deltaTime;
+            // 입력이 거의 없을 경우 멈춤 처리
+            Vector3 stopVelocity = new Vector3(0, Rigidbody.velocity.y, 0);
+            Rigidbody.velocity = Vector3.MoveTowards(Rigidbody.velocity, stopVelocity, 100 * Time.fixedDeltaTime);
         }
         else
         {
-            Vector3 targetVel = new Vector3(0, _rb.velocity.y, 0);
-            _rb.velocity = Vector3.MoveTowards(_rb.velocity, targetVel, 100* Time.deltaTime);
+            // 경사면 보정 이동
+            moveDir = GetSlopeAdjustedMoveDirection(moveDir);
+
+            float speed = _property.MoveSpeed.Value * (_isCrouching ? _crouchSpeedMultiplier : 1f);
+            Vector3 targetVelocity = moveDir * speed;
+            targetVelocity.y = Rigidbody.velocity.y; // 수직 속도 유지
+            Rigidbody.velocity = Vector3.MoveTowards(Rigidbody.velocity, targetVelocity, 100 * Time.fixedDeltaTime);
+
+            // 이동 방향 회전
+            if (moveDir != Vector3.zero)
+            {
+                Quaternion targetRot = Quaternion.LookRotation(moveDir);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 10f);
+            }
+
+            // 작은 턱 오르기 처리
+            bool downRay = Physics.Raycast(transform.position + Vector3.up * 0.01f, transform.forward, 0.5f);
+            bool middleRay = Physics.Raycast(transform.position + Vector3.up * 0.1f, transform.forward, 0.5f);
+            bool upRay = Physics.Raycast(transform.position + Vector3.up * 0.3f, transform.forward, 0.5f);
+
+            if (downRay && middleRay && !upRay)
+            {
+                Rigidbody.position += Vector3.up * 0.1f;
+            }
+
+            // 경사면에 붙도록 아래 방향 힘 가함
+            if (IsGrounded && Physics.Raycast(transform.position, Vector3.down, out RaycastHit slopeHit, _groundCheckDistance + 0.3f))
+            {
+                if (slopeHit.normal != Vector3.up && Vector3.Angle(slopeHit.normal, Vector3.up) <= 45f)
+                {
+                    Rigidbody.AddForce(-slopeHit.normal * 10f, ForceMode.Force);
+                }
+            }
         }
-        Quaternion targetRot = Quaternion.LookRotation(moveDir);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 10f);
     }
+
+    private void HandleGravity()
+    {
+        if (!IsGrounded && Rigidbody.velocity.y < 0f)
+        {
+            Rigidbody.velocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1f) * Time.fixedDeltaTime;
+        }
+    }
+
+    private Vector3 GetSlopeAdjustedMoveDirection(Vector3 moveDir)
+    {
+        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, _groundCheckDistance + 0.3f))
+        {
+            Vector3 normal = hit.normal;
+            if (normal != Vector3.up)
+            {
+                return Vector3.ProjectOnPlane(moveDir, normal).normalized;
+            }
+        }
+        return moveDir;
+    }
+
     public bool CanJump()
     {
         return !_jumpConsumedThisFrame && JumpPressed && IsGrounded;
     }
 
-    /// <summary>
-    /// Rigidbody를 이용해 점프를 실행합니다.
-    /// </summary>
     public void Jump()
     {
         _jumpConsumedThisFrame = true;
-        _rb.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
+        Rigidbody.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
     }
+
     public void SetCrouch(bool crouch)
     {
         _isCrouching = crouch;
@@ -111,21 +149,15 @@ public class PlayerMovement : MonoBehaviour
     public void SetRotation(float offset)
     {
         transform.rotation = Quaternion.Euler(0f, offset, 0f);
-
-        /*if (_aim != null)
-        {
-            Vector3 aimEuler = _aim.localEulerAngles;
-            _aim.localEulerAngles = new Vector3(offset, aimEuler.y, aimEuler.z);
-        }*/
     }
-    //TODO : 애니메이션 스피드 조정용 코드 추가 예정
+
     public float GetAnimatorSpeedMultiplier()
     {
-        return Mathf.Clamp01(MoveInput.magnitude) * (_property?.MoveSpeed?.Value ?? 0f)+1;
+        return Mathf.Clamp01(MoveInput.magnitude) * (_property?.MoveSpeed?.Value ?? 0f) + 1;
     }
-    
+
     public void SetGravity(bool enabled)
     {
-        _rb.useGravity = enabled;
+        Rigidbody.useGravity = enabled;
     }
 }

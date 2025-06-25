@@ -111,7 +111,7 @@ public class InventoryRenderer : MonoBehaviour
             return;
         }
         ItemType type = _model.InvItems[index].Data.Type;
-        if (type == ItemType.Stuff || type == ItemType.ETC)
+        if (type == ItemType.Material || type == ItemType.ETC)
         {
             _model.UtilButton.SetActive(false);
             return;
@@ -141,5 +141,10 @@ public class InventoryRenderer : MonoBehaviour
                 _model.InvSlotPanelImages[i].color = _model.SlotColor;
             }
         }
+    }
+
+    public void UpdateDur(int i) // 착용된 슬롯 내구도만 업데이트
+    {
+        _model.InvSlotItemDurSliders[i].value = (float)_model.InvItems[i].Durability / _model.InvItems[i].MaxDurability;
     }
 }

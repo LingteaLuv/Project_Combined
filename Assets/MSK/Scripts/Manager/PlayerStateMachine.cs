@@ -21,9 +21,9 @@ public class PlayerStateMachine
     /// <param name="newState">전이할 새로운 상태</param>
     public void ChangeState(PlayerState newState)
     {
-        if (_currentState == newState) return;
-
-        _currentState?.Exit();
+        if (_currentState == newState)
+            return;
+        _currentState?.Exit();  // null-safe
         _currentState = newState;
         _currentState.Enter();
     }

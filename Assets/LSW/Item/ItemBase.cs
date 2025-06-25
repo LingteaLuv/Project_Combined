@@ -14,5 +14,5 @@ public class ItemBase : ScriptableObject
 
 public enum ItemType
 {
-    Melee, Gun, Shield, Special, Consumable, ETC, Stuff
+    Melee, Gun, Shield, Special, Consumable, ETC, Throw, Material
 }

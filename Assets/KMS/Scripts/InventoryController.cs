@@ -17,6 +17,8 @@ public class InventoryController : MonoBehaviour
 
     [SerializeField] private CraftingController _crafting;
 
+    [SerializeField] private PlayerHandItemController _hand;
+
     public bool IsHolding;
     public int HoldingIndex;
     public int NextIndex;
@@ -26,25 +28,30 @@ public class InventoryController : MonoBehaviour
 
     public int[] EquippedSlotIndex;
 
+
+    //private bool IsEquipNothing => EquippedSlotIndex[0]&& EquippedSlotIndex[1] == 0;
+    private bool IsEquipTwoHanded => EquippedSlotIndex[0] != 0 && EquippedSlotIndex[1] == 0;
+
+
     private void Awake()
     {
+        _crafting = GetComponent<CraftingController>();
+        _hand = GetComponent<PlayerHandItemController>();
         IsHolding = false;
         HoldingIndex = -1;
         NextIndex = -1;
         SelectedIndex = -1;
         _beforeSelectedIndex = -1;
 
-        EquippedSlotIndex = new int[] { -1, -1 };
+        EquippedSlotIndex = new int[] { 0, 0 };
     }
-
-
 
 
     private bool[] GetFlags(ItemBase item)
     {
         bool[] flags = new bool[18]; //false 인 경우에만 들어갈 수 있음
 
-        if (item.Type == ItemType.ETC || item.Type == ItemType.Stuff)
+        if (item.Type == ItemType.ETC || item.Type == ItemType.Material)
         {
             flags[0] = true;
             flags[1] = true;
@@ -55,7 +62,30 @@ public class InventoryController : MonoBehaviour
         }
         return flags;
     }
+    public void Dur(int index, int amount) // 지정된 손 아이템 내구도 감소시킴
+    {
+        if (EquippedSlotIndex[index] == -1) return; //해당 손에 아무것도 없음
+        Item target = _model.InvItems[EquippedSlotIndex[index]]; //그 손에 들린 아이템
+        if (target.MaxDurability == -1) return; //손의 아이템이 내구도가 존재하지않음
+        target.SetDur(target.Durability - amount);
+        if (target.Durability <= 0)
+        {
+            RemoveEquippedItem(index);
+        }
+        else
+        {
+            _renderer.UpdateDur(EquippedSlotIndex[index]);
+        }
 
+    }
+
+    public void RemoveEquippedItem(int index)
+    {
+        int temp = EquippedSlotIndex[index];
+        UnEquip(EquippedSlotIndex[index]);
+        _model.InvItems[temp] = null;
+        _renderer.RenderInventory();
+    }
     private void Swap(int a, int b)
     {
         Item tempItem = _model.InvItems[a];
@@ -123,30 +153,39 @@ public class InventoryController : MonoBehaviour
         _renderer.RenderInventory();
 
     }
+
+
     public void Equip(int index) //해당 칸 아이템에 대한 장착 시도
     {
         Item exist = _model.InvItems[index];
-        if (exist == null) return;
-        if (exist.Data.Type == ItemType.Consumable)
+        if (exist == null) // 빈 손
         {
-            return;
+            EquippedSlotIndex[0] = index;
+            EquippedSlotIndex[1] = index;
         }
-        else if (exist.Data.Type == ItemType.Melee)
+        else if (exist.Data.Type == ItemType.Consumable)
         {
-            if (EquippedSlotIndex[0] != -1 && EquippedSlotIndex[0] == EquippedSlotIndex[1]) //양손장비가 선택되어 있는 상황
+            EquippedSlotIndex[0] = index;
+            EquippedSlotIndex[1] = index;
+        }
+        else if (exist.Data.Type == ItemType.Melee) //밀리 무기를 든다
+        {
+            if (EquippedSlotIndex[0] == EquippedSlotIndex[1]) //양손을 어디서 사용중임 -> 오른손만 가져옴
             {
                 EquippedSlotIndex[1] = -1;
             }
             EquippedSlotIndex[0] = index;
+            // 밀리 드는 애니메이션 발동
 
         }
-        else if (exist.Data.Type == ItemType.Shield)
+        else if (exist.Data.Type == ItemType.Shield) //방패를 든다
         {
-            if (EquippedSlotIndex[1] != -1 && EquippedSlotIndex[0] == EquippedSlotIndex[1]) //양손장비가 선택되어 있는 상황
+            if (EquippedSlotIndex[0] == EquippedSlotIndex[1])
             {
                 EquippedSlotIndex[0] = -1;
             }
             EquippedSlotIndex[1] = index;
+            // 각자 애니메이션 발동
 
         }
         else if (exist.Data.Type == ItemType.Gun)
@@ -162,10 +201,10 @@ public class InventoryController : MonoBehaviour
 
         }
         _renderer.RenderEquip(EquippedSlotIndex);
-
+        _hand.UpdateItems();
     }
 
-    public void Unequip(int index)
+    public void UnEquip(int index)
     {
         //해당 인덱스에 뭔가 장착되어 있는가
         if (EquippedSlotIndex[0] == index)
@@ -188,6 +227,8 @@ public class InventoryController : MonoBehaviour
         {
             return;
         }
+        _renderer.RenderEquip(EquippedSlotIndex);
+        _hand.UpdateItems();
 
 
     }
@@ -212,7 +253,6 @@ public class InventoryController : MonoBehaviour
         {
             if (exist.Data.Type == ItemType.Melee) Equip(index);
         }
-
     }
 
     public bool RemoveItem(ItemBase item, int amount)// 뺄 개수만큼 뺄 수 없으면 안빼고 false 반환
@@ -227,7 +267,6 @@ public class InventoryController : MonoBehaviour
             if (val < amount) return false;
         }
         //위 경우 아니면 뺄 수 있음
-        _crafting.CountByID[item.ItemID] -= amount;
         for (int i = 0; i < _model.SlotCount; i++)
         {
             if (_model.InvItems[i].Data == null)
@@ -239,7 +278,7 @@ public class InventoryController : MonoBehaviour
                 if (_model.InvItems[i].StackCount <= a)
                 {
                     a -= _model.InvItems[i].StackCount;
-                    if (i < 6) Unequip(i); // 장비창의 아이템이 빠져나갈 경우 장착 해제
+                    if (i < 6) UnEquip(i); // 장비창의 아이템이 빠져나갈 경우 장착 해제
                     _model.InvItems[i] = null;
                 }
                 else if (_model.InvItems[i].StackCount > a)
@@ -253,6 +292,7 @@ public class InventoryController : MonoBehaviour
                 break;
             }
         }
+        _crafting.CountByID[item.ItemID] -= amount;
 
         return true;
 
@@ -460,5 +500,8 @@ public class InventoryController : MonoBehaviour
         SelectSlot(-1);
         _renderer.RenderInventory();
     }
+
+
+
 }
  
