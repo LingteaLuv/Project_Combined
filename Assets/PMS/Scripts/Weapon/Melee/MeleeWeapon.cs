@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class MeleeWeapon : WeaponBase
 {
+    private ItemType _iTemType = ItemType.Melee;
     [SerializeField] private Transform _playerPos; //플레이어의 위치
     [SerializeField] private Transform _attackPointPos; //공격의 충돌을 감지할 Pivot Transform
     public override bool IsAttack { get; }
@@ -23,11 +24,17 @@ public class MeleeWeapon : WeaponBase
      * Corutine을 활용한 애니메이션 Event 함수 호출도 고려 할만한 상황
      */
 
+    private void Reset()
+    {
+        _itemType = ItemType.Melee;
+    }
+
     /// <summary>
     /// Physics.OverlapSphere + 범위 + 애니메이션 Event를 통한 특정 프레임 이벤트 호출, 각도 체크X - 무기기준 
     /// 추후 콜라이더 변경으로 각도가 해결되지 않을 경우에 플레이어 기준으로 각도체크 하는 부분 추가하면 될 것 같다.
     /// </summary>
-    public override void Attack()
+
+    public void Attack()
     {
         //무기에 달려있는 _attack를 중심으로 범위를 설정하고 타겟레이어와 충돌검사
         /*Collider[] _colliders = Physics.OverlapSphere(_attackPointPos.position, _attackRange, _targetLayer);

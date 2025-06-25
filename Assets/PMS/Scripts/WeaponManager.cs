@@ -2,16 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WeaponManager : MonoBehaviour
+public class WeaponManager : Singleton<WeaponManager> 
 {
-    //흠 무기를 일단 등록 해볼까?
     //List의 장점 연결 - 삭제 O(1)
     //연결삭제를 자주 할 일이 있을까? 플레이어 무기를 습득하면 잘 안버리지 않을까?
-
+    protected override bool ShouldDontDestroy => false;
     //Dictionary사용 - key,value
     [SerializeField] private List<WeaponBase> _availableWeapons; //플레이어 사용가능한 들고 있는 웨폰들
     [SerializeField] private WeaponBase _currentWeapon;
     //[SerializeField] private BareHands _bareHands; // 맨손
+
+    protected override void Awake()
+    {
+        base.Awake();
+    }
 
     //만약 습득을 했다면 사용가능한 웨폰이어여 할 것이다.
 
@@ -26,8 +30,18 @@ public class WeaponManager : MonoBehaviour
         if (!_availableWeapons.Contains(weapon))
         {
             _availableWeapons.Add(weapon);
-            //weapon.gameObject.SetActive(false); // 인벤토리에 있을 때는 비활성화
             Debug.Log($"{weapon.name} 무기를 획득했습니다!");
+        }
+    }
+
+    public void RemoveWeapon(WeaponBase weapon)
+    {
+        if (weapon == null) return;
+
+        if (!_availableWeapons.Contains(weapon))
+        {
+            _availableWeapons.Remove(weapon);
+            Debug.Log($"{weapon.name} 무기를 삭제했습니다!");
         }
     }
 

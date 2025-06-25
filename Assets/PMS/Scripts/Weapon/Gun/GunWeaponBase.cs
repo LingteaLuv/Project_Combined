@@ -1,3 +1,4 @@
+using Codice.Client.BaseCommands.Merge.Xml;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -41,9 +42,13 @@ public class GunWeaponBase : WeaponBase
 
     public override bool IsAttack => throw new System.NotImplementedException();
 
+    private void Reset()
+    {
+        _itemType = ItemType.Gun; 
+    }
     //무기마다 Init() 불릿 풀 사이즈가 다를 것이고,불릿 프리팹이 다르다. 총 아래에 Bullet 오브젝트가 생성
     public virtual void Init()
-    {       
+    {
         _lineRenderer = GetComponent<LineRenderer>();
         _gunBulletObjectPool = new ObjectPool(_bulletPoolSize, _bulletPrefab, gameObject);
     }

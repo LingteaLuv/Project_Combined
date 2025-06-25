@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
 {
-    [SerializeField] private WeaponManager _weaponManager;
+    //[SerializeField] private WeaponManager _weaponManager;
     [SerializeField] private WeaponBase _currentWeapon;
     [SerializeField] Animator _animator; //플레이어의 애니메이터가 필요 -> 공격시 플레이어 애니메이션 재생하기 위하여
     //[SerializeField][Range(0, 5)] private float _mouseSensitivity = 1;
@@ -14,20 +14,46 @@ public class PlayerAttack : MonoBehaviour
     void Update()
     {
         //공격키 누를시 공격
-        if (Input.GetKeyDown(KeyCode.X))
+        if (Input.GetKeyDown(KeyCode.Q))
         {
-            _animator.SetTrigger("DownAttack");
+            switch(_currentWeapon.ItemType)
+            {
+                case ItemType.Melee:
+                    //_animator.Set    <- 해당 특정 애니메이션 재생 할 수 있도록
+                    PlayerAttackStart();
+                    break;
+                case ItemType.Gun :
+                    //_animator.Set   <- 해당 특정 애니메이션 재생 할 수 있도록
+                    PlayerAttackStart();
+                    break;
+                default:
+                    Debug.Log($"들고 있는 무기 에러.\n 현재 무기 : {_currentWeapon} , ItemType {_currentWeapon.ItemType}");
+                    break;
+            }
         }
         //무기 채인지
-        if (Input.GetKeyDown(KeyCode.D))
+        if (Input.GetKeyDown(KeyCode.W))
         {
             //_weaponManager.SwitchWeapon();
         }
+        //무기 장착
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            _animator.SetTrigger("Equip");
+        }
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            _animator.SetTrigger("UnEquip");
+        }
     }
 
-    public void Attack()
+    public void PlayerAttackStart()
     {
-        _currentWeapon.Attack();
+        if (_currentWeapon != null)
+        {
+            _currentWeapon.Attack();
+            Debug.Log($"공격한 무기 : {_currentWeapon}");
+        }
     }
 
 
