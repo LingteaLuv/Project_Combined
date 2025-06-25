@@ -15,7 +15,6 @@ public class PlayerFallState : PlayerState
 
     public override void Enter()
     {
-        Debug.Log("Enter Fall: 떨어짐 진입합니다.");
         _movement.Controller._animator.SetBool("IsFalling", true);
         _lastYPos = _movement.transform.position.y;
         _airTime = 0;
@@ -24,7 +23,6 @@ public class PlayerFallState : PlayerState
 
     public override void Exit()
     {
-        Debug.Log("Exit Fall: 떨어짐 탈출합니다.");
         _movement.Controller._animator.SetBool("IsFalling", false);
     }
 
@@ -43,17 +41,13 @@ public class PlayerFallState : PlayerState
         {
             _currentY = _movement.transform.position.y;
             float fallDistance = _lastYPos - _currentY;
-
-            Debug.Log($"낙하 감지: 높이차 = {_lastYPos} - {_currentY} = {fallDistance}");
-            Debug.Log($"채공시간: {_airTime}");
-
-            // ApplyFallDamage(fallDistance, _airTime);
+            ApplyFallDamage(fallDistance);
 
             _airTime = 0;
         }
 
-        // 상태 전이
-        if (_movement.IsGrounded)
+        // 상태 전이 ,Hit 중이면 전이 막기
+        if (_movement.IsGrounded && !_movement.Controller.IsInHit) 
         {
             PlayerState nextState = _movement.MoveInput == Vector3.zero
                 ? _movement.Controller.IdleState
@@ -61,7 +55,6 @@ public class PlayerFallState : PlayerState
 
             _fsm.ChangeState(nextState);
         }
-
         _wasGrounded = isGrounded;
     }
 
@@ -70,9 +63,25 @@ public class PlayerFallState : PlayerState
         _movement.HandleMovement(_movement.MoveInput);
     }
 
-    private void ApplyFallDamage(float distance, float airTime)
+    private void ApplyFallDamage(float distance)
     {
-        //TODO : 낙하 데미지 구현
-        // _movement.Controller.GetComponent<PlayerProperty>().TakeDamage(damage);
+        float safeHeight = 3.0f;              // 이 높이까지는 무피해
+        float damagePerMeter = 10.0f;         // 1미터당 10 데미지
+        int damage = 0;
+
+        if (distance > safeHeight)
+        {
+            damage = Mathf.RoundToInt((distance - safeHeight) * damagePerMeter);
+        }
+        if (damage > 0)
+        {
+            Debug.Log($"낙하 데미지 발생: {damage}");
+
+            var controller = _movement.Controller;
+            controller.HitState.SetDamage(damage);
+            _fsm.ChangeState(controller.HitState);
+
+            return;
+        }
     }
 }
