@@ -47,6 +47,16 @@ public class InventoryManager : SingletonT<InventoryManager>
         _renderer.RenderInventory();
     }
 
+    public void AlignInvWithCraft()
+    {
+        UIManage.Instance.InvUI.transform.position = UIManage.Instance.CraftUI.transform.position;
+        //Debug.Log(111);
+    }
+    public void AlignCraftWithInv()
+    {
+        UIManage.Instance.CraftUI.transform.position = UIManage.Instance.InvUI.transform.position;
+        //Debug.Log(222);
+    }
 
     public bool AddItem(ItemBase item, int amount, int dur)
     {
@@ -65,14 +75,22 @@ public class InventoryManager : SingletonT<InventoryManager>
         if (Input.GetKeyDown(KeyCode.C)) AddItem(_model.ItemList.ItemList[2], 1, 25);
         if (Input.GetKeyDown(KeyCode.V)) AddItem(_model.ItemList.ItemList[3], 1, 100);
         if (Input.GetKeyDown(KeyCode.B)) AddItem(_model.ItemList.ItemList[4], 1, -1);
+        if (Input.GetKeyDown(KeyCode.N)) AddItem(_model.ItemList.ItemList[5], 1, -1);
+
+
         if (Input.GetKeyDown(KeyCode.Alpha1)) Controller.Equip(0);
         if (Input.GetKeyDown(KeyCode.Alpha2)) Controller.Equip(1);
         if (Input.GetKeyDown(KeyCode.Alpha3)) Controller.Equip(2);
         if (Input.GetKeyDown(KeyCode.Alpha4)) Controller.Equip(3);
         if (Input.GetKeyDown(KeyCode.Alpha5)) Controller.Equip(4);
         if (Input.GetKeyDown(KeyCode.Alpha6)) Controller.Equip(5);
+
+
         HoldSlot.transform.position = Input.mousePosition;
     }
 
-
+    public bool FindItem(int ID, bool remove)
+    {
+        return false;
+    }
 }

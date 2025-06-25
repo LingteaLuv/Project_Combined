@@ -1,0 +1,179 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7625407668598860618
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2262469800480508851}
+  - component: {fileID: 7249876961863108496}
+  m_Layer: 0
+  m_Name: AttackPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2262469800480508851
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7625407668598860618}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0, y: -0, z: 0.864}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2151956736385738158}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &7249876961863108496
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7625407668598860618}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.1, y: 0.1, z: 0.1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &8131772568454486951
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2151956736385738158}
+  m_Layer: 0
+  m_Name: PlayerWeapon
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &2151956736385738158
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8131772568454486951}
+  serializedVersion: 2
+  m_LocalRotation: {x: -1, y: 0.000000029802319, z: 0.00000013783573, w: -0.0000001490116}
+  m_LocalPosition: {x: 0.09899997, y: 0.048999846, z: -0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2262469800480508851}
+  - {fileID: 7965857125891708158}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &7970406165503991428
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 2151956736385738158}
+    m_Modifications:
+    - target: {fileID: 1145237178023060, guid: d855c6cd18605f34dbfdca25cb40d71c, type: 3}
+      propertyPath: m_Name
+      value: SM_Wep_Bat_Wood_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4779526885788282, guid: d855c6cd18605f34dbfdca25cb40d71c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4779526885788282, guid: d855c6cd18605f34dbfdca25cb40d71c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4779526885788282, guid: d855c6cd18605f34dbfdca25cb40d71c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4779526885788282, guid: d855c6cd18605f34dbfdca25cb40d71c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4779526885788282, guid: d855c6cd18605f34dbfdca25cb40d71c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4779526885788282, guid: d855c6cd18605f34dbfdca25cb40d71c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4779526885788282, guid: d855c6cd18605f34dbfdca25cb40d71c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4779526885788282, guid: d855c6cd18605f34dbfdca25cb40d71c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4779526885788282, guid: d855c6cd18605f34dbfdca25cb40d71c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4779526885788282, guid: d855c6cd18605f34dbfdca25cb40d71c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1145237178023060, guid: d855c6cd18605f34dbfdca25cb40d71c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3709345732668028949}
+  m_SourcePrefab: {fileID: 100100000, guid: d855c6cd18605f34dbfdca25cb40d71c, type: 3}
+--- !u!4 &7965857125891708158 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4779526885788282, guid: d855c6cd18605f34dbfdca25cb40d71c, type: 3}
+  m_PrefabInstance: {fileID: 7970406165503991428}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7969264384065085968 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1145237178023060, guid: d855c6cd18605f34dbfdca25cb40d71c, type: 3}
+  m_PrefabInstance: {fileID: 7970406165503991428}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3709345732668028949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7969264384065085968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a140fc3af7f46954fa871d381a3a6ca6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerPos: {fileID: 0}
+  _attackPointPos: {fileID: 2262469800480508851}
+  _attackDamage: 20
+  _attackRange: 2
+  _attackAngle: 90
+  _attackInterval: 1
+  _targetLayer:
+    serializedVersion: 2
+    m_Bits: 131072

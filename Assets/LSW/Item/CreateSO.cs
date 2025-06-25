@@ -15,6 +15,8 @@ public class CreateSO : EditorWindow
     private TextAsset _consumableCsvFile;
     private TextAsset _etcCsvFile;
 
+    private TextAsset _recipeCsvFile;
+
     [MenuItem("Tools/CSV to ScriptableObjects")]
     public static void ShowWindow()
     {
@@ -31,6 +33,7 @@ public class CreateSO : EditorWindow
         _specialCsvFile = (TextAsset)EditorGUILayout.ObjectField("Special CSV", _specialCsvFile, typeof(TextAsset), false);
         _consumableCsvFile = (TextAsset)EditorGUILayout.ObjectField("Consumable CSV", _consumableCsvFile, typeof(TextAsset), false);
         _etcCsvFile = (TextAsset)EditorGUILayout.ObjectField("ETC CSV", _etcCsvFile, typeof(TextAsset), false);
+        _recipeCsvFile = (TextAsset)EditorGUILayout.ObjectField("Recipe CSV", _recipeCsvFile, typeof(TextAsset), false);
         
         if (GUILayout.Button("Generate ScriptableObjects"))
         {
@@ -40,7 +43,19 @@ public class CreateSO : EditorWindow
             }
             else
             {
-                Debug.LogWarning("CSV 파일이 지정되지 않았습니다.");
+                Debug.LogWarning("공용 CSV 파일이 지정되지 않았습니다.");
+            }
+        }
+
+        if (GUILayout.Button("Generate Recipe"))
+        {
+            if (_recipeCsvFile != null)
+            {
+                CreateRecipeFromCSV();
+            }
+            else
+            {
+                Debug.LogWarning("레시피 CSV 파일이 지정되지 않았습니다.");
             }
         }
     }
@@ -153,6 +168,47 @@ public class CreateSO : EditorWindow
             
             string assetPath = $"{folderPath}/Item_{itemId}_{name}.Asset";
             AssetDatabase.CreateAsset(item, assetPath);
+        }
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+    }
+
+    private void CreateRecipeFromCSV()
+    {
+        if (_recipeCsvFile == null) return;
+        string[] lines = _recipeCsvFile.text.Split('\n');
+
+        string folderPath = "Assets/ScriptableObjects/Recipes";
+        if (!AssetDatabase.IsValidFolder(folderPath))
+        {
+            AssetDatabase.CreateFolder("Assets/ScriptableObjects", "Recipes");
+        }
+
+        for (int i = 1; i < lines.Length; i++)
+        {
+            // 문장의 앞,뒤 공백 제거
+            string line = lines[i].Trim();
+            // 공백을 제거했을 때 아무 것도 없는 경우 스킵
+            if (string.IsNullOrEmpty(line)) continue;
+            // 문장을 ,(쉼표)로 구분
+            string[] parts = line.Split(',');
+            int[] array = new int[parts.Length];
+            for (int j = 0; j < parts.Length; j++)
+            {
+                if(int.TryParse(parts[j] , out int k))
+                {
+                    array[j] = k;
+                }
+                else
+                {
+                    array[j] = -1;
+                }
+            }
+            Recipe recipe = ScriptableObject.CreateInstance<Recipe>();
+            recipe.Init(array);
+            
+            string assetPath = $"{folderPath}/Recipe_{parts[0]}.Asset";
+            AssetDatabase.CreateAsset(recipe, assetPath);
         }
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
