@@ -95,7 +95,8 @@ public class PlayerMovement : MonoBehaviour
 
         if (Rigidbody.velocity.y < 0)
         {
-            Rigidbody.velocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1f) * Time.fixedDeltaTime;
+            if(inputDir!=null)
+                Rigidbody.velocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1f) * Time.fixedDeltaTime;
         }
     }
     public bool CanJump()
