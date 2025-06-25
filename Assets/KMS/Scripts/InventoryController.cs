@@ -51,7 +51,7 @@ public class InventoryController : MonoBehaviour
     {
         bool[] flags = new bool[18]; //false 인 경우에만 들어갈 수 있음
 
-        if (item.Type == ItemType.ETC || item.Type == ItemType.Stuff)
+        if (item.Type == ItemType.ETC || item.Type == ItemType.Material)
         {
             flags[0] = true;
             flags[1] = true;
@@ -82,7 +82,7 @@ public class InventoryController : MonoBehaviour
     public void RemoveEquippedItem(int index)
     {
         int temp = EquippedSlotIndex[index];
-        Unequip(EquippedSlotIndex[index]);
+        UnEquip(EquippedSlotIndex[index]);
         _model.InvItems[temp] = null;
         _renderer.RenderInventory();
     }
@@ -204,7 +204,7 @@ public class InventoryController : MonoBehaviour
         _hand.UpdateItems();
     }
 
-    public void Unequip(int index)
+    public void UnEquip(int index)
     {
         //해당 인덱스에 뭔가 장착되어 있는가
         if (EquippedSlotIndex[0] == index)
@@ -278,7 +278,7 @@ public class InventoryController : MonoBehaviour
                 if (_model.InvItems[i].StackCount <= a)
                 {
                     a -= _model.InvItems[i].StackCount;
-                    if (i < 6) Unequip(i); // 장비창의 아이템이 빠져나갈 경우 장착 해제
+                    if (i < 6) UnEquip(i); // 장비창의 아이템이 빠져나갈 경우 장착 해제
                     _model.InvItems[i] = null;
                 }
                 else if (_model.InvItems[i].StackCount > a)

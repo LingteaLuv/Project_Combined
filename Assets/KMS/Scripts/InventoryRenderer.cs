@@ -111,7 +111,7 @@ public class InventoryRenderer : MonoBehaviour
             return;
         }
         ItemType type = _model.InvItems[index].Data.Type;
-        if (type == ItemType.Stuff || type == ItemType.ETC)
+        if (type == ItemType.Material || type == ItemType.ETC)
         {
             _model.UtilButton.SetActive(false);
             return;
