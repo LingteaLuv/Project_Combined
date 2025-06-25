@@ -8,7 +8,7 @@ public abstract class WeaponBase : MonoBehaviour
     [SerializeField] protected ItemType _itemType;
     public ItemType ItemType { get { return _itemType; } protected set {_itemType = value; } }
 
-    private float _weaponBaseid; //
+    private float _weaponBaseid; 
     public abstract bool IsAttack { get; }
 
     public abstract void Attack();
