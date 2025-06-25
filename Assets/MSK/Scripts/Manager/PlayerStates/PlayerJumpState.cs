@@ -13,26 +13,23 @@ public class PlayerJumpState : PlayerState
     public PlayerJumpState(PlayerStateMachine fsm, PlayerMovement movement)
         : base(fsm, movement) { }
 
+
     /// <summary>
     /// 상태 진입 시 점프 애니메이션 실행 및 실제 점프 수행
     /// </summary>
     public override void Enter()
     {
-        Debug.Log("Enter Jump");
         _hangTimer = _hangTime;
 
         _movement.Controller.PlayJumpAnimation();
-        _movement. Jump();
+        _movement.Jump();
     }
 
     /// <summary>
     /// 상태 종료 시 호출됩니다.
     /// 현재는 점프 상태 종료 후 특별한 처리는 없음
     /// </summary>
-    public override void Exit()
-    {
-        Debug.Log("Exit Jump");
-    }
+    public override void Exit() { }
     public override void FixedTick()
     {
         _movement.Move(_movement.MoveInput);
@@ -55,6 +52,11 @@ public class PlayerJumpState : PlayerState
                 ? _movement.Controller.IdleState
                 : _movement.Controller.MoveState);
         }
+        if (_hangTimer <= 0f && !_movement.IsGrounded && _movement.Rigidbody.velocity.y < -0.1f)
+        {
+            _fsm.ChangeState(_movement.Controller.FallState);
+            return;
+        }
     }
 }
-    
+

@@ -10,15 +10,13 @@ public class PlayerMoveState : PlayerState
 
     public override void Enter() 
     { 
-        Debug.Log("Enter Move");
         if (_movement.Controller.IsCrouch)
         {
-            _movement.Controller._animator.SetTrigger("CrouchUp");
             _movement.Controller.IsCrouch = false;
         }
     }
 
-    public override void Exit() { Debug.Log("Exit Move"); }
+    public override void Exit() { }
     public override void Tick()
     {
         if (_movement.MoveInput == Vector3.zero)
@@ -39,6 +37,11 @@ public class PlayerMoveState : PlayerState
         if (_movement.IsOnLadder)
         {
             _fsm.ChangeState(_movement.Controller.ClimbState);
+            return;
+        }
+        if (!_movement.IsGrounded && _movement.Rigidbody.velocity.y < -0.1f)
+        {
+            _fsm.ChangeState(_movement.Controller.FallState);
             return;
         }
         if (HandleJumpTransition()) return;
