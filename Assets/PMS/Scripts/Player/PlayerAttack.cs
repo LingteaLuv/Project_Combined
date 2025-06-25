@@ -164,6 +164,7 @@ public class PlayerAttack : MonoBehaviour
         //무기가 있어야하므로
         if (_currentWeapon == null) return; //null이면 return하고
         _currentWeapon = null;              //현재 무기를 무엇인지 업데이트 하고
+        _animator.SetTrigger("UnEquip");
     }
 
 }
