@@ -51,7 +51,7 @@ public class InventoryController : MonoBehaviour
     {
         bool[] flags = new bool[18]; //false 인 경우에만 들어갈 수 있음
 
-        if (item.Type == ItemType.ETC || item.Type == ItemType.Stuff)
+        if (item.Type == ItemType.ETC || item.Type == ItemType.Material)
         {
             flags[0] = true;
             flags[1] = true;

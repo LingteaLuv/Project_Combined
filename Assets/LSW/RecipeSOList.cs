@@ -6,5 +6,5 @@ using UnityEngine;
 [System.Serializable]
 public class RecipeSOList : MonoBehaviour
 {
-    public List<Recipe> RecipeList { get; private set; }
+    [SerializeField] public List<Recipe> RecipeList;
 }

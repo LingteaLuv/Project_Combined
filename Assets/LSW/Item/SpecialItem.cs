@@ -7,7 +7,6 @@ using UnityEngine.Serialization;
 public class SpecialItem : ItemBase
 {
     public int MaxDurability;
-    public int ConDurability;
-    public int ConDurabilitySec;
+    public int DurabilitySec;
     public string SoundResource;
 }
