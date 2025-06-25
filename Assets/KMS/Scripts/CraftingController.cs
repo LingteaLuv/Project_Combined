@@ -12,7 +12,8 @@ public class CraftingController : MonoBehaviour
 {
     [SerializeField] InventoryModel _model;
     public Dictionary<int, int> CountByID { get; set; } //id를 통해 현재 가진 아이템의 개수를 가져오기 위함
-    // ScriptableObject에 있는 newItemDictionary 드래그해서 가져오기
+    
+    // ScriptableObject - New Item Dictionary 드래그해서 가져오기
     [SerializeField] private ItemDictionary _itemDictionary;
 
     public InventoryController Controller { get; }
@@ -36,6 +37,17 @@ public class CraftingController : MonoBehaviour
     {
         LinkButton();
         UIBinder.Instance.GetInventory(CountByID);
+    }
+    
+    // UI 각 버튼에 해당 레시피에 대한 Craft() 연동하는 메서드 
+    private void LinkButton()
+    {
+        for (int i = 0; i < _itemDictionary.RecipeDic.Count; i++)
+        {
+            int index = i;
+            UIBinder.Instance.GetCraftingUI().CreateBtn[index].onClick.AddListener
+                (() => Craft(_itemDictionary.RecipeDic[index + 9001]));
+        }
     }
     
     public void Add(int id, int count)
@@ -78,16 +90,6 @@ public class CraftingController : MonoBehaviour
         else
         {
             return -1;
-        }
-    }
-    
-    private void LinkButton()
-    {
-        for (int i = 0; i < _itemDictionary.RecipeDic.Count; i++)
-        {
-            int index = i;
-            UIBinder.Instance.GetCraftingUI().CreateBtn[index].onClick.AddListener
-            (() => Craft(_itemDictionary.RecipeDic[index + 9001]));
         }
     }
     
