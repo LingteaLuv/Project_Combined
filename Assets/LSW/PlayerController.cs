@@ -1,4 +1,5 @@
 using System;
+using System.Xml;
 using UnityEngine;
 
 /// <summary>
@@ -9,7 +10,12 @@ public class PlayerController : MonoBehaviour
 {
     #region Public 
     public Animator _animator;
+    public PlayerHealthEdit PlayerHealthEdit { get; private set; }
+    #endregion
+
+    #region State Flags
     public bool IsCrouch { get; set; } = false;
+    public bool IsInHit { get; set; } = false;
     #endregion
 
     #region Player State
@@ -21,6 +27,8 @@ public class PlayerController : MonoBehaviour
     public PlayerClimbState ClimbState { get; private set; }
     public PlayerInteractState InteractState { get; private set; }
     public PlayerFallState FallState { get; private set; }
+    public PlayerDeadState DeadState { get; private set; }
+    public PlayerHitState HitState { get; private set; }
     #endregion
 
     #region Private
@@ -57,12 +65,14 @@ public class PlayerController : MonoBehaviour
     # region Private Mathood
     private void Init()
     {
-        _fsm = new PlayerStateMachine();
         _movement = GetComponent<PlayerMovement>();
         _cameraController = GetComponent<PlayerCameraController>();
         _animator = GetComponent<Animator>();
+        PlayerHealthEdit = GetComponent<PlayerHealthEdit>();
         _movement.Controller = this;
 
+
+        _fsm = new PlayerStateMachine();
         FallState = new PlayerFallState(_fsm, _movement);
         InteractState = new PlayerInteractState(_fsm, _movement);
         IdleState = new PlayerIdleState(_fsm, _movement);
@@ -71,6 +81,8 @@ public class PlayerController : MonoBehaviour
         CrouchState = new PlayerCrouchState(_fsm, _movement);
         IdleCrouchState = new PlayerIdleCrouchState(_fsm, _movement);
         ClimbState = new PlayerClimbState(_fsm, _movement);
+        DeadState = new PlayerDeadState(_fsm, _movement);
+        HitState = new PlayerHitState(_fsm, _movement);
     }
 
     /// <summary>
