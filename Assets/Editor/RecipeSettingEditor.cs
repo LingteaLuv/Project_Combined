@@ -1,5 +1,6 @@
 using UnityEditor;
 using UnityEngine;
+using UnityEditor.SceneManagement;
 
 [CustomEditor(typeof(RecipeSetting))]
 public class RecipeSettingEditor : Editor
@@ -13,7 +14,9 @@ public class RecipeSettingEditor : Editor
         if (GUILayout.Button("Set Recipe Values"))
         {
             recipeSetting.SetValueEditor();
-            EditorUtility.SetDirty(recipeSetting); // 씬 저장 가능하게 표시
+            EditorUtility.SetDirty(recipeSetting);
+            PrefabUtility.RecordPrefabInstancePropertyModifications(recipeSetting);
+            EditorSceneManager.MarkSceneDirty(recipeSetting.gameObject.scene);
         }
     }
 }

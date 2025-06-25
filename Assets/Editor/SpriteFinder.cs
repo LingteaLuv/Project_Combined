@@ -9,7 +9,7 @@ public static class SpriteFinder
     /// </summary>
     public static Sprite FindSpriteByName(string name)
     {
-        string[] guids = AssetDatabase.FindAssets("t:Sprite", new[] { "Assets/Sprites" }); 
+        string[] guids = AssetDatabase.FindAssets("t:Sprite", new[] { "Assets/Imports/Sprites" }); 
         foreach (string guid in guids)
         {
             string path = AssetDatabase.GUIDToAssetPath(guid);

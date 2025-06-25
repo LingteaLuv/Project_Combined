@@ -7,7 +7,8 @@ using UnityEngine;
 public class ConsumableItem : ItemBase
 {
     public int HpAmount;
-    public int MoistureAmount;
     public int HungerAmount;
+    public int MoistureAmount;
+    public int StaminaAmount;
     public string SoundResource;
 }

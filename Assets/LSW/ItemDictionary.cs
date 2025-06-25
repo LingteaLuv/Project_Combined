@@ -1,24 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
-[System.Serializable]
-public class ItemDictionary : Singleton<ItemDictionary>
+[CreateAssetMenu(menuName = "ItemDictionary")]
+public class ItemDictionary : ScriptableObject
 {
     [SerializeField] public List<ItemBase> Items;
     
     [SerializeField] public List<Recipe> Recipes;
+    
     public Dictionary<int, ItemBase> ItemDic { get; private set; }
     public Dictionary<int, Recipe> RecipeDic { get; private set; }
-
-    protected override void Awake()
+    
+#if UNITY_EDITOR
+    public void GenerateDic()
     {
-        base.Awake();
         Init();
     }
-#if UNITY_EDITOR
+#endif
+    
     private void Init()
     {
+        ItemDic = new Dictionary<int, ItemBase>();
+        RecipeDic = new Dictionary<int, Recipe>();
+        
         for (int i = 0; i < Items.Count; i++)
         {
             int key = Items[i].ItemID;
@@ -31,5 +37,4 @@ public class ItemDictionary : Singleton<ItemDictionary>
             RecipeDic.Add(key,Recipes[i]);
         }
     }
-#endif
 }

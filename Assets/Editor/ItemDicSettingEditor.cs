@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(RecipeSetting))]
+[CustomEditor(typeof(ItemDictionary))]
 
 public class ItemDicSettingEditor : Editor
 {
@@ -9,11 +9,11 @@ public class ItemDicSettingEditor : Editor
     {
         base.OnInspectorGUI();
 
-        RecipeSetting recipeSetting = (RecipeSetting)target;
+        ItemDictionary recipeSetting = (ItemDictionary)target;
 
-        if (GUILayout.Button("Set Recipe Values"))
+        if (GUILayout.Button("Generate Dictionary"))
         {
-            recipeSetting.SetValueEditor();
+            recipeSetting.GenerateDic();
             EditorUtility.SetDirty(recipeSetting); // 씬 저장 가능하게 표시
         }
     }
