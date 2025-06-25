@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -14,7 +15,9 @@ public class RecipeSetting : MonoBehaviour
     private Image _resultImage;
     private Image[] _materialImages;
     private TMP_Text[] _materialTexts;
-    private Button _createBtn;
+    private TMP_Text[] _currentTexts;
+    
+    public List<Button> CreateBtn { get; private set; }
 
     private bool _hasMaterial1;
     private bool _hasMaterial2;
@@ -22,6 +25,8 @@ public class RecipeSetting : MonoBehaviour
     private bool _hasMaterial4;
 
     private bool[] _hasMaterials;
+
+    private Dictionary<int, int> _countById;
 
     private void Awake()
     {
@@ -44,6 +49,45 @@ public class RecipeSetting : MonoBehaviour
     }
 #endif
 
+    private void OnEnable()
+    {
+        LinkInventory();
+    }
+
+    private void LinkInventory()
+    {
+        if (_hasMaterial1)
+        {
+            _currentTexts[0].text = _countById[_recipe.MaterialItemId1].ToString();
+        }
+
+        if (_hasMaterial2)
+        {
+            _currentTexts[1].text = _countById[_recipe.MaterialItemId2].ToString();
+        }
+
+        if (_hasMaterial3)
+        {
+            _currentTexts[2].text = _countById[_recipe.MaterialItemId3].ToString();
+        }
+
+        if (_hasMaterial4)
+        {
+            _currentTexts[3].text = _countById[_recipe.MaterialItemId4].ToString();
+        }
+    }
+
+    public void GetCurrentCount(Dictionary<int,int> countById)
+    {
+        _countById = new Dictionary<int, int>();
+        _countById = countById;
+    }
+    
+    private void SetRecipe(int index)
+    {
+        _recipe = _itemDictionary.RecipeDic[index + 9001];
+    }
+    
     private void SetProperty()
     {
         _hasMaterial1 = _recipe.MaterialItemId1 != 0;
@@ -55,6 +99,7 @@ public class RecipeSetting : MonoBehaviour
         
         _materialImages = new Image[4];
         _materialTexts = new TMP_Text[4];
+        CreateBtn = new List<Button>();
     }
     
     private void Init(int index)
@@ -75,18 +120,15 @@ public class RecipeSetting : MonoBehaviour
             {
                 _materialImages[i] = children[i+1].GetChild(1).GetComponent<Image>();
                 _materialTexts[i] = children[i+1].GetChild(2).GetChild(2).GetComponent<TextMeshProUGUI>();
+                _currentTexts[i] = children[i+1].GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>();
             }
             else
             {
                 children[i+1].gameObject.SetActive(false);
             }
         }
-        _createBtn = children[5].GetComponentInChildren<Button>();
-    }
 
-    private void SetRecipe(int index)
-    {
-        _recipe = _itemDictionary.RecipeDic[index + 9001];
+        CreateBtn.Add(children[5].GetComponentInChildren<Button>());
     }
     
     private void SetValue()
