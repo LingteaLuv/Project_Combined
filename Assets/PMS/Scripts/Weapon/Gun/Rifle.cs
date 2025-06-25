@@ -8,11 +8,11 @@ public class Rifle : GunWeaponBase //이후 총마다 상속을 시켜 줘야 �
     {
         Init();     //나중에 플레이어 해당 사용할려고 할 때
     }
+
     public override void Init()
     {
        base.Init();
     }
-
 
     private void Update()
     {
