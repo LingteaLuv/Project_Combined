@@ -82,8 +82,10 @@ public class InventoryManager : SingletonT<InventoryManager>
         if (Input.GetKeyDown(KeyCode.X)) AddItem(_model.ItemList.ItemList[1], 1, 50);
         if (Input.GetKeyDown(KeyCode.C)) AddItem(_model.ItemList.ItemList[2], 1, 25);
         if (Input.GetKeyDown(KeyCode.V)) AddItem(_model.ItemList.ItemList[3], 1, 100);
-        if (Input.GetKeyDown(KeyCode.B)) AddItem(_model.ItemList.ItemList[4], 1, -1);
-        if (Input.GetKeyDown(KeyCode.N)) AddItem(_model.ItemList.ItemList[5], 1, -1);
+        if (Input.GetKeyDown(KeyCode.B)) AddItem(_model.ItemList.ItemList[4], 1, 10);
+        if (Input.GetKeyDown(KeyCode.N)) AddItem(_model.ItemList.ItemList[5], 1, 10);
+        if (Input.GetKeyDown(KeyCode.M)) AddItem(_model.ItemList.ItemList[6], 1, 10);
+        if (Input.GetKeyDown(KeyCode.Comma)) AddItem(_model.ItemList.ItemList[7], 1, 10);
 
 
         if (Input.GetKeyDown(KeyCode.Alpha1)) Controller.Equip(0);
@@ -93,6 +95,9 @@ public class InventoryManager : SingletonT<InventoryManager>
         if (Input.GetKeyDown(KeyCode.Alpha5)) Controller.Equip(4);
         if (Input.GetKeyDown(KeyCode.Alpha6)) Controller.Equip(5);
 
+        if (Input.GetKeyDown(KeyCode.P)) DecreaseWeaponDurability();
+        if (Input.GetKeyDown(KeyCode.O)) DecreaseShieldDurability();
+
 
         HoldSlot.transform.position = Input.mousePosition;
     }
@@ -100,5 +105,24 @@ public class InventoryManager : SingletonT<InventoryManager>
     public bool FindItem(int ID, bool remove)
     {
         return false;
+    }
+
+    public void DecreaseWeaponDurability(int amount = 1)
+    {
+        _controller.Dur(0, amount);
+    }
+    public void DecreaseShieldDurability(int amount = 1)
+    {
+        _controller.Dur(1, amount);
+    }
+    /// <summary>
+    /// 0 <- 오른손 아이템, 1 <- 왼손 아이템
+    /// 양손을 사용하는 아이템일 경우 반환값이 같습니다
+    /// 해당 손에 아무것도 들려있지 않을 경우 null을 반환합니다.
+    /// </summary>
+    /// <param name="hand"></param>
+    public ItemBase GetHandItem(int hand)
+    {
+       return _model.InvItems[_controller.EquippedSlotIndex[hand]].Data;
     }
 }

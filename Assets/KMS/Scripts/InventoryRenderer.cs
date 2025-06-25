@@ -142,4 +142,9 @@ public class InventoryRenderer : MonoBehaviour
             }
         }
     }
+
+    public void UpdateDur(int i) // 착용된 슬롯 내구도만 업데이트
+    {
+        _model.InvSlotItemDurSliders[i].value = (float)_model.InvItems[i].Durability / _model.InvItems[i].MaxDurability;
+    }
 }
