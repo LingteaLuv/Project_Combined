@@ -17,6 +17,8 @@ public class InventoryController : MonoBehaviour
 
     [SerializeField] private CraftingController _crafting;
 
+    [SerializeField] private PlayerHandItemController _hand;
+
     public bool IsHolding;
     public int HoldingIndex;
     public int NextIndex;
@@ -28,6 +30,8 @@ public class InventoryController : MonoBehaviour
 
     private void Awake()
     {
+        _crafting = GetComponent<CraftingController>();
+        _hand = GetComponent<PlayerHandItemController>();
         IsHolding = false;
         HoldingIndex = -1;
         NextIndex = -1;
@@ -131,22 +135,24 @@ public class InventoryController : MonoBehaviour
         {
             return;
         }
-        else if (exist.Data.Type == ItemType.Melee)
+        else if (exist.Data.Type == ItemType.Melee) //밀리 무기를 든다
         {
             if (EquippedSlotIndex[0] != -1 && EquippedSlotIndex[0] == EquippedSlotIndex[1]) //양손장비가 선택되어 있는 상황
             {
                 EquippedSlotIndex[1] = -1;
             }
             EquippedSlotIndex[0] = index;
+            // 밀리 드는 애니메이션 발동
 
         }
-        else if (exist.Data.Type == ItemType.Shield)
+        else if (exist.Data.Type == ItemType.Shield) //방패를 든다
         {
             if (EquippedSlotIndex[1] != -1 && EquippedSlotIndex[0] == EquippedSlotIndex[1]) //양손장비가 선택되어 있는 상황
             {
                 EquippedSlotIndex[0] = -1;
             }
             EquippedSlotIndex[1] = index;
+            // 각자 애니메이션 발동
 
         }
         else if (exist.Data.Type == ItemType.Gun)
@@ -162,6 +168,8 @@ public class InventoryController : MonoBehaviour
 
         }
         _renderer.RenderEquip(EquippedSlotIndex);
+        _hand.UpdateItems();
+        
 
     }
 
@@ -227,7 +235,6 @@ public class InventoryController : MonoBehaviour
             if (val < amount) return false;
         }
         //위 경우 아니면 뺄 수 있음
-        _crafting.CountByID[item.ItemID] -= amount;
         for (int i = 0; i < _model.SlotCount; i++)
         {
             if (_model.InvItems[i].Data == null)
@@ -253,6 +260,7 @@ public class InventoryController : MonoBehaviour
                 break;
             }
         }
+        _crafting.CountByID[item.ItemID] -= amount;
 
         return true;
 

@@ -25,6 +25,12 @@ public class InventoryManager : SingletonT<InventoryManager>
     private InventoryController _controller;
     public InventoryController Controller => _controller;
 
+    private CraftingController _craft;
+    public CraftingController Craft => _craft;
+
+    private PlayerHandItemController _hand;
+    public PlayerHandItemController Hand => _hand;
+
     public bool IsinventoryOpened => Inventory.activeSelf;
 
 
@@ -37,6 +43,8 @@ public class InventoryManager : SingletonT<InventoryManager>
         _renderer = GetComponent<InventoryRenderer>();
         _controller = GetComponent<InventoryController>();
         _model = GetComponent<InventoryModel>();
+        _craft = GetComponent<CraftingController>();
+        _hand = GetComponent<PlayerHandItemController>();
         SetInstance();
         _model.Init();
     }
