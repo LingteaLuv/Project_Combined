@@ -31,6 +31,11 @@ public class RecipeSetting : MonoBehaviour
 
     private void Awake()
     {
+        _materialImages = new Image[4];
+        _materialTexts = new TMP_Text[4];
+        _currentTexts = new TMP_Text[4];
+        CreateBtn = new List<Button>();
+        
         SetValueEditor();
     }
     
@@ -44,7 +49,7 @@ public class RecipeSetting : MonoBehaviour
         {
             SetRecipe(i);
             SetProperty();
-            Init(i);
+            MaterialInit(i);
             SetValue();
         }
     }
@@ -52,9 +57,22 @@ public class RecipeSetting : MonoBehaviour
 
     private void OnEnable()
     {
-        LinkInventory();
+        StartCoroutine(DelayedUIUpdate());
     }
 
+    private IEnumerator DelayedUIUpdate()
+    {
+        yield return null;
+
+        for (int i = 0; i < _itemDictionary.RecipeDic.Count; i++)
+        {
+            SetRecipe(i);
+            SetProperty();
+            CurrentTextInit(i);
+            LinkInventory();
+        }
+    }
+    
     private void LinkInventory()
     {
         if (_hasMaterial1)
@@ -97,13 +115,9 @@ public class RecipeSetting : MonoBehaviour
         _hasMaterial4 = _recipe.MaterialItemId4 != 0;
 
         _hasMaterials = new bool[4] { _hasMaterial1, _hasMaterial2, _hasMaterial3, _hasMaterial4 };
-        
-        _materialImages = new Image[4];
-        _materialTexts = new TMP_Text[4];
-        CreateBtn = new List<Button>();
     }
-    
-    private void Init(int index)
+
+    private Transform[] Init(int index)
     {
         Transform targetTransform = transform.GetChild(index);
         
@@ -113,7 +127,29 @@ public class RecipeSetting : MonoBehaviour
         {
             children[i] = targetTransform.GetChild(i + 2);
         }
+
+        return children;
+    }
+    
+    private void CurrentTextInit(int index)
+    {
+        Transform[] children = Init(index);
+
+        for (int i = 0; i < 4; i++)
+        {
+            if (_hasMaterials[i])
+            {
+                _currentTexts[i] = children[i + 1].GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>();
+            }
+        }
+    }
+    
+    private void MaterialInit(int index)
+    {
+        Transform[] children = Init(index);
+        
         _resultImage = children[0].GetChild(0).GetComponentInChildren<Image>();
+        CreateBtn.Add(children[5].GetComponentInChildren<Button>());
 
         for (int i = 0; i < 4; i++)
         {
@@ -121,15 +157,12 @@ public class RecipeSetting : MonoBehaviour
             {
                 _materialImages[i] = children[i+1].GetChild(1).GetComponent<Image>();
                 _materialTexts[i] = children[i+1].GetChild(2).GetChild(2).GetComponent<TextMeshProUGUI>();
-                _currentTexts[i] = children[i+1].GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>();
             }
             else
             {
                 children[i+1].gameObject.SetActive(false);
             }
         }
-
-        CreateBtn.Add(children[5].GetComponentInChildren<Button>());
     }
     
     private void SetValue()
