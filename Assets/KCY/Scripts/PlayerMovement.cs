@@ -17,11 +17,6 @@ public class PlayerMovement : MonoBehaviour
     public Rigidbody Rigidbody { get; private set; }
     private bool _jumpConsumedThisFrame;
     
-    // 플래이어 낙하 관련
-    private float _airTime;
-    private bool _wasGrounded;
-    private float _lastYPos;
-    private float currentY;
 
     private Vector3 _currentRotation;
     private bool _isCrouching;
@@ -52,43 +47,9 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         _jumpConsumedThisFrame = false;
-        _wasGrounded = IsGrounded;
         IsGrounded = Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, _groundCheckDistance + 0.1f);
         IsOnLadder = _inputHandler.IsOnLadder;
-        
-        /*
-        // 채공 시간 누적
-        if (!IsGrounded)
-        {
-            TrackAirTime(); 
-        }
-        // 낙하 시작 Y좌표
-        if (!IsGrounded && _wasGrounded)
-        {
-            _lastYPos = transform.position.y;
-        }
-        //  착지 여부 판단
-        if (! _wasGrounded && IsGrounded)
-        {
-            currentY = transform.position.y;
-            Debug.Log($"높이차는 : {_lastYPos} - {currentY} = {_lastYPos - currentY} 입니다.");
-            ApplyFallDamage();
-            _airTime = 0;   // 채공 시간 초기화
-        }*/
     }
-
-
-    /*
-    private void ApplyFallDamage()
-    {
-        //  TODO : 데미지 입히는 로직
-        Debug.Log($"채공시간은 : {_airTime} 입니다.");
-    }
-    private void TrackAirTime()
-    {
-        _airTime += Time.deltaTime;
-    }
-    */
 
     /// <summary>
     /// 입력 방향에 따라 관성 없이 이동합니다.

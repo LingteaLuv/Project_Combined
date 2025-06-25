@@ -16,7 +16,7 @@ public class PlayerMoveState : PlayerState
         }
     }
 
-    public override void Exit() { Debug.Log("Exit Move"); }
+    public override void Exit() { }
     public override void Tick()
     {
         if (_movement.MoveInput == Vector3.zero)

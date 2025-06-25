@@ -11,13 +11,12 @@ public class PlayerIdleState : PlayerState
 
     public override void Enter() 
     { 
-        Debug.Log("Enter Idle");
         if (_movement.Controller.IsCrouch)
         {
             _movement.Controller.IsCrouch = false;
         }
     }
-    public override void Exit() { Debug.Log("Exit Idle"); }
+    public override void Exit() { }
     public override void FixedTick() { }
     public override void Tick()
     {
