@@ -12,13 +12,13 @@ public class PlayerFallState : PlayerState
 
     public override void Enter()
     {
-        Debug.Log("Enter Fall");
+        Debug.Log("Enter Fall 떨어짐 진입합니다.");
         _movement.Controller._animator.SetBool("IsFalling", true);
     }
 
     public override void Exit()
     {
-        Debug.Log("Exit Fall");
+        Debug.Log("Exit Fall 떨어짐 탈출합니다.");
         _movement.Controller._animator.SetBool("IsFalling", false);
     }
 
