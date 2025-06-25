@@ -15,6 +15,8 @@ public class InventoryController : MonoBehaviour
 
     [SerializeField] private InventoryRenderer _renderer;
 
+    [SerializeField] private CraftingController _crafting;
+
     public bool IsHolding;
     public int HoldingIndex;
     public int NextIndex;
@@ -34,6 +36,8 @@ public class InventoryController : MonoBehaviour
 
         EquippedSlotIndex = new int[] { -1, -1 };
     }
+
+
 
 
     private bool[] GetFlags(ItemBase item)
@@ -160,6 +164,33 @@ public class InventoryController : MonoBehaviour
         _renderer.RenderEquip(EquippedSlotIndex);
 
     }
+
+    public void Unequip(int index)
+    {
+        //해당 인덱스에 뭔가 장착되어 있는가
+        if (EquippedSlotIndex[0] == index)
+        {
+            if (EquippedSlotIndex[1] == index) //0, 1 둘다 같은 칸을 바라봄 -> 두손장비
+            {
+                EquippedSlotIndex[1] = -1;
+            }
+            EquippedSlotIndex[0] = -1;
+        }
+        else if (EquippedSlotIndex[1] == index)
+        {
+            if (EquippedSlotIndex[0] == index)
+            {
+                EquippedSlotIndex[0] = -1;
+            }
+            EquippedSlotIndex[1] = -1;
+        }
+        else
+        {
+            return;
+        }
+
+
+    }
     private void AutoEquip(int index) // 아무것도 선택되어 있지 않거나, 
     {
         Item exist = _model.InvItems[index];
@@ -183,7 +214,52 @@ public class InventoryController : MonoBehaviour
         }
 
     }
-    public bool AddItem(ItemBase item, int amount, int durability)
+
+    public bool RemoveItem(ItemBase item, int amount)// 뺄 개수만큼 뺄 수 없으면 안빼고 false 반환
+    {
+        int a = amount;
+        if (!_crafting.CountByID.TryGetValue(item.ItemID, out int val)) // 해당 아이디의 아이템을 가지고 있는지
+        {
+            return false;
+        }
+        else
+        {
+            if (val < amount) return false;
+        }
+        //위 경우 아니면 뺄 수 있음
+        _crafting.CountByID[item.ItemID] -= amount;
+        for (int i = 0; i < _model.SlotCount; i++)
+        {
+            if (_model.InvItems[i].Data == null)
+            {
+                continue;
+            }
+            else if (_model.InvItems[i].Data == item) // 아이템 존재
+            {
+                if (_model.InvItems[i].StackCount <= a)
+                {
+                    a -= _model.InvItems[i].StackCount;
+                    if (i < 6) Unequip(i); // 장비창의 아이템이 빠져나갈 경우 장착 해제
+                    _model.InvItems[i] = null;
+                }
+                else if (_model.InvItems[i].StackCount > a)
+                {
+                    _model.InvItems[i].StackCount -= a;
+                    a = 0;
+                }
+            }
+            if (a == 0)
+            {
+                break;
+            }
+        }
+
+        return true;
+
+
+
+    }
+    public bool AddItem(ItemBase item, int amount, int durability) //넣을 개수만큼 넣을 수 없으면 안넣고 false 반환
     {
         int a = amount; // 넣을 개수
         List<int> itemExist = new List<int>();
@@ -210,6 +286,7 @@ public class InventoryController : MonoBehaviour
                         foreach( int j in itemExist) _model.InvItems[j].StackCount = MaxStack;
                     }
                     _model.InvItems[i].StackCount = MaxStack;
+                    _crafting.Add(item.ItemID, amount);
                     return true;
                 }
                 else if (temp > a) // 부족한 개수가 넣을 개수보다 많음
@@ -219,6 +296,7 @@ public class InventoryController : MonoBehaviour
                         foreach (int j in itemExist) _model.InvItems[j].StackCount = MaxStack;
                     }
                     _model.InvItems[i].StackCount += a;
+                    _crafting.Add(item.ItemID, amount);
                     return true;
                 }
                 else //부족한 개수가 넣을 개수보다 적음 (남음)
@@ -278,6 +356,7 @@ public class InventoryController : MonoBehaviour
             {
                 AutoEquip(addables[0]); // 소모품이 아니고, 아이템이 들어온 첫 번째 칸이 퀵슬롯에 포함되어 있을 경우, 퀵슬롯 인덱스
             }
+            _crafting.Add(item.ItemID, amount);
             return true;
         }
         else // 빈 공간도 없음 -> 못넣음

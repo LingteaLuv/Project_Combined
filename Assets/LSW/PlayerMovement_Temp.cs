@@ -9,6 +9,14 @@ public class PlayerMovement_Temp : MonoBehaviour
     [SerializeField] private Rigidbody _rigid;
     [SerializeField] private float _acceleration;
     [SerializeField] private float _deceleration;
+
+    [SerializeField] public List<Recipe> recipes
+    {
+        get;
+        private set;
+    }
+    
+    
     
     private Vector3 _inputDir;
     private float _moveSpeed;
@@ -76,4 +84,20 @@ public class PlayerMovement_Temp : MonoBehaviour
         _moveSpeed = 5f;
         IsGrounded = true;
     }
+
+
+
+    public void OnClick()
+    {
+        // 오전
+        // Recipe recipe = GiveRecipe();
+        // 제작(recipe)
+    }
+
+    public void Craft(Recipe recipe)
+    {
+        
+    }
+    
+    
 }

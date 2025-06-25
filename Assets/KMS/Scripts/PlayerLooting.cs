@@ -9,6 +9,8 @@ public class PlayerLooting : MonoBehaviour
     [SerializeField] LayerMask _interactLayer;
 
     private List<Collider> _colliders = new List<Collider>();
+    //private List<Lootable> _lootables = new List<Lootable>();
+    private Dictionary<Collider, Lootable> _lootables = new Dictionary<Collider, Lootable>();
 
     private Collider _lootableColl = null;
 
@@ -22,6 +24,7 @@ public class PlayerLooting : MonoBehaviour
         if (other.gameObject.layer == 6)
         {
             _colliders.Add(other);
+            _lootables.Add(other, other.GetComponentInChildren<Lootable>());
             
         }
     }
@@ -34,25 +37,30 @@ public class PlayerLooting : MonoBehaviour
         Collider near = null;
         foreach ( Collider c in _colliders)
         {
+            if (!_lootables[c].IsLootable) return;
             float temp = (transform.position - c.transform.position).magnitude;
             if (temp < distance)
             {
                 distance = temp;
                 near = c;
-            } // 리스트 내 콜라이더 중 가장 가까운 것 구해서 near에 저장
+            } // 리스트 내 루팅 가능한 콜라이더 중 가장 가까운 것 구해서 near에 저장
         }
-        if (_lootableColl == near)
+        if (near == null) //루팅 가능한 콜라이더가 없었다. 
         {
             return;
         }
-        else
+        if (_lootableColl == near) // 가장 가까운것과 이미 선택된 것이 같음
         {
-            _lootable = near.GetComponent<Lootable>();
+            return;
+        }
+        else //다른 것이 선택되어 있었음 (또는 선택된 것이 없었음) -> 변경
+        {
+            _lootable = _lootables[near]; //가장 가까운걸로 lootable변경
             _lootable.OnOutline();
             _lootable.FUIController.OffDark();
-            if (_lootableColl != null)
+            if (_lootableColl != null) // 이미 선택된 것이 있었다면 -> 끈다
             {
-                Lootable temp = _lootableColl.GetComponent<Lootable>();
+                Lootable temp = _lootables[_lootableColl];
                 temp.OffOutline();
                 temp.FUIController.OnDark();
             }
@@ -66,8 +74,9 @@ public class PlayerLooting : MonoBehaviour
         if (other.gameObject.layer == 6)
         {
             _colliders.Remove(other);
+            _lootables.Remove(other);
         }
-        if (_lootableColl == other)
+        if (_lootableColl == other) 
         {
             _lootableColl = null;
             _lootable.OffOutline();

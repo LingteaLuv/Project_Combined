@@ -28,6 +28,8 @@ public class PlayerMovement : MonoBehaviour
     public Vector3 MoveInput => _inputHandler.MoveInput;
     public bool JumpPressed => _inputHandler.JumpPressed;
     public bool CrouchHeld => _inputHandler.CrouchHeld;
+    public bool InteractPressed => _inputHandler.InteractPressed;
+
     public bool IsOnLadder { get; private set; }
     public bool IsGrounded { get; private set; }
 
