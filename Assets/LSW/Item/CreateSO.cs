@@ -164,7 +164,7 @@ public class CreateSO : EditorWindow
             item.Name = name;
             item.Description = description;
             item.Type = (ItemType)Enum.Parse(typeof(ItemType),itemType);
-            //weaponItem.Icon = BringIcon(icon)
+            item.Sprite = SpriteFinder.FindSpriteByName(icon);
             
             string assetPath = $"{folderPath}/Item_{itemId}_{name}.Asset";
             AssetDatabase.CreateAsset(item, assetPath);
