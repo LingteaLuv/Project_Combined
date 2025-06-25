@@ -10,7 +10,6 @@ public class PlayerMoveState : PlayerState
 
     public override void Enter() 
     { 
-        Debug.Log("Enter Move");
         if (_movement.Controller.IsCrouch)
         {
             _movement.Controller._animator.SetTrigger("CrouchUp");

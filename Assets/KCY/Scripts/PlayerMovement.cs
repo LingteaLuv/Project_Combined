@@ -21,9 +21,10 @@ public class PlayerMovement : MonoBehaviour
     private bool _isCrouching;
 
     [Header("Settings")]
-    [SerializeField] private float _jumpForce = 5f;
+    [SerializeField] private float _jumpForce = 10f;
     [SerializeField] private float _groundCheckDistance = 0.05f;
     [SerializeField] private float _crouchSpeedMultiplier = 0.5f;
+    [SerializeField] private float fallMultiplier = 5f;
 
     public Vector3 MoveInput => _inputHandler.MoveInput;
     public bool JumpPressed => _inputHandler.JumpPressed;
@@ -89,6 +90,11 @@ public class PlayerMovement : MonoBehaviour
         }
         Quaternion targetRot = Quaternion.LookRotation(moveDir);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 10f);
+
+        if (_rb.velocity.y < 0)
+        {
+            _rb.velocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1f) * Time.fixedDeltaTime;
+        }
     }
     public bool CanJump()
     {
