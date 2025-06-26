@@ -15,6 +15,7 @@ public class PlayerFallState : PlayerState
 
     public override void Enter()
     {
+        Debug.Log("낙하상태 진입");
         _movement.Controller._animator.SetBool("IsFalling", true);
         _lastYPos = _movement.transform.position.y;
         _airTime = 0;

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.PlayerLoop;
 using UnityEngine.Serialization;
 
-public class HudManager : MonoBehaviour
+public class HudController : MonoBehaviour
 {
      [SerializeField] private PropertyHudUI _propertyHudUI;
      [SerializeField] private ParameterHudUI _parameterHudUI;

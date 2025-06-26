@@ -52,7 +52,7 @@ public class PlayerJumpState : PlayerState
                 ? _movement.Controller.IdleState
                 : _movement.Controller.MoveState);
         }
-        if (_hangTimer <= 0f && !_movement.IsGrounded && _movement.Rigidbody.velocity.y < -0.1f)
+        if (EnterFallState())
         {
             _fsm.ChangeState(_movement.Controller.FallState);
             return;
