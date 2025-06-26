@@ -9,6 +9,7 @@ public abstract class PlayerState
 {
     protected PlayerStateMachine _fsm;
     protected PlayerMovement _movement;
+    protected float _fallTimer;
 
     /// <summary>
     /// 상태 생성자
@@ -35,6 +36,17 @@ public abstract class PlayerState
             _fsm.ChangeState(_movement.Controller.JumpState);
             return true;
         }
+        return false;
+    }
+    protected bool EnterFallState(float delay = 1f)
+    {
+        if (!_movement.IsGrounded && _movement.Rigidbody.velocity.y < -0.1f)
+        {
+            _fallTimer += Time.deltaTime;
+            return _fallTimer >= delay;
+        }
+
+        _fallTimer = 0f;
         return false;
     }
 }
