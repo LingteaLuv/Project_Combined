@@ -14,6 +14,13 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField]private GameObject _left_Hand_target;
     [SerializeField]private GameObject _right_Hand_target;
 
+    [SerializeField][Range(0, 2)] private float _startAttackDelay;      //플레이어 근접공격모션 시작 딜레이
+    [SerializeField][Range(0, 2)] private float _endAttackDelay;  //플레이어 근접공격모션 종료 딜레이
+
+    [SerializeField] private bool _canAttack = true;
+    [SerializeField] private bool _isAttacking = false; // 공격 중인지 체크
+
+    private Coroutine _currentAttackCoroutine; // 현재 실행 중인 공격 코루틴
     private void Awake()
     {
         _left_Hand_target = GameObject.Find("Hand_L");
@@ -21,7 +28,7 @@ public class PlayerAttack : MonoBehaviour
     }
     private void Start()
     {
-        _currentWeapon = _right_Hand_target.GetComponentInChildren<WeaponBase>();
+        UpdateWeapon();
     }
 
     private void UpdateWeapon()
@@ -39,25 +46,7 @@ public class PlayerAttack : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            if (_currentWeapon == null)
-            {
-                Debug.Log("현재 손에 무기가 없습니다");
-                return;
-            }
-            switch (_currentWeapon.ItemType)
-            {
-                case ItemType.Melee:
-                    _animator.SetTrigger("DownAttack");    //<- 해당 특정 애니메이션 재생 할 수 있도록
-                    //애니메이션 이벤트 안에 Attak이 존재한다.
-                    break;
-                case ItemType.Gun :
-                    //_animator.Set   <- 해당 특정 애니메이션 재생 할 수 있도록
-                    PlayerAttackStart();
-                    break;
-                default:
-                    //Debug.Log($"들고 있는 무기 에러.\n 현재 무기 : {currentWeapon} , ItemType {currentWeapon.ItemType}");
-                    break;
-            }
+            TryAttack();
         }
         //저는 해당 스크립트에서 _currentWeapon을 제가 알아야합니다
         //손에 어떤 아이템이 있는지 알려야 하기 때문에 해당 값을 들고와야하는데
@@ -71,6 +60,71 @@ public class PlayerAttack : MonoBehaviour
         {
             if (_currentWeapon == null) return;
             _animator.SetTrigger("UnEquip");
+        }
+    }
+
+    private void StartRangedAttack()
+    {
+        // 원거리 무기는 즉시 공격 (연사 가능)
+        PlayerAttackStart();
+    }
+
+    private IEnumerator MeleeAttackSequence()
+    {
+        _canAttack = false;
+        _isAttacking = true;
+
+        Debug.Log("근접 공격 시작 - 선딜 시작");
+
+        // 선딜 대기
+        yield return new WaitForSeconds(_startAttackDelay);
+
+        Debug.Log("선딜 완료 - 애니메이션 실행");
+
+        // 공격 애니메이션 실행
+        _animator.SetTrigger("DownAttack");
+
+        // 실제 공격 실행 (애니메이션 이벤트 대신 여기서 실행)
+        PlayerAttackStart();
+
+        Debug.Log("공격 실행 - 후딜 시작");
+
+        // 후딜 대기
+        yield return new WaitForSeconds(_endAttackDelay);
+
+        Debug.Log("후딜 완료 - 공격 가능");
+
+        _isAttacking = false;
+        _canAttack = true;
+        _currentAttackCoroutine = null;
+    }
+
+    private void TryAttack()
+    {
+        // 공격 불가능한 상태면 리턴
+        if (!_canAttack || _isAttacking)
+        {
+            Debug.Log("공격 불가능한 상태입니다.");
+            return;
+        }
+
+        if (_currentWeapon == null)
+        {
+            Debug.Log("현재 손에 무기가 없습니다");
+            return;
+        }
+
+        switch (_currentWeapon.ItemType)
+        {
+            case ItemType.Melee:
+                StartMeleeAttack();
+                break;
+            case ItemType.Gun:
+                StartRangedAttack();
+                break;
+            default:
+                Debug.Log($"알 수 없는 무기 타입: {_currentWeapon.ItemType}");
+                break;
         }
     }
 
@@ -166,5 +220,14 @@ public class PlayerAttack : MonoBehaviour
         _currentWeapon = null;              //현재 무기를 무엇인지 업데이트 하고
         _animator.SetTrigger("UnEquip");
     }
+    private void StartMeleeAttack()
+    {
+        // 이전 공격 코루틴이 있다면 정지
+        if (_currentAttackCoroutine != null)
+        {
+            StopCoroutine(_currentAttackCoroutine);
+        }
 
+        _currentAttackCoroutine = StartCoroutine(MeleeAttackSequence());
+    }
 }
