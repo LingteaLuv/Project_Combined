@@ -218,7 +218,7 @@ public class InventoryController : MonoBehaviour
         }
         _renderer.RenderEquip(EquippedSlotIndex);
         if (a) _hand.AnimationLoad(exist);
-        // _hand.UpdateItems();
+         _hand.UpdateItems();
     }
 
     public void UnEquip(int index)
@@ -245,7 +245,7 @@ public class InventoryController : MonoBehaviour
             return;
         }
         _renderer.RenderEquip(EquippedSlotIndex);
-        //_hand.UpdateItems();
+        _hand.UpdateItems();
 
 
     }
