@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PlayerAttack : MonoBehaviour
 {
@@ -27,8 +28,7 @@ public class PlayerAttack : MonoBehaviour
 
     private Coroutine _currentAttackCoroutine; // 현재 실행 중인 공격 코루틴
 
-
-    //TODO - 나중에 어디서인가 그 현재 무기가 뭔지 있어야하는 부분이 있지 않을까?
+    //TODO - 나중에 어디서인가 그 현재 무기가 뭔지 있어야하는 부분이 있지 않을까? Action 연결
     // 플레이어의 왼쪽 오른쪽 들고있는 템이 뭔지 바뀌는 이벤트가 존재 할 때 나도 업데이트해서 사용할 수 있지 않을까?
 
     private void Awake()
@@ -56,21 +56,6 @@ public class PlayerAttack : MonoBehaviour
         {
             TryAttack();
         }
-
-        // TODO - 플레이어의 장비 장착 해제는 나중에 다른 스크립트에서 관리해야하지 않을까?
-        #region 추후 이동예정
-        if (Input.GetKeyDown(KeyCode.X))
-        {
-            if (_currentWeapon == null) return;
-            _animator.SetTrigger("Equip");
-        }
-        //무기 해제
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            if (_currentWeapon == null) return;
-            _animator.SetTrigger("UnEquip");
-        }
-        #endregion
     }
 
     private IEnumerator MeleeAttackSequence()
@@ -85,7 +70,6 @@ public class PlayerAttack : MonoBehaviour
 
         Debug.Log("선딜 완료 - 애니메이션 실행");
 
-        SetLayerWeight(2, 1);
         _animator.SetTrigger("DownAttack");
 
         // 실제 공격 실행 (애니메이션 이벤트 대신 여기서 실행)
@@ -96,7 +80,6 @@ public class PlayerAttack : MonoBehaviour
         // 후딜 대기
         yield return new WaitForSeconds(_endAttackDelay);
 
-        SetLayerWeight(2, 0);
         Debug.Log("후딜 완료 - 공격 가능");
 
         _isAttacking = false;
@@ -139,86 +122,7 @@ public class PlayerAttack : MonoBehaviour
     public void PlayerAttackStart()
     {
         _currentWeapon.Attack();
-    }
-
-    
-
-    #region 추후 이동 - 플레이어 장비 장착 해제 애니메이션를 관리하는 스크립트로
-    //TODO - 해당 함수도 따로 장비 장착 해체 스크립트에서 관리해야 하지 않을까?
-    //빈손 일 때랑에서무기제네릭 메서드, 무기에서 빈손, 무기에서 -> 무기 
-    [SerializeField] private Transform _gunAlwaysPos;
-    [SerializeField] private Transform _gunEquipPos;
-    [SerializeField] private float _rotationSpeed = 5.0f;
-
-    private void WeaponSetActive()
-    {
-        if (_currentWeapon == null) return;
-        _currentWeapon.gameObject.SetActive(true);
-    }
-
-    private void WeaponDeactivate()
-    {
-        if (_currentWeapon == null) return;
-        _currentWeapon.gameObject.SetActive(false);
-    }
-
-
-    //총이 한번에 확돌아가는 문제가 존재
-    private void SetGunEquippPos()
-    {
-        if (_currentWeapon.ItemType != ItemType.Gun) return;
-
-        _currentWeapon.transform.rotation = _gunEquipPos.rotation;
-        //StartCoroutine(GunLerpRotation());
-    }
-
-    private void SetGunAlwaysPos()
-    {
-        if (_currentWeapon.ItemType != ItemType.Gun) return;
-
-        _currentWeapon.transform.rotation = _gunAlwaysPos.rotation;
-    }
-
-    //유기
-    /*private IEnumerator GunLerpRotation()
-    {
-        while (Quaternion.Angle(_currentWeapon.transform.rotation, _gunAlwaysPos.rotation) > 0.1f)
-        {
-            _currentWeapon.transform.rotation = Quaternion.Slerp(_currentWeapon.transform.rotation,
-                _gunAlwaysPos.rotation, Time.deltaTime * _rotationSpeed);
-        }
-        yield return null;
-        _currentWeapon.transform.rotation = _gunAlwaysPos.rotation;
-    }*/
-
-    //무기에서 무기로 호출함수
-    public void WeaponToWeapon()
-    {
-        _currentWeapon.gameObject.SetActive(false); //기존의 무기를 비활성화 처리하고
-        _currentWeapon = null;                      //현재 무기를 null로 변경하고;
-        //여기서 퀵슬롯이 바껴야함
-        UpdateWeapon();                             //현재 무기를 무엇을 들고있는지 다시 검사
-        _animator.SetTrigger("Equip");              //다시 해당 장비를 장착하는 애니메이션 재생                         
-    }
-
-    //맨손에서 무기로 호출함수
-    public void BarehandsToWeapon()
-    {
-        //어차피 맨손이라서 무기가 없겠지만 혹시나 모르니
-        if (_currentWeapon != null) return; //null이 아니면 return하고
-        UpdateWeapon();                     //현재 무기를 무엇인지 업데이트 하고
-        _animator.SetTrigger("Equip");      //해당무기에 맞는 장비를 장착하는 애니메이션 재생
-    }
-
-    //무기에서 빈손
-    public void WeaponToBarehands()
-    {
-        //무기가 있어야하므로
-        if (_currentWeapon == null) return; //null이면 return하고
-        _currentWeapon = null;              //현재 무기를 무엇인지 업데이트 하고
-        _animator.SetTrigger("UnEquip");
-    }
-    #endregion
+    }  
 
     //빠따공격
     private void StartMeleeAttack()
@@ -244,7 +148,6 @@ public class PlayerAttack : MonoBehaviour
     {
         _animator.SetTrigger("Throw");
         _animator.SetLayerWeight(4, 1); //Throw Layer 
-        _currentWeapon.Attack();
     }
 
     //원거리 공격
