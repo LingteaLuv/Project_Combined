@@ -57,7 +57,7 @@ public class RecipeSetting : MonoBehaviour
         StartCoroutine(DelayedUIUpdate());
     }
 
-    private IEnumerator DelayedUIUpdate()
+    public IEnumerator DelayedUIUpdate()
     {
         yield return null;
 
