@@ -1,7 +1,7 @@
-using System.Collections;
+
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.WSA;
+
 
 public class PlayerHandItemController : MonoBehaviour
 {
@@ -31,7 +31,7 @@ public class PlayerHandItemController : MonoBehaviour
     {
         Right = UISceneLoader.Instance.Right;
         Left = UISceneLoader.Instance.Left;
-        _playerAttack = UISceneLoader.Instance.Playerattack;
+        //_playerAttack = UISceneLoader.Instance.Playerattack;
     }
 
     //public void Subscribe(HandType type, ItemHolder holder)
@@ -141,7 +141,7 @@ public class PlayerHandItemController : MonoBehaviour
             if (temp == ItemType.Melee || temp == ItemType.Special || temp == ItemType.Gun)
             {
                 Debug.Log("무기 에서 빈손");
-                _playerAttack.WeaponToBarehands();
+                //_playerAttack.WeaponToBarehands();
             }
         }
         else if (toEquip != null && isBeforeitemNull) // 빈손 > 장비
@@ -150,7 +150,7 @@ public class PlayerHandItemController : MonoBehaviour
             if (temp == ItemType.Melee || temp == ItemType.Special || temp == ItemType.Gun)
             {
                 Debug.Log("빈손 에서 무기");
-                _playerAttack.BarehandsToWeapon();
+                //_playerAttack.BarehandsToWeapon();
             }
         }
         else // 무기 > 무기
@@ -159,7 +159,7 @@ public class PlayerHandItemController : MonoBehaviour
             if (temp == ItemType.Melee || temp == ItemType.Special || temp == ItemType.Gun)
             {
                 Debug.Log("무기 에서 무기");
-                _playerAttack.WeaponToWeapon();
+                //_playerAttack.WeaponToWeapon();
             }
         }
     }

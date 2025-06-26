@@ -35,6 +35,10 @@ public class UIManage : SingletonT<UIManage>
         Current = ModalUI.nothing;
         UIGroup.alpha = 0;
         _wait = new WaitForEndOfFrame();
+        ModalBase.SetActive(false);
+        LootUI.SetActive(false);
+        InvUI.SetActive(false);
+        CraftUI.SetActive(false);
     }
 
     private void Start()
