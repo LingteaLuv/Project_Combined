@@ -69,6 +69,18 @@ public class InventoryManager : SingletonT<InventoryManager>
         _renderer.RenderInventory();
         return canAdd;
     }
+
+    public ItemBase CurrentWeapon()
+    {
+        if (Controller.EquippedSlotIndex[0] == -1)
+        {
+            return null;
+        }
+        else
+        {
+            return _model.InvItems[Controller.EquippedSlotIndex[0]].Data;
+        }
+    }
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.I)) ToggleUI();
