@@ -26,6 +26,8 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private float targetWeight = 1.0f; // 목표 가중치 (0~1)
     [SerializeField] private float weightChangeSpeed = 2.0f; // 가중치 변경 속도
 
+    private PlayerProperty _playerProperty;
+    
     private Coroutine _currentAttackCoroutine; // 현재 실행 중인 공격 코루틴
 
     //TODO - 나중에 어디서인가 그 현재 무기가 뭔지 있어야하는 부분이 있지 않을까? Action 연결
@@ -36,6 +38,7 @@ public class PlayerAttack : MonoBehaviour
         //모든 아이템은 해당 Hand_bone밑에 있다.
         //_left_Hand_target = GameObject.Find("Hand_L");      
         //_right_Hand_target = GameObject.Find("Hand_R");
+        _playerProperty = GetComponent<PlayerProperty>();
     }
     private void Start()
     {
@@ -106,6 +109,7 @@ public class PlayerAttack : MonoBehaviour
         {
             case ItemType.Melee:
                 StartMeleeAttack();
+                _playerProperty.ExpendAction();
                 break;
             case ItemType.Gun:
                 StartRangedAttack();

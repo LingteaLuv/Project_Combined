@@ -13,7 +13,6 @@ public class LootDetector : MonoBehaviour
         if (other.gameObject.layer == 6)
         {
             _lootables.Add(other.GetComponentInChildren<Lootable>());
-            Debug.Log(1);
         }
     }
 

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class HingeDoorOpen : MonoBehaviour
 {
@@ -12,8 +13,8 @@ public class HingeDoorOpen : MonoBehaviour
     private Quaternion _openedRotation;
     private Quaternion _closedRotation;
 
-    [SerializeField] private List<ItemBase> testKeys;
-    private ItemBase _key;
+    [SerializeField] private List<ItemBase> _testKeys;
+    [SerializeField] private ItemBase _key;
     private bool _isOpen = false;
     private bool _isOnRotated = false;
 
@@ -24,7 +25,7 @@ public class HingeDoorOpen : MonoBehaviour
     private void Init()
     {
         _closedRotation = transform.rotation;
-        _openedRotation = _closedRotation * Quaternion.Euler(0, _openAngle * (_doorType == DoorType.RotateRight ? -1 : 1), 0);
+        _openedRotation = _closedRotation * Quaternion.Euler(0, _openAngle * (_doorType == DoorType.RotateRight ? 1 : -1), 0);
     }
 
     public void Toggle(List<ItemBase> playerKeys)

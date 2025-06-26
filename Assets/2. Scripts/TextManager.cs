@@ -30,27 +30,6 @@ public class TextManager : Singleton<TextManager>
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            PopupTextForSecond("1001", 2);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            PopupTextForSecond("1002", 2);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            PopupTextForSecond("1003", 2);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha4))
-        {
-            PopupTextForSecond("1004", 2);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha5))
-        {
-            PopupTextForSecond("1005", 2);
-        }
-
         if (Input.GetKeyDown(KeyCode.Alpha0))
         {
             MemoPopUpText("1006");
