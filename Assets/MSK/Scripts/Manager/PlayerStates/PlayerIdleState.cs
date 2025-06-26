@@ -40,7 +40,7 @@ public class PlayerIdleState : PlayerState
             _fsm.ChangeState(_movement.Controller.InteractState);
             return;
         }
-        if (!_movement.IsGrounded && _movement.Rigidbody.velocity.y < -0.1f)
+        if (EnterFallState())
         {
             _fsm.ChangeState(_movement.Controller.FallState);
             return;
