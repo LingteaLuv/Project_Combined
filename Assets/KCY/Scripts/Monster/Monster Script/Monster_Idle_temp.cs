@@ -12,8 +12,10 @@ public class Monster_Idle : MonsterState_temp
         stateMachine = monster._monsterMerchine;
     }
 
+    // idle 상태에서 잠시 대기
     private float _idleTimer;
     private float _idleDuration = 3f;
+
     private NavMeshAgent _navMeshAgent;
     protected MonsterStateMachine_temp stateMachine;
  
@@ -25,6 +27,7 @@ public class Monster_Idle : MonsterState_temp
 
     public override void Update()
     {
+        Debug.Log("idle MOde");
         // 쿨타임이 지나면 다시 패트롤 모드로 돌아가기
         _idleTimer += Time.deltaTime;
         Debug.Log($"[Idle] 상태 Update() 호출됨 - 경과시간: {_idleTimer:F2}");
@@ -36,6 +39,7 @@ public class Monster_Idle : MonsterState_temp
     }
     public override void Exit()
     {
+        // 내비로 안힌 추적 재활성화
         _navMeshAgent.enabled = true;
     }
 }

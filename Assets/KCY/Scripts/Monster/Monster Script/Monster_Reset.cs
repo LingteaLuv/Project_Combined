@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UIElements;
 
 public class Monster_Reset : MonsterState_temp
 {
@@ -14,9 +15,7 @@ public class Monster_Reset : MonsterState_temp
 
     public Monster_Reset(Monster_temp _monster) : base(_monster)
     {
-        _spawnPoint = monster.SpawnPoint.position; // 어디서 스폰할 건지 따로 정하기
         _agent = monster.MonsterAgent;
-        _targetPos = monster.TargetPosition;
         _stateMachine = monster._monsterMerchine;
     }
 
@@ -30,15 +29,22 @@ public class Monster_Reset : MonsterState_temp
 
     public override void Enter()
     {
+        _spawnPoint = monster.SpawnPoint.position; // 어디서 스폰할 건지 따로 정하기
+        _targetPos = monster.TargetPosition;
+
         // reset상태에서 혹시라도 플레이어와의 감지를 없애기 위해서 감지 콜라이더 비활성화
-        monster.DetectRange.enabled = false;
+        monster.DetectCol.enabled = false;
 
         // 만약 경로도 있고, 남은 거리도 있는데 속도가 없으면 -> 경로가 꼬인 상태로 가정
-        // 그렇다면 경로를 초기화 시키고 다시
+        // 그렇다면 내비 위치 확인 후 경로를 초기화 시키고 다시  / 안되면 내비부터 찾기
         if (_agent.hasPath && _agent.remainingDistance > 0 && _agent.velocity.sqrMagnitude < 0.01f)
         {
-            _agent.ResetPath();
-            _agent.SetDestination(_targetPos.position);
+            if (NavMesh.SamplePosition(_targetPos.position, out NavMeshHit hit, 2f, NavMesh.AllAreas))
+            {
+                _agent.ResetPath();
+                _agent.SetDestination(_targetPos.position);
+            }
+            else { _agent.SetDestination(hit.position);}
         }
 
 
@@ -47,6 +53,7 @@ public class Monster_Reset : MonsterState_temp
         {
             if (NavMesh.SamplePosition(_spawnPoint, out NavMeshHit hit, 2f, NavMesh.AllAreas))
             {
+                Debug.Log("워프했다");
                 _agent.Warp(hit.position);
             }
 
@@ -61,6 +68,6 @@ public class Monster_Reset : MonsterState_temp
     public override void Exit()
     {
         // reset상태에서 빠져나가는 경우 다시 플레이어를 감지할 수 있도록 콜라이더 켜주기
-        monster.DetectRange.enabled = true;
+        monster.DetectCol.enabled = true;
     }
 }

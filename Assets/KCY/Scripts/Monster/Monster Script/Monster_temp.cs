@@ -1,11 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.UI;
 
 public class Monster_temp : MonoBehaviour
 {
+    // 직접 몬스터에서 붙일 기능
+
     [Header("Elements")]
     [SerializeField] public NavMeshAgent MonsterAgent;
     [SerializeField] public Transform TargetPosition;
@@ -13,8 +12,8 @@ public class Monster_temp : MonoBehaviour
     [SerializeField] public float WalkSpeed;
     [SerializeField] public float RunningSpeed;
     [SerializeField] public float CrawlSpeed;
-    [SerializeField] public Transform[] PatrolPoints;
-    [SerializeField] public Collider DetectRange;
+    [SerializeField] public Transform[] PatrolPoints; // 점을 설정하고 해당 점의 위치를 순환하는 패트롤 구조
+    [SerializeField] public Collider DetectCol;
     [SerializeField] public Transform SpawnPoint; // 좀비 시작 위치 설정 
 
     public Animator Ani;
@@ -22,11 +21,10 @@ public class Monster_temp : MonoBehaviour
     public MonsterStateMachine_temp _monsterMerchine;
 
 
-    // 애니메이션 실행
-   
 
     private void StateMachineInit()
     {
+        // 해당 enum에 각 상태 할당 및 몬스터 인자 전달 
         _monsterMerchine = new MonsterStateMachine_temp();
         _monsterMerchine.StateDic.Add(Estate.Idle, new Monster_Idle(this));
         _monsterMerchine.StateDic.Add(Estate.Chase, new Monster_Chase(this));
@@ -37,17 +35,16 @@ public class Monster_temp : MonoBehaviour
         _monsterMerchine.CurState = _monsterMerchine.StateDic[Estate.Idle];
     }
 
-
-    void Start()
+    private void Awake()
     {
-        Ani = GetComponent<Animator>();
+        Ani = GetComponentInChildren<Animator>();
         Rigid = GetComponent<Rigidbody>();
         StateMachineInit();
     }
 
     void Update()
     {
-        _monsterMerchine.Update(); 
+        _monsterMerchine.Update();
     }
     void FixedUpdate()
     {
@@ -57,28 +54,24 @@ public class Monster_temp : MonoBehaviour
     // 몬스터에 추가한 콜라이더와 레이어를 활요하여 추적로직
     private void DetectPlayer(Collider other)
     {
-        Debug.Log("if문 진입");
         // 설정한 플레이어 레이어 숫자와 부딫힌 오브젝트의 레이어가 겹칠때 추적로직 작동
         if ((PlayerLayerMask.value & (1 << other.gameObject.layer)) != 0)
         {
             Debug.Log($"[Trigger] 충돌: {other.name}, Layer: {other.gameObject.layer}");
+            Debug.Log(" 플레이어 감지됨 → 상태 전이 시도");
 
-            if ((PlayerLayerMask.value & (1 << other.gameObject.layer)) != 0)
+            _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.Chase]);
+            Debug.Log("상태 전이 → Chase");
+
+            // 체크 되면 몸체 돌리기
+            Vector3 dir = TargetPosition.position - transform.position;
+            dir.y = 0;
+            if (dir.sqrMagnitude > 0.001f)
             {
-                Debug.Log(" 플레이어 감지됨 → 상태 전이 시도");
-
-                _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.Chase]);
-                Debug.Log("상태 전이 → Chase");
-
-                // 체크 되면 몸체 돌리기
-                Vector3 dir = TargetPosition.position - transform.position;
-                dir.y = 0;
-                if (dir.sqrMagnitude > 0.001f)
-                {
-                    Quaternion lookRot = Quaternion.LookRotation(dir.normalized);
-                    transform.rotation = Quaternion.Slerp(transform.rotation, lookRot, Time.deltaTime);
-                }
+                Quaternion lookRot = Quaternion.LookRotation(dir.normalized);
+                transform.rotation = Quaternion.Slerp(transform.rotation, lookRot, Time.deltaTime);
             }
+
         }
     }
 
@@ -93,6 +86,7 @@ public class Monster_temp : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
+        // 플레이어 레이어가 빠져 나가게 되면 몬스터의 상태를 idle로 변경
         if ((PlayerLayerMask.value & (1 << other.gameObject.layer)) != 0)
         {
             Debug.Log($"[TriggerExit] {other.name} 플레이어가 감지 범위에서 벗어남 → Idle 상태로 전이");

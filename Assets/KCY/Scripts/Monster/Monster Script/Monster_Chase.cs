@@ -3,21 +3,24 @@ using UnityEngine.AI;
 
 public class Monster_Chase : MonsterState_temp
 {
-    public Monster_Chase(Monster_temp _monster) : base(_monster) { }
+    public Monster_Chase(Monster_temp _monster) : base(_monster)
+    {
+        _agent = monster.MonsterAgent;
+        stateMachine = monster._monsterMerchine;
+    }
 
     private Transform _targetPos;
     private NavMeshAgent _agent;
     private float _missingTime = 0f;
     protected MonsterStateMachine_temp stateMachine;
 
-
     // 실 입력값 초기화
     public void MonsterChaseInit()
     {
         _targetPos = monster.TargetPosition;
-        _agent = monster.MonsterAgent;
-        stateMachine = monster._monsterMerchine;
 
+        // 다시 키고 시작
+        _agent.enabled = true;
 
         if (!_agent.isOnNavMesh)
         {
@@ -29,10 +32,6 @@ public class Monster_Chase : MonsterState_temp
             else { return; }
         }
 
-        //// idle모드에서 전환되는 것을 고려하여 새롭게 초기화 상대 추적 시작
-        _agent.enabled = true;
-        _agent.ResetPath();
-
         if (_targetPos != null)
         {  
             _agent.SetDestination(_targetPos.position);
@@ -42,7 +41,7 @@ public class Monster_Chase : MonsterState_temp
     public override void Enter()
     {
         monster.Ani.SetBool("isChasing", true);
-        monster.MonsterAgent.speed = monster.RunningSpeed;
+        _agent.speed = monster.RunningSpeed;
         MonsterChaseInit();
         _missingTime = 0f;
     }
@@ -59,7 +58,7 @@ public class Monster_Chase : MonsterState_temp
             _agent.SetDestination(_targetPos.position);
         }
 
-        // 경로 있음, 남은거리, 속도 없으면 리셋으로 탈출
+        // 경로 있음, 따라갈 남은거리, 속도 없으면(어디 꼈거나 고장) 리셋으로 탈출
         if (_agent.hasPath && _agent.remainingDistance > 0.1f && _agent.velocity.sqrMagnitude < 0.01f)
         {
             // 길을 잃은 시간이 생각보다 오래 되면 씬을 reset으로 넘김
