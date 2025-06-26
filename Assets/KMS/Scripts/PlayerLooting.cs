@@ -36,7 +36,11 @@ public class PlayerLooting : MonoBehaviour
         Collider near = null;
         foreach ( Collider c in _colliders)
         {
-            if (!_lootables[c].IsLootable) return;
+            if (c == null)
+            {
+                continue;
+            }
+            if (!_lootables[c].IsLootable) continue; //루팅 가능한 상태가 아니면 넘김
             float temp = (transform.position - c.transform.position).magnitude;
             if (temp < distance)
             {
@@ -46,6 +50,14 @@ public class PlayerLooting : MonoBehaviour
         }
         if (near == null) //루팅 가능한 콜라이더가 없었다. 
         {
+            if (_lootableColl != null) // 
+            {
+                Lootable temp = _lootables[_lootableColl];
+                temp.OffOutline();
+                temp.FUIController.OnDark();
+            }
+            _lootableColl = null;
+            _lootable = null;
             return;
         }
         if (_lootableColl == near) // 가장 가까운것과 이미 선택된 것이 같음
@@ -75,7 +87,7 @@ public class PlayerLooting : MonoBehaviour
             _colliders.Remove(other);
             _lootables.Remove(other);
         }
-        if (_lootableColl == other) 
+        if (_lootableColl == other) //선택되었던 것이 나가는 상황
         {
             _lootableColl = null;
             _lootable.OffOutline();
