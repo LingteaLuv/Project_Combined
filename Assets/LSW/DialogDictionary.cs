@@ -10,7 +10,7 @@ public class DialogDictionary : ScriptableObject
     
 	// CSV 파일에서 읽어온 데이터를 저장하기 위한 Dictionary
 	private Dictionary<string, string[]> _popUpTexts;
-
+	
 	public void Init()
 	{
 		if (_popUpTexts == null || _popUpTexts.Count == 0)
@@ -55,10 +55,9 @@ public class DialogDictionary : ScriptableObject
                 // 두 번째는 'Text'
                 string[] texts = new string[2];
                 texts[0] = parts[1];
-                texts[1] = parts[2];
 
-                string str = string.Empty;
-                str += string.Format("{0}\n", texts[1].Replace("\\n", "\n"));
+                string str = "";
+                str += parts[2].Replace("\\n", "\n");
 				
                 // 세 번째 그 이상부터는 CSV 파일에 저장된 데이터에 따라 다르지만
                 // 현재 파일에는 id, text 밖에 없기 때문에 세 번째 이상은 모두 text로 해석
@@ -67,7 +66,9 @@ public class DialogDictionary : ScriptableObject
                 	// 다음 문장들을 text에 추가
                     for (int j = 3; j < parts.Length; j++)
                     {
-	                    str += "," + parts[j];
+	                    string temp = "";
+	                    temp += parts[j].Replace("\\n", "\n");
+	                    str += "," + temp;
                     }
                 }
 
