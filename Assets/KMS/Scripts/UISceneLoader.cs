@@ -4,14 +4,20 @@ using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class UISceneLoader : MonoBehaviour
+public class UISceneLoader : SingletonT<UISceneLoader>
 {
-    [SerializeField] public ItemHolder Right;
-    [SerializeField] public ItemHolder Left;
+    [SerializeField] public Transform Right;
+    [SerializeField] public Transform Left;
+    [SerializeField] public PlayerAttack Playerattack;
+    private void Awake()
+    {
+        SetInstance();
+        StartCoroutine(dStart());
+    }
     private void Start()
     {
         //SceneManager.LoadScene("UIScene", LoadSceneMode.Additive);
-        StartCoroutine(dStart());
+        
     }
     IEnumerator dStart()
     {
@@ -24,7 +30,7 @@ public class UISceneLoader : MonoBehaviour
             yield return null;
         }
 
-        Right.Subscribe();
-        Left.Subscribe();
+        //Right.Subscribe();
+        //Left.Subscribe();
     }
 }
