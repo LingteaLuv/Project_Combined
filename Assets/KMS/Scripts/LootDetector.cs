@@ -26,7 +26,6 @@ public class LootDetector : MonoBehaviour
             {
                 c.FUIController.OnFUI();
             }
-
         }
     }
     private void OnTriggerExit(Collider other)

@@ -52,7 +52,7 @@ public class PlayerAttack : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetMouseButtonDown(0))
         {
             TryAttack();
         }
@@ -62,7 +62,7 @@ public class PlayerAttack : MonoBehaviour
     {
         _canAttack = false;
         _isAttacking = true;
-
+        _animator.SetLayerWeight(2,1);
         Debug.Log("근접 공격 시작 - 선딜 시작");
 
         // 선딜 대기
@@ -84,6 +84,7 @@ public class PlayerAttack : MonoBehaviour
 
         _isAttacking = false;
         _canAttack = true;
+        _animator.SetLayerWeight(2,0);
         _currentAttackCoroutine = null;
     }
 

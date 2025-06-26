@@ -9,8 +9,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("References")]
     [SerializeField] private PlayerInputHandler _inputHandler;
     [SerializeField] private PlayerProperty _property;
-    [SerializeField] private Transform _aim;
-
+    
     public PlayerClimb PlayerClimbHandler { get; private set; } 
     public PlayerController Controller { get; set; }
     public Rigidbody Rigidbody { get; private set; }
