@@ -12,7 +12,8 @@ public class HingeDoorOpen : MonoBehaviour
     private Quaternion _openedRotation;
     private Quaternion _closedRotation;
 
-    private Key _key;
+    [SerializeField] private List<ItemBase> testKeys;
+    private ItemBase _key;
     private bool _isOpen = false;
     private bool _isOnRotated = false;
 
@@ -26,7 +27,7 @@ public class HingeDoorOpen : MonoBehaviour
         _openedRotation = _closedRotation * Quaternion.Euler(0, _openAngle * (_doorType == DoorType.RotateRight ? -1 : 1), 0);
     }
 
-    public void Toggle(List<Key> playerKeys)
+    public void Toggle(List<ItemBase> playerKeys)
     {
         if (_isOnRotated) return;
         if (!_isOpen)
@@ -38,7 +39,7 @@ public class HingeDoorOpen : MonoBehaviour
             Close();
         }
     }
-    private void TryOpen(List<Key> playerKeys)
+    private void TryOpen(List<ItemBase> playerKeys)
     {
         if (_key == null)
         {
@@ -47,7 +48,7 @@ public class HingeDoorOpen : MonoBehaviour
             return;
         }
 
-        if (playerKeys.Any(k => k.KeyId == _key.KeyId))
+        if (playerKeys.Any(k => k.ItemID == _key.ItemID))
         {
             _isOnRotated = true;
             switch (_doorType)
