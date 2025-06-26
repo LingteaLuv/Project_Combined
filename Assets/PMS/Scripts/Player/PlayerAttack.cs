@@ -11,14 +11,19 @@ public class PlayerAttack : MonoBehaviour
 
     [SerializeField] private WeaponBase _currentWeapon;
     //소환되는위치
-    [SerializeField]private GameObject _left_Hand_target;
-    [SerializeField]private GameObject _right_Hand_target;
+    [SerializeField] private GameObject _left_Hand_target;
+    [SerializeField] private GameObject _right_Hand_target;
 
     [SerializeField][Range(0, 2)] private float _startAttackDelay;      //플레이어 근접공격모션 시작 딜레이
     [SerializeField][Range(0, 2)] private float _endAttackDelay;  //플레이어 근접공격모션 종료 딜레이
 
     [SerializeField] private bool _canAttack = true;
     [SerializeField] private bool _isAttacking = false; // 공격 중인지 체크
+
+    [Header("Layer Settings")]
+    [SerializeField] private int targetLayerIndex = 1; // 조절할 레이어 인덱스
+    [SerializeField] private float targetWeight = 1.0f; // 목표 가중치 (0~1)
+    [SerializeField] private float weightChangeSpeed = 2.0f; // 가중치 변경 속도
 
     private Coroutine _currentAttackCoroutine; // 현재 실행 중인 공격 코루틴
     private void Awake()
@@ -82,6 +87,7 @@ public class PlayerAttack : MonoBehaviour
         Debug.Log("선딜 완료 - 애니메이션 실행");
 
         // 공격 애니메이션 실행
+        SetLayerWeight(2, 1);
         _animator.SetTrigger("DownAttack");
 
         // 실제 공격 실행 (애니메이션 이벤트 대신 여기서 실행)
@@ -92,6 +98,7 @@ public class PlayerAttack : MonoBehaviour
         // 후딜 대기
         yield return new WaitForSeconds(_endAttackDelay);
 
+        SetLayerWeight(2, 0);
         Debug.Log("후딜 완료 - 공격 가능");
 
         _isAttacking = false;
@@ -192,7 +199,7 @@ public class PlayerAttack : MonoBehaviour
         yield return null;
         _currentWeapon.transform.rotation = _gunAlwaysPos.rotation;
     }*/
-    
+
     //무기에서 무기로 호출함수
     public void WeaponToWeapon()
     {
@@ -229,5 +236,31 @@ public class PlayerAttack : MonoBehaviour
         }
 
         _currentAttackCoroutine = StartCoroutine(MeleeAttackSequence());
+    }
+
+    /// <summary>
+    /// 특정 레이어의 가중치를 즉시 설정
+    /// </summary>
+    /// <param name="layerIndex">레이어 인덱스 (0이 Base Layer)</param>
+    /// <param name="weight">가중치 (0~1)</param>
+    public void SetLayerWeight(int layerIndex, float weight)
+    {
+        if (layerIndex >= _animator.layerCount || layerIndex < 0)
+        {
+            Debug.LogError($"잘못된 레이어 인덱스: {layerIndex}. 총 레이어 수: {_animator.layerCount}");
+            return;
+        }
+
+        // Base Layer (인덱스 0)의 가중치는 항상 1이므로 변경할 수 없음
+        if (layerIndex == 0)
+        {
+            Debug.LogWarning("Base Layer의 가중치는 변경할 수 없습니다!");
+            return;
+        }
+
+        weight = Mathf.Clamp01(weight); // 0~1 범위로 제한
+        _animator.SetLayerWeight(layerIndex, weight);
+
+        Debug.Log($"레이어 {layerIndex}의 가중치를 {weight}로 설정했습니다.");
     }
 }
