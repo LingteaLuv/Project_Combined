@@ -19,6 +19,11 @@ public class ItemDictionary : ScriptableObject
         Init();
     }
 #endif
+
+    private void Awake()
+    {
+        Init();
+    }
     
     private void Init()
     {
