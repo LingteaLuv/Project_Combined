@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 public enum HandType
 {
@@ -12,7 +11,7 @@ public class ItemHolder : MonoBehaviour
 
     public void Subscribe()
     {
-        InventoryManager.Instance.Hand.Subscribe(type, this);
+        //InventoryManager.Instance.Hand.Subscribe(type, this);
     }
 
 

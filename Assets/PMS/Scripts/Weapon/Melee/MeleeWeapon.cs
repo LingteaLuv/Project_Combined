@@ -12,7 +12,6 @@ public class MeleeWeapon : WeaponBase
     [SerializeField] private int _attackDamage; //근거리 무기의 공격력
     [SerializeField] private float _attackRange;  //근거리 무기의 유효 범위
     [SerializeField] private float _attackAngle; //근거리 무기 유효 각도
-    [SerializeField] private float _attackInterval = 1.0f; // 1초에 한 번 0.5f 값이 1초에 2번때림
 
     [Header("Attack Target Layer")]
     [SerializeField] private LayerMask _targetLayer; //타겟 대상 레이어 -> 추후 몬스터가 레이어로 관리되지 않을까?
@@ -90,6 +89,7 @@ public class MeleeWeapon : WeaponBase
             Debug.Log("공격 범위 내에 적이 없습니다.");
         }
     }
+
     /// <summary>
     /// Physics.OverlapSphere + 범위 + 각도 체크 - 플레이어기준
     /// </summary>

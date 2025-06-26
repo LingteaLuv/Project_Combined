@@ -1,12 +1,8 @@
-using PlasticPipe.PlasticProtocol.Messages;
-using System.Collections;
+
 using System.Collections.Generic;
-using System.Net.Mime;
-using Codice.CM.Common.Checkin.Partial;
+
 using UnityEngine;
-using UnityEngine.Serialization;
-using UnityEngine.UIElements;
-using static Codice.Client.Commands.WkTree.WorkspaceTreeNode;
+
 
 public class CraftingController : MonoBehaviour
 {
@@ -27,6 +23,7 @@ public class CraftingController : MonoBehaviour
     {
         CountByID = new Dictionary<int, int>();
         
+        _itemDictionary.GenerateDic();
         foreach (ItemBase i in _itemDictionary.ItemDic.Values)
         {
             CountByID.Add(i.ItemID, 0);
@@ -97,19 +94,35 @@ public class CraftingController : MonoBehaviour
     {
         if (recipe.MaterialItemId1 != 0) // 레시피 아이템이 설정됨
         {
-            if (CountByID[recipe.MaterialItemId1] < recipe.MaterialItemQuantity1) return false; //부족
+            if (CountByID[recipe.MaterialItemId1] < recipe.MaterialItemQuantity1) 
+            {
+                Debug.Log("재료가 부족합니다");
+                return false; //부족
+            }
         }
         if (recipe.MaterialItemId2 != 0) 
         {
-            if (CountByID[recipe.MaterialItemId2] < recipe.MaterialItemQuantity2) return false;
+            if (CountByID[recipe.MaterialItemId2] < recipe.MaterialItemQuantity2) 
+            {
+                Debug.Log("재료가 부족합니다");
+                return false; 
+            }
         }
         if (recipe.MaterialItemId3 != 0) 
         {
-            if (CountByID[recipe.MaterialItemId3] < recipe.MaterialItemQuantity3) return false;
+            if (CountByID[recipe.MaterialItemId3] < recipe.MaterialItemQuantity3)
+            {
+                Debug.Log("재료가 부족합니다");
+                return false; 
+            }
         }
         if (recipe.MaterialItemId4 != 0) 
         {
-            if (CountByID[recipe.MaterialItemId4] < recipe.MaterialItemQuantity4) return false;
+            if (CountByID[recipe.MaterialItemId4] < recipe.MaterialItemQuantity4)
+            {
+                Debug.Log("재료가 부족합니다");
+                return false; 
+            }
         }
         RemoveItemByID(recipe.MaterialItemId1, recipe.MaterialItemQuantity1);
         RemoveItemByID(recipe.MaterialItemId2, recipe.MaterialItemQuantity2);
