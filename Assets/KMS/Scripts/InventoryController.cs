@@ -1,24 +1,19 @@
-using System.Collections;
+
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Progress;
-using UnityEngine.XR;
-using UnityEngine.UIElements;
-using static Codice.CM.Common.Purge.PurgeReport;
-using System.Diagnostics.CodeAnalysis;
-using System;
+
 using System.Linq;
-using UnityEngine.Events;
+
 
 public class InventoryController : MonoBehaviour
 {
-    [SerializeField] private InventoryModel _model;
+    private InventoryModel _model;
 
-    [SerializeField] private InventoryRenderer _renderer;
+    private InventoryRenderer _renderer;
 
-    [SerializeField] private CraftingController _crafting;
+    private CraftingController _crafting;
 
-    [SerializeField] private PlayerHandItemController _hand;
+    private PlayerHandItemController _hand;
 
     public bool IsHolding;
     public int HoldingIndex;
@@ -33,6 +28,8 @@ public class InventoryController : MonoBehaviour
 
     private void Awake()
     {
+        _model = GetComponent<InventoryModel>();
+        _renderer = GetComponent<InventoryRenderer>();
         _crafting = GetComponent<CraftingController>();
         _hand = GetComponent<PlayerHandItemController>();
         IsHolding = false;
