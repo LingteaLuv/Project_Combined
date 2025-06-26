@@ -13,6 +13,14 @@ public class TextManager : Singleton<TextManager>
     // CSV파일의 데이터를 가지고 있는 TextLoader를 참조
     [SerializeField] private DialogDictionary _dialogDic;
 
+    private bool _isOnPopUp;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        Init();
+    }
+    
     // 초기화 순서를 위해 외부 참조(PopUp UI)의 경우 Start()에서 처리
     private void Start()
     {
@@ -52,6 +60,11 @@ public class TextManager : Singleton<TextManager>
             HideText();
         }
     }
+
+    private void Init()
+    {
+        _isOnPopUp = false;
+    }
     
     // PopUp UI 초기화, UI Binder를 활용
     private void ConfigUI()
@@ -77,7 +90,6 @@ public class TextManager : Singleton<TextManager>
         // CSV 파일에 저장되어있는 데이터 불러오기
         string[] popupTexts = _dialogDic.GetPopUpText(id);
         //string popupHeadText = _dialogDic.GetPopupText(id);
-        
         // PopUp UI 활성화 및 출력
         _popUpUI.gameObject.SetActive(true);
         _popUpUI.PupUpHeadText(popupTexts[0]);
@@ -120,14 +132,19 @@ public class TextManager : Singleton<TextManager>
     // 일정 시간(time)이 지나면 출력된 PopUp UI창이 닫히도록 구현한 Coroutine
     private IEnumerator PopupTextRoutine(string id, float time)
     {
+        _isOnPopUp = true;
         PopUpText(id);
         yield return new WaitForSeconds(time);
         HideText();
+        _isOnPopUp = false;
     }
     
     // 외부에서 호출하여 실제로 사용되는 메서드
     public void PopupTextForSecond(string id, float time)
     {
-        StartCoroutine(PopupTextRoutine(id, time));
+        if (!_isOnPopUp)
+        {
+            StartCoroutine(PopupTextRoutine(id, time));
+        }
     }
 }

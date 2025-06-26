@@ -62,14 +62,13 @@ public class PlayerAttack : MonoBehaviour
     {
         _canAttack = false;
         _isAttacking = true;
-        _animator.SetLayerWeight(2,1);
         Debug.Log("근접 공격 시작 - 선딜 시작");
 
         // 선딜 대기
         yield return new WaitForSeconds(_startAttackDelay);
 
         Debug.Log("선딜 완료 - 애니메이션 실행");
-
+        _animator.SetLayerWeight(2,1);
         _animator.SetTrigger("DownAttack");
 
         // 실제 공격 실행 (애니메이션 이벤트 대신 여기서 실행)
