@@ -1,12 +1,12 @@
 
 using UnityEngine;
-using EPOOutline;
+
 
 public class Lootable : MonoBehaviour
 {
-    [SerializeField] private Outlinable _outlinable;
+    [SerializeField] private OutlineDrawer _outlinable;
     public LootItems LootItems;
-    public Outlinable Outlinable { get { return _outlinable; } }
+    public OutlineDrawer Outlinable { get { return _outlinable; } }
 
     //[SerializeField] private FUIController _FUIController;
     public FUIController FUIController { get; set; }
@@ -17,7 +17,7 @@ public class Lootable : MonoBehaviour
 
     private void Awake()
     {
-        _outlinable = GetComponentInParent<Outlinable>();
+        _outlinable = GetComponentInParent<OutlineDrawer>();
         FUIController = GetComponent<FUIController>();
         OffOutline();
     }
