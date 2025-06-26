@@ -344,6 +344,7 @@ public class InventoryController : MonoBehaviour
                     }
                     _model.InvItems[i].StackCount = MaxStack;
                     _crafting.Add(item.ItemID, amount);
+                    _renderer.RenderInventory();
                     return true;
                 }
                 else if (temp > a) // 부족한 개수가 넣을 개수보다 많음
@@ -354,6 +355,7 @@ public class InventoryController : MonoBehaviour
                     }
                     _model.InvItems[i].StackCount += a;
                     _crafting.Add(item.ItemID, amount);
+                    _renderer.RenderInventory();
                     return true;
                 }
                 else //부족한 개수가 넣을 개수보다 적음 (남음)
@@ -414,6 +416,7 @@ public class InventoryController : MonoBehaviour
                 AutoEquip(addables[0]); // 소모품이 아니고, 아이템이 들어온 첫 번째 칸이 퀵슬롯에 포함되어 있을 경우, 퀵슬롯 인덱스
             }
             _crafting.Add(item.ItemID, amount);
+            _renderer.RenderInventory();
             return true;
         }
         else // 빈 공간도 없음 -> 못넣음
