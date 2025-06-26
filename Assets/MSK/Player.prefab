@@ -1705,6 +1705,7 @@ GameObject:
   - component: {fileID: 3920844857781668149}
   - component: {fileID: 8452712855945828263}
   - component: {fileID: 3937840786780297525}
+  - component: {fileID: 3462843729007615809}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1801,10 +1802,10 @@ MonoBehaviour:
   _inputHandler: {fileID: 4833707596875274598}
   _property: {fileID: 4491748367656830584}
   _aim: {fileID: 0}
-  _jumpForce: 10
+  _jumpForce: 50
   _groundCheckDistance: 1.1
   _crouchSpeedMultiplier: 0.5
-  fallMultiplier: 5
+  fallMultiplier: 7
 --- !u!114 &7457060232598092261
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1854,8 +1855,8 @@ MonoBehaviour:
   _cameraTransform: {fileID: 0}
   _avatarTransform: {fileID: 7968610536923932529}
   _mainCamera: {fileID: 0}
-  _mouseMinPitch: -60
-  _mouseMaxPitch: 50
+  _mouseMinPitch: -61
+  _mouseMaxPitch: 43.8
   _mouseSensitivity: 5
   _cameraDistance: 3
   _cameraHeight: 1.5
@@ -1872,6 +1873,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _climbSpeed: 1
+--- !u!114 &3462843729007615809
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8318435134347221872}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: becb8b2a766a8e94eac0a73222e59107, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxHp: 100
 --- !u!1 &8517433808929217569
 GameObject:
   m_ObjectHideFlags: 0
