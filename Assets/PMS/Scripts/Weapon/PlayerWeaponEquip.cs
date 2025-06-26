@@ -7,10 +7,8 @@ public class PlayerWeaponEquip : MonoBehaviour
     #region 추후 이동 - 플레이어 장비 장착 해제 애니메이션를 관리하는 스크립트로
 
     [SerializeField] private Animator _animator;
-
     [SerializeField] private GameObject _left_Hand_target;
     [SerializeField] private GameObject _right_Hand_target;
-
 
     private void Awake()
     {
@@ -23,6 +21,22 @@ public class PlayerWeaponEquip : MonoBehaviour
     private void UpdateWeapon()
     {
         _currentWeapon = _right_Hand_target.GetComponentInChildren<WeaponBase>();
+    }
+
+    private void Update()
+    {
+        //테스트 코드
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            if (_currentWeapon == null) return;
+            _animator.SetTrigger("Equip");
+        }
+        //무기 해제
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            if (_currentWeapon == null) return;
+            _animator.SetTrigger("UnEquip");
+        }
     }
 
     //빈손 일 때랑에서무기제네릭 메서드, 무기에서 빈손, 무기에서 -> 무기 

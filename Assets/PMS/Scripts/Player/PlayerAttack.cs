@@ -56,21 +56,6 @@ public class PlayerAttack : MonoBehaviour
         {
             TryAttack();
         }
-
-        // TODO - 플레이어의 장비 장착 해제는 나중에 다른 스크립트에서 관리해야하지 않을까?
-        #region 추후 이동예정
-        if (Input.GetKeyDown(KeyCode.X))
-        {
-            if (_currentWeapon == null) return;
-            _animator.SetTrigger("Equip");
-        }
-        //무기 해제
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            if (_currentWeapon == null) return;
-            _animator.SetTrigger("UnEquip");
-        }
-        #endregion
     }
 
     private IEnumerator MeleeAttackSequence()
@@ -85,7 +70,6 @@ public class PlayerAttack : MonoBehaviour
 
         Debug.Log("선딜 완료 - 애니메이션 실행");
 
-        SetLayerWeight(2, 1);
         _animator.SetTrigger("DownAttack");
 
         // 실제 공격 실행 (애니메이션 이벤트 대신 여기서 실행)
@@ -96,7 +80,6 @@ public class PlayerAttack : MonoBehaviour
         // 후딜 대기
         yield return new WaitForSeconds(_endAttackDelay);
 
-        SetLayerWeight(2, 0);
         Debug.Log("후딜 완료 - 공격 가능");
 
         _isAttacking = false;
