@@ -20,7 +20,7 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private bool _canAttack = true;
     [SerializeField] private bool _isAttacking = false; // 공격 중인지 체크
 
-    [Header("Layer Settings")]
+    [Header("Player Attack AnimatorLayer Settings")]
     [SerializeField] private int targetLayerIndex = 1; // 조절할 레이어 인덱스
     [SerializeField] private float targetWeight = 1.0f; // 목표 가중치 (0~1)
     [SerializeField] private float weightChangeSpeed = 2.0f; // 가중치 변경 속도
@@ -86,7 +86,6 @@ public class PlayerAttack : MonoBehaviour
 
         Debug.Log("선딜 완료 - 애니메이션 실행");
 
-        // 공격 애니메이션 실행
         SetLayerWeight(2, 1);
         _animator.SetTrigger("DownAttack");
 

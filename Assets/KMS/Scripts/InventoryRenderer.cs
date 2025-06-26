@@ -1,16 +1,15 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
+
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.XR;
-using static Codice.CM.Common.CmCallContext;
+
 
 public class InventoryRenderer : MonoBehaviour
 {
-    [SerializeField] private InventoryModel _model;
+    private InventoryModel _model;
 
+    private void Awake()
+    {
+        _model = GetComponent<InventoryModel>();
+    }
     private void Start()
     {
         RenderInventory();

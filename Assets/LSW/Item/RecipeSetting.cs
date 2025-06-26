@@ -39,12 +39,10 @@ public class RecipeSetting : MonoBehaviour
         SetValueEditor();
     }
     
-#if UNITY_EDITOR
-    
     public void SetValueEditor()
     {
         _itemDictionary.GenerateDic();
-        
+
         for (int i = 0; i < _itemDictionary.RecipeDic.Count; i++)
         {
             SetRecipe(i);
@@ -53,7 +51,6 @@ public class RecipeSetting : MonoBehaviour
             SetValue();
         }
     }
-#endif
 
     private void OnEnable()
     {

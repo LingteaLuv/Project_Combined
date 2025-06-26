@@ -1,11 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 
-using System.Runtime.CompilerServices;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
-using static UnityEditor.Progress;
+
 
 public class InventoryManager : SingletonT<InventoryManager>
 {
@@ -15,6 +10,8 @@ public class InventoryManager : SingletonT<InventoryManager>
     public GameObject Quickslot { get { return _quickslot; } }
     [SerializeField] private GameObject _holdSlot;
     public GameObject HoldSlot { get { return _holdSlot; } }
+
+    [SerializeField] private ItemDictionary _itemDictionary;
 
     private InventoryModel _model;
     public InventoryModel Model => _model;
@@ -78,16 +75,16 @@ public class InventoryManager : SingletonT<InventoryManager>
 
 
 
-        if (Input.GetKeyDown(KeyCode.Z)) AddItem(_model.ItemList.ItemList[0], 2, -1);
-        if (Input.GetKeyDown(KeyCode.X)) AddItem(_model.ItemList.ItemList[1], 1, 50);
-        if (Input.GetKeyDown(KeyCode.C)) AddItem(_model.ItemList.ItemList[2], 1, 25);
-        if (Input.GetKeyDown(KeyCode.V)) AddItem(_model.ItemList.ItemList[3], 1, 100);
-        if (Input.GetKeyDown(KeyCode.B)) AddItem(_model.ItemList.ItemList[4], 1, 10);
-        if (Input.GetKeyDown(KeyCode.N)) AddItem(_model.ItemList.ItemList[5], 1, 10);
-        if (Input.GetKeyDown(KeyCode.M)) AddItem(_model.ItemList.ItemList[6], 1, 10);
-        if (Input.GetKeyDown(KeyCode.Comma)) AddItem(_model.ItemList.ItemList[7], 1, 10);
-        if (Input.GetKeyDown(KeyCode.K)) AddItem(_model.ItemList.ItemList[8], 2, -1);
-        if (Input.GetKeyDown(KeyCode.L)) AddItem(_model.ItemList.ItemList[9], 2, -1);
+        if (Input.GetKeyDown(KeyCode.Z)) AddItem(_itemDictionary.Items[0], 1, 10);
+        if (Input.GetKeyDown(KeyCode.X)) AddItem(_itemDictionary.Items[1], 1, 50);
+        if (Input.GetKeyDown(KeyCode.C)) AddItem(_itemDictionary.Items[2], 1, 25);
+        if (Input.GetKeyDown(KeyCode.V)) AddItem(_itemDictionary.Items[3], 1, 100);
+        if (Input.GetKeyDown(KeyCode.B)) AddItem(_itemDictionary.Items[4], 1, 10);
+        if (Input.GetKeyDown(KeyCode.N)) AddItem(_itemDictionary.Items[5], 1, 10);
+        if (Input.GetKeyDown(KeyCode.M)) AddItem(_itemDictionary.Items[6], 1, 10);
+        if (Input.GetKeyDown(KeyCode.Comma)) AddItem(_itemDictionary.Items[7], 1, 10);
+        if (Input.GetKeyDown(KeyCode.K)) AddItem(_itemDictionary.Items[8], 2, -1);
+        if (Input.GetKeyDown(KeyCode.L)) AddItem(_itemDictionary.Items[9], 2, -1);
 
 
         if (Input.GetKeyDown(KeyCode.Alpha1)) Controller.Equip(0);

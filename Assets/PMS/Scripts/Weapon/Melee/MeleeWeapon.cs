@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static PlasticPipe.Server.MonitorStats;
 
 public class MeleeWeapon : WeaponBase
 {
