@@ -12,7 +12,7 @@ public class ItemHolder : MonoBehaviour
 
     public void Subscribe()
     {
-        InventoryManager.Instance.Hand.Subscribe(type, this);
+        //InventoryManager.Instance.Hand.Subscribe(type, this);
     }
 
 
