@@ -8,6 +8,7 @@ using static Codice.CM.Common.Purge.PurgeReport;
 using System.Diagnostics.CodeAnalysis;
 using System;
 using System.Linq;
+using UnityEngine.Events;
 
 public class InventoryController : MonoBehaviour
 {
@@ -29,9 +30,6 @@ public class InventoryController : MonoBehaviour
     public int[] EquippedSlotIndex;
 
 
-    //private bool IsEquipNothing => EquippedSlotIndex[0]&& EquippedSlotIndex[1] == 0;
-    private bool IsEquipTwoHanded => EquippedSlotIndex[0] != 0 && EquippedSlotIndex[1] == 0;
-
 
     private void Awake()
     {
@@ -43,7 +41,7 @@ public class InventoryController : MonoBehaviour
         SelectedIndex = -1;
         _beforeSelectedIndex = -1;
 
-        EquippedSlotIndex = new int[] { 0, 0 };
+        EquippedSlotIndex = new int[] { -1, -1 };
     }
 
 
@@ -88,7 +86,15 @@ public class InventoryController : MonoBehaviour
     }
     private void Swap(int a, int b)
     {
-        Item tempItem = _model.InvItems[a];
+        Item tempItem;
+        if (_model.InvItems[a] == null)
+        {
+            tempItem = null;
+        }
+        else
+        {
+            tempItem = _model.InvItems[a];
+        }
         _model.InvItems[a] = _model.InvItems[b];
         _model.InvItems[b] = tempItem;
     }
@@ -104,6 +110,7 @@ public class InventoryController : MonoBehaviour
                     _model.InvItems[i] = _model.InvItems[index];
                     _model.InvItems[index] = null;
                     Equip(i);
+                    SelectSlot(index); //껴준 후 기존칸 선택 시도
                     _renderer.RenderInventory();
                     return;
                 }
@@ -113,13 +120,13 @@ public class InventoryController : MonoBehaviour
         }
         else if (EquippedSlotIndex[0] != -1 && EquippedSlotIndex[1] != -1)
         {
-            if (EquippedSlotIndex[0] == EquippedSlotIndex[1]) // 두손장비가 선택된상태
+            if (EquippedSlotIndex[0] == EquippedSlotIndex[1]) // 두손장비가 선택된상태 (두손을 사용하는 무언가)
             {
-                Swap(EquippedSlotIndex[0], index);
+                Swap(EquippedSlotIndex[0], index); //선택된 아이템을 뺀다 (선택된게 없을 경우 예외)
                 Equip(EquippedSlotIndex[0]);
 
             }
-            else // 한손장비 두개 선택된상태
+            else // 한손장비 두개 선택된상태 (초록칸이 2개인 상태)
             {
                 if (exist.Data.Type == ItemType.Melee)
                 {
@@ -132,7 +139,7 @@ public class InventoryController : MonoBehaviour
                     Swap(EquippedSlotIndex[1], index);
                     Equip(EquippedSlotIndex[1]);
                 }
-                else
+                else //더 왼쪽에 있는 것에 삽입
                 {
                     int min = EquippedSlotIndex.Min();
                     Swap(min, index);
@@ -150,27 +157,29 @@ public class InventoryController : MonoBehaviour
             Swap(EquippedSlotIndex[1], index);
             Equip(EquippedSlotIndex[1]);
         }
+        SelectSlot(index);
         _renderer.RenderInventory();
+        
 
     }
-
 
     public void Equip(int index) //해당 칸 아이템에 대한 장착 시도
     {
         Item exist = _model.InvItems[index];
-        if (exist == null) // 빈 손
+        _hand.AnimationLoad(exist);
+        if (exist == null) // 아무것도 안 든다.
         {
             EquippedSlotIndex[0] = index;
             EquippedSlotIndex[1] = index;
         }
-        else if (exist.Data.Type == ItemType.Consumable)
+        else if (exist.Data.Type == ItemType.Consumable) //소모품을 든다
         {
             EquippedSlotIndex[0] = index;
             EquippedSlotIndex[1] = index;
         }
         else if (exist.Data.Type == ItemType.Melee) //밀리 무기를 든다
         {
-            if (EquippedSlotIndex[0] == EquippedSlotIndex[1]) //양손을 어디서 사용중임 -> 오른손만 가져옴
+            if (EquippedSlotIndex[1] != -1 && EquippedSlotIndex[0] == EquippedSlotIndex[1]) //양손을 어디서 사용중임 -> 오른손만 가져옴
             {
                 EquippedSlotIndex[1] = -1;
             }
@@ -180,7 +189,7 @@ public class InventoryController : MonoBehaviour
         }
         else if (exist.Data.Type == ItemType.Shield) //방패를 든다
         {
-            if (EquippedSlotIndex[0] == EquippedSlotIndex[1])
+            if (EquippedSlotIndex[0] != -1 && EquippedSlotIndex[0] == EquippedSlotIndex[1])
             {
                 EquippedSlotIndex[0] = -1;
             }
@@ -209,11 +218,11 @@ public class InventoryController : MonoBehaviour
         //해당 인덱스에 뭔가 장착되어 있는가
         if (EquippedSlotIndex[0] == index)
         {
-            if (EquippedSlotIndex[1] == index) //0, 1 둘다 같은 칸을 바라봄 -> 두손장비
+            if (EquippedSlotIndex[1] == index) //0, 1 둘다 같은 칸을 바라봄 -> 두손에 끼는 것
             {
                 EquippedSlotIndex[1] = -1;
             }
-            EquippedSlotIndex[0] = -1;
+            EquippedSlotIndex[0] = -1; //한 손에 낀 것을 뺀 경우
         }
         else if (EquippedSlotIndex[1] == index)
         {
@@ -429,7 +438,7 @@ public class InventoryController : MonoBehaviour
     public void SelectSlot(int index)
     {
         _beforeSelectedIndex = SelectedIndex;
-        if (index < 6) // 퀵슬롯 내 슬롯을 선택하려고 할 경우 선택 취소
+        if (index < 6 || _model.InvItems[index] == null) // 퀵슬롯 내 슬롯을 선택하려고 할 경우, 또는 선택 위치에 템이없으면
         {
             SelectedIndex = -1;
         }

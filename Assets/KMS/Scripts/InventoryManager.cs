@@ -78,7 +78,7 @@ public class InventoryManager : SingletonT<InventoryManager>
 
 
 
-        if (Input.GetKeyDown(KeyCode.Z)) AddItem(_model.ItemList.ItemList[0], 3, -1);
+        if (Input.GetKeyDown(KeyCode.Z)) AddItem(_model.ItemList.ItemList[0], 2, -1);
         if (Input.GetKeyDown(KeyCode.X)) AddItem(_model.ItemList.ItemList[1], 1, 50);
         if (Input.GetKeyDown(KeyCode.C)) AddItem(_model.ItemList.ItemList[2], 1, 25);
         if (Input.GetKeyDown(KeyCode.V)) AddItem(_model.ItemList.ItemList[3], 1, 100);
@@ -86,6 +86,8 @@ public class InventoryManager : SingletonT<InventoryManager>
         if (Input.GetKeyDown(KeyCode.N)) AddItem(_model.ItemList.ItemList[5], 1, 10);
         if (Input.GetKeyDown(KeyCode.M)) AddItem(_model.ItemList.ItemList[6], 1, 10);
         if (Input.GetKeyDown(KeyCode.Comma)) AddItem(_model.ItemList.ItemList[7], 1, 10);
+        if (Input.GetKeyDown(KeyCode.K)) AddItem(_model.ItemList.ItemList[8], 2, -1);
+        if (Input.GetKeyDown(KeyCode.L)) AddItem(_model.ItemList.ItemList[9], 2, -1);
 
 
         if (Input.GetKeyDown(KeyCode.Alpha1)) Controller.Equip(0);
