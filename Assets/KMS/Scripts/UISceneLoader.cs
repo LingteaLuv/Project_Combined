@@ -6,8 +6,6 @@ using UnityEngine.SceneManagement;
 
 public class UISceneLoader : SingletonT<UISceneLoader>
 {
-    [SerializeField] public Transform Right;
-    [SerializeField] public Transform Left;
     [SerializeField] public PlayerAttack Playerattack;
     private void Awake()
     {

@@ -1,4 +1,5 @@
 
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -29,9 +30,9 @@ public class PlayerHandItemController : MonoBehaviour
     }
     private void Start()
     {
-        Right = UISceneLoader.Instance.Right;
-        Left = UISceneLoader.Instance.Left;
-        //_playerAttack = UISceneLoader.Instance.Playerattack;
+        _playerAttack = UISceneLoader.Instance.Playerattack;
+        Right = _playerAttack._right_Hand_target.transform;
+        Left = _playerAttack._left_Hand_target.transform;
     }
 
     //public void Subscribe(HandType type, ItemHolder holder)
@@ -64,6 +65,7 @@ public class PlayerHandItemController : MonoBehaviour
     public void UpdateItems()
     {
         DeholdBoth();
+        Debug.Log(369);
         int rightIndex = _control.EquippedSlotIndex[0];
         int leftIndex = _control.EquippedSlotIndex[1];
         if ((rightIndex == leftIndex) && _model.InvItems[rightIndex] == null) return;
@@ -77,6 +79,7 @@ public class PlayerHandItemController : MonoBehaviour
             return;
         }
         HoldItem(HandType.right, _model.InvItems[rightIndex].Data.ItemID);
+        StartCoroutine(UW());
 
         // 왼손에 들린게 없거나 두손무기라면 스킵 방패라면 들어주고,
         if (leftIndex == -1)
@@ -91,6 +94,11 @@ public class PlayerHandItemController : MonoBehaviour
 
 
 
+    }
+    private IEnumerator UW() // 약간 지연 필요
+    {
+        yield return new WaitForEndOfFrame();
+        _playerAttack.UpdateWeapon();
     }
     public void DeholdItem(HandType type)
     {

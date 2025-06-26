@@ -12,8 +12,8 @@ public class PlayerAttack : MonoBehaviour
 
     [SerializeField] private WeaponBase _currentWeapon;
     //소환되는위치
-    [SerializeField] private GameObject _left_Hand_target;
-    [SerializeField] private GameObject _right_Hand_target;
+    [SerializeField] public GameObject _left_Hand_target;
+    [SerializeField] public GameObject _right_Hand_target;
 
     [SerializeField][Range(0, 2)] private float _startAttackDelay;      //플레이어 근접공격모션 시작 딜레이
     [SerializeField][Range(0, 2)] private float _endAttackDelay;  //플레이어 근접공격모션 종료 딜레이
@@ -34,8 +34,8 @@ public class PlayerAttack : MonoBehaviour
     private void Awake()
     {
         //모든 아이템은 해당 Hand_bone밑에 있다.
-        _left_Hand_target = GameObject.Find("Hand_L");      
-        _right_Hand_target = GameObject.Find("Hand_R");
+        //_left_Hand_target = GameObject.Find("Hand_L");      
+        //_right_Hand_target = GameObject.Find("Hand_R");
     }
     private void Start()
     {
@@ -45,7 +45,7 @@ public class PlayerAttack : MonoBehaviour
     //손에 어떤 무기가 있는지 검사해야한다.
     //계속 감지해야하는데 플레이어가 사용할 무기가 Instantiate 되엇을 때 or 퀵슬롯 변경을 통한 SetActive가 되었을 때
     //이벤트 같은 것을 사용해 메서드 등록하여 감지하면 좋을 것 같다.
-    private void UpdateWeapon()
+    public void UpdateWeapon()
     {
         _currentWeapon = _right_Hand_target.GetComponentInChildren<WeaponBase>();
     }

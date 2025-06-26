@@ -86,17 +86,12 @@ public class InventoryManager : SingletonT<InventoryManager>
         if (Input.GetKeyDown(KeyCode.I)) ToggleUI();
 
 
-
-        if (Input.GetKeyDown(KeyCode.Z)) AddItem(_itemDictionary.Items[0], 1, 10);
-        if (Input.GetKeyDown(KeyCode.X)) AddItem(_itemDictionary.Items[1], 1, 50);
-        if (Input.GetKeyDown(KeyCode.C)) AddItem(_itemDictionary.Items[2], 1, 25);
-        if (Input.GetKeyDown(KeyCode.V)) AddItem(_itemDictionary.Items[3], 1, 100);
-        if (Input.GetKeyDown(KeyCode.B)) AddItem(_itemDictionary.Items[4], 1, 10);
-        if (Input.GetKeyDown(KeyCode.N)) AddItem(_itemDictionary.Items[5], 1, 10);
-        if (Input.GetKeyDown(KeyCode.M)) AddItem(_itemDictionary.Items[6], 1, 10);
-        if (Input.GetKeyDown(KeyCode.Comma)) AddItem(_itemDictionary.Items[7], 1, 10);
-        if (Input.GetKeyDown(KeyCode.K)) AddItem(_itemDictionary.Items[8], 2, -1);
-        if (Input.GetKeyDown(KeyCode.L)) AddItem(_itemDictionary.Items[9], 2, -1);
+        if (Input.GetKeyDown(KeyCode.Z)) _craft.AddItemByID(1101, 1, 10);
+        if (Input.GetKeyDown(KeyCode.Z)) _craft.AddItemByID(1102, 1, 10);
+        if (Input.GetKeyDown(KeyCode.X)) _craft.AddItemByID(1201, 1, 10);
+        if (Input.GetKeyDown(KeyCode.C)) _craft.AddItemByID(1301, 1, 10);
+        if (Input.GetKeyDown(KeyCode.V)) _craft.AddItemByID(1401, 1, 10);
+        if (Input.GetKeyDown(KeyCode.B)) _craft.AddItemByID(1402, 1, 10);
 
 
         if (Input.GetKeyDown(KeyCode.Alpha1)) Controller.Equip(0);
