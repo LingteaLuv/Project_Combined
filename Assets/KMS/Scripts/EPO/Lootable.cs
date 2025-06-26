@@ -6,7 +6,6 @@ public enum LootableType
 {
     box,
     pickup
-
 }
 
 public class Lootable : MonoBehaviour

@@ -9,15 +9,16 @@ public class UISceneLoader : SingletonT<UISceneLoader>
     [SerializeField] public PlayerAttack Playerattack;
     private void Awake()
     {
+        SceneManager.LoadScene("Demo_City_Universal_RenderPipeline", LoadSceneMode.Additive);
         SetInstance();
-        StartCoroutine(dStart());
+        SceneManager.LoadSceneAsync("UIScene", LoadSceneMode.Additive);
+        //StartCoroutine(DStart());
     }
     private void Start()
     {
-        //SceneManager.LoadScene("UIScene", LoadSceneMode.Additive);
         
     }
-    IEnumerator dStart()
+    IEnumerator DStart()
     {
         // Additive 씬 비동기 로드 시작
         AsyncOperation loadOp = SceneManager.LoadSceneAsync("UIScene", LoadSceneMode.Additive);

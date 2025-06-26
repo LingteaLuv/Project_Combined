@@ -150,7 +150,8 @@ public class LootManager : SingletonT<LootManager>
             Lootable temp = _lootable;
             if (temp.After != null) //다음에 전환할 것이 있음
             {
-                GameObject g = Instantiate(temp.After, temp.transform.root.position, temp.transform.root.rotation);
+                Vector3 posOffset = temp.transform.root.position + Vector3.up * 0.23f;
+                GameObject g = Instantiate(temp.After, posOffset, temp.transform.root.rotation);
                 g.SetActive(true);
             }
             Destroy(temp.transform.root.gameObject);
@@ -159,9 +160,6 @@ public class LootManager : SingletonT<LootManager>
             return;
         }
         _lootable = null;
-
-
-
     }
 
     public bool ItemsAllNull()

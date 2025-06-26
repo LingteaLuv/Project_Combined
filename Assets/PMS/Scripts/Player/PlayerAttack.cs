@@ -26,6 +26,8 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private float targetWeight = 1.0f; // 목표 가중치 (0~1)
     [SerializeField] private float weightChangeSpeed = 2.0f; // 가중치 변경 속도
 
+    private PlayerProperty _playerProperty;
+    
     private Coroutine _currentAttackCoroutine; // 현재 실행 중인 공격 코루틴
 
     //TODO - 나중에 어디서인가 그 현재 무기가 뭔지 있어야하는 부분이 있지 않을까? Action 연결
@@ -36,6 +38,7 @@ public class PlayerAttack : MonoBehaviour
         //모든 아이템은 해당 Hand_bone밑에 있다.
         //_left_Hand_target = GameObject.Find("Hand_L");      
         //_right_Hand_target = GameObject.Find("Hand_R");
+        _playerProperty = GetComponent<PlayerProperty>();
     }
     private void Start()
     {
@@ -52,7 +55,7 @@ public class PlayerAttack : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetMouseButtonDown(0))
         {
             TryAttack();
         }
@@ -62,14 +65,13 @@ public class PlayerAttack : MonoBehaviour
     {
         _canAttack = false;
         _isAttacking = true;
-
         Debug.Log("근접 공격 시작 - 선딜 시작");
 
         // 선딜 대기
         yield return new WaitForSeconds(_startAttackDelay);
 
         Debug.Log("선딜 완료 - 애니메이션 실행");
-
+        _animator.SetLayerWeight(2,1);
         _animator.SetTrigger("DownAttack");
 
         // 실제 공격 실행 (애니메이션 이벤트 대신 여기서 실행)
@@ -84,6 +86,7 @@ public class PlayerAttack : MonoBehaviour
 
         _isAttacking = false;
         _canAttack = true;
+        _animator.SetLayerWeight(2,0);
         _currentAttackCoroutine = null;
     }
 
@@ -106,6 +109,7 @@ public class PlayerAttack : MonoBehaviour
         {
             case ItemType.Melee:
                 StartMeleeAttack();
+                _playerProperty.ExpendAction();
                 break;
             case ItemType.Gun:
                 StartRangedAttack();

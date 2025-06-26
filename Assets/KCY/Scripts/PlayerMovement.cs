@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 /// <summary>
 /// 플레이어의 이동과 점프를 처리합니다.
@@ -9,8 +10,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("References")]
     [SerializeField] private PlayerInputHandler _inputHandler;
     [SerializeField] private PlayerProperty _property;
-    [SerializeField] private Transform _aim;
-
+    
     public PlayerClimb PlayerClimbHandler { get; private set; } 
     public PlayerController Controller { get; set; }
     public Rigidbody Rigidbody { get; private set; }
@@ -25,7 +25,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float _jumpForce = 10f;
     [SerializeField] private float _groundCheckDistance = 0.05f;
     [SerializeField] private float _crouchSpeedMultiplier = 0.5f;
-    [SerializeField] private float fallMultiplier = 5f;
+    [SerializeField] private float _fallMultiplier = 5f;
 
     public Vector3 MoveInput => _inputHandler.MoveInput;
     public bool JumpPressed => _inputHandler.JumpPressed;
@@ -113,7 +113,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!IsGrounded && Rigidbody.velocity.y < 0f)
         {
-            Rigidbody.velocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1f) * Time.fixedDeltaTime;
+            Rigidbody.velocity += Vector3.up * Physics.gravity.y * (_fallMultiplier - 1f) * Time.fixedDeltaTime;
         }
     }
 

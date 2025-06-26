@@ -95,9 +95,18 @@ public class InventoryController : MonoBehaviour
         _model.InvItems[a] = _model.InvItems[b];
         _model.InvItems[b] = tempItem;
     }
+
+    public void UseETCItemButton(int index)
+    {
+        Item exist = _model.InvItems[index];
+        if (exist.Data.Type != ItemType.ETC) return;
+        TextManager.Instance.MemoPopUpText($"{exist.Data.ItemID}");
+    }
+    
     public void EquipButton(int index) //해당 인벤토리 칸 아이템(선택된)을 장착시도
     {
         Item exist = _model.InvItems[index];
+        if (exist.Data.Type == ItemType.ETC) return;
         if (EquippedSlotIndex[0] == -1 && EquippedSlotIndex[1] == -1) // 선택된게 아예없다면
         {
             for (int i= 0; i < 6; i++) // 빈 칸 추척

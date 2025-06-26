@@ -12,7 +12,6 @@ public class PopUpUI : MonoBehaviour
     private void Awake()
     {
         Init();
-        gameObject.SetActive(false);
     }
 
     public void PopUpText(string text)

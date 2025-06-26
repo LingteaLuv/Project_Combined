@@ -21,7 +21,7 @@ public class SceneMediator : MonoBehaviour
         }
         else
         {
-            Debug.LogError("HudManager를 찾을 수 없습니다");
+            Debug.LogError("HudController를 찾을 수 없습니다");
         }
     }
 }

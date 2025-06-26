@@ -40,15 +40,14 @@ public class PlayerInteractState : PlayerState
     {
         Vector3 origin = _movement.transform.position + Vector3.up * 1.0f;
         Vector3 direction = _movement.transform.forward;
-
-        if (Physics.Raycast(origin, direction, out RaycastHit hit, 2f))
+        if (Physics.Raycast(origin, direction, out RaycastHit hit, 1f))
         {
-            if (hit.collider.TryGetComponent<IInteractable>(out target))
+            if (hit.collider.gameObject.layer.Equals(7))
             {
+                target = hit.collider.GetComponentInParent<DoorInteractable>();
                 return true;
             }
         }
-
         target = null;
         return false;
     }
