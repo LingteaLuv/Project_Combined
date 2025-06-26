@@ -26,9 +26,15 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private float weightChangeSpeed = 2.0f; // 가중치 변경 속도
 
     private Coroutine _currentAttackCoroutine; // 현재 실행 중인 공격 코루틴
+
+
+    //TODO - 나중에 어디서인가 그 현재 무기가 뭔지 있어야하는 부분이 있지 않을까?
+    // 플레이어의 왼쪽 오른쪽 들고있는 템이 뭔지 바뀌는 이벤트가 존재 할 때 나도 업데이트해서 사용할 수 있지 않을까?
+
     private void Awake()
     {
-        _left_Hand_target = GameObject.Find("Hand_L");
+        //모든 아이템은 해당 Hand_bone밑에 있다.
+        _left_Hand_target = GameObject.Find("Hand_L");      
         _right_Hand_target = GameObject.Find("Hand_R");
     }
     private void Start()
@@ -36,25 +42,23 @@ public class PlayerAttack : MonoBehaviour
         UpdateWeapon();
     }
 
+    //손에 어떤 무기가 있는지 검사해야한다.
+    //계속 감지해야하는데 플레이어가 사용할 무기가 Instantiate 되엇을 때 or 퀵슬롯 변경을 통한 SetActive가 되었을 때
+    //이벤트 같은 것을 사용해 메서드 등록하여 감지하면 좋을 것 같다.
     private void UpdateWeapon()
     {
-        //손에 어떤 무기가 있는지 검사해야한다.
         _currentWeapon = _right_Hand_target.GetComponentInChildren<WeaponBase>();
     }
 
     void Update()
     {
-        //계속 감지해야하는데 플레이어가 사용할 무기가 Instantiate 되엇을 때 이벤트 호출할 때 감지하면 좋을 것 같다.
-        //_currentWeapon = _right_Hand_target.GetComponentInChildren<WeaponBase>();
-
-        //빈손 일 때랑에서무기제네릭 메서드, 무기에서 빈손, 무기에서 -> 무기 
-
         if (Input.GetKeyDown(KeyCode.Q))
         {
             TryAttack();
         }
-        //저는 해당 스크립트에서 _currentWeapon을 제가 알아야합니다
-        //손에 어떤 아이템이 있는지 알려야 하기 때문에 해당 값을 들고와야하는데
+
+        // TODO - 플레이어의 장비 장착 해제는 나중에 다른 스크립트에서 관리해야하지 않을까?
+        #region 추후 이동예정
         if (Input.GetKeyDown(KeyCode.X))
         {
             if (_currentWeapon == null) return;
@@ -66,12 +70,7 @@ public class PlayerAttack : MonoBehaviour
             if (_currentWeapon == null) return;
             _animator.SetTrigger("UnEquip");
         }
-    }
-
-    private void StartRangedAttack()
-    {
-        // 원거리 무기는 즉시 공격 (연사 가능)
-        PlayerAttackStart();
+        #endregion
     }
 
     private IEnumerator MeleeAttackSequence()
@@ -128,6 +127,9 @@ public class PlayerAttack : MonoBehaviour
             case ItemType.Gun:
                 StartRangedAttack();
                 break;
+            case ItemType.Throw:
+                StartThrowAttack();
+                break;
             default:
                 Debug.Log($"알 수 없는 무기 타입: {_currentWeapon.ItemType}");
                 break;
@@ -139,24 +141,14 @@ public class PlayerAttack : MonoBehaviour
         _currentWeapon.Attack();
     }
 
+    
 
-    /*public Vector3 SetAimRotation()
-    {
-        Vector2 mouseDir = GetMouseDirection();
-    }*/
-
-    /*private Vector2 GetMouseDirection()
-    {
-        float mouseX = Input.GetAxis("Mouse X") + _mouseSensitivity;
-        float mouseY = -Input.GetAxis("Mouse Y") + _mouseSensitivity;
-
-        return new Vector2(mouseX, mouseY);
-    }*/
-
+    #region 추후 이동 - 플레이어 장비 장착 해제 애니메이션를 관리하는 스크립트로
+    //TODO - 해당 함수도 따로 장비 장착 해체 스크립트에서 관리해야 하지 않을까?
+    //빈손 일 때랑에서무기제네릭 메서드, 무기에서 빈손, 무기에서 -> 무기 
     [SerializeField] private Transform _gunAlwaysPos;
     [SerializeField] private Transform _gunEquipPos;
     [SerializeField] private float _rotationSpeed = 5.0f;
-    //[SerializeField] private WeaponBase _currentWeapon;
 
     private void WeaponSetActive()
     {
@@ -226,6 +218,9 @@ public class PlayerAttack : MonoBehaviour
         _currentWeapon = null;              //현재 무기를 무엇인지 업데이트 하고
         _animator.SetTrigger("UnEquip");
     }
+    #endregion
+
+    //빠따공격
     private void StartMeleeAttack()
     {
         // 이전 공격 코루틴이 있다면 정지
@@ -236,6 +231,23 @@ public class PlayerAttack : MonoBehaviour
 
         _currentAttackCoroutine = StartCoroutine(MeleeAttackSequence());
     }
+
+    private void StartRangedAttack()
+    {
+        // 원거리 무기는 즉시 공격  애니메이션 나중에
+        PlayerAttackStart();
+    }
+
+    //레이어를 일단은 혼자 쓰는 것 같은데 계속 플레이어의 animtor가 수정될 일이 많은데
+    //AnimatorUtil 유틸 클래스로 SetLayerWeight함수를 특정 레이어의 이름으로 찾아보도록 하는 함수를 만들어보자.
+    private void StartThrowAttack()
+    {
+        _animator.SetTrigger("Throw");
+        _animator.SetLayerWeight(4, 1); //Throw Layer 
+        _currentWeapon.Attack();
+    }
+
+    //원거리 공격
 
     /// <summary>
     /// 특정 레이어의 가중치를 즉시 설정
