@@ -110,13 +110,13 @@ public class InventoryRenderer : MonoBehaviour
             return;
         }
         ItemType type = _model.InvItems[index].Data.Type;
-        if (type == ItemType.Material || type == ItemType.ETC)
+        if (type == ItemType.Material)
         {
             _model.UtilButton.SetActive(false);
             return;
         }
         _model.UtilButton.SetActive(true);
-        if (type == ItemType.Gun || type == ItemType.Melee || type == ItemType.Special || type == ItemType.Shield)
+        if (type == ItemType.Gun || type == ItemType.Melee || type == ItemType.Special || type == ItemType.Shield || type == ItemType.Consumable)
         {
             _model.UtilButtonText.text = "Equip";
         }

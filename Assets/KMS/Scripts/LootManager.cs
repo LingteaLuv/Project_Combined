@@ -111,7 +111,12 @@ public class LootManager : SingletonT<LootManager>
 
     public void Pickup()
     {
-        for (int i = 0; i < 6; i++) //넣을 수 있는 것만 넣고 나머지는 스킵할 것
+        int count = 0;
+        for (int i = 0; i < 6; i++)
+        {
+            if (_lootable.LootItems.Items[i] != null) count++;
+        }
+        for (int i = 0; i < count; i++)
         {
             GetItem(i);
         }
@@ -143,15 +148,15 @@ public class LootManager : SingletonT<LootManager>
         if (_lootable.DestroyAfterLooting) // 루팅 완료 시 파괴
         {
             Lootable temp = _lootable;
+            if (temp.After != null) //다음에 전환할 것이 있음
+            {
+                GameObject g = Instantiate(temp.After, temp.transform.root.position, temp.transform.root.rotation);
+                g.SetActive(true);
+            }
             Destroy(temp.transform.root.gameObject);
             _lootable = null;
+            Debug.Log("destroy");
             return;
-        }
-        if (_lootable.After != null) //다음에 전환할 것이 있음
-        {
-            Lootable temp = _lootable;
-            temp.After.SetActive(true);
-            temp.ToDisable.SetActive(false);
         }
         _lootable = null;
 

@@ -12,15 +12,15 @@ public enum LootableType
 public class Lootable : MonoBehaviour
 {
     
+    private LootItems _lootItems;
+    public LootItems LootItems { get { return _lootItems; } }
     private Outlinable _outlinable;
-    public LootItems LootItems;
     public Outlinable Outlinable { get { return _outlinable; } }
 
     private FUIController _FUIController;
     public FUIController FUIController { get { return _FUIController; } }
 
     [SerializeField] public GameObject After;
-    [SerializeField] public GameObject ToDisable;
     [SerializeField] public bool IsLootable;
     [SerializeField] public LootableType Type;
     [SerializeField] public bool DestroyAfterLooting;
@@ -28,6 +28,7 @@ public class Lootable : MonoBehaviour
 
     private void Awake()
     {
+        _lootItems = GetComponent<LootItems>();
         _outlinable = GetComponentInParent<Outlinable>();
         _FUIController = GetComponent<FUIController>();
         OffOutline();
