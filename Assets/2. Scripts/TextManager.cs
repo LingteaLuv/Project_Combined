@@ -7,13 +7,12 @@ public class TextManager : Singleton<TextManager>
     // 팝업 문구를 출력하기 위한 UI
     private PopUpUI _popUpUI;
     // CSV파일의 데이터를 가지고 있는 TextLoader를 참조
-    private TextLoader _textLoader;
+    [SerializeField] private DialogDictionary _dialogDic;
     
     // Singleton 기본 세팅과 DontDestroyOnLoad, TextLoader 초기화 
     protected override void Awake()
     {
         base.Awake();
-        DontDestroyOnLoad(gameObject);
         Init();
     }
 
@@ -26,7 +25,7 @@ public class TextManager : Singleton<TextManager>
     // 초기화 순서가 상관 없는 내부 참조(TextLoader)의 경우 Awake()에서 처리
     private void Init()
     {
-        _textLoader = transform.GetComponent<TextLoader>();
+        _dialogDic = transform.GetComponent<DialogDictionary>();
     }
 
     // PopUp UI 초기화, UI Binder를 활용
@@ -34,8 +33,7 @@ public class TextManager : Singleton<TextManager>
     {
         if (_popUpUI == null)
         {
-            // todo : PopUp UI 연결 
-            // _popUpUI = UIBinder.Instance.GetPopUpUI();
+            _popUpUI = UIBinder.Instance.GetPopupUI();
         }
     }
     
@@ -48,11 +46,13 @@ public class TextManager : Singleton<TextManager>
         ConfigUI();
         
         // CSV 파일에 저장되어있는 데이터 불러오기
-        string popupText = _textLoader.GetPopupText(id);
+        string popupText = _dialogDic.GetPopupText(id);
+        //string popupHeadText = _dialogDic.GetPopupText(id);
         
         // PopUp UI 활성화 및 출력
         _popUpUI.gameObject.SetActive(true);
         _popUpUI.PopupText(popupText);
+        //_popUpUI.PopupText(popupHeadText);
     }
     
     // PopUp UI를 닫는 메서드

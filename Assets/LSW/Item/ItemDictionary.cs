@@ -13,12 +13,10 @@ public class ItemDictionary : ScriptableObject
     public Dictionary<int, ItemBase> ItemDic { get; private set; }
     public Dictionary<int, Recipe> RecipeDic { get; private set; }
     
-#if UNITY_EDITOR
     public void GenerateDic()
     {
         Init();
     }
-#endif
 
     private void Awake()
     {
