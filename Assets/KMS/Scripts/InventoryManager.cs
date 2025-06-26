@@ -87,11 +87,11 @@ public class InventoryManager : SingletonT<InventoryManager>
 
 
         if (Input.GetKeyDown(KeyCode.Z)) _craft.AddItemByID(1101, 1, 10);
-        if (Input.GetKeyDown(KeyCode.Z)) _craft.AddItemByID(1102, 1, 10);
-        if (Input.GetKeyDown(KeyCode.X)) _craft.AddItemByID(1201, 1, 10);
-        if (Input.GetKeyDown(KeyCode.C)) _craft.AddItemByID(1301, 1, 10);
-        if (Input.GetKeyDown(KeyCode.V)) _craft.AddItemByID(1401, 1, 10);
-        if (Input.GetKeyDown(KeyCode.B)) _craft.AddItemByID(1402, 1, 10);
+        if (Input.GetKeyDown(KeyCode.X)) _craft.AddItemByID(1102, 1, 10);
+        if (Input.GetKeyDown(KeyCode.C)) _craft.AddItemByID(1201, 1, 10);
+        if (Input.GetKeyDown(KeyCode.V)) _craft.AddItemByID(1301, 1, 10);
+        if (Input.GetKeyDown(KeyCode.B)) _craft.AddItemByID(1401, 1, 10);
+        if (Input.GetKeyDown(KeyCode.N)) _craft.AddItemByID(1402, 1, 10);
 
 
         if (Input.GetKeyDown(KeyCode.Alpha1)) Controller.Equip(0);

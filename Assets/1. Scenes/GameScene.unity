@@ -1215,7 +1215,15 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 9b1f9bc5af8dc3447aa99e2d751261cd, type: 2}
     - target: {fileID: 4238681759243675254, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: ItemDatas.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: deb37036e2a595043afbaa8aacd44806, type: 2}
+    - target: {fileID: 4238681759243675254, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
       propertyPath: ItemAmounts.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4238681759243675254, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: ItemAmounts.Array.data[1]
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5224582191735123454, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
@@ -1450,6 +1458,10 @@ PrefabInstance:
     - target: {fileID: 1850098531899007138, guid: acd1b0755416bac4f8fe43c6150a258d, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 2491929188289263979, guid: acd1b0755416bac4f8fe43c6150a258d, type: 3}
+      propertyPath: _groundCheckDistance
+      value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: 5148391358429136826, guid: acd1b0755416bac4f8fe43c6150a258d, type: 3}
       propertyPath: m_LocalPosition.x
