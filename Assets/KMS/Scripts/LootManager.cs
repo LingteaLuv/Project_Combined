@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -23,8 +24,6 @@ public class LootManager : SingletonT<LootManager>
     private Slider[] _itemDurSliders;
 
     private Lootable _lootable = null;
-
-    private Stack<GameObject> _stack;
     private void Awake()
     {
         SetInstance();
@@ -34,7 +33,6 @@ public class LootManager : SingletonT<LootManager>
 
     private void Init()
     {
-        _stack = new Stack<GameObject>();
         _itemImages = new Image[SlotCount];
         _itemCountTexts = new TMP_Text[SlotCount];
         _itemDurSliders = new Slider[SlotCount];
@@ -50,41 +48,16 @@ public class LootManager : SingletonT<LootManager>
             _itemDurSliders[i] = _lootSlots[i].GetComponentInChildren<Slider>();
         }
     }
-    public void ToggleUI()
+    public void ToggleUI() //UI열기
     {
         UIManage.Instance.ToggleUI(ModalUI.lootTable);
         LootTableUpdate();
 
     }
-    public void ClearUI()
-    {
-        _stack.Clear();
-        _f.SetActive(false);
-        _lootTable.SetActive(false);
-    }
 
     public void NewLootableChecked(Lootable _lootable)
     {
         this._lootable = _lootable;
-        //ClearUI();
-        //_stack.Push(_f);
-        //SetUI();
-    }
-
-    public void SetUI()
-    {
-        if (_stack == null) return;
-        foreach( GameObject s in _stack)
-        {
-            if (s == _stack.Peek())
-            {
-                s.SetActive(true);
-            }
-            else
-            {
-                s.SetActive(false);
-            }
-        }
     }
 
     public void LootableNotExist()
@@ -93,13 +66,6 @@ public class LootManager : SingletonT<LootManager>
         {
             UIManage.Instance.CloseUI();
         }
-    }
-
-    public void OpenLootTable()
-    {
-        _stack.Push(_lootTable);
-        SetUI();
-        LootTableUpdate();
     }
 
     public void RemoveBlocker(int index)
@@ -143,16 +109,62 @@ public class LootManager : SingletonT<LootManager>
         }
     }
 
-    public void GetItem(int index)
+    public void Pickup()
+    {
+        for (int i = 0; i < 6; i++) //넣을 수 있는 것만 넣고 나머지는 스킵할 것
+        {
+            GetItem(i);
+        }
+    }
+    public void GetItem(int index) //UI내 아이템 클릭 시 호출
     {
         if (_lootable.LootItems.Items[index] == null) return;
         ItemBase data = _lootable.LootItems.Items[index].Data;
         int count = _lootable.LootItems.Items[index].StackCount;
         int dur = _lootable.LootItems.Items[index].Durability;
-        if (InventoryManager.Instance.AddItem(data, count, dur))
+        if (InventoryManager.Instance.AddItem(data, count, dur)) // 해당 아이템을 넣을 수 있다면 넣어준다
         {
-           _lootable.LootItems.Items[index] = null;
-            LootTableUpdate();
+           _lootable.LootItems.Items[index] = null; // 아이템 빼기
+           if (UIManage.Instance.Current == ModalUI.lootTable)
+            {
+                LootTableUpdate();
+            }
+            if (ItemsAllNull()) // 더이상 루팅 가능한 아이템이 없을 경우
+            {
+                AfterLooting();
+            }
         }
+    }
+
+    public void AfterLooting()
+    {
+        _lootable.IsLootable = false;
+        if (UIManage.Instance.Current == ModalUI.lootTable) ToggleUI();
+        if (_lootable.DestroyAfterLooting) // 루팅 완료 시 파괴
+        {
+            Lootable temp = _lootable;
+            Destroy(temp.transform.root.gameObject);
+            _lootable = null;
+            return;
+        }
+        if (_lootable.After != null) //다음에 전환할 것이 있음
+        {
+            Lootable temp = _lootable;
+            temp.After.SetActive(true);
+            temp.ToDisable.SetActive(false);
+        }
+        _lootable = null;
+
+
+
+    }
+
+    public bool ItemsAllNull()
+    {
+        for (int i = 0; i < 6; i++)
+        {
+            if (_lootable.LootItems.Items[i] != null) return false;
+        }
+        return true;
     }
 }

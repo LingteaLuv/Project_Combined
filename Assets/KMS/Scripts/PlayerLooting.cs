@@ -28,10 +28,10 @@ public class PlayerLooting : MonoBehaviour
         }
     }
 
-    private void OnTriggerStay(Collider other)
+    private void OnTriggerStay(Collider other) // 들어온 것들 중 루팅 가능한 것, 가장 가까운 것 가리기
     {
         if (_colliders.Count == 0) return;
-        if (UIManage.Instance.IsModalUIOpened) return;
+        if (UIManage.Instance.Current == ModalUI.lootTable) return; //UI상태에선 아래 작업 하지 않음
         float distance = float.MaxValue;
         Collider near = null;
         foreach ( Collider c in _colliders)
@@ -88,7 +88,14 @@ public class PlayerLooting : MonoBehaviour
     public void TryLoot()
     {
         if (_lootable == null) return;
-        LootManager.Instance.ToggleUI();
+        if (_lootable.Type == LootableType.box)
+        {
+            LootManager.Instance.ToggleUI();
+        }
+        else if (_lootable.Type == LootableType.pickup)
+        {
+            LootManager.Instance.Pickup();
+        }
 
     }
 }

@@ -207,7 +207,7 @@ public class InventoryController : MonoBehaviour
 
         }
         _renderer.RenderEquip(EquippedSlotIndex);
-        _hand.UpdateItems();
+       // _hand.UpdateItems();
     }
 
     public void UnEquip(int index)
@@ -234,7 +234,7 @@ public class InventoryController : MonoBehaviour
             return;
         }
         _renderer.RenderEquip(EquippedSlotIndex);
-        _hand.UpdateItems();
+        //_hand.UpdateItems();
 
 
     }
@@ -275,7 +275,7 @@ public class InventoryController : MonoBehaviour
         //위 경우 아니면 뺄 수 있음
         for (int i = 0; i < _model.SlotCount; i++)
         {
-            if (_model.InvItems[i].Data == null)
+            if (_model.InvItems[i] == null)
             {
                 continue;
             }
@@ -502,6 +502,7 @@ public class InventoryController : MonoBehaviour
 
     public void RemoveSelectedItem()
     {
+        _crafting.CountByID[_model.InvItems[SelectedIndex].Data.ItemID] -= _model.InvItems[SelectedIndex].StackCount;
         _model.InvItems[SelectedIndex] = null;
         SelectSlot(-1);
         _renderer.RenderInventory();
