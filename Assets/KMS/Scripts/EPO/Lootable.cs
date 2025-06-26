@@ -1,25 +1,38 @@
 
 using UnityEngine;
+using EPOOutline;
 
+public enum LootableType
+{
+    box,
+    pickup
+
+}
 
 public class Lootable : MonoBehaviour
 {
-    [SerializeField] private OutlineDrawer _outlinable;
-    public LootItems LootItems;
-    public OutlineDrawer Outlinable { get { return _outlinable; } }
+    
+    private LootItems _lootItems;
+    public LootItems LootItems { get { return _lootItems; } }
+    private Outlinable _outlinable;
+    public Outlinable Outlinable { get { return _outlinable; } }
 
-    //[SerializeField] private FUIController _FUIController;
-    public FUIController FUIController { get; set; }
+    private FUIController _FUIController;
+    public FUIController FUIController { get { return _FUIController; } }
 
-
+    [SerializeField] public GameObject After;
     [SerializeField] public bool IsLootable;
+    [SerializeField] public LootableType Type;
+    [SerializeField] public bool DestroyAfterLooting;
 
 
     private void Awake()
     {
-        _outlinable = GetComponentInParent<OutlineDrawer>();
-        FUIController = GetComponent<FUIController>();
+        _lootItems = GetComponent<LootItems>();
+        _outlinable = GetComponentInParent<Outlinable>();
+        _FUIController = GetComponent<FUIController>();
         OffOutline();
+        if (After != null) After.SetActive(false);
     }
 
     public void OnOutline()

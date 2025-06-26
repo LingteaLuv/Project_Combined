@@ -10,6 +10,7 @@ public class UIBinder : Singleton<UIBinder>
     [SerializeField] private RecipeSetting _craftingUI;
 
     [SerializeField] private PopUpUI _popUpUI;
+    [SerializeField] private MemoPopupUI _memoPopUpUI;
     
     public RecipeSetting GetCraftingUI()
     {
@@ -24,5 +25,10 @@ public class UIBinder : Singleton<UIBinder>
     public PopUpUI GetPopupUI()
     {
         return _popUpUI;
+    }
+    
+    public MemoPopupUI GetMemoPopUpUI()
+    {
+        return _memoPopUpUI;
     }
 }

@@ -14,10 +14,10 @@ public class SceneMediator : MonoBehaviour
     
     private void Init()
     {
-        HudManager hudManager = FindObjectOfType<HudManager>();
-        if (hudManager != null)
+        HudController hudController = FindObjectOfType<HudController>();
+        if (hudController != null)
         {
-            hudManager.Init(_playerProperty);
+            hudController.Init(_playerProperty);
         }
         else
         {

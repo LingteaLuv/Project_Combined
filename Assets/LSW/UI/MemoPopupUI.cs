@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class PopUpUI : MonoBehaviour
+public class MemoPopupUI : MonoBehaviour
 {
     [Header("Drag&Drop")] 
     [SerializeField] private TMP_Text _popUpText;

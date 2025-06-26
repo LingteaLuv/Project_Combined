@@ -74,11 +74,11 @@ public class InventoryController : MonoBehaviour
 
     }
 
-    public void RemoveEquippedItem(int index)
+    public void RemoveEquippedItem(int index) // 왼손 또는 오른손 아이템 삭제
     {
         int temp = EquippedSlotIndex[index];
         UnEquip(EquippedSlotIndex[index]);
-        _model.InvItems[temp] = null;
+        RemoveItem(temp);
         _renderer.RenderInventory();
     }
     private void Swap(int a, int b)
@@ -156,8 +156,19 @@ public class InventoryController : MonoBehaviour
         }
         SelectSlot(index);
         _renderer.RenderInventory();
-        
+    }
 
+    public bool FindItem(ItemBase item, bool remove)
+    {
+        if (_crafting.CountByID[item.ItemID] > 0)
+        {
+            if (remove)
+            {
+                RemoveItem(item, 1);
+            }
+            return true;
+        }
+        return false;
     }
 
     public void Equip(int index) //해당 칸 아이템에 대한 장착 시도
@@ -207,7 +218,7 @@ public class InventoryController : MonoBehaviour
 
         }
         _renderer.RenderEquip(EquippedSlotIndex);
-        _hand.UpdateItems();
+       // _hand.UpdateItems();
     }
 
     public void UnEquip(int index)
@@ -234,7 +245,7 @@ public class InventoryController : MonoBehaviour
             return;
         }
         _renderer.RenderEquip(EquippedSlotIndex);
-        _hand.UpdateItems();
+        //_hand.UpdateItems();
 
 
     }
@@ -275,7 +286,7 @@ public class InventoryController : MonoBehaviour
         //위 경우 아니면 뺄 수 있음
         for (int i = 0; i < _model.SlotCount; i++)
         {
-            if (_model.InvItems[i].Data == null)
+            if (_model.InvItems[i] == null)
             {
                 continue;
             }
@@ -431,6 +442,10 @@ public class InventoryController : MonoBehaviour
             _renderer.HoldClear();
         }
     }
+    public void UseSeletedItem()
+    {
+
+    }
 
     public void SelectSlot(int index)
     {
@@ -502,8 +517,15 @@ public class InventoryController : MonoBehaviour
 
     public void RemoveSelectedItem()
     {
+        _crafting.CountByID[_model.InvItems[SelectedIndex].Data.ItemID] -= _model.InvItems[SelectedIndex].StackCount;
         _model.InvItems[SelectedIndex] = null;
         SelectSlot(-1);
+        _renderer.RenderInventory();
+    }
+    public void RemoveItem(int index) // 해당 칸 위치의 아이템 지움
+    {
+        _crafting.CountByID[_model.InvItems[index].Data.ItemID] -= _model.InvItems[index].StackCount;
+        _model.InvItems[SelectedIndex] = null;
         _renderer.RenderInventory();
     }
 
