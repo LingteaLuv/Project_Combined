@@ -20,7 +20,6 @@ public class PlayerHitState : PlayerState
     public void SetDamage(int amount)
     {
         _damageAmount = amount;
-        Debug.Log($"{_damageAmount} 피해 입음");
         _damageApplied = false;
     }
 
@@ -52,10 +51,8 @@ public class PlayerHitState : PlayerState
 
         if (!_damageApplied)
         {
-            Debug.Log($"[HitState] 데미지 적용 전 - 현재 체력: {health.CurrentHp}");
             health.ApplyDamage(_damageAmount);
             _damageApplied = true;
-            Debug.Log($"[HitState] 데미지 적용 후 - 현재 체력: {health.CurrentHp}");
 
             if (health.CurrentHp <= 0)
             {
