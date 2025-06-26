@@ -7,6 +7,7 @@ public class PopUpUI : MonoBehaviour
 {
     [Header("Drag&Drop")] 
     [SerializeField] private TMP_Text _popUpText;
+    [SerializeField] private TMP_Text _popUpHeadText;
 
     private void Awake()
     {
@@ -16,6 +17,11 @@ public class PopUpUI : MonoBehaviour
     public void PopupText(string text)
     {
         _popUpText.text = text;
+    }
+
+    public void PupupHeadText(string text)
+    {
+        _popUpHeadText.text = text;
     }
     
     public void ResetText()
