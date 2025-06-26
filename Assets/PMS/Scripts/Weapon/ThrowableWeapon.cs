@@ -21,15 +21,33 @@ public class ThrowableWeapon : WeaponBase
 
     private void Start() => readyToThrow = true;
 
-    private void Update()
+    /*private void Update()
     {
         if(Input.GetKeyDown(throwKey) && readyToThrow)
         {
             Throw ();
         }
-    }
+    }*/
     
+    public override void Attack()
+    {
+        Rigidbody rb = gameObject.GetComponent<Rigidbody>();
+
+        transform.parent = null; // 손에서 분리
+
+        rb.AddForce(cam.forward * 5.0f, ForceMode.Impulse);
+
+        rb.useGravity = true;
+
+        Invoke(nameof(ResetThrow), throwCooldown); //이런 식으로 간단한 쿨타임 구현이 가능
+    }
+
     private void Throw()
+    {
+        readyToThrow = false;
+    }
+
+    /*private void Throw()
     {
         readyToThrow = false;
 
@@ -57,7 +75,7 @@ public class ThrowableWeapon : WeaponBase
 
         //implement throwCooldown
         Invoke(nameof(ResetThrow), throwCooldown); //이런 식으로 간단한 쿨타임 구현이 가능
-    }
+    }*/
 
     private void ResetThrow()
     {
@@ -71,10 +89,7 @@ public class ThrowableWeapon : WeaponBase
     */
     public override bool IsAttack => throw new System.NotImplementedException();
     
-    public override void Attack()
-    {
-        Throw();
-    }
+
 
     private void Reset()
     {
