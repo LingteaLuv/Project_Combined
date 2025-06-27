@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.ConstrainedExecution;
 using UnityEngine;
 
 
@@ -18,6 +19,7 @@ public class UIManage : SingletonT<UIManage>
 
     [SerializeField] public CanvasGroup UIGroup;
 
+    private PlayerLooting _playerLoot;
     private RectTransform _lootRect;
     private RectTransform _invRect;
 
@@ -30,6 +32,7 @@ public class UIManage : SingletonT<UIManage>
     {
         _lootRect = LootUI.GetComponent<RectTransform>();
         _invRect = InvUI.GetComponent<RectTransform>();
+        _playerLoot = UISceneLoader.Instance.Playerattack.gameObject.GetComponentInChildren<PlayerLooting>();
         SetInstance();
         IsModalUIOpened = false;
         Current = ModalUI.nothing;
@@ -37,7 +40,7 @@ public class UIManage : SingletonT<UIManage>
         _wait = new WaitForEndOfFrame();
     }
 
-    private void Start()
+    private void Start() //다꺼줌
     {
         ModalBase.SetActive(false);
         LootUI.SetActive(false);
@@ -47,10 +50,19 @@ public class UIManage : SingletonT<UIManage>
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape)) CloseUI();
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            ToggleUI(ModalUI.inventory);
+            InventoryManager.Instance.Renderer.RenderInventory();
+        }
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            _playerLoot.TryLoot();
+        }
     }
     public void OpenUI(ModalUI cur)
     {
-        if (IsModalUIOpened) return;
+        if (IsModalUIOpened) return; //다른게 열려있음
         IsModalUIOpened = true;
         ModalBase.SetActive(true);
         Current = cur;
@@ -77,7 +89,7 @@ public class UIManage : SingletonT<UIManage>
     }
     public void CloseUI()
     {
-        if (!IsModalUIOpened) return;
+        if (!IsModalUIOpened) return; //열린게 없음
         if (_coroutine != null)
         {
             StopCoroutine(_coroutine);

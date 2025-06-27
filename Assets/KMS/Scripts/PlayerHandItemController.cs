@@ -10,6 +10,7 @@ public class PlayerHandItemController : MonoBehaviour
     [SerializeField] public Transform Left;
     [SerializeField] public PrefabListSO Prefabs;
     [SerializeField] private PlayerAttack _playerAttack;
+    
     public Dictionary<int, GameObject> PrefabIDs { get; set; } //id를 통해 장비 프리팹을 불러오기 위함
 
     public GameObject CurrentLeftItem;
@@ -17,6 +18,7 @@ public class PlayerHandItemController : MonoBehaviour
 
     private InventoryController _control;
     private InventoryModel _model;
+    private Animator _animator;
 
     private void Awake()
     {
@@ -31,6 +33,7 @@ public class PlayerHandItemController : MonoBehaviour
     private void Start()
     {
         _playerAttack = UISceneLoader.Instance.Playerattack;
+        _animator = _playerAttack.GetComponent<Animator>();
         Right = _playerAttack._right_Hand_target.transform;
         Left = _playerAttack._left_Hand_target.transform;
     }
@@ -65,12 +68,12 @@ public class PlayerHandItemController : MonoBehaviour
     public void UpdateItems()
     {
         DeholdBoth();
-        Debug.Log(369);
         int rightIndex = _control.EquippedSlotIndex[0];
         int leftIndex = _control.EquippedSlotIndex[1];
         if ((rightIndex == leftIndex) && _model.InvItems[rightIndex] == null) return;
         if (rightIndex == -1) //오른손 들린게 없다
         {
+            StartCoroutine(UW()); // 아무것도 안들렸다는 신호를 보낼 것.
             if (leftIndex != -1) //왼손은 들렸다.
             {
                 HoldItem(HandType.left, _model.InvItems[leftIndex].Data.ItemID);
@@ -136,6 +139,7 @@ public class PlayerHandItemController : MonoBehaviour
         else
         {
             before = _model.InvItems[_control.EquippedSlotIndex[0]];
+            if (before == toEquip) return;
             isBeforeitemNull = before == null ? true : false;
         }
 
@@ -143,13 +147,13 @@ public class PlayerHandItemController : MonoBehaviour
         {
             Debug.Log("빈손 에서 빈손");
         }
-        else if (toEquip == null && !isBeforeitemNull) // 장비 > 빈손
+        else if ((toEquip == null) && !isBeforeitemNull) // 장비 > 빈손
         {
             ItemType temp = before.Data.Type;
             if (temp == ItemType.Melee || temp == ItemType.Special || temp == ItemType.Gun)
             {
                 Debug.Log("무기 에서 빈손");
-                //_playerAttack.WeaponToBarehands();
+                _animator.SetTrigger("UnEquip");
             }
         }
         else if (toEquip != null && isBeforeitemNull) // 빈손 > 장비
@@ -158,7 +162,7 @@ public class PlayerHandItemController : MonoBehaviour
             if (temp == ItemType.Melee || temp == ItemType.Special || temp == ItemType.Gun)
             {
                 Debug.Log("빈손 에서 무기");
-                //_playerAttack.BarehandsToWeapon();
+                _animator.SetTrigger("Equip");
             }
         }
         else // 무기 > 무기
@@ -167,7 +171,7 @@ public class PlayerHandItemController : MonoBehaviour
             if (temp == ItemType.Melee || temp == ItemType.Special || temp == ItemType.Gun)
             {
                 Debug.Log("무기 에서 무기");
-                //_playerAttack.WeaponToWeapon();
+                _animator.SetTrigger("Equip");
             }
         }
     }
