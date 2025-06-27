@@ -1600,8 +1600,11 @@ AnimatorStateTransition:
   - m_ConditionMode: 1
     m_ConditionEvent: Equip
     m_EventTreshold: 0
-  - m_ConditionMode: 2
+  - m_ConditionMode: 1
     m_ConditionEvent: CanEquip
+    m_EventTreshold: 0
+  - m_ConditionMode: 1
+    m_ConditionEvent: CanUnEquip
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -7506760658022589817}
@@ -1901,8 +1904,11 @@ AnimatorStateTransition:
   - m_ConditionMode: 1
     m_ConditionEvent: UnEquip
     m_EventTreshold: 0
-  - m_ConditionMode: 2
+  - m_ConditionMode: 1
     m_ConditionEvent: CanEquip
+    m_EventTreshold: 0
+  - m_ConditionMode: 1
+    m_ConditionEvent: CanUnEquip
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -1171726746106145126}
