@@ -46,7 +46,7 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler
     private bool _isOnCorStamina;
     private bool _isOnCorRecoverHp;
     private bool _isOnCorDecreaseHp;
-
+    private bool _isWater;
     private bool _isOnLack;
     private bool _isOnDepletion;
     
@@ -262,4 +262,6 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler
             AtkDamage.Value += mod.AtkDamageChange;
         }
     }
+    //Todo : public void Consume(Itembase item){} 아이템 효과를 플레이어에게 적용시키는 함수를 부탁드립니다.
+    //ItemConsumeManage 클래스에서 사용될 것 같습니다.  - 김문성
 }

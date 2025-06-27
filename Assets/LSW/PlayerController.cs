@@ -8,6 +8,10 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerMovement))]
 public class PlayerController : MonoBehaviour
 {
+    #region SerializeField
+    [SerializeField] Transform PlayerWaist; //수영상태 진입 판단용
+    #endregion
+
     #region Public 
     public Animator _animator;
     public PlayerHealthEdit PlayerHealthEdit { get; private set; }
@@ -50,7 +54,7 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         _fsm.Update();
-        if (_cameraController != null)
+        if (_cameraController._cinemachineBrain.enabled)
         {
             _movement.SetRotation(_cameraController.Offset);
         }
