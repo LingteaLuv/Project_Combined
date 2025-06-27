@@ -73,10 +73,8 @@ public class PlayerAttack : MonoBehaviour
         yield return new WaitForSeconds(_startAttackDelay);
 
         Debug.Log("선딜 완료 - 애니메이션 실행");
-        //_animator.SetLayerWeight(1,1);
         _animator.SetTrigger("DownAttack");
 
-        // 실제 공격 실행 (애니메이션 이벤트 대신 여기서 실행)
         PlayerAttackStart();
 
         Debug.Log("공격 실행 - 후딜 시작");
@@ -88,7 +86,6 @@ public class PlayerAttack : MonoBehaviour
 
         _isAttacking = false;
         _canAttack = true;
-        //_animator.SetLayerWeight(2,0);
         _currentAttackCoroutine = null;
     }
 

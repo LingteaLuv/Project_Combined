@@ -41,6 +41,8 @@ public class PlayerWeaponEquip : MonoBehaviour
             _animator.SetBool("IsAim", _isAiming);
         }*/
 
+        //이건 내가 하는게 아닌것같다.
+        //나중에 플레이어 Input에서 ?
         //테스트 코드
         if (Input.GetKeyDown(KeyCode.X))
         {

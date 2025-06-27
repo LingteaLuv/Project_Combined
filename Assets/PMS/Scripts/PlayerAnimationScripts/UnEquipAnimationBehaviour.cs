@@ -7,10 +7,14 @@ public class UnEquipAnimationBehaviour : StateMachineBehaviour
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         animator.SetLayerWeight(animator.GetLayerIndex("Weapon Equip"), 1f);
+        animator.SetBool("CanEquip", false);
+        animator.SetBool("CanUnEquip", false);
     }
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         animator.SetLayerWeight(animator.GetLayerIndex("Weapon Equip"), 0f);
         animator.SetLayerWeight(animator.GetLayerIndex("Upper Layer"), 0f);
+        animator.SetBool("CanEquip", true);
+        animator.SetBool("CanUnEquip", true);
     }
 }
