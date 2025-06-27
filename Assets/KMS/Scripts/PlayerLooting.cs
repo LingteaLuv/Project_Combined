@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerLooting : MonoBehaviour
 {
     [SerializeField] LayerMask _interactLayer;
+    [SerializeField] private PlayerCameraController _playerCameraController;
 
     private List<Collider> _colliders = new List<Collider>();
     //private List<Lootable> _lootables = new List<Lootable>();
@@ -95,6 +96,8 @@ public class PlayerLooting : MonoBehaviour
             _lootable = null;
             LootManager.Instance.LootableNotExist();
         }
+        _playerCameraController.ResumeCamera();
+        //_playerCameraController.ResetFocusToPlayer();
     }
 
     public void TryLoot()
@@ -103,6 +106,8 @@ public class PlayerLooting : MonoBehaviour
         if (_lootable.Type == LootableType.box)
         {
             LootManager.Instance.ToggleUI();
+            _playerCameraController.PauseCamera();
+            //_playerCameraController.FocusOnLootable(_lootable.transform);
         }
         else if (_lootable.Type == LootableType.pickup)
         {
