@@ -26,6 +26,11 @@ public class PlayerWeaponEquip : MonoBehaviour
     private void Update()
     {
         //테스트 코드
+        /*if(_currentWeapon.ItemType == ItemType.Gun)
+        {
+            AnimatorUtil.SetLayerWeightSmooth(this,_animator,)
+        }*/
+        //테스트 코드
         if (Input.GetKeyDown(KeyCode.X))
         {
             if (_currentWeapon == null) return;

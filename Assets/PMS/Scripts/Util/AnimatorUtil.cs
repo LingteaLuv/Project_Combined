@@ -100,8 +100,20 @@ public static class AnimatorUtil
         return true;
     }
 
+    //부드럽게 바꾸는데 Index를 받음
     public static Coroutine SetLayerWeightSmooth(MonoBehaviour owner, Animator animator, int layerIndex, float targetWeight, float duration = 0.3f, bool showLog = false)
     {
+        if (!ValidateAnimator(animator, layerIndex))
+            return null;
+
+        return owner.StartCoroutine(LerpLayerWeight(animator, layerIndex, targetWeight, duration, showLog));
+    }
+
+    //이친구는 index대신 string으로 받음
+    public static Coroutine SetLayerWeightSmooth(MonoBehaviour owner, Animator animator, string layerName, float targetWeight, float duration = 0.3f, bool showLog = false)
+    {
+        int layerIndex = GetLayerIndex(animator, layerName);
+
         if (!ValidateAnimator(animator, layerIndex))
             return null;
 
