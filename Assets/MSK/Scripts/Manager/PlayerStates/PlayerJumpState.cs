@@ -46,12 +46,10 @@ public class PlayerJumpState : PlayerState
             return;
         }
 
-        if (_movement.IsGrounded)
-        {
-            _fsm.ChangeState(_movement.MoveInput == Vector3.zero
-                ? _movement.Controller.IdleState
-                : _movement.Controller.MoveState);
-        }
+        _fsm.ChangeState(_movement.MoveInput == Vector3.zero
+            ? _movement.Controller.IdleState
+            : _movement.Controller.MoveState);
+
         if (EnterFallState())
         {
             _fsm.ChangeState(_movement.Controller.FallState);
