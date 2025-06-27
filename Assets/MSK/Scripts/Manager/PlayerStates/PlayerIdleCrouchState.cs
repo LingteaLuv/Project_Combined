@@ -14,6 +14,9 @@ public class PlayerIdleCrouchState : PlayerState
         {
             _movement.Controller.IsCrouch = true;
         }
+        if (_movement.CrouchCollider != null)
+            _movement.CrouchCollider.enabled = false;
+
         _movement.Controller._animator.SetBool("IsCrouch", true);
         _movement.SetCrouch(true);
     }
@@ -22,6 +25,8 @@ public class PlayerIdleCrouchState : PlayerState
     {
         _movement.Controller._animator.SetBool("IsCrouch", false);
         _movement.SetCrouch(false);
+        if (_movement.CrouchCollider != null)
+            _movement.CrouchCollider.enabled = true;
     }
 
     public override void Tick()

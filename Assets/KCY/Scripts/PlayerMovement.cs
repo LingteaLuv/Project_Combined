@@ -10,12 +10,14 @@ public class PlayerMovement : MonoBehaviour
     [Header("References")]
     [SerializeField] private PlayerInputHandler _inputHandler;
     [SerializeField] private PlayerProperty _property;
-    
+    [SerializeField] public CapsuleCollider CrouchCollider;
+
     public PlayerClimb PlayerClimbHandler { get; private set; } 
     public PlayerController Controller { get; set; }
     public Rigidbody Rigidbody { get; private set; }
     public bool IsOnLadder { get; private set; }
     public bool IsGrounded { get; private set; }
+    public bool IsWater { get; private set; }
 
     private bool _jumpConsumedThisFrame;
     private bool _isCrouching;
@@ -24,7 +26,8 @@ public class PlayerMovement : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private float _jumpForce = 10f;
     [SerializeField] private float _groundCheckDistance = 0.05f;
-    [SerializeField] private float _crouchSpeedMultiplier = 0.5f;
+    [SerializeField] private float _crouchSpeedMultiplier = 0.3f;
+    [SerializeField] private float _waterSpeedMultiplier = 0.6f;
     [SerializeField] private float _fallMultiplier = 5f;
 
     public Vector3 MoveInput => _inputHandler.MoveInput;
@@ -76,7 +79,9 @@ public class PlayerMovement : MonoBehaviour
             // 경사면 보정 이동
             moveDir = GetSlopeAdjustedMoveDirection(moveDir);
 
-            float speed = _property.MoveSpeed.Value * (_isCrouching ? _crouchSpeedMultiplier : 1f);
+            float speed = _property.MoveSpeed.Value
+                * (_isCrouching ? _crouchSpeedMultiplier : 1f)
+                * (IsWater ? _waterSpeedMultiplier : 1f);
             Vector3 targetVelocity = moveDir * speed;
             targetVelocity.y = Rigidbody.velocity.y; // 수직 속도 유지
             Rigidbody.velocity = Vector3.MoveTowards(Rigidbody.velocity, targetVelocity, 100 * Time.fixedDeltaTime);
@@ -144,6 +149,11 @@ public class PlayerMovement : MonoBehaviour
     public void SetCrouch(bool crouch)
     {
         _isCrouching = crouch;
+    }
+
+    public void SetWater(bool water)
+    {
+        IsWater = water;
     }
 
     public void SetRotation(float offset)
