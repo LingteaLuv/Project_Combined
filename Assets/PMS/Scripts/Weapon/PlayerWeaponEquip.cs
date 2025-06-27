@@ -5,18 +5,20 @@ using UnityEngine;
 public class PlayerWeaponEquip : MonoBehaviour
 {
     #region 추후 이동 - 플레이어 장비 장착 해제 애니메이션를 관리하는 스크립트로
-
     [SerializeField] private Animator _animator;
     [SerializeField] private GameObject _left_Hand_target;
     [SerializeField] private GameObject _right_Hand_target;
+    [SerializeField] private PlayerAttack _playerAttack;
 
+    private bool _isAiming = false;
+    [SerializeField] private bool _isGun = false;
     private void Awake()
     {
         //모든 아이템은 해당 Hand_bone밑에 있다.
         _animator = gameObject.GetComponent<Animator>();
         _left_Hand_target = GameObject.Find("Hand_L");
         _right_Hand_target = GameObject.Find("Hand_R");
-        UpdateWeapon();
+        //UpdateWeapon();
     }
     private void UpdateWeapon()
     {
@@ -25,16 +27,32 @@ public class PlayerWeaponEquip : MonoBehaviour
 
     private void Update()
     {
+        //UpdateWeapon();
+        /*if (_currentWeapon.ItemType == ItemType.Gun)
+        {
+            _isGun = true;
+        } 
+        _animator.SetBool("IsGun", _isGun);*/
+
+        //테스트 코드
+        /*if (Input.GetMouseButtonDown(1))
+        {
+            _isAiming = !_isAiming; // 토글
+            _animator.SetBool("IsAim", _isAiming);
+        }*/
+
+        //이건 내가 하는게 아닌것같다.
+        //나중에 플레이어 Input에서 ?
         //테스트 코드
         if (Input.GetKeyDown(KeyCode.X))
         {
-            if (_currentWeapon == null) return;
+            //if (_currentWeapon == null) return;
             _animator.SetTrigger("Equip");
         }
         //무기 해제
         if (Input.GetKeyDown(KeyCode.R))
         {
-            if (_currentWeapon == null) return;
+            //if (_currentWeapon == null) return;
             _animator.SetTrigger("UnEquip");
         }
     }

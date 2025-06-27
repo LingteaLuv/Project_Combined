@@ -19,7 +19,13 @@ public class ThrowableWeapon : WeaponBase
 
     private bool readyToThrow;
 
-    private void Start() => readyToThrow = true;
+    private void OnEnable()
+    {
+        Rigidbody rb = gameObject.GetComponent<Rigidbody>();
+        readyToThrow = true;
+        rb.isKinematic = true;
+        rb.useGravity = false;
+    }
 
     /*private void Update()
     {
@@ -35,9 +41,10 @@ public class ThrowableWeapon : WeaponBase
 
         transform.parent = null; // 손에서 분리
 
-        rb.AddForce(cam.forward * 5.0f, ForceMode.Impulse);
-
+        rb.isKinematic = false;
         rb.useGravity = true;
+
+        rb.AddForce(cam.forward * 10.0f + cam.up * 10.0f, ForceMode.Impulse);
 
         Invoke(nameof(ResetThrow), throwCooldown); //이런 식으로 간단한 쿨타임 구현이 가능
     }
