@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using System.Linq;
+using System;
 
 
 public class InventoryController : MonoBehaviour
@@ -38,10 +39,13 @@ public class InventoryController : MonoBehaviour
         SelectedIndex = -1;
         _beforeSelectedIndex = -1;
 
-        EquippedSlotIndex = new int[] { -1, -1 };
+        EquippedSlotIndex = new int[] { 0, 0 };
     }
 
-
+    private void Start()
+    {
+        _renderer.RenderEquip(EquippedSlotIndex);
+    }
     private bool[] GetFlags(ItemBase item)
     {
         bool[] flags = new bool[18]; //false 인 경우에만 들어갈 수 있음
@@ -99,7 +103,7 @@ public class InventoryController : MonoBehaviour
     public void UseETCItemButton(int index)
     {
         Item exist = _model.InvItems[index];
-        if (exist.Data.Type != ItemType.ETC) return;
+        if (exist.Data.Type != ItemType.ETC) return; // 이후 장비아이템에 대한 equipbutton실행될듯
         TextManager.Instance.MemoPopUpText($"{exist.Data.ItemID}");
     }
     
@@ -180,9 +184,14 @@ public class InventoryController : MonoBehaviour
         return false;
     }
 
+    public void NewEquip(int index) //해당 칸 아이템 장착
+    {
+
+    }
     public void Equip(int index, bool a = true) //해당 칸 아이템에 대한 장착 시도
     {
         Item exist = _model.InvItems[index];
+        if (a) _hand.AnimationLoad(exist); //a는 애니 실행 여부
         if (exist == null) // 아무것도 안 든다.
         {
             EquippedSlotIndex[0] = index;
@@ -226,7 +235,7 @@ public class InventoryController : MonoBehaviour
 
         }
         _renderer.RenderEquip(EquippedSlotIndex);
-        if (a) _hand.AnimationLoad(exist);
+        
          _hand.UpdateItems();
     }
 
