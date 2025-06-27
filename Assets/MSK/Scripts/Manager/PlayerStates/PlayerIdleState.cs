@@ -28,11 +28,13 @@ public class PlayerIdleState : PlayerState
         if (_movement.CrouchHeld)
         {
             _fsm.ChangeState(_movement.Controller.CrouchState);
+            _movement.SetCrouch(true);
             return;
         }
         if (_movement.CrouchHeld && _movement.MoveInput != Vector3.zero)
         {
             _fsm.ChangeState(_movement.Controller.IdleCrouchState);
+            _movement.SetCrouch(true);
             return;
         }
         if (_movement.InteractPressed)

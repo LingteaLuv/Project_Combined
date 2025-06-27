@@ -44,7 +44,7 @@ public class PlayerProperty : MonoBehaviour
     private bool _isOnCorStamina;
     private bool _isOnCorRecoverHp;
     private bool _isOnCorDecreaseHp;
-
+    private bool _isWater;
     private bool _isOnLack;
     private bool _isOnDepletion;
     

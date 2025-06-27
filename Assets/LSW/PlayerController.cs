@@ -8,6 +8,10 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerMovement))]
 public class PlayerController : MonoBehaviour
 {
+    #region SerializeField
+    [SerializeField] Transform PlayerWaist; //수영상태 진입 판단용
+    #endregion
+
     #region Public 
     public Animator _animator;
     public PlayerHealthEdit PlayerHealthEdit { get; private set; }
