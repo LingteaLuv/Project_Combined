@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class GunWeaponBase : WeaponBase
-{
+{ 
     //총 프리팹
     [SerializeField] protected GameObject _bulletPrefab;
-
+   
     //총 본체 관련 변수
     [SerializeField] protected string _gunName;     // 총의 이름
     [SerializeField] protected int _damage;       // 총의 데미지

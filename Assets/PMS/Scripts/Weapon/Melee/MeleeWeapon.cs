@@ -4,9 +4,21 @@ using UnityEngine;
 
 public class MeleeWeapon : WeaponBase
 {
+    [SerializeField] private MeleeItem _meleeItem;
+    /*
+        * [CreateAssetMenu(menuName = "Items/Melee")]
+    public class MeleeItem : ItemBase
+    {
+    public int MaxDurability;
+    public int AtkDamage;
+    public int AtkSpeed;
+    public string AtkSoundResources;
+    }*/
     private ItemType _iTemType = ItemType.Melee;
+
     [SerializeField] private Transform _playerPos; //플레이어의 위치
     [SerializeField] private Transform _attackPointPos; //공격의 충돌을 감지할 Pivot Transform
+    [SerializeField] private Transform _spawnPoint; //플레이어 손에 소환될 Tranform
     public override bool IsAttack { get; }
     [Header("근접무기 셋팅값")]
     [SerializeField] private int _attackDamage; //근거리 무기의 공격력
@@ -80,7 +92,7 @@ public class MeleeWeapon : WeaponBase
         // 가장 가까운 적이 있다면 데미지 부여 로직 실행
         if (closeGameObject != null)//(closestDamageable != null)
         {
-            closeGameObject.GetComponent<IDamageable>().Damaged(_attackDamage);
+            closeGameObject.GetComponent<IDamageable>().Damaged(_meleeItem.AtkDamage);
             StartCoroutine(DamageRoutine(closeGameObject.gameObject));
             //closestDamageable.Damaged(_attackDamage);
         }

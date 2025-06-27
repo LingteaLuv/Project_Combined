@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+
 public class PlayerAttack : MonoBehaviour
 {
     [SerializeField] Animator _animator; //플레이어의 애니메이터가 필요 -> 공격시 플레이어 애니메이션 재생하기 위하여
@@ -55,6 +56,7 @@ public class PlayerAttack : MonoBehaviour
 
     void Update()
     {
+        //테스트코드
         if (Input.GetMouseButtonDown(0))
         {
             TryAttack();
@@ -71,7 +73,7 @@ public class PlayerAttack : MonoBehaviour
         yield return new WaitForSeconds(_startAttackDelay);
 
         Debug.Log("선딜 완료 - 애니메이션 실행");
-        _animator.SetLayerWeight(2,1);
+        //_animator.SetLayerWeight(1,1);
         _animator.SetTrigger("DownAttack");
 
         // 실제 공격 실행 (애니메이션 이벤트 대신 여기서 실행)
@@ -86,7 +88,7 @@ public class PlayerAttack : MonoBehaviour
 
         _isAttacking = false;
         _canAttack = true;
-        _animator.SetLayerWeight(2,0);
+        //_animator.SetLayerWeight(2,0);
         _currentAttackCoroutine = null;
     }
 
@@ -151,7 +153,7 @@ public class PlayerAttack : MonoBehaviour
     private void StartThrowAttack()
     {
         _animator.SetTrigger("Throw");
-        AnimatorUtil.SetLayerWeightSmooth(this, _animator, 4, 1f, 0.5f); // 0.5초 동안 레이어 1의 가중치를 1로 변경
+        //AnimatorUtil.SetLayerWeightSmooth(this, _animator, 4, 1f, 0.5f); // 0.5초 동안 레이어 1의 가중치를 1로 변경
         //_animator.SetLayerWeight(4, 1); //Throw Layer 
     }
 

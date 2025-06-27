@@ -141,4 +141,22 @@ public static class AnimatorUtil
         if (showLog)
             Debug.Log($"[AnimatorUtility] 레이어 {layerIndex}의 가중치를 {targetWeight:F2}로 부드럽게 설정 완료");
     }
+
+    //특정 레이어들을 제외한 모든 레이어 가중치를 0으로 만들때가 필요하다.
+    //배열로 받아서 처리
+    /*public static Coroutine SetLayerWeightSmooth(MonoBehaviour owner, Animator animator, string[] layerNames, float targetWeight, float duration = 0.3f, bool showLog = false)
+    {
+        int[] layerIndexs = new int[layerNames.Length];
+
+        foreach (int index in layerIndexs)
+        {
+            index
+        }
+        GetLayerIndex(animator, layerName);
+
+        if (!ValidateAnimator(animator, layerIndex))
+            return null;
+
+        return owner.StartCoroutine(LerpLayerWeight(animator, layerIndex, targetWeight, duration, showLog));
+    }*/
 }
