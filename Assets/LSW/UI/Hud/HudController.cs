@@ -31,7 +31,7 @@ public class HudController : MonoBehaviour
         _parameterHudUI.StaminaUpdate(value);
     }
     
-    private void SpeedUpdate(float value)
+    /*private void SpeedUpdate(float value)
     {
         _propertyHudUI.SpeedUpdate(value);
     }
@@ -44,7 +44,7 @@ public class HudController : MonoBehaviour
     private void AtkSpeedUpdate(float value)
     {
         _propertyHudUI.AtkSpeedUpdate(value);
-    }
+    }*/
 
     public void Init(PlayerProperty playerProperty)
     {
@@ -55,17 +55,17 @@ public class HudController : MonoBehaviour
         _property.Thirsty.OnChanged += ThirstyUpdate;
         _property.Stamina.OnChanged += StaminaUpdate;
 
-        _property.MoveSpeed.OnChanged += SpeedUpdate;
-        _property.AtkDamage.OnChanged += AtkDamageUpdate;
-        _property.AtkSpeed.OnChanged += AtkSpeedUpdate;
+        //_property.MoveSpeed.OnChanged += SpeedUpdate;
+        //_property.AtkDamage.OnChanged += AtkDamageUpdate;
+        //_property.AtkSpeed.OnChanged += AtkSpeedUpdate;
         
         HpUpdate(_property.Hp.Value);
         HungerUpdate(_property.Hunger.Value);
         ThirstyUpdate(_property.Thirsty.Value);
         StaminaUpdate(_property.Stamina.Value);
 
-        SpeedUpdate(_property.MoveSpeed.Value);
-        AtkDamageUpdate(_property.AtkDamage.Value);
-        AtkSpeedUpdate(_property.AtkSpeed.Value);
+        //SpeedUpdate(_property.MoveSpeed.Value);
+        //AtkDamageUpdate(_property.AtkDamage.Value);
+        //AtkSpeedUpdate(_property.AtkSpeed.Value);
     }
 }

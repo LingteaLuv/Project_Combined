@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-public class PlayerProperty : MonoBehaviour
+public class PlayerProperty : MonoBehaviour, IParameterHandler
 {
     public Hp Hp;
     public Hunger Hunger;
     public Thirsty Thirsty;
     public Stamina Stamina;
-
+    
     public Property<float> MoveSpeed;
     public Property<float> AtkSpeed;
     public Property<float> AtkDamage;
+    
+    private List<StatModifier> _statMods;
 
     private float _moveSpeed;
     private float _atkSpeed;
@@ -237,5 +239,27 @@ public class PlayerProperty : MonoBehaviour
         AtkSpeed = new Property<float>(_baseAtkSpeed);
         MoveSpeed = new Property<float>(_baseMoveSpeed);
         AtkDamage = new Property<float>(_baseAtkDamage);
+    }
+
+    public void ApplyModifier(StatModifier modifier)
+    {
+        _statMods.Add(modifier);
+        StatModify();
+    }
+
+    public void RemoveModifier(StatModifier modifier)
+    {
+        _statMods.Remove(modifier);
+        StatModify();
+    }
+    
+    private void StatModify()
+    {
+        foreach (var mod in _statMods)
+        {
+            MoveSpeed.Value += mod.MoveSpeedChange;
+            AtkSpeed.Value += mod.AtkSpeedChange;
+            AtkDamage.Value += mod.AtkDamageChange;
+        }
     }
 }
