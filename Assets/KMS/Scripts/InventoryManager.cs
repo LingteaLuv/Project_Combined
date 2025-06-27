@@ -11,7 +11,7 @@ public class InventoryManager : SingletonT<InventoryManager>
     [SerializeField] private GameObject _holdSlot;
     public GameObject HoldSlot { get { return _holdSlot; } }
 
-    [SerializeField] private ItemDictionary _itemDictionary;
+    [SerializeField] public ItemDictionary _itemDictionary;
 
     private InventoryModel _model;
     public InventoryModel Model => _model;
@@ -83,7 +83,6 @@ public class InventoryManager : SingletonT<InventoryManager>
     }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.I)) ToggleUI();
 
 
         if (Input.GetKeyDown(KeyCode.Z)) _craft.AddItemByID(1101, 1, 10);
@@ -105,13 +104,11 @@ public class InventoryManager : SingletonT<InventoryManager>
         if (Input.GetKeyDown(KeyCode.O)) DecreaseShieldDurability();
 
 
-        HoldSlot.transform.position = Input.mousePosition;
+
+        if (Input.GetKeyDown(KeyCode.U)) //사용
+         HoldSlot.transform.position = Input.mousePosition;
     }
 
-    public bool FindItem(int ID, bool remove)
-    {
-        return false;
-    }
 
     public void DecreaseWeaponDurability(int amount = 1)
     {
@@ -130,5 +127,18 @@ public class InventoryManager : SingletonT<InventoryManager>
     public ItemBase GetHandItem(int hand)
     {
        return _model.InvItems[_controller.EquippedSlotIndex[hand]].Data;
+    }
+
+    public bool FindItemByID(int id, bool remove = true) //해당 아이템 있으면 1개 지우고 true 반환.
+    {
+        if (_craft.CountByID[id] > 0)
+        {
+            if (remove) // true(기본값) 이면 지움
+            {
+                _controller.RemoveItem(_itemDictionary.ItemDic[id], 1);
+            }
+            return true;
+        }
+        return false;
     }
 }
