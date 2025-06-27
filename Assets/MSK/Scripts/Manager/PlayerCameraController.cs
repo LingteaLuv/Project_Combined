@@ -4,10 +4,12 @@ using UnityEngine;
 public class PlayerCameraController : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private CinemachineVirtualCamera _virtualCamera;
-    [SerializeField] private Transform _lookatTarget;
-    [SerializeField] private Transform _fallowTarget;
-    [SerializeField] private CinemachineBrain _cinemachineBrain;
+    //[SerializeField] private CinemachineVirtualCamera _virtualCamera;
+    //[SerializeField] private Transform _lookatTarget;
+    //[SerializeField] private Transform _fallowTarget;
+    [SerializeField] public CinemachineBrain _cinemachineBrain;
+
+
     [Header("Mouse Config")]
     [SerializeField][Range(0, 5)] private float _mouseSensitivity = 1;
 
@@ -27,6 +29,7 @@ public class PlayerCameraController : MonoBehaviour
     {
         _cinemachineBrain.enabled = true;
     }
+
     // lookat, fallow 변경방식
     /*
     public void FocusOnLootable(Transform lootableTarget)
