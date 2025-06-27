@@ -461,14 +461,17 @@ public class InventoryController : MonoBehaviour
                     _model.InvItems[addables[i]] = new Item(item);
                     _model.InvItems[addables[i]].StackCount = MaxStack;
                     _model.InvItems[addables[i]].Durability = durability;
-
-
+                }
+                if (addables[i] == EquippedSlotIndex[0]) //들어간 칸이 현재 손에 든 빈칸이었다면,
+                {
+                    //해당 칸에 대한 착용
+                    Equip(addables[i]);
                 }
             }
-            if (addables[0] < 6 && item.Type != ItemType.Consumable)
-            {
-                AutoEquip(addables[0]); // 소모품이 아니고, 아이템이 들어온 첫 번째 칸이 퀵슬롯에 포함되어 있을 경우, 퀵슬롯 인덱스
-            }
+            //if (addables[0] < 6 && item.Type != ItemType.Consumable)
+            //{
+            //    AutoEquip(addables[0]); // 소모품이 아니고, 아이템이 들어온 첫 번째 칸이 퀵슬롯에 포함되어 있을 경우, 퀵슬롯 인덱스
+            //}
             _crafting.Add(item.ItemID, amount);
             _renderer.RenderInventory();
             return true;
