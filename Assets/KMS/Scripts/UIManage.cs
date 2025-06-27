@@ -39,6 +39,13 @@ public class UIManage : SingletonT<UIManage>
 
     private void Start()
     {
+        ModalBase.SetActive(false);
+        LootUI.SetActive(false);
+        InvUI.SetActive(false);
+        CraftUI.SetActive(false);
+    }
+    private void Update()
+    {
         if (Input.GetKeyDown(KeyCode.Escape)) CloseUI();
     }
     public void OpenUI(ModalUI cur)

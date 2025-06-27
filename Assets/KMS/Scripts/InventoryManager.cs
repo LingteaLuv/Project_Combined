@@ -1,11 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 
-using System.Runtime.CompilerServices;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
-using static UnityEditor.Progress;
+
 
 public class InventoryManager : SingletonT<InventoryManager>
 {
@@ -15,6 +10,8 @@ public class InventoryManager : SingletonT<InventoryManager>
     public GameObject Quickslot { get { return _quickslot; } }
     [SerializeField] private GameObject _holdSlot;
     public GameObject HoldSlot { get { return _holdSlot; } }
+
+    [SerializeField] private ItemDictionary _itemDictionary;
 
     private InventoryModel _model;
     public InventoryModel Model => _model;
@@ -72,20 +69,29 @@ public class InventoryManager : SingletonT<InventoryManager>
         _renderer.RenderInventory();
         return canAdd;
     }
+
+    public ItemBase CurrentWeapon()
+    {
+        if (Controller.EquippedSlotIndex[0] == -1)
+        {
+            return null;
+        }
+        else
+        {
+            return _model.InvItems[Controller.EquippedSlotIndex[0]].Data;
+        }
+    }
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.I)) ToggleUI();
 
 
-
-        if (Input.GetKeyDown(KeyCode.Z)) AddItem(_model.ItemList.ItemList[0], 3, -1);
-        if (Input.GetKeyDown(KeyCode.X)) AddItem(_model.ItemList.ItemList[1], 1, 50);
-        if (Input.GetKeyDown(KeyCode.C)) AddItem(_model.ItemList.ItemList[2], 1, 25);
-        if (Input.GetKeyDown(KeyCode.V)) AddItem(_model.ItemList.ItemList[3], 1, 100);
-        if (Input.GetKeyDown(KeyCode.B)) AddItem(_model.ItemList.ItemList[4], 1, 10);
-        if (Input.GetKeyDown(KeyCode.N)) AddItem(_model.ItemList.ItemList[5], 1, 10);
-        if (Input.GetKeyDown(KeyCode.M)) AddItem(_model.ItemList.ItemList[6], 1, 10);
-        if (Input.GetKeyDown(KeyCode.Comma)) AddItem(_model.ItemList.ItemList[7], 1, 10);
+        if (Input.GetKeyDown(KeyCode.Z)) _craft.AddItemByID(1101, 1, 10);
+        if (Input.GetKeyDown(KeyCode.X)) _craft.AddItemByID(1102, 1, 10);
+        if (Input.GetKeyDown(KeyCode.C)) _craft.AddItemByID(1201, 1, 10);
+        if (Input.GetKeyDown(KeyCode.V)) _craft.AddItemByID(1301, 1, 10);
+        if (Input.GetKeyDown(KeyCode.B)) _craft.AddItemByID(1401, 1, 10);
+        if (Input.GetKeyDown(KeyCode.N)) _craft.AddItemByID(1402, 1, 10);
 
 
         if (Input.GetKeyDown(KeyCode.Alpha1)) Controller.Equip(0);

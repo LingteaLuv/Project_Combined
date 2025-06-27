@@ -1,7 +1,6 @@
-using EPOOutline;
-using System.Collections;
+ 
 using System.Collections.Generic;
-using Unity.Properties;
+ 
 using UnityEngine;
 
 public class PlayerLooting : MonoBehaviour
@@ -29,15 +28,19 @@ public class PlayerLooting : MonoBehaviour
         }
     }
 
-    private void OnTriggerStay(Collider other)
+    private void OnTriggerStay(Collider other) // 들어온 것들 중 루팅 가능한 것, 가장 가까운 것 가리기
     {
         if (_colliders.Count == 0) return;
-        if (UIManage.Instance.IsModalUIOpened) return;
+        if (UIManage.Instance.Current == ModalUI.lootTable) return; //UI상태에선 아래 작업 하지 않음
         float distance = float.MaxValue;
         Collider near = null;
         foreach ( Collider c in _colliders)
         {
-            if (!_lootables[c].IsLootable) return;
+            if (c == null)
+            {
+                continue;
+            }
+            if (!_lootables[c].IsLootable) continue; //루팅 가능한 상태가 아니면 넘김
             float temp = (transform.position - c.transform.position).magnitude;
             if (temp < distance)
             {
@@ -47,6 +50,14 @@ public class PlayerLooting : MonoBehaviour
         }
         if (near == null) //루팅 가능한 콜라이더가 없었다. 
         {
+            if (_lootableColl != null) // 
+            {
+                Lootable temp = _lootables[_lootableColl];
+                temp.OffOutline();
+                temp.FUIController.OnDark();
+            }
+            _lootableColl = null;
+            _lootable = null;
             return;
         }
         if (_lootableColl == near) // 가장 가까운것과 이미 선택된 것이 같음
@@ -76,7 +87,7 @@ public class PlayerLooting : MonoBehaviour
             _colliders.Remove(other);
             _lootables.Remove(other);
         }
-        if (_lootableColl == other) 
+        if (_lootableColl == other) //선택되었던 것이 나가는 상황
         {
             _lootableColl = null;
             _lootable.OffOutline();
@@ -89,7 +100,14 @@ public class PlayerLooting : MonoBehaviour
     public void TryLoot()
     {
         if (_lootable == null) return;
-        LootManager.Instance.ToggleUI();
+        if (_lootable.Type == LootableType.box)
+        {
+            LootManager.Instance.ToggleUI();
+        }
+        else if (_lootable.Type == LootableType.pickup)
+        {
+            LootManager.Instance.Pickup();
+        }
 
     }
 }

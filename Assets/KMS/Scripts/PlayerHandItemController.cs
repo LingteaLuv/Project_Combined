@@ -1,13 +1,15 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.WSA;
+
 
 public class PlayerHandItemController : MonoBehaviour
 {
-    [SerializeField] public GameObject Right;
-    [SerializeField] public GameObject Left;
+    [SerializeField] public Transform Right;
+    [SerializeField] public Transform Left;
     [SerializeField] public PrefabListSO Prefabs;
+    [SerializeField] private PlayerAttack _playerAttack;
     public Dictionary<int, GameObject> PrefabIDs { get; set; } //id를 통해 장비 프리팹을 불러오기 위함
 
     public GameObject CurrentLeftItem;
@@ -15,14 +17,6 @@ public class PlayerHandItemController : MonoBehaviour
 
     private InventoryController _control;
     private InventoryModel _model;
-
-    private bool IsHoldingTwoHanded => _control.EquippedSlotIndex[0] == _control.EquippedSlotIndex[0];
-    private bool IsHoldingSpecial;
-    private bool IsHoldingGun;
-    private bool IsHoldingNothing;
-    private bool IsHoldingOnlyMelee;
-    private bool IsHoldingOnlyShield;
-    private bool IsHoldingMeleeAndShield;
 
     private void Awake()
     {
@@ -34,18 +28,24 @@ public class PlayerHandItemController : MonoBehaviour
             PrefabIDs.Add(Prefabs.IDList[i], Prefabs.List[i]);
         }
     }
-
-    public void Subscribe(HandType type, ItemHolder holder)
+    private void Start()
     {
-        if (type == HandType.left)
-        {
-            Left = holder.gameObject;
-        }
-        else
-        {
-            Right = holder.gameObject;
-        }
+        _playerAttack = UISceneLoader.Instance.Playerattack;
+        Right = _playerAttack._right_Hand_target.transform;
+        Left = _playerAttack._left_Hand_target.transform;
     }
+
+    //public void Subscribe(HandType type, ItemHolder holder)
+    //{
+    //    if (type == HandType.left)
+    //    {
+    //        Left = holder.gameObject;
+    //    }
+    //    else
+    //    {
+    //        Right = holder.gameObject;
+    //    }
+    //}
 
     public void HoldItem(HandType type, int id)
     {
@@ -53,23 +53,25 @@ public class PlayerHandItemController : MonoBehaviour
         if (type == HandType.left)
         {
             temp = PrefabIDs[id];
-            CurrentLeftItem = Instantiate(temp, Left.transform);
+            CurrentLeftItem = Instantiate(temp, Left);
         }
         else
         {
             temp = PrefabIDs[id];
-            CurrentRightItem = Instantiate(temp, Right.transform);
+            CurrentRightItem = Instantiate(temp, Right);
         }
     }
 
     public void UpdateItems()
     {
         DeholdBoth();
+        Debug.Log(369);
         int rightIndex = _control.EquippedSlotIndex[0];
         int leftIndex = _control.EquippedSlotIndex[1];
-        if (rightIndex == -1)
+        if ((rightIndex == leftIndex) && _model.InvItems[rightIndex] == null) return;
+        if (rightIndex == -1) //오른손 들린게 없다
         {
-            if (leftIndex != -1)
+            if (leftIndex != -1) //왼손은 들렸다.
             {
                 HoldItem(HandType.left, _model.InvItems[leftIndex].Data.ItemID);
                 return;
@@ -77,6 +79,7 @@ public class PlayerHandItemController : MonoBehaviour
             return;
         }
         HoldItem(HandType.right, _model.InvItems[rightIndex].Data.ItemID);
+        StartCoroutine(UW());
 
         // 왼손에 들린게 없거나 두손무기라면 스킵 방패라면 들어주고,
         if (leftIndex == -1)
@@ -91,6 +94,11 @@ public class PlayerHandItemController : MonoBehaviour
 
 
 
+    }
+    private IEnumerator UW() // 약간 지연 필요
+    {
+        yield return new WaitForEndOfFrame();
+        _playerAttack.UpdateWeapon();
     }
     public void DeholdItem(HandType type)
     {
@@ -117,4 +125,50 @@ public class PlayerHandItemController : MonoBehaviour
         DeholdItem(HandType.right);
     }
 
+    public void AnimationLoad(Item toEquip)
+    {
+        bool isBeforeitemNull;
+        Item before = null;
+        if (_control.EquippedSlotIndex[0] == -1)
+        {
+            isBeforeitemNull = true;
+        }
+        else
+        {
+            before = _model.InvItems[_control.EquippedSlotIndex[0]];
+            isBeforeitemNull = before == null ? true : false;
+        }
+
+        if (toEquip == null && isBeforeitemNull) //빈손 > 빈손 아무것도 안함
+        {
+            Debug.Log("빈손 에서 빈손");
+        }
+        else if (toEquip == null && !isBeforeitemNull) // 장비 > 빈손
+        {
+            ItemType temp = before.Data.Type;
+            if (temp == ItemType.Melee || temp == ItemType.Special || temp == ItemType.Gun)
+            {
+                Debug.Log("무기 에서 빈손");
+                //_playerAttack.WeaponToBarehands();
+            }
+        }
+        else if (toEquip != null && isBeforeitemNull) // 빈손 > 장비
+        {
+            ItemType temp = toEquip.Data.Type;
+            if (temp == ItemType.Melee || temp == ItemType.Special || temp == ItemType.Gun)
+            {
+                Debug.Log("빈손 에서 무기");
+                //_playerAttack.BarehandsToWeapon();
+            }
+        }
+        else // 무기 > 무기
+        {
+            ItemType temp = toEquip.Data.Type;
+            if (temp == ItemType.Melee || temp == ItemType.Special || temp == ItemType.Gun)
+            {
+                Debug.Log("무기 에서 무기");
+                //_playerAttack.WeaponToWeapon();
+            }
+        }
+    }
 }

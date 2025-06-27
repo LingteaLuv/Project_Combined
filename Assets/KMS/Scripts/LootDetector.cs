@@ -1,7 +1,6 @@
-using EPOOutline;
-using System.Collections;
+
 using System.Collections.Generic;
-using Unity.Properties;
+
 using UnityEngine;
 
 public class LootDetector : MonoBehaviour
@@ -14,7 +13,6 @@ public class LootDetector : MonoBehaviour
         if (other.gameObject.layer == 6)
         {
             _lootables.Add(other.GetComponentInChildren<Lootable>());
-            Debug.Log(1);
         }
     }
 
@@ -27,7 +25,6 @@ public class LootDetector : MonoBehaviour
             {
                 c.FUIController.OnFUI();
             }
-
         }
     }
     private void OnTriggerExit(Collider other)

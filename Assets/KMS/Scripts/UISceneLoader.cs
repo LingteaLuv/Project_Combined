@@ -1,19 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.SearchService;
+ 
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class UISceneLoader : MonoBehaviour
+public class UISceneLoader : SingletonT<UISceneLoader>
 {
-    [SerializeField] public ItemHolder Right;
-    [SerializeField] public ItemHolder Left;
+    [SerializeField] public PlayerAttack Playerattack;
+    private void Awake()
+    {
+        SceneManager.LoadScene("Demo_City_Universal_RenderPipeline", LoadSceneMode.Additive);
+        SetInstance();
+        SceneManager.LoadSceneAsync("UIScene", LoadSceneMode.Additive);
+        //StartCoroutine(DStart());
+    }
     private void Start()
     {
-        //SceneManager.LoadScene("UIScene", LoadSceneMode.Additive);
-        StartCoroutine(dStart());
+        
     }
-    IEnumerator dStart()
+    IEnumerator DStart()
     {
         // Additive 씬 비동기 로드 시작
         AsyncOperation loadOp = SceneManager.LoadSceneAsync("UIScene", LoadSceneMode.Additive);
@@ -24,7 +29,7 @@ public class UISceneLoader : MonoBehaviour
             yield return null;
         }
 
-        Right.Subscribe();
-        Left.Subscribe();
+        //Right.Subscribe();
+        //Left.Subscribe();
     }
 }

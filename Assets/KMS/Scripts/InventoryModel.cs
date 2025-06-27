@@ -1,15 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+
 using TMPro;
-using Unity.VisualScripting;
+
 using UnityEngine;
 using UnityEngine.UI;
 
 public class InventoryModel : MonoBehaviour
 {
-    [SerializeField] private ItemListSO _itemList;
-    public ItemListSO ItemList { get { return _itemList; } }
 
     [SerializeField] public TMP_Text Desc;
     [SerializeField] public GameObject TrashButton;

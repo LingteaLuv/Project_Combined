@@ -14,14 +14,14 @@ public class SceneMediator : MonoBehaviour
     
     private void Init()
     {
-        HudManager hudManager = FindObjectOfType<HudManager>();
-        if (hudManager != null)
+        HudController hudController = FindObjectOfType<HudController>();
+        if (hudController != null)
         {
-            hudManager.Init(_playerProperty);
+            hudController.Init(_playerProperty);
         }
         else
         {
-            Debug.LogError("HudManager를 찾을 수 없습니다");
+            Debug.LogError("HudController를 찾을 수 없습니다");
         }
     }
 }

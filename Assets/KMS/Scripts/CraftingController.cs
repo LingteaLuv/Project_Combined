@@ -1,12 +1,8 @@
-using PlasticPipe.PlasticProtocol.Messages;
-using System.Collections;
+
 using System.Collections.Generic;
-using System.Net.Mime;
-using Codice.CM.Common.Checkin.Partial;
+
 using UnityEngine;
-using UnityEngine.Serialization;
-using UnityEngine.UIElements;
-using static Codice.Client.Commands.WkTree.WorkspaceTreeNode;
+
 
 public class CraftingController : MonoBehaviour
 {
@@ -16,7 +12,10 @@ public class CraftingController : MonoBehaviour
     // ScriptableObject - New Item Dictionary 드래그해서 가져오기
     [SerializeField] private ItemDictionary _itemDictionary;
 
-    public InventoryController Controller { get; }
+    private InventoryController _control;
+    private InventoryRenderer _renderer;
+
+    [SerializeField] private RecipeSetting _rs;
 
     private void Awake()
     {
@@ -25,6 +24,8 @@ public class CraftingController : MonoBehaviour
     
     private void Init()
     {
+        _renderer = GetComponent<InventoryRenderer>();
+        _control = GetComponent<InventoryController>();
         CountByID = new Dictionary<int, int>();
         
         _itemDictionary.GenerateDic();
@@ -51,6 +52,11 @@ public class CraftingController : MonoBehaviour
         }
     }
     
+
+    public void UpdateCurrent()
+    {
+        UIBinder.Instance.GetInventory(CountByID);
+    }
     public void Add(int id, int count)
     {
         CountByID[id] += count;
@@ -60,7 +66,7 @@ public class CraftingController : MonoBehaviour
     {
         if (_itemDictionary.ItemDic.TryGetValue(id, out ItemBase item))
         {
-            return Controller.AddItem(item, count, dur);
+            return _control.AddItem(item, count, dur);
         }
         return false;
     }
@@ -68,7 +74,7 @@ public class CraftingController : MonoBehaviour
     {
         if (_itemDictionary.ItemDic.TryGetValue(id, out ItemBase item))
         {
-            return Controller.RemoveItem(item, count);
+            return _control.RemoveItem(item, count);
         }
         return false;
     }
@@ -134,6 +140,9 @@ public class CraftingController : MonoBehaviour
         RemoveItemByID(recipe.MaterialItemId4, recipe.MaterialItemQuantity4);
 
         AddItemByID(recipe.ResultItemId, recipe.ResultQuantity, GetMaxDur(recipe.ResultItemId));
+        UpdateCurrent();
+        StartCoroutine(_rs.DelayedUIUpdate());
+        _renderer.RenderInventory();
         return true;
     }
 }

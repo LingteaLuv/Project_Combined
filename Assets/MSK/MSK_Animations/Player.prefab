@@ -936,7 +936,7 @@ MonoBehaviour:
   _inputHandler: {fileID: 3020382743380400337}
   _property: {fileID: 9036376395550116184}
   _aim: {fileID: 0}
-  _jumpForce: 50
+  _jumpForce: 12
   _groundCheckDistance: 1.1
   _crouchSpeedMultiplier: 0.5
   fallMultiplier: 7
@@ -1040,6 +1040,9 @@ MonoBehaviour:
   _endAttackDelay: 1
   _canAttack: 1
   _isAttacking: 0
+  targetLayerIndex: 1
+  targetWeight: 1
+  weightChangeSpeed: 2
   _gunAlwaysPos: {fileID: 0}
   _gunEquipPos: {fileID: 0}
   _rotationSpeed: 5

@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using static Codice.Client.Commands.WkTree.WorkspaceTreeNode;
+
 
 public class Item
 {
@@ -11,6 +8,14 @@ public class Item
 
     public int MaxDurability { get; private set; }
     public int MaxStackSize { get; private set; }
+
+    //public HandType handType
+    //{
+    //    get
+    //    {
+    //
+    //    }
+    //}
 
     public Item(ItemBase data)
     {
@@ -48,5 +53,11 @@ public class Item
     public void SetDur(int c)
     {
         if (Data.Type == ItemType.Melee || Data.Type == ItemType.Shield || Data.Type == ItemType.Special) Durability = c;
+    }
+
+    public enum handType
+    {
+        oneHand,
+        twoHand
     }
 }

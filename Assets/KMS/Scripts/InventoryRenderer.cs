@@ -1,16 +1,15 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
+
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.XR;
-using static Codice.CM.Common.CmCallContext;
+
 
 public class InventoryRenderer : MonoBehaviour
 {
-    [SerializeField] private InventoryModel _model;
+    private InventoryModel _model;
 
+    private void Awake()
+    {
+        _model = GetComponent<InventoryModel>();
+    }
     private void Start()
     {
         RenderInventory();
@@ -111,13 +110,13 @@ public class InventoryRenderer : MonoBehaviour
             return;
         }
         ItemType type = _model.InvItems[index].Data.Type;
-        if (type == ItemType.Material || type == ItemType.ETC)
+        if (type == ItemType.Material)
         {
             _model.UtilButton.SetActive(false);
             return;
         }
         _model.UtilButton.SetActive(true);
-        if (type == ItemType.Gun || type == ItemType.Melee || type == ItemType.Special || type == ItemType.Shield)
+        if (type == ItemType.Gun || type == ItemType.Melee || type == ItemType.Special || type == ItemType.Shield || type == ItemType.Consumable)
         {
             _model.UtilButtonText.text = "Equip";
         }
