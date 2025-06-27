@@ -19,6 +19,7 @@ public class PlayerCameraController : MonoBehaviour
     {
         Offset += Input.GetAxis("Mouse X") * _mouseSensitivity;
     }
+
     public void PauseCamera()
     {
         _cinemachineBrain.enabled = false;
