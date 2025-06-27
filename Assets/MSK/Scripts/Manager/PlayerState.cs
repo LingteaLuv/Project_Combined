@@ -37,5 +37,16 @@ public abstract class PlayerState
         }
         return false;
     }
+    protected bool EnterFallState(float delay = 0.5f)
+    {
+        if (!_movement.IsGrounded && _movement.Rigidbody.velocity.y < -0.1f)
+        {
+            _fallTimer += Time.deltaTime;
+            return _fallTimer >= delay;
+        }
+
+        _fallTimer = 0f;
+        return false;
+    }
 }
 
