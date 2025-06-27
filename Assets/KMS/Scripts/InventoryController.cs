@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using System.Linq;
+using System;
 
 
 public class InventoryController : MonoBehaviour
@@ -38,10 +39,13 @@ public class InventoryController : MonoBehaviour
         SelectedIndex = -1;
         _beforeSelectedIndex = -1;
 
-        EquippedSlotIndex = new int[] { -1, -1 };
+        EquippedSlotIndex = new int[] { 0, 0 };
     }
 
-
+    private void Start()
+    {
+        _renderer.RenderEquip(EquippedSlotIndex);
+    }
     private bool[] GetFlags(ItemBase item)
     {
         bool[] flags = new bool[18]; //false 인 경우에만 들어갈 수 있음
@@ -61,6 +65,7 @@ public class InventoryController : MonoBehaviour
     {
         if (EquippedSlotIndex[index] == -1) return; //해당 손에 아무것도 없음
         Item target = _model.InvItems[EquippedSlotIndex[index]]; //그 손에 들린 아이템
+        if (target == null) return; // 빈 공간을 들고있음
         if (target.MaxDurability == -1) return; //손의 아이템이 내구도가 존재하지않음
         target.SetDur(target.Durability - amount);
         if (target.Durability <= 0)
@@ -77,8 +82,8 @@ public class InventoryController : MonoBehaviour
     public void RemoveEquippedItem(int index) // 왼손 또는 오른손 아이템 삭제
     {
         int temp = EquippedSlotIndex[index];
-        UnEquip(EquippedSlotIndex[index]);
         RemoveItem(temp);
+        UnEquipAfterRemove(EquippedSlotIndex[index]);
         _renderer.RenderInventory();
     }
     private void Swap(int a, int b)
@@ -99,7 +104,7 @@ public class InventoryController : MonoBehaviour
     public void UseETCItemButton(int index)
     {
         Item exist = _model.InvItems[index];
-        if (exist.Data.Type != ItemType.ETC) return;
+        if (exist.Data.Type != ItemType.ETC) return; // 이후 장비아이템에 대한 equipbutton실행될듯
         TextManager.Instance.MemoPopUpText($"{exist.Data.ItemID}");
     }
     
@@ -107,7 +112,7 @@ public class InventoryController : MonoBehaviour
     {
         Item exist = _model.InvItems[index];
         if (exist.Data.Type == ItemType.ETC) return;
-        if (EquippedSlotIndex[0] == -1 && EquippedSlotIndex[1] == -1) // 선택된게 아예없다면
+        if (EquippedSlotIndex[0] == -1 && EquippedSlotIndex[1] == -1) // 선택된게 아예없다면 (이 상황은 없음)
         {
             for (int i= 0; i < 6; i++) // 빈 칸 추척
             {
@@ -124,7 +129,7 @@ public class InventoryController : MonoBehaviour
             Swap(0, index);
             Equip(0, false);
         }
-        else if (EquippedSlotIndex[0] != -1 && EquippedSlotIndex[1] != -1)
+        else if (EquippedSlotIndex[0] != -1 && EquippedSlotIndex[1] != -1) //양손을 사용하는 상황
         {
             if (EquippedSlotIndex[0] == EquippedSlotIndex[1]) // 두손장비가 선택된상태 (두손을 사용하는 무언가)
             {
@@ -153,13 +158,47 @@ public class InventoryController : MonoBehaviour
                 }
             }
         }
-        else if (EquippedSlotIndex[0] != -1 && EquippedSlotIndex[1] == -1) //무기칸에만 있음 (방패만 선택됨)
+        else if (EquippedSlotIndex[0] != -1 && EquippedSlotIndex[1] == -1) //밀리칸에만 있음
         {
+            // 이 경우  방패 착용 시 예외 (방패 추가 착용)
+            if (exist.Data.Type == ItemType.Shield)
+            {
+                for (int i = 0; i < 6; i++) // 빈 칸 추척
+                {
+                    if (_model.InvItems[i] == null)
+                    {
+                        _model.InvItems[i] = _model.InvItems[index];
+                        _model.InvItems[index] = null;
+                        Equip(i, false);
+                        SelectSlot(index); //껴준 후 기존칸 선택 시도
+                        _renderer.RenderInventory();
+                        return;
+                    }
+                }
+                return; //빈칸없음 그냥 끼지말것
+            }
             Swap(EquippedSlotIndex[0], index);
             Equip(EquippedSlotIndex[0], false);
         }
-        else if (EquippedSlotIndex[0] == -1 && EquippedSlotIndex[1] != -1) //방패칸에만 있음 (무기만 선택됨)
+        else if (EquippedSlotIndex[0] == -1 && EquippedSlotIndex[1] != -1) //방패칸에만 있음
         {
+            //이 경우 밀리 착용 시 예외
+            if (exist.Data.Type == ItemType.Melee)
+            {
+                for (int i = 0; i < 6; i++) // 빈 칸 추척
+                {
+                    if (_model.InvItems[i] == null)
+                    {
+                        _model.InvItems[i] = _model.InvItems[index];
+                        _model.InvItems[index] = null;
+                        Equip(i, false);
+                        SelectSlot(index); //껴준 후 기존칸 선택 시도
+                        _renderer.RenderInventory();
+                        return;
+                    }
+                }
+                return;
+            }
             Swap(EquippedSlotIndex[1], index);
             Equip(EquippedSlotIndex[1], false);
         }
@@ -180,9 +219,14 @@ public class InventoryController : MonoBehaviour
         return false;
     }
 
+    public void NewEquip(int index) //해당 칸 아이템 장착
+    {
+
+    }
     public void Equip(int index, bool a = true) //해당 칸 아이템에 대한 장착 시도
     {
         Item exist = _model.InvItems[index];
+        if (a) _hand.AnimationLoad(exist); //a는 애니 실행 여부
         if (exist == null) // 아무것도 안 든다.
         {
             EquippedSlotIndex[0] = index;
@@ -226,7 +270,7 @@ public class InventoryController : MonoBehaviour
 
         }
         _renderer.RenderEquip(EquippedSlotIndex);
-        if (a) _hand.AnimationLoad(exist);
+        
          _hand.UpdateItems();
     }
 
@@ -255,9 +299,44 @@ public class InventoryController : MonoBehaviour
         }
         _renderer.RenderEquip(EquippedSlotIndex);
         _hand.UpdateItems();
-
-
     }
+    public void UnEquipAfterRemove(int index)
+    {
+        if (EquippedSlotIndex[0] != index && EquippedSlotIndex[1] != index)
+        {
+            return; //착용된 칸이 아님
+        }
+        if (EquippedSlotIndex[0] != -1 && EquippedSlotIndex[1] != -1)
+        {
+            if (EquippedSlotIndex[0] == EquippedSlotIndex[1])
+            {
+                return;
+            }
+            else
+            {
+                if (EquippedSlotIndex[0] == index)
+                {
+                    EquippedSlotIndex[0] = -1;
+                }
+                else
+                {
+                    EquippedSlotIndex[1] = -1;
+                }
+            }
+        }
+        else if (EquippedSlotIndex[0] == -1 && EquippedSlotIndex[1] != -1)
+        {
+            EquippedSlotIndex[0] = EquippedSlotIndex[1];
+        }
+        else if (EquippedSlotIndex[0] != -1 && EquippedSlotIndex[1] == -1)
+        {
+            EquippedSlotIndex[1] = EquippedSlotIndex[0];
+        }
+        _renderer.RenderEquip(EquippedSlotIndex);
+        _hand.UpdateItems();
+    }
+
+
     private void AutoEquip(int index) // 아무것도 선택되어 있지 않거나, 
     {
         Item exist = _model.InvItems[index];
@@ -304,7 +383,7 @@ public class InventoryController : MonoBehaviour
                 if (_model.InvItems[i].StackCount <= a)
                 {
                     a -= _model.InvItems[i].StackCount;
-                    if (i < 6) UnEquip(i); // 장비창의 아이템이 빠져나갈 경우 장착 해제
+                    if (i < 6) UnEquipAfterRemove(i); // 장비창의 아이템이 빠져나갈 경우 장착 해제
                     _model.InvItems[i] = null;
                 }
                 else if (_model.InvItems[i].StackCount > a)
@@ -416,14 +495,17 @@ public class InventoryController : MonoBehaviour
                     _model.InvItems[addables[i]] = new Item(item);
                     _model.InvItems[addables[i]].StackCount = MaxStack;
                     _model.InvItems[addables[i]].Durability = durability;
-
-
+                }
+                if (addables[i] == EquippedSlotIndex[0]) //들어간 칸이 현재 손에 든 빈칸이었다면,
+                {
+                    //해당 칸에 대한 착용
+                    Equip(addables[i]);
                 }
             }
-            if (addables[0] < 6 && item.Type != ItemType.Consumable)
-            {
-                AutoEquip(addables[0]); // 소모품이 아니고, 아이템이 들어온 첫 번째 칸이 퀵슬롯에 포함되어 있을 경우, 퀵슬롯 인덱스
-            }
+            //if (addables[0] < 6 && item.Type != ItemType.Consumable)
+            //{
+            //    AutoEquip(addables[0]); // 소모품이 아니고, 아이템이 들어온 첫 번째 칸이 퀵슬롯에 포함되어 있을 경우, 퀵슬롯 인덱스
+            //}
             _crafting.Add(item.ItemID, amount);
             _renderer.RenderInventory();
             return true;
@@ -537,7 +619,7 @@ public class InventoryController : MonoBehaviour
     public void RemoveItem(int index) // 해당 칸 위치의 아이템 지움
     {
         _crafting.CountByID[_model.InvItems[index].Data.ItemID] -= _model.InvItems[index].StackCount;
-        _model.InvItems[SelectedIndex] = null;
+        _model.InvItems[index] = null;
         _renderer.RenderInventory();
     }
 

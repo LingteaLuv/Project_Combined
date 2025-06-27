@@ -14,10 +14,6 @@ public class PlayerLooting : MonoBehaviour
     private Collider _lootableColl = null;
 
     private Lootable _lootable = null;
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.F)) TryLoot();
-    }
     private void OnTriggerEnter(Collider other) //레이어 6 콜라이더랑 만났을 경우 리스트에 추가
     {
         if (other.gameObject.layer == 6)
