@@ -99,4 +99,34 @@ public static class AnimatorUtil
 
         return true;
     }
+
+    public static Coroutine SetLayerWeightSmooth(MonoBehaviour owner, Animator animator, int layerIndex, float targetWeight, float duration = 0.3f, bool showLog = false)
+    {
+        if (!ValidateAnimator(animator, layerIndex))
+            return null;
+
+        return owner.StartCoroutine(LerpLayerWeight(animator, layerIndex, targetWeight, duration, showLog));
+    }
+
+    private static IEnumerator LerpLayerWeight(Animator animator, int layerIndex, float targetWeight, float duration, bool showLog)
+    {
+        float startWeight = animator.GetLayerWeight(layerIndex);
+        float elapsed = 0f;
+
+        targetWeight = Mathf.Clamp01(targetWeight);
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+            float newWeight = Mathf.Lerp(startWeight, targetWeight, t);
+            animator.SetLayerWeight(layerIndex, newWeight);
+            yield return null;
+        }
+
+        animator.SetLayerWeight(layerIndex, targetWeight); // 보정
+
+        if (showLog)
+            Debug.Log($"[AnimatorUtility] 레이어 {layerIndex}의 가중치를 {targetWeight:F2}로 부드럽게 설정 완료");
+    }
 }

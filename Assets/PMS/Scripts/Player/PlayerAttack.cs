@@ -151,7 +151,8 @@ public class PlayerAttack : MonoBehaviour
     private void StartThrowAttack()
     {
         _animator.SetTrigger("Throw");
-        _animator.SetLayerWeight(4, 1); //Throw Layer 
+        AnimatorUtil.SetLayerWeightSmooth(this, _animator, 4, 1f, 0.5f); // 0.5초 동안 레이어 1의 가중치를 1로 변경
+        //_animator.SetLayerWeight(4, 1); //Throw Layer 
     }
 
     //원거리 공격
