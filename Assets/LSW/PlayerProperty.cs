@@ -238,4 +238,7 @@ public class PlayerProperty : MonoBehaviour
         MoveSpeed = new Property<float>(_baseMoveSpeed);
         AtkDamage = new Property<float>(_baseAtkDamage);
     }
+
+    //Todo : public void Consume(Itembase item){} 아이템 효과를 플레이어에게 적용시키는 함수를 부탁드립니다.
+    //ItemConsumeManage 클래스에서 사용될 것 같습니다.  - 김문성
 }

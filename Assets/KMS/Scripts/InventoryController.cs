@@ -112,7 +112,7 @@ public class InventoryController : MonoBehaviour
     {
         Item exist = _model.InvItems[index];
         if (exist.Data.Type == ItemType.ETC) return;
-        if (EquippedSlotIndex[0] == -1 && EquippedSlotIndex[1] == -1) // 선택된게 아예없다면
+        if (EquippedSlotIndex[0] == -1 && EquippedSlotIndex[1] == -1) // 선택된게 아예없다면 (이 상황은 없음)
         {
             for (int i= 0; i < 6; i++) // 빈 칸 추척
             {
@@ -129,7 +129,7 @@ public class InventoryController : MonoBehaviour
             Swap(0, index);
             Equip(0, false);
         }
-        else if (EquippedSlotIndex[0] != -1 && EquippedSlotIndex[1] != -1)
+        else if (EquippedSlotIndex[0] != -1 && EquippedSlotIndex[1] != -1) //양손을 사용하는 상황
         {
             if (EquippedSlotIndex[0] == EquippedSlotIndex[1]) // 두손장비가 선택된상태 (두손을 사용하는 무언가)
             {
@@ -158,13 +158,47 @@ public class InventoryController : MonoBehaviour
                 }
             }
         }
-        else if (EquippedSlotIndex[0] != -1 && EquippedSlotIndex[1] == -1) //무기칸에만 있음 (방패만 선택됨)
+        else if (EquippedSlotIndex[0] != -1 && EquippedSlotIndex[1] == -1) //밀리칸에만 있음
         {
+            // 이 경우  방패 착용 시 예외 (방패 추가 착용)
+            if (exist.Data.Type == ItemType.Shield)
+            {
+                for (int i = 0; i < 6; i++) // 빈 칸 추척
+                {
+                    if (_model.InvItems[i] == null)
+                    {
+                        _model.InvItems[i] = _model.InvItems[index];
+                        _model.InvItems[index] = null;
+                        Equip(i, false);
+                        SelectSlot(index); //껴준 후 기존칸 선택 시도
+                        _renderer.RenderInventory();
+                        return;
+                    }
+                }
+                return; //빈칸없음 그냥 끼지말것
+            }
             Swap(EquippedSlotIndex[0], index);
             Equip(EquippedSlotIndex[0], false);
         }
-        else if (EquippedSlotIndex[0] == -1 && EquippedSlotIndex[1] != -1) //방패칸에만 있음 (무기만 선택됨)
+        else if (EquippedSlotIndex[0] == -1 && EquippedSlotIndex[1] != -1) //방패칸에만 있음
         {
+            //이 경우 밀리 착용 시 예외
+            if (exist.Data.Type == ItemType.Melee)
+            {
+                for (int i = 0; i < 6; i++) // 빈 칸 추척
+                {
+                    if (_model.InvItems[i] == null)
+                    {
+                        _model.InvItems[i] = _model.InvItems[index];
+                        _model.InvItems[index] = null;
+                        Equip(i, false);
+                        SelectSlot(index); //껴준 후 기존칸 선택 시도
+                        _renderer.RenderInventory();
+                        return;
+                    }
+                }
+                return;
+            }
             Swap(EquippedSlotIndex[1], index);
             Equip(EquippedSlotIndex[1], false);
         }

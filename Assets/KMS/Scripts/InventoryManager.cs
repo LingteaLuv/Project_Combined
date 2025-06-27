@@ -104,7 +104,9 @@ public class InventoryManager : SingletonT<InventoryManager>
         if (Input.GetKeyDown(KeyCode.O)) DecreaseShieldDurability();
 
 
-        HoldSlot.transform.position = Input.mousePosition;
+
+        if (Input.GetKeyDown(KeyCode.U)) //사용
+         HoldSlot.transform.position = Input.mousePosition;
     }
 
 
@@ -127,11 +129,11 @@ public class InventoryManager : SingletonT<InventoryManager>
        return _model.InvItems[_controller.EquippedSlotIndex[hand]].Data;
     }
 
-    public bool FindItem(int id, bool remove = true) //해당 아이템 있으면 1개 지우고 true 반환.
+    public bool FindItemByID(int id, bool remove = true) //해당 아이템 있으면 1개 지우고 true 반환.
     {
         if (_craft.CountByID[id] > 0)
         {
-            if (remove)
+            if (remove) // true(기본값) 이면 지움
             {
                 _controller.RemoveItem(_itemDictionary.ItemDic[id], 1);
             }
