@@ -46,7 +46,7 @@ public class PlayerLooting : MonoBehaviour
         }
         if (near == null) //루팅 가능한 콜라이더가 없었다. 
         {
-            if (_lootableColl != null) // 
+            if (_lootableColl != null) //기존 루트가능한거 딱 하나 있다가 이게 루트 끝나고 불가능이 된 상황
             {
                 Lootable temp = _lootables[_lootableColl];
                 temp.OffOutline();

@@ -33,7 +33,25 @@ public class Lootable : MonoBehaviour
         OffOutline();
         if (After != null) After.SetActive(false);
     }
-
+    private void Start()
+    {
+        for (int i = 0; i < 6; i++)
+        {
+            if (LootItems.Items[i] != null) return;
+        }
+        IsLootable = false;
+        if (DestroyAfterLooting) // 루팅 완료 시 파괴
+        {
+            Lootable temp = this;
+            if (temp.After != null) //다음에 전환할 것이 있음
+            {
+                Vector3 posOffset = temp.transform.root.position + Vector3.up * 0.23f;
+                GameObject g = Instantiate(temp.After, posOffset, temp.transform.root.rotation);
+                g.SetActive(true);
+            }
+            Destroy(temp.transform.root.gameObject);
+        }
+    }
     public void OnOutline()
     {
         _outlinable.enabled = true;
