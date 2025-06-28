@@ -10,9 +10,7 @@ public class PlayerInputHandler : MonoBehaviour
     public bool CrouchHeld { get; private set; }
     public bool IsOnLadder { get; private set;} 
     public bool InteractPressed { get; private set; }
-
-
-
+    
     private void Update()
     {
         float x = Input.GetAxis("Horizontal");
