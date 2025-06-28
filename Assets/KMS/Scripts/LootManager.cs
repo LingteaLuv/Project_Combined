@@ -123,6 +123,7 @@ public class LootManager : SingletonT<LootManager>
     }
     public void GetItem(int index) //UI내 아이템 클릭 시 호출
     {
+        if (_lootable == null) return;
         if (_lootable.LootItems.Items[index] == null) return;
         ItemBase data = _lootable.LootItems.Items[index].Data;
         int count = _lootable.LootItems.Items[index].StackCount;
@@ -134,7 +135,7 @@ public class LootManager : SingletonT<LootManager>
             {
                 LootTableUpdate();
             }
-            if (ItemsAllNull()) // 더이상 루팅 가능한 아이템이 없을 경우
+           if (ItemsAllNull()) // 더이상 루팅 가능한 아이템이 없을 경우
             {
                 AfterLooting();
             }

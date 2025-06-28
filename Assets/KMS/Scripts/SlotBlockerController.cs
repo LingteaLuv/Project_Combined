@@ -25,7 +25,7 @@ public class SlotBlockerController : MonoBehaviour
     }
     private IEnumerator WaitAndPrint()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(1f);
         LootManager.Instance.RemoveBlocker(GetSlotIndex());
     }
     private int GetSlotIndex()
