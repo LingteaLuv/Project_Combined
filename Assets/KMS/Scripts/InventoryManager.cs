@@ -48,18 +48,18 @@ public class InventoryManager : SingletonT<InventoryManager>
 
     public void ToggleUI()
     {
-        UIManage.Instance.ToggleUI(ModalUI.inventory);
+        UIManager.Instance.ToggleUI(ModalUI.inventory);
         _renderer.RenderInventory();
     }
 
     public void AlignInvWithCraft()
     {
-        UIManage.Instance.InvUI.transform.position = UIManage.Instance.CraftUI.transform.position;
+        UIManager.Instance.InvUI.transform.position = UIManager.Instance.CraftUI.transform.position;
         //Debug.Log(111);
     }
     public void AlignCraftWithInv()
     {
-        UIManage.Instance.CraftUI.transform.position = UIManage.Instance.InvUI.transform.position;
+        UIManager.Instance.CraftUI.transform.position = UIManager.Instance.InvUI.transform.position;
         //Debug.Log(222);
     }
 
