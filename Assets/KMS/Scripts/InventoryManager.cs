@@ -102,11 +102,7 @@ public class InventoryManager : SingletonT<InventoryManager>
 
         if (Input.GetKeyDown(KeyCode.P)) DecreaseWeaponDurability();
         if (Input.GetKeyDown(KeyCode.O)) DecreaseShieldDurability();
-
-
-
-        if (Input.GetKeyDown(KeyCode.U)) //사용
-         HoldSlot.transform.position = Input.mousePosition;
+        HoldSlot.transform.position = Input.mousePosition;
     }
 
 

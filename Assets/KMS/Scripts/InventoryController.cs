@@ -78,14 +78,6 @@ public class InventoryController : MonoBehaviour
         }
 
     }
-
-    public void RemoveEquippedItem(int index) // 왼손 또는 오른손 아이템 삭제
-    {
-        int temp = EquippedSlotIndex[index];
-        RemoveItem(temp);
-        UnEquipAfterRemove(EquippedSlotIndex[index]);
-        _renderer.RenderInventory();
-    }
     private void Swap(int a, int b)
     {
         Item tempItem;
@@ -269,6 +261,12 @@ public class InventoryController : MonoBehaviour
             EquippedSlotIndex[1] = index;
 
         }
+        else if (exist.Data.Type == ItemType.Throw)
+        {
+            EquippedSlotIndex[0] = index;
+            EquippedSlotIndex[1] = index;
+
+        }
         _renderer.RenderEquip(EquippedSlotIndex);
         
          _hand.UpdateItems();
@@ -413,6 +411,7 @@ public class InventoryController : MonoBehaviour
 
         int MaxStack = 1;
         if (item is EtcItem) MaxStack = (item as EtcItem).MaxStackSize;
+        if (item is ThrowItem) MaxStack = (item as ThrowItem).MaxStack;
         for (int i = 0; i < _model.SlotCount; i++)
         {
             if (flags[i]) continue; // 아이템 종류에 따른 flag 스킵
@@ -608,7 +607,13 @@ public class InventoryController : MonoBehaviour
         }
 
     }
-
+    public void RemoveEquippedItem(int index) // 왼손 또는 오른손 아이템 삭제
+    {
+        int temp = EquippedSlotIndex[index];
+        RemoveItem(temp);
+        UnEquipAfterRemove(EquippedSlotIndex[index]);
+        _renderer.RenderInventory();
+    }
     public void RemoveSelectedItem()
     {
         _crafting.CountByID[_model.InvItems[SelectedIndex].Data.ItemID] -= _model.InvItems[SelectedIndex].StackCount;
@@ -620,6 +625,32 @@ public class InventoryController : MonoBehaviour
     {
         _crafting.CountByID[_model.InvItems[index].Data.ItemID] -= _model.InvItems[index].StackCount;
         _model.InvItems[index] = null;
+        _renderer.RenderInventory();
+    }
+
+    public void ReduceEquippedItem(int index, int count) // 왼손 또는 오른손 아이템 줄임
+    {
+        int temp = EquippedSlotIndex[index];
+        ReduceItem(temp, count);
+        if (_model.InvItems[temp] == null) //줄였더니 비게 된 상황 (포션 다 처먹음)
+        {
+            UnEquipAfterRemove(temp);
+            _renderer.RenderInventory();
+        }
+
+    }
+    public void ReduceItem(int index, int count) //해당 칸 위치 아이템 개수만큼 (뺄 수 있는 만큼만) 지움
+    {
+        int cur = _model.InvItems[index].StackCount;
+        if (cur <= count)
+        {
+            RemoveItem(index);
+        }
+        else
+        {
+            _crafting.CountByID[_model.InvItems[index].Data.ItemID] -= count;
+            _model.InvItems[index].StackCount -= count;
+        }
         _renderer.RenderInventory();
     }
 
