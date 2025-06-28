@@ -9,13 +9,14 @@ public class ItemConsumeManage : MonoBehaviour
     private InventoryModel _model;
     private CraftingController _craft;
     private PlayerProperty _property;
+    private IConsumeHandler _consume;
 
     private void Awake()
     {
         _control = GetComponent<InventoryController>();
         _craft = GetComponent<CraftingController>();
         _model = GetComponent<InventoryModel>();
-        _property = UISceneLoader.Instance.Playerattack.GetComponent<PlayerProperty>();
+        _consume = UISceneLoader.Instance.Playerattack.GetComponent<IConsumeHandler>();
     }
     public void Consume()
     {
