@@ -156,6 +156,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 034bc47afcbf5e141a58d5c20b7808e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &380843022 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4764051486618619479, guid: acd1b0755416bac4f8fe43c6150a258d, type: 3}
+  m_PrefabInstance: {fileID: 4787468769537701658}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &502204145 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1741205231021210, guid: b87cb604b959698428935c5d56bd97c0, type: 3}
@@ -1199,28 +1204,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2273503982419426834, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
   m_PrefabInstance: {fileID: 1464578575}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1512017033 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5741351822468992651, guid: acd1b0755416bac4f8fe43c6150a258d, type: 3}
-  m_PrefabInstance: {fileID: 4787468769537701658}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1512017034 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4764051486618619479, guid: acd1b0755416bac4f8fe43c6150a258d, type: 3}
-  m_PrefabInstance: {fileID: 4787468769537701658}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1512017035
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1512017033}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7048c76e97ab66b4184ea09a157c0589, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1605065356 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9098318572824983363, guid: 01582dd6d6bb2c84ab79268c477e2e18, type: 3}
@@ -1704,7 +1687,7 @@ PrefabInstance:
     - target: {fileID: 6141260094994484151, guid: acd1b0755416bac4f8fe43c6150a258d, type: 3}
       propertyPath: _cameraRig
       value: 
-      objectReference: {fileID: 1512017034}
+      objectReference: {fileID: 380843022}
     - target: {fileID: 6141260094994484151, guid: acd1b0755416bac4f8fe43c6150a258d, type: 3}
       propertyPath: _cinemachineBrain
       value: 
@@ -1724,12 +1707,10 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 3275887340441603833, guid: acd1b0755416bac4f8fe43c6150a258d, type: 3}
     - {fileID: 4067995189814172864, guid: acd1b0755416bac4f8fe43c6150a258d, type: 3}
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 3488845775353435380, guid: acd1b0755416bac4f8fe43c6150a258d, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 5741351822468992651, guid: acd1b0755416bac4f8fe43c6150a258d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1512017035}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: acd1b0755416bac4f8fe43c6150a258d, type: 3}
 --- !u!114 &8924569071353810232 stripped
 MonoBehaviour:
