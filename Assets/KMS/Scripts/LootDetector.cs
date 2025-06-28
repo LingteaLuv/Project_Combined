@@ -21,9 +21,14 @@ public class LootDetector : MonoBehaviour
         if (_lootables.Count == 0) return;
         foreach ( Lootable c in _lootables)
         {
+            if (c == null) continue;
             if (c.IsLootable)
             {
                 c.FUIController.OnFUI();
+            }
+            else
+            {
+                c.FUIController.OffFUI();
             }
         }
     }
