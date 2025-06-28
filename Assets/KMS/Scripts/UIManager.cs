@@ -10,7 +10,7 @@ public enum ModalUI
     inventory,
     lootTable
 }
-public class UIManage : SingletonT<UIManage>
+public class UIManager : SingletonT<UIManager>
 {
     [SerializeField] public GameObject ModalBase;
     [SerializeField] public GameObject LootUI;
@@ -26,7 +26,7 @@ public class UIManage : SingletonT<UIManage>
     private Coroutine _coroutine;
     private WaitForEndOfFrame _wait;
 
-    public bool IsModalUIOpened { get; set; }
+    public Property<bool> IsUIOpened;
     public ModalUI Current { get; set; }
     private void Awake()
     {
@@ -34,7 +34,7 @@ public class UIManage : SingletonT<UIManage>
         _invRect = InvUI.GetComponent<RectTransform>();
         _playerLoot = UISceneLoader.Instance.Playerattack.gameObject.GetComponentInChildren<PlayerLooting>();
         SetInstance();
-        IsModalUIOpened = false;
+        IsUIOpened = new Property<bool>(false);
         Current = ModalUI.nothing;
         UIGroup.alpha = 0;
         _wait = new WaitForEndOfFrame();
@@ -46,7 +46,25 @@ public class UIManage : SingletonT<UIManage>
         LootUI.SetActive(false);
         InvUI.SetActive(false);
         CraftUI.SetActive(false);
+        
+        IsUIOpened.OnChanged += SetCursorLock;
+        SetCursorLock(IsUIOpened.Value);
     }
+    
+    private void SetCursorLock(bool isUIOpened)
+    {
+        if (!isUIOpened)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+    }
+    
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape)) CloseUI();
@@ -62,8 +80,8 @@ public class UIManage : SingletonT<UIManage>
     }
     public void OpenUI(ModalUI cur)
     {
-        if (IsModalUIOpened) return; //다른게 열려있음
-        IsModalUIOpened = true;
+        if (IsUIOpened.Value) return; //다른게 열려있음
+        IsUIOpened.Value = true;
         ModalBase.SetActive(true);
         Current = cur;
         if (Current == ModalUI.inventory)
@@ -89,7 +107,7 @@ public class UIManage : SingletonT<UIManage>
     }
     public void CloseUI()
     {
-        if (!IsModalUIOpened) return; //열린게 없음
+        if (!IsUIOpened.Value) return; //열린게 없음
         if (_coroutine != null)
         {
             StopCoroutine(_coroutine);
@@ -107,8 +125,6 @@ public class UIManage : SingletonT<UIManage>
         {
             OpenUI(cur);
         }
-
-
     }
 
     private void SetUIPos(RectTransform UITrs, int x, int y)
@@ -136,7 +152,7 @@ public class UIManage : SingletonT<UIManage>
         InvUI.SetActive(false);
         CraftUI.SetActive(false);
         ModalBase.SetActive(false);
-        IsModalUIOpened = false;
+        IsUIOpened.Value = false;
         Current = ModalUI.nothing;
     }
 }
