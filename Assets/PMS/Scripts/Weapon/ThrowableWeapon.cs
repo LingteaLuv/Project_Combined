@@ -4,20 +4,26 @@ using UnityEngine;
 
 public class ThrowableWeapon : WeaponBase
 {
+    /*
+     * public class ThrowItem : ItemBase
+    public float Range;
+    public int MaxStack; //?
+    public string ThrowSoundResource;
+    */
+
+    [SerializeField] private ThrowItem _throwItem;
+    
     [Header("References")]
-    public Transform cam; //일단 1인칭으로 해보자
-    public Transform attackPoint;
-    public GameObject objectToThrow;
+    public Transform cam;               //카메라 시점
+    public Transform attackPoint;       //투척 포인트
+    //public GameObject objectToThrow;  //던질 게임 오브젝트 프리팹 -> 추후 오브젝트 풀링 생각해보기 생성/파괴 관련
 
     [Header("Settings")]
-    public int throwCooldown; //던지기 쿨다운
+    public int throwCooldown;           //던지기 쿨다운
 
-    [Header("Throwing")]
-    public KeyCode throwKey = KeyCode.Mouse0;  //던지기 키코드
-    public float throwForce;                    //던지는 힘 
-    public float throwUpwardForce;              //던지기 위쪽 힘 
+    private float throwUpwardForce;     //던지기 위쪽 힘 
 
-    private bool readyToThrow;
+    private bool readyToThrow;          
 
     private void Start() => readyToThrow = true;
 
@@ -35,16 +41,30 @@ public class ThrowableWeapon : WeaponBase
 
         transform.parent = null; // 손에서 분리
 
-        rb.AddForce(cam.forward * 5.0f, ForceMode.Impulse);
+        rb.AddForce(cam.forward * _throwItem.Rof, ForceMode.Impulse);
+
+        rb.isKinematic = true;
 
         rb.useGravity = true;
 
         Invoke(nameof(ResetThrow), throwCooldown); //이런 식으로 간단한 쿨타임 구현이 가능
+        
+        //해당 오브젝트 파괴 시점을 고려해봐야 할것 같다.
+        Destroy(gameObject,10.0f); 
     }
 
     private void Throw()
     {
         readyToThrow = false;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        //패턴 매칭
+        if (collision.gameObject.GetComponent<IDamageable>() is IDamageable damageable)
+        {
+            damageable.Damaged(_throwItem.AtkDamage);
+        }
     }
 
     /*private void Throw()
@@ -82,33 +102,10 @@ public class ThrowableWeapon : WeaponBase
         readyToThrow = true;
     }
 
-    /*[Header("수류탄 셋팅값")]
-    [SerializeField] private GameObject _throwPrefab;
-    [SerializeField] private Transform _throwPoint;
-    [SerializeField] [Range(0,5)] private float _speed;
-    */
     public override bool IsAttack => throw new System.NotImplementedException();
-    
-
 
     private void Reset()
     {
         ItemType = ItemType.Throw;
     }
-
-    /*private void Throw()
-    {
-        GameObject instance = Instantiate(_throwPrefab,_throwPoint.position,Quaternion.identity);
-        Rigidbody rb = instance.GetComponent<Rigidbody>();
-        rb.velocity = transform.forward * _speed;
-    }*/
-
-    /*private void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.Space))
-        {
-            Throw();
-        }
-    }*/
-
 }

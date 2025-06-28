@@ -2,20 +2,41 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GunWeaponBase : WeaponBase
+
+public abstract class GunWeaponBase : WeaponBase
 {
-    //총 프리팹
+    protected GunItem _GunData; //건 데이터
+    
+    /*
+        public int AtkDamage;
+        public int Rof;
+        public int BulletPerShot;
+        public float Range;
+        public int AmmoID;
+        public int AmmoCapacity;
+        public string ShotSoundResource;
+        public string ReloadSoundResource;
+        public float NoiseLevel;
+    */
+
+    //불릿 프리팹
+    //추후 프리팹 매니저 관리
     [SerializeField] protected GameObject _bulletPrefab;
 
     //총 본체 관련 변수
-    [SerializeField] protected string _gunName;     // 총의 이름
-    [SerializeField] protected int _damage;       // 총의 데미지
-    [SerializeField] protected float _range;        // 총의 유효 사거리
-    [SerializeField] protected float _accuracy;     // 총의 정확도
+    [SerializeField] protected int _damage => _GunData.AtkDamage;       // 총의 데미지
+    [SerializeField] protected float _range => _GunData.Range;        // 총의 유효 사거리
+    //[SerializeField] protected float _accuracy;     // 총의 정확도
 
     //총알 제어 관련 변수
-    [SerializeField] protected int _maxAmmoCount;       //최대 탄약수
+    [SerializeField] protected int _maxAmmoCount => _GunData.AmmoCapacity;       //최대 탄약수
+
+
+    //제쪽에서 관리되는 데이터 테이블 -> 나중에 문성님이 Item필드에 추가해주셔야 제가 값을 건들이면 해당 값이 저장되는 형태
+    //이후 _GunData.CurrentAmmoCount-- 를 통해 현재 탄약이 감소하고 
     [SerializeField] protected int _currentAmmoCount;   //현재 탄약수
+
+
     [SerializeField] protected float _reloadTime;       // 재장전 속도. 총의 종류마다 다름.
     [SerializeField] protected float _fireDelay = 1.5f; //총 발사 딜레이
     [SerializeField] protected Transform _firePoint;    //총알 발사 지점
@@ -50,6 +71,11 @@ public class GunWeaponBase : WeaponBase
     {
         _lineRenderer = GetComponent<LineRenderer>();
         _gunBulletObjectPool = new ObjectPool(_bulletPoolSize, _bulletPrefab, gameObject);
+
+        if(_item.Data.Type == ItemType.Gun)
+        {
+
+        }
     }
 
     protected AudioSource audioSource; //공격 사운드
@@ -74,9 +100,9 @@ public class GunWeaponBase : WeaponBase
         // 무기 방향 → 카메라 방향
         /*transform.rotation = Quaternion.Euler
         (_camera.transform.eulerAngles.x, _camera.transform.eulerAngles.y, 0);*/
-        // 발사체 방향 = 무기 방향
-        //bullet.transform.rotation = transform.rotation;
-        float speed = bulletSpeed;
+    // 발사체 방향 = 무기 방향
+    //bullet.transform.rotation = transform.rotation;
+    float speed = bulletSpeed;
         // 궤적 및 발사체 시작 속도
         Vector3 startVel = transform.forward * speed;
         // 궤적 발사체 운동 동기화, 계산

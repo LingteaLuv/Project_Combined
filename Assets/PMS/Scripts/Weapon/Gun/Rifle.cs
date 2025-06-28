@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Rifle : GunWeaponBase //이후 총마다 상속을 시켜 줘야 하지 않을까
+public class Rifle : GunWeaponBase 
 {
     private void Awake()
     {
@@ -97,7 +97,7 @@ public class Rifle : GunWeaponBase //이후 총마다 상속을 시켜 줘야 �
 
             //총알 방향 설정
             BulletBase bullet = bulletObj.GetComponent<BulletBase>();
-            bullet.SetDamage(Damage);
+            bullet.SetDamage(_gunItem.AtkDamage);
             if (bullet != null)
             {
                 bullet.SetDirection(_firePoint.forward);

@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class MeleeWeapon : WeaponBase
 {
+    [Tooltip("받아올 MeleeItem 스크립트 데이터")]
+    [SerializeField] private MeleeItem _meleeItem;
+
     private ItemType _iTemType = ItemType.Melee;
     [SerializeField] private Transform _playerPos; //플레이어의 위치
     [SerializeField] private Transform _attackPointPos; //공격의 충돌을 감지할 Pivot Transform
     public override bool IsAttack { get; }
     [Header("근접무기 셋팅값")]
-    [SerializeField] private int _attackDamage; //근거리 무기의 공격력
     [SerializeField] private float _attackRange;  //근거리 무기의 유효 범위
     [SerializeField] private float _attackAngle; //근거리 무기 유효 각도
 
-    [Header("Attack Target Layer")]
-    [SerializeField] private LayerMask _targetLayer; //타겟 대상 레이어 -> 추후 몬스터가 레이어로 관리되지 않을까?
-
+    [SerializeField] private LayerMask _targetLayer;
     /* 
      * 기획팀에서 어떤부분을 요구할지 몰라 여러가지 공격 로직을 구현했습니다.
      * TODO - 공격속도에 대한 코드 부분이 존재하지 않네요,추가해야 할 것 같습니다.
@@ -26,6 +26,7 @@ public class MeleeWeapon : WeaponBase
     private void Reset()
     {
         _itemType = ItemType.Melee;
+        //InventoryManager.Instance.DecreaseWeaponDurability(); 내구도 하락 함수
     }
 
     /// <summary>
@@ -35,6 +36,8 @@ public class MeleeWeapon : WeaponBase
 
     public override void Attack()
     {
+        //무기 내구도 감소
+        InventoryManager.Instance.DecreaseWeaponDurability();
         //무기에 달려있는 _attack를 중심으로 범위를 설정하고 타겟레이어와 충돌검사
         /*Collider[] _colliders = Physics.OverlapSphere(_attackPointPos.position, _attackRange, _targetLayer);
 
@@ -80,9 +83,9 @@ public class MeleeWeapon : WeaponBase
         // 가장 가까운 적이 있다면 데미지 부여 로직 실행
         if (closeGameObject != null)//(closestDamageable != null)
         {
-            closeGameObject.GetComponent<IDamageable>().Damaged(_attackDamage);
+            closeGameObject.GetComponent<IDamageable>().Damaged(_meleeItem.AtkDamage);
+            //TODO - 시각적 디버깅용 코드 추후 제거 예정
             StartCoroutine(DamageRoutine(closeGameObject.gameObject));
-            //closestDamageable.Damaged(_attackDamage);
         }
         else
         {
