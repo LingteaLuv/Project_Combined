@@ -4,19 +4,19 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class HingeDoorOpen : MonoBehaviour
+public class HingeDoorOpen : MonoBehaviour, IInteractable
 {
     [SerializeField] private DoorType _doorType;
     [SerializeField] private float _openAngle = 90f;
     [SerializeField] private float _duration = 1f;
+    [SerializeField] private bool _isOpen = false;  // 문의 잠금 여부
 
+    [SerializeField] private ItemBase _key;         // 문의 열쇠정보
+    
     private Quaternion _openedRotation;
     private Quaternion _closedRotation;
 
-    [SerializeField] private List<ItemBase> _testKeys;
-    [SerializeField] private ItemBase _key;
-    private bool _isOpen = false;
-    private bool _isOnRotated = false;
+    private bool _isOnRotated = false;              // 문이 열렸는지의 여부
 
     private void Awake()
     {
@@ -27,8 +27,12 @@ public class HingeDoorOpen : MonoBehaviour
         _closedRotation = transform.rotation;
         _openedRotation = _closedRotation * Quaternion.Euler(0, _openAngle * (_doorType == DoorType.RotateRight ? 1 : -1), 0);
     }
+    public void Interact()
+    {
+        Toggle(_key);
+    }
 
-    public void Toggle(List<ItemBase> playerKeys)
+    public void Toggle(ItemBase playerKeys)
     {
         if (_isOnRotated) return;
         if (!_isOpen)
@@ -40,7 +44,8 @@ public class HingeDoorOpen : MonoBehaviour
             Close();
         }
     }
-    private void TryOpen(List<ItemBase> playerKeys)
+
+    private void TryOpen(ItemBase playerKeys)
     {
         if (_key == null)
         {
@@ -49,23 +54,26 @@ public class HingeDoorOpen : MonoBehaviour
             return;
         }
 
-        if (playerKeys.Any(k => k.ItemID == _key.ItemID))
+        if (InventoryManager.Instance.FindItemByID(_key.ItemID))
         {
-            _isOnRotated = true;
-            switch (_doorType)
             {
-                case DoorType.RotateRight:
-                    RotateDoor();
-                    break;
-                case DoorType.RotateLeft:
-                    RotateDoor();
-                    break;
-                case DoorType.Slide:
-                    SlideOpen();
-                    break;
+                Debug.Log("TryOpen : 열쇠 보유 체크");
+                _isOnRotated = true;
+                switch (_doorType)
+                {
+                    case DoorType.RotateRight:
+                        RotateDoor();
+                        break;
+                    case DoorType.RotateLeft:
+                        RotateDoor();
+                        break;
+                    case DoorType.Slide:
+                        SlideOpen();
+                        break;
+                }
             }
         }
-        else 
+        else
         {
             Debug.Log("TryOpen : 열쇠 미보유");
         }

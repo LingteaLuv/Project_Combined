@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class DoorInteractable : MonoBehaviour, IInteractable
 {
-    [SerializeField] private List<ItemBase> testKeys;
+    [SerializeField] private ItemBase testKeys;
     private HingeDoorOpen _door;
 
     private void Awake()
