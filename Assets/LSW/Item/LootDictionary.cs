@@ -8,14 +8,14 @@ public class LootDictionary : ScriptableObject
     [SerializeField] private TextAsset _enemyLoot;
     [SerializeField] private TextAsset _enemyLootGridChance;
 
-    private Dictionary<string, List<int>> _lootTable;
-    private Dictionary<string, List<int>> _lootGridTable;
+    public Dictionary<string, List<int>> LootTable { get; private set; }
+    public Dictionary<string, List<int>> LootGridTable { get; private set; }
     
     private void Awake()
     {
         Init();
-        TableInit(_enemyLoot,_lootTable);
-        TableInit(_enemyLootGridChance,_lootGridTable);
+        TableInit(_enemyLoot,LootTable);
+        TableInit(_enemyLootGridChance,LootGridTable);
     }
 
     private void TableInit(TextAsset asset, Dictionary<string, List<int>> table)
@@ -46,15 +46,10 @@ public class LootDictionary : ScriptableObject
             table.Add(key,values);
         }
     }
-
-    private void RandomItemSetting()
-    {
-        
-    }
     
     private void Init()
     {
-        _lootTable = new Dictionary<string, List<int>>();
-        _lootGridTable = new Dictionary<string, List<int>>();
+        LootTable = new Dictionary<string, List<int>>();
+        LootGridTable = new Dictionary<string, List<int>>();
     }
 }

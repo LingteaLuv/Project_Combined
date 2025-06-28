@@ -3,7 +3,7 @@ using UnityEngine;
 public class LootItems : MonoBehaviour
 {
 
-    public ItemBase[] ItemDatas = new ItemBase[6];
+    public ItemBase[] ItemDatas = new ItemBase[6];          
     public int[] ItemAmounts = new int[6];
     public bool[] ItemBlocked = new bool[6];
     public Item[] Items;
