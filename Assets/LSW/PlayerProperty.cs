@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-public class PlayerProperty : MonoBehaviour
+public class PlayerProperty : MonoBehaviour, IParameterHandler
 {
     public Hp Hp;
     public Hunger Hunger;
     public Thirsty Thirsty;
     public Stamina Stamina;
-
+    
     public Property<float> MoveSpeed;
     public Property<float> AtkSpeed;
     public Property<float> AtkDamage;
+    
+    private List<StatModifier> _statMods;
 
     private float _moveSpeed;
     private float _atkSpeed;
@@ -239,6 +241,27 @@ public class PlayerProperty : MonoBehaviour
         AtkDamage = new Property<float>(_baseAtkDamage);
     }
 
+    public void ApplyModifier(StatModifier modifier)
+    {
+        _statMods.Add(modifier);
+        StatModify();
+    }
+
+    public void RemoveModifier(StatModifier modifier)
+    {
+        _statMods.Remove(modifier);
+        StatModify();
+    }
+    
+    private void StatModify()
+    {
+        foreach (var mod in _statMods)
+        {
+            MoveSpeed.Value += mod.MoveSpeedChange;
+            AtkSpeed.Value += mod.AtkSpeedChange;
+            AtkDamage.Value += mod.AtkDamageChange;
+        }
+    }
     //Todo : public void Consume(Itembase item){} 아이템 효과를 플레이어에게 적용시키는 함수를 부탁드립니다.
     //ItemConsumeManage 클래스에서 사용될 것 같습니다.  - 김문성
 }

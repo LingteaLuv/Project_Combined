@@ -50,7 +50,7 @@ public class LootManager : SingletonT<LootManager>
     }
     public void ToggleUI() //UI열기
     {
-        UIManage.Instance.ToggleUI(ModalUI.lootTable);
+        UIManager.Instance.ToggleUI(ModalUI.lootTable);
         LootTableUpdate();
 
     }
@@ -62,9 +62,9 @@ public class LootManager : SingletonT<LootManager>
 
     public void LootableNotExist()
     {
-        if (UIManage.Instance.Current == ModalUI.lootTable)
+        if (UIManager.Instance.Current == ModalUI.lootTable)
         {
-            UIManage.Instance.CloseUI();
+            UIManager.Instance.CloseUI();
         }
     }
 
@@ -131,7 +131,7 @@ public class LootManager : SingletonT<LootManager>
         if (InventoryManager.Instance.AddItem(data, count, dur)) // 해당 아이템을 넣을 수 있다면 넣어준다
         {
            _lootable.LootItems.Items[index] = null; // 아이템 빼기
-           if (UIManage.Instance.Current == ModalUI.lootTable)
+           if (UIManager.Instance.Current == ModalUI.lootTable)
             {
                 LootTableUpdate();
             }
@@ -145,7 +145,7 @@ public class LootManager : SingletonT<LootManager>
     public void AfterLooting()
     {
         _lootable.IsLootable = false;
-        if (UIManage.Instance.Current == ModalUI.lootTable) ToggleUI();
+        if (UIManager.Instance.Current == ModalUI.lootTable) ToggleUI();
         if (_lootable.DestroyAfterLooting) // 루팅 완료 시 파괴
         {
             Lootable temp = _lootable;
