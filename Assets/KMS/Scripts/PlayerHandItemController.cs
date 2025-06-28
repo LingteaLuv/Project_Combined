@@ -20,6 +20,8 @@ public class PlayerHandItemController : MonoBehaviour
     private InventoryModel _model;
     private Animator _animator;
 
+    private GunWeaponBase _gwb;
+
     private void Awake()
     {
         _control = GetComponent<InventoryController>();
@@ -82,6 +84,11 @@ public class PlayerHandItemController : MonoBehaviour
             return;
         }
         HoldItem(HandType.right, _model.InvItems[rightIndex].Data.ItemID);
+        if (_model.InvItems[rightIndex].Data.Type == ItemType.Gun) //들린게 총이면
+        {
+            GunWeaponBase _gwb = CurrentRightItem.GetComponent<GunWeaponBase>();
+            //_gwb.currentammocount = _model.InvItems[rightIndex].CurrentAmmoCount; (아니면 _model.InvItems[rightIndex]) 그대로 넘김
+        }
         StartCoroutine(UW());
 
         // 왼손에 들린게 없거나 두손무기라면 스킵 방패라면 들어주고,
@@ -101,7 +108,8 @@ public class PlayerHandItemController : MonoBehaviour
     private IEnumerator UW() // 약간 지연 필요
     {
         yield return new WaitForEndOfFrame();
-        _playerAttack.UpdateWeapon();
+        //생성된 프리팹에 정보를 넘겨주
+        _playerAttack.UpdateWeapon(); //생성된 프리팹에서 정보를 받음
     }
     public void DeholdItem(HandType type)
     {
