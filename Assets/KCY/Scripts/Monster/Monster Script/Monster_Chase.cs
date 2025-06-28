@@ -14,73 +14,113 @@ public class Monster_Chase : MonsterState_temp
     private float _missingTime = 0f;
     protected MonsterStateMachine_temp stateMachine;
 
-    // 실 입력값 초기화
     public void MonsterChaseInit()
     {
         _targetPos = monster.TargetPosition;
 
-        // 다시 키고 시작
-        _agent.enabled = true;
+        if (_targetPos == null)
+        {
+            Debug.LogWarning("타겟이 존재하지 않아 추적 불가");
+            return;
+        }
 
-        if (!_agent.isOnNavMesh)
+        if (_agent == null || !_agent.isOnNavMesh)
         {
             if (NavMesh.SamplePosition(monster.transform.position, out NavMeshHit hit, 2f, NavMesh.AllAreas))
             {
-                _agent.ResetPath();
-                _agent.SetDestination(hit.position);
+                _agent.enabled = true;
+                _agent.Warp(hit.position);
             }
-            else { return; }
+            else
+            {
+                Debug.LogWarning("NavMesh 위에 없음 → 이동 불가");
+                return;
+            }
         }
 
-        if (_targetPos != null)
-        {  
-            _agent.SetDestination(_targetPos.position);
-        }
+        _agent.isStopped = false;
+        _agent.ResetPath();
+        _agent.SetDestination(_targetPos.position);
+        Debug.Log($" 추적 시작: {_targetPos.position}");
     }
 
     public override void Enter()
     {
-        monster.Ani.SetBool("isChasing", true);
-        _agent.speed = monster.RunningSpeed;
-        MonsterChaseInit();
+        Debug.Log("체이싱 상태 진입");
         _missingTime = 0f;
-    }
 
-    // 감지형 콜라이더 필요
-    public override void Update()
-    {
-
-        if (_agent.enabled && _agent.isOnNavMesh && _targetPos != null)
+        if (monster.Ani != null)
         {
-            // 탐지는 몬스터에게 부착된 새로운 콜라이더에서 업데이트로 지속적으로 확인
-            // 인지 되면 해당 스크립트로 전환되어 추적로직 작용
-            _agent.ResetPath();
-            _agent.SetDestination(_targetPos.position);
+            monster.Ani.ResetTrigger("Attack");
+            monster.Ani.SetBool("isChasing", true);
+            monster.Ani.SetBool("isPatrol", false);
+            
         }
 
-        // 경로 있음, 따라갈 남은거리, 속도 없으면(어디 꼈거나 고장) 리셋으로 탈출
-        if (_agent.hasPath && _agent.remainingDistance > 0.1f && _agent.velocity.sqrMagnitude < 0.01f)
+        if (_agent != null)
         {
-            // 길을 잃은 시간이 생각보다 오래 되면 씬을 reset으로 넘김
+            _agent.speed = monster.RunningSpeed;
+        }
+
+        MonsterChaseInit();
+    }
+
+    public override void Update()
+    {
+        if (_agent == null || !_agent.isOnNavMesh || monster.TargetPosition == null || monster._isDead)
+            return;
+
+        Vector3 targetPos = monster.TargetPosition.position;
+        float distance = Vector3.Distance(monster.transform.position, targetPos);
+
+        // 1. 공격 사거리 도달
+        if (distance <= monster.AttackRange)
+        {
+            Debug.Log(" 공격 범위 도달 → Attack 상태 전이");
+            stateMachine.ChangeState(stateMachine.StateDic[Estate.Attack]);
+            return;
+        }
+
+        // 2. 경로 유효성 확인
+        if (_agent.pathStatus == NavMeshPathStatus.PathInvalid)
+        {
+            Debug.LogWarning("경로 생성 실패 → Reset 상태로 전이");
+            stateMachine.ChangeState(stateMachine.StateDic[Estate.Reset]);
+            return;
+        }
+
+        // 3. 추적 중 이동 불능 상태 감지
+        if (_agent.hasPath && !_agent.pathPending && _agent.remainingDistance > _agent.stoppingDistance + 0.1f &&
+            _agent.desiredVelocity.sqrMagnitude < 0.01f)
+        {
             _missingTime += Time.deltaTime;
             if (_missingTime >= 1.5f)
             {
+                Debug.LogWarning("경로 멈춤 감지 → Reset 상태 전이");
                 stateMachine.ChangeState(stateMachine.StateDic[Estate.Reset]);
+                return;
             }
         }
-        // 아니면 초기화
-        else { _missingTime = 0; }
-     
+        else
+        {
+            _missingTime = 0f;
+        }
+
+        // 4. 계속 목표 위치 업데이트
+        _agent.SetDestination(targetPos);
     }
 
     public override void Exit()
     {
-        if (_agent.enabled && _agent.isOnNavMesh)
+        if (_agent != null && _agent.isOnNavMesh)
         {
             _agent.ResetPath();
-            monster.Ani.SetBool("isChasing", false);
-            _agent.enabled = false;
+            _agent.isStopped = false;
         }
-        
+
+        if (monster.Ani != null)
+        {
+            monster.Ani.SetBool("isChasing", false);
+        }
     }
 }
