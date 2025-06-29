@@ -27,7 +27,7 @@ public class PlayerLooting : MonoBehaviour
     private void OnTriggerStay(Collider other) // 들어온 것들 중 루팅 가능한 것, 가장 가까운 것 가리기
     {
         if (_colliders.Count == 0) return;
-        if (UIManage.Instance.Current == ModalUI.lootTable) return; //UI상태에선 아래 작업 하지 않음
+        if (UIManager.Instance.Current == ModalUI.lootTable) return; //UI상태에선 아래 작업 하지 않음
         float distance = float.MaxValue;
         Collider near = null;
         foreach ( Collider c in _colliders)
@@ -46,7 +46,7 @@ public class PlayerLooting : MonoBehaviour
         }
         if (near == null) //루팅 가능한 콜라이더가 없었다. 
         {
-            if (_lootableColl != null) // 
+            if (_lootableColl != null) //기존 루트가능한거 딱 하나 있다가 이게 루트 끝나고 불가능이 된 상황
             {
                 Lootable temp = _lootables[_lootableColl];
                 temp.OffOutline();

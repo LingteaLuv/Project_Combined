@@ -1,18 +1,21 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-public class PlayerProperty : MonoBehaviour
+public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
 {
     public Hp Hp;
     public Hunger Hunger;
     public Thirsty Thirsty;
     public Stamina Stamina;
-
+    
     public Property<float> MoveSpeed;
     public Property<float> AtkSpeed;
     public Property<float> AtkDamage;
+    
+    private List<StatModifier> _statMods;
 
     private float _moveSpeed;
     private float _atkSpeed;
@@ -33,18 +36,19 @@ public class PlayerProperty : MonoBehaviour
     private float _drinkTimer;
     private float _staminaTimer;
 
-    private const float MaxEatTimer = 3f;
-    private const float MaxDrinkTimer = 3f;
-    private const float MaxStaminaTimer = 2f;
+    private const float MaxEatTimer = 60f;
+    private const float MaxDrinkTimer = 60f;
+    private const float MaxStaminaTimer = 5f;
     
     private WaitForSeconds _delay;
+    private Coroutine _hitInWaterCoroutine;
 
     private bool _isOnCorHunger;
     private bool _isOnCorThirsty;
     private bool _isOnCorStamina;
     private bool _isOnCorRecoverHp;
     private bool _isOnCorDecreaseHp;
-    private bool _isWater;
+    
     private bool _isOnLack;
     private bool _isOnDepletion;
     
@@ -58,22 +62,22 @@ public class PlayerProperty : MonoBehaviour
         FieldUpdate();
         ParameterUpdate();
         ParameterAct();
+    }
 
-        if (Input.GetKeyDown(KeyCode.J))
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Water") && _hitInWaterCoroutine == null)
         {
-            ExpendAction();
+            _hitInWaterCoroutine = StartCoroutine(HitInWater(20));
         }
-        
-        if (Input.GetKeyDown(KeyCode.K))
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Water") && _hitInWaterCoroutine != null)
         {
-            Hunger.Recover(20f);
-            _eatTimer = MaxEatTimer;
-        }
-        
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            Thirsty.Recover(30f);
-            _drinkTimer = MaxDrinkTimer;
+            StopCoroutine(_hitInWaterCoroutine);
+            _hitInWaterCoroutine = null;
         }
     }
 
@@ -100,8 +104,7 @@ public class PlayerProperty : MonoBehaviour
                     (Stamina.State == ParamState.Lack);
         
         _isOnDepletion =  (Hunger.State == ParamState.Depletion) || 
-                          (Thirsty.State == ParamState.Depletion) ||
-                          (Stamina.State == ParamState.Depletion);
+                          (Thirsty.State == ParamState.Depletion);
         
         
         if (_eatTimer > 0) _eatTimer -= Time.deltaTime;
@@ -239,6 +242,54 @@ public class PlayerProperty : MonoBehaviour
         AtkDamage = new Property<float>(_baseAtkDamage);
     }
 
-    //Todo : public void Consume(Itembase item){} 아이템 효과를 플레이어에게 적용시키는 함수를 부탁드립니다.
+    public void ApplyModifier(StatModifier modifier)
+    {
+        _statMods.Add(modifier);
+        StatModify();
+    }
+
+    public void RemoveModifier(StatModifier modifier)
+    {
+        _statMods.Remove(modifier);
+        StatModify();
+    }
+    
+    private void StatModify()
+    {
+        foreach (var mod in _statMods)
+        {
+            MoveSpeed.Value += mod.MoveSpeedChange;
+            AtkSpeed.Value += mod.AtkSpeedChange;
+            AtkDamage.Value += mod.AtkDamageChange;
+        }
+    }
+    //아이템 효과를 플레이어에게 적용시키는 함수를 부탁드립니다.
     //ItemConsumeManage 클래스에서 사용될 것 같습니다.  - 김문성
+    public void Consume(ItemBase item)
+    {
+        ConsumableItem consumableItem =  item as ConsumableItem;
+        Hp.Recover(consumableItem.HpAmount);
+        if (consumableItem.HungerAmount != 0)
+        {
+            Hunger.Recover(consumableItem.HungerAmount);
+            _eatTimer = MaxEatTimer;
+        }
+
+        if (consumableItem.MoistureAmount != 0)
+        {
+            Thirsty.Recover(consumableItem.MoistureAmount);
+            _drinkTimer = MaxDrinkTimer;
+        }
+        
+        Stamina.Recover(consumableItem.StaminaAmount);
+    }
+    
+    private IEnumerator HitInWater(float damage)
+    {
+        while (true)
+        {
+            yield return _delay;
+            Hp.Decrease(20f);
+        }
+    }
 }

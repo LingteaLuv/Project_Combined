@@ -1,13 +1,12 @@
-using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 
 public class MonsterStateMachine_temp
 {
-    // 상태 전이용
     public Dictionary<Estate, BaseState_temp> StateDic;
-
     public BaseState_temp CurState;
+    public BaseState_temp PrevState;
 
     public MonsterStateMachine_temp()
     {
@@ -16,24 +15,39 @@ public class MonsterStateMachine_temp
 
     public void ChangeState(BaseState_temp changedState)
     {
-        Debug.Log($"[상태 전이 시도] 현재 상태: {CurState.GetType().Name}, 변경 대상: {changedState.GetType().Name}");
-        if (CurState == changedState) { Debug.Log("[상태 전이 무시] 현재 상태와 동일한 상태로 전이 시도됨");  return; }
+        UnityEngine.Debug.Log($"[상태 전이 시도] 현재: {CurState?.GetType().Name}, 변경 대상: {changedState?.GetType().Name}");
+        UnityEngine.Debug.Log($"[상태 전이 시도] 현재: {CurState?.GetType().Name}, 변경 대상: {changedState?.GetType().Name}");
+        UnityEngine.Debug.Log($"[상태 전이 완료] 현재: {CurState?.GetType().Name}, 이전: {PrevState?.GetType().Name}");
 
-        CurState.Exit();
+
+        if (CurState == changedState)
+        {
+            UnityEngine.Debug.LogWarning("[상태 전이 무시] 동일 상태");
+            return;
+        }
+
+        if (CurState != null)
+        {
+            PrevState = CurState;
+            CurState.Exit();
+        }
+
         CurState = changedState;
-        Debug.Log($"[상태 전이 완료] 새로운 상태: {CurState.GetType().Name}");
-        CurState.Enter();
+        CurState?.Enter();
+
+        UnityEngine.Debug.Log($"[상태 전이 완료] 현재: {CurState?.GetType().Name}, 이전: {PrevState?.GetType().Name}");
     }
+
     public void Update()
     {
-        CurState.Update();
+        CurState?.Update();
     }
+
     public void FixedUpdate()
     {
-        if (CurState.HasPhysics == true)
+        if (CurState?.HasPhysics == true)
         {
             CurState.FixedUpdate();
         }
     }
-
 }

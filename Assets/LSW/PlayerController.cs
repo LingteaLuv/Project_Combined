@@ -52,7 +52,7 @@ public class PlayerController : MonoBehaviour
         _fsm.Update();
         if (_cameraController._cinemachineBrain.enabled)
         {
-            _movement.SetRotation(_cameraController.Offset);
+            _movement.SetRotation(_cameraController.OffsetX);
         }
         UpdateMoveAnimation();
     }

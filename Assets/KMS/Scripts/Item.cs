@@ -9,6 +9,10 @@ public class Item
     public int MaxDurability { get; private set; }
     public int MaxStackSize { get; private set; }
 
+    public int CurrentAmmoCount { get; set; }
+
+    public bool IsStackable => Data.Type == ItemType.ETC || Data.Type == ItemType.Throw;
+
     //public HandType handType
     //{
     //    get
@@ -24,6 +28,7 @@ public class Item
         MaxStackSize = 1;
         Durability = -1;
         MaxDurability = -1;
+        CurrentAmmoCount = -1; // 총 전용
 
         Init();
     }
@@ -43,16 +48,30 @@ public class Item
             case ItemType.Special:
                 MaxDurability = (Data as SpecialItem).MaxDurability;
                 break;
+            case ItemType.Throw:
+                MaxStackSize = (Data as ThrowItem).MaxStack;
+                break;
+            case ItemType.Gun:
+                CurrentAmmoCount = 0;
+                break;
         }
     }
 
     public void SetCount(int c)
     {
-        if (Data.Type == ItemType.ETC) StackCount = c;
+        if (IsStackable) StackCount = c;
     }
     public void SetDur(int c)
     {
         if (Data.Type == ItemType.Melee || Data.Type == ItemType.Shield || Data.Type == ItemType.Special) Durability = c;
+    }
+
+    public void SetAmmoCount(int c)
+    {
+        if (Data.Type == ItemType.Gun)
+        {
+            CurrentAmmoCount = c;
+        }
     }
 
     public enum handType

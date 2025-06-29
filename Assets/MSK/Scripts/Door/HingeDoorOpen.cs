@@ -123,3 +123,8 @@ public class HingeDoorOpen : MonoBehaviour, IInteractable
         _isOnRotated = false;
     }
 }
+
+public enum DoorType
+{
+    RotateRight, RotateLeft, Slide
+}

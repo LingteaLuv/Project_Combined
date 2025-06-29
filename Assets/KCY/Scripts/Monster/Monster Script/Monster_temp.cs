@@ -1,10 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.UI;
 
-public class Monster_temp : MonoBehaviour
+public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
 {
     [Header("Elements")]
     [SerializeField] public NavMeshAgent MonsterAgent;
@@ -14,78 +11,100 @@ public class Monster_temp : MonoBehaviour
     [SerializeField] public float RunningSpeed;
     [SerializeField] public float CrawlSpeed;
     [SerializeField] public Transform[] PatrolPoints;
-    [SerializeField] public Collider DetectRange;
-    [SerializeField] public Transform SpawnPoint; // 좀비 시작 위치 설정 
+    [SerializeField] public Collider DetectCol;
+    [SerializeField] public Transform SpawnPoint;
 
+    [Header("status")]
+    [SerializeField] public int MonsterHp = 10;
+    [SerializeField] public float AttackRange = 1.5f;
+    public bool _isDead = false;
+    public IAttackable target;  // 몬스터, 캐릭터 (데미지 계산 위함)
     public Animator Ani;
     public Rigidbody Rigid;
     public MonsterStateMachine_temp _monsterMerchine;
+    public GameObject MonObject;
+    public MonsterHandDetector HandDetector; //  손 감지기 연결용
 
+    public BaseState_temp PrevState { get; private set; }
+    public bool IsDetecting = false;
 
-    // 애니메이션 실행
-   
+    /// <summary>
+    ///  피격 확인용
+    /// </summary>
+    /// <param name="damage"></param>
+    /*public void Damaged(int damage)
+    {
+        // 죽어 있으면 데미지 받지 말고
+        if (_isDead) return;
+
+        // 좀비 체력 깍기
+        MonsterHp -= damage;
+        Debug.Log($"🩸 피격! 체력: {MonsterHp}");
+        //  피격 모션 발동
+        Ani.SetTrigger("IsHit");
+
+        if (MonsterHp <= 0 && !_isDead)
+        {
+            _isDead = true;
+            Debug.Log("사망");
+            
+            //어젠트로 움직임 제어하므로 어젠트를 정지 시켜주고 속도를 0으로 만들어 준다
+            MonsterAgent.isStopped = true;
+            MonsterAgent.velocity = Vector3.zero;
+            Ani.SetTrigger("Dead");
+        }
+    }*/
+    /// <summary>
+    ///  피격 확인용
+    /// </summary>
+    /// 
+    private void Awake()
+    {
+        PlayerLayerMask = LayerMask.GetMask("Player");
+        Ani = GetComponentInChildren<Animator>();
+        HandDetector = GetComponentInChildren<MonsterHandDetector>();
+        // target = this as IAttackable; 피격 실험용으로 사용한 코드입니다 나중에 사용할 때 활성화 시켜주면 됩니다.
+
+    }
+
+    private void Start()
+    {
+        Debug.Log("Monster Start()");
+        StateMachineInit();
+       
+    }
+
+    private void Update()
+    {
+        _monsterMerchine?.Update();
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.Log("스페이스 피격 테스트");
+            (this as IDamageable)?.Damaged(1);
+        }
+    }
 
     private void StateMachineInit()
     {
         _monsterMerchine = new MonsterStateMachine_temp();
         _monsterMerchine.StateDic.Add(Estate.Idle, new Monster_Idle(this));
-        _monsterMerchine.StateDic.Add(Estate.Chase, new Monster_Chase(this));
         _monsterMerchine.StateDic.Add(Estate.Patrol, new Monster_Patrol(this));
+        _monsterMerchine.StateDic.Add(Estate.Chase, new Monster_Chase(this));
+        _monsterMerchine.StateDic.Add(Estate.Attack, new Monster_Attack(this));
         _monsterMerchine.StateDic.Add(Estate.Reset, new Monster_Reset(this));
+        _monsterMerchine.StateDic.Add(Estate.Hit, new Monster_Hit(this));
+        _monsterMerchine.StateDic.Add(Estate.Dead, new Monster_Dead(this));
 
-        // 시작은 idle 모드에서 시작
-        _monsterMerchine.CurState = _monsterMerchine.StateDic[Estate.Idle];
-    }
-
-
-    void Start()
-    {
-        Ani = GetComponent<Animator>();
-        Rigid = GetComponent<Rigidbody>();
-        StateMachineInit();
-    }
-
-    void Update()
-    {
-        _monsterMerchine.Update(); 
-    }
-    void FixedUpdate()
-    {
-        _monsterMerchine.FixedUpdate();
-    }
-
-    // 몬스터에 추가한 콜라이더와 레이어를 활요하여 추적로직
-    private void DetectPlayer(Collider other)
-    {
-        Debug.Log("if문 진입");
-        // 설정한 플레이어 레이어 숫자와 부딫힌 오브젝트의 레이어가 겹칠때 추적로직 작동
-        if ((PlayerLayerMask.value & (1 << other.gameObject.layer)) != 0)
-        {
-            Debug.Log($"[Trigger] 충돌: {other.name}, Layer: {other.gameObject.layer}");
-
-            if ((PlayerLayerMask.value & (1 << other.gameObject.layer)) != 0)
-            {
-                Debug.Log(" 플레이어 감지됨 → 상태 전이 시도");
-
-                _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.Chase]);
-                Debug.Log("상태 전이 → Chase");
-
-                // 체크 되면 몸체 돌리기
-                Vector3 dir = TargetPosition.position - transform.position;
-                dir.y = 0;
-                if (dir.sqrMagnitude > 0.001f)
-                {
-                    Quaternion lookRot = Quaternion.LookRotation(dir.normalized);
-                    transform.rotation = Quaternion.Slerp(transform.rotation, lookRot, Time.deltaTime);
-                }
-            }
-        }
+        _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.Idle]);
     }
 
     private void OnTriggerEnter(Collider other)
     {
         DetectPlayer(other);
+        
     }
+
     private void OnTriggerStay(Collider other)
     {
         DetectPlayer(other);
@@ -93,10 +112,60 @@ public class Monster_temp : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if ((PlayerLayerMask.value & (1 << other.gameObject.layer)) != 0)
+        if (((1 << other.gameObject.layer) & PlayerLayerMask) == 0) return;
+
+        if (IsDetecting && TargetPosition == other.transform)
         {
-            Debug.Log($"[TriggerExit] {other.name} 플레이어가 감지 범위에서 벗어남 → Idle 상태로 전이");
+            Debug.Log(" 플레이어 감지 해제 → Idle 상태 복귀");
+
+            TargetPosition = null;
+            IsDetecting = false;
             _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.Idle]);
+        }
+    }
+
+    // 외부에서 호출: 몬스터가 플레이어를 공격하도록 설정
+    public void Attack(IDamageable target)
+    {
+        if (_monsterMerchine.StateDic[Estate.Attack] is Monster_Attack attackState)
+        {
+            attackState.SetTarget(target); // 타겟 저장
+            _monsterMerchine.ChangeState(attackState); // 상태 전이
+        }
+    }
+    public void Damaged(int damage)
+    {
+        if (_isDead) return;
+
+        // 데미지를 Hit 상태로 위임 (중계)
+        if (_monsterMerchine.StateDic[Estate.Hit] is Monster_Hit hitState)
+        {
+            hitState.Damaged(damage);
+            _monsterMerchine.ChangeState(hitState);  // Hit 상태로 전이
+        }
+    }
+    public void DetectPlayer(Collider other)
+    {
+        if (((1 << other.gameObject.layer) & PlayerLayerMask) == 0) return; // 플레이어가 아님
+
+        if (_monsterMerchine.CurState != _monsterMerchine.StateDic[Estate.Patrol])
+        {
+            Debug.Log("Patrol 상태가 아니라 감지 무시");
+            return;
+        }
+
+        TargetPosition = other.transform;
+        IsDetecting = true;
+        Debug.Log($" 플레이어 감지됨 ({other.name}) Chase 상태로 전이");
+        _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.Chase]);
+    }
+
+    public void AttackEvent()
+    {
+        Debug.Log("<color=lime>[Monster_temp] AttackEvent 호출됨 </color>");
+        if (_monsterMerchine.CurState is Monster_Attack attackState)
+        {
+            attackState.AttackEvent();
         }
     }
 

@@ -234,7 +234,8 @@ MonoBehaviour:
   - {fileID: 0}
   ItemAmounts: 000000000000000000000000000000000000000000000000
   ItemBlocked: 000000000000
-  Percentage: 0
+  InitType: 0
+  Percentages: 000000000000000000000000000000000000000000000000
 --- !u!114 &5224582191735123454
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -247,9 +248,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f9eb153661ae514e81eca5a109e621f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _outlinable: {fileID: 0}
-  LootItems: {fileID: 4238681759243675254}
+  After: {fileID: 0}
   IsLootable: 0
+  Type: 0
+  DestroyAfterLooting: 0
 --- !u!114 &3089040123469954203
 MonoBehaviour:
   m_ObjectHideFlags: 0

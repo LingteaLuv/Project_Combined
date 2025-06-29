@@ -50,7 +50,7 @@ public class LootManager : SingletonT<LootManager>
     }
     public void ToggleUI() //UI열기
     {
-        UIManage.Instance.ToggleUI(ModalUI.lootTable);
+        UIManager.Instance.ToggleUI(ModalUI.lootTable);
         LootTableUpdate();
 
     }
@@ -62,9 +62,9 @@ public class LootManager : SingletonT<LootManager>
 
     public void LootableNotExist()
     {
-        if (UIManage.Instance.Current == ModalUI.lootTable)
+        if (UIManager.Instance.Current == ModalUI.lootTable)
         {
-            UIManage.Instance.CloseUI();
+            UIManager.Instance.CloseUI();
         }
     }
 
@@ -123,6 +123,7 @@ public class LootManager : SingletonT<LootManager>
     }
     public void GetItem(int index) //UI내 아이템 클릭 시 호출
     {
+        if (_lootable == null) return;
         if (_lootable.LootItems.Items[index] == null) return;
         ItemBase data = _lootable.LootItems.Items[index].Data;
         int count = _lootable.LootItems.Items[index].StackCount;
@@ -130,11 +131,11 @@ public class LootManager : SingletonT<LootManager>
         if (InventoryManager.Instance.AddItem(data, count, dur)) // 해당 아이템을 넣을 수 있다면 넣어준다
         {
            _lootable.LootItems.Items[index] = null; // 아이템 빼기
-           if (UIManage.Instance.Current == ModalUI.lootTable)
+           if (UIManager.Instance.Current == ModalUI.lootTable)
             {
                 LootTableUpdate();
             }
-            if (ItemsAllNull()) // 더이상 루팅 가능한 아이템이 없을 경우
+           if (ItemsAllNull()) // 더이상 루팅 가능한 아이템이 없을 경우
             {
                 AfterLooting();
             }
@@ -144,7 +145,7 @@ public class LootManager : SingletonT<LootManager>
     public void AfterLooting()
     {
         _lootable.IsLootable = false;
-        if (UIManage.Instance.Current == ModalUI.lootTable) ToggleUI();
+        if (UIManager.Instance.Current == ModalUI.lootTable) ToggleUI();
         if (_lootable.DestroyAfterLooting) // 루팅 완료 시 파괴
         {
             Lootable temp = _lootable;
