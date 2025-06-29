@@ -39,6 +39,7 @@ public class Monster_Chase : MonsterState_temp
         }
 
         _agent.isStopped = false;
+        _agent.stoppingDistance = 0.8f;
         _agent.ResetPath();
         _agent.SetDestination(_targetPos.position);
         Debug.Log($" 추적 시작: {_targetPos.position}");
@@ -60,6 +61,8 @@ public class Monster_Chase : MonsterState_temp
         if (_agent != null)
         {
             _agent.speed = monster.RunningSpeed;
+            _agent.stoppingDistance = 0.8f; // ← 적당한 거리 유지 (AttackRange보다 작거나 비슷하게)
+            _agent.isStopped = false;
         }
 
         MonsterChaseInit();

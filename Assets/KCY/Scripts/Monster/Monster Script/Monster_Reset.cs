@@ -22,20 +22,20 @@ public class Monster_Reset : MonsterState_temp
 
         _resetTimer = 0f;
 
-        // ✅ 애니메이션 초기화
+        // 애니메이션 초기화
         _ani.ResetTrigger("Attack");
         _ani.SetBool("isChasing", false);
         _ani.SetBool("isPatrol", false);
         _ani.SetBool("isDead", false);
 
-        // ✅ NavMeshAgent 초기화
+        // NavMeshAgent 초기화
         if (_agent != null)
         {
             _agent.ResetPath();
             _agent.isStopped = true;
         }
 
-        // ✅ NavMeshAgent가 NavMesh 위에 없으면 보정
+        // NavMeshAgent가 NavMesh 위에 없으면 보정
         if (_agent != null && !_agent.isOnNavMesh)
         {
             if (NavMesh.SamplePosition(monster.transform.position, out NavMeshHit hit, 2f, NavMesh.AllAreas))
@@ -56,7 +56,7 @@ public class Monster_Reset : MonsterState_temp
 
         _resetTimer += Time.deltaTime;
 
-        // ✅ 감지 중이면 바로 Chase 복귀
+        // 감지 중이면 바로 Chase 복귀
         if (monster.IsDetecting && monster.TargetPosition != null)
         {
             Debug.Log("[Reset] 탐지 유지 중 → Chase 복귀");
@@ -64,7 +64,7 @@ public class Monster_Reset : MonsterState_temp
             return;
         }
 
-        // ✅ 일정 시간 후 Idle 복귀
+        // 일정 시간 후 Idle 복귀
         if (_resetTimer >= _resetWaitTime)
         {
             Debug.Log("[Reset] 대기 후 Idle 복귀");

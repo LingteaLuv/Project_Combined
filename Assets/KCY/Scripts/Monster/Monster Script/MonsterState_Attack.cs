@@ -1,6 +1,6 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
-using System.Collections;
 
 public class Monster_Attack : MonsterState_temp, IAttackable
 {
@@ -24,92 +24,240 @@ public class Monster_Attack : MonsterState_temp, IAttackable
     private Coroutine _attackCoroutine;
     protected MonsterStateMachine_temp stateMachine;
 
-    // IAttackable 인터페이스 구현
     public void Attack(IDamageable target)
     {
+        if (!IsAttackAvailable())
+        {
+            Debug.Log("⏳ 공격 쿨타임 중");
+            return;
+        }
+
+        // 정면 회전 확인
+        Vector3 dirToTarget = ((MonoBehaviour)target).transform.position - monster.transform.position;
+        dirToTarget.y = 0f;
+        float angle = Vector3.Angle(monster.transform.forward, dirToTarget.normalized);
+
+        if (angle > 10f)
+        {
+            return;
+        }
+
+        // 이미 Attack 상태일 경우 중복 전이 막고 코루틴만 실행
+        if (stateMachine.CurState == this)
+        {
+            if (_attackCoroutine == null)
+            {
+                _attackCoroutine = monster.StartCoroutine(AttackCoroutine());
+            }
+            return;
+        }
+
         SetTarget(target);
-        stateMachine.ChangeState(this); // 상태 전이까지 직접 수행
+        stateMachine.ChangeState(this);
     }
+
 
     public void SetTarget(IDamageable target)
     {
         _curTarget = target;
     }
 
+    public bool IsAttackAvailable()
+    {
+        return (Time.time - _lastAttackTime >= _attackCoolTime);
+    }
+
+    public void AttackEvent()
+    {
+        Debug.Log("[어택이벤트 호출] - 애니메이션 타이밍 맞춰 데미지 적용");
+
+        Collider[] hits = Physics.OverlapSphere(monster.HandDetector.transform.position, 3f, monster.PlayerLayerMask);
+        foreach (var hit in hits)
+        {
+            IDamageable damageTarget = hit.GetComponent<IDamageable>();
+            if (damageTarget == null)
+                damageTarget = hit.GetComponentInParent<IDamageable>();
+
+            if (damageTarget != null && hit.gameObject.activeInHierarchy)
+            {
+                try
+                {
+                    damageTarget.Damaged(_attackDamage);
+                    Debug.Log("실제 타격 감지 및 데미지 적용");
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError($" 데미지 처리 중 예외 발생: {e.Message}");
+                }
+                return;
+            }
+        }
+
+        Debug.Log(" 타격 실패: 플레이어 없음 또는 IDamageable 아님");
+    }
+
     public override void Enter()
     {
-        Debug.Log("[Attack 상태 진입]");
+        Debug.Log("Attack 상태 들어옴");
 
         if (_ani != null)
         {
-            _ani.SetTrigger("Attack");
+            AnimatorStateInfo currentState = _ani.GetCurrentAnimatorStateInfo(0);
+
+            if (!currentState.IsTag("Attack") && !_ani.IsInTransition(0))
+            {
+                _ani.SetTrigger("Attack");
+            }
+
             _ani.SetBool("isPatrol", false);
             _ani.SetBool("isChasing", false);
         }
 
-        if (_agent != null)
+        if (_curTarget is MonoBehaviour target)
         {
-            _agent.isStopped = true;
+            Vector3 dir = (target.transform.position - monster.transform.position).normalized;
+            dir.y = 0f;
+            if (dir != Vector3.zero)
+            {
+                monster.transform.rotation = Quaternion.LookRotation(dir);
+                Debug.Log("공격 시작 시 타겟 방향으로 회전");
+            }
         }
 
-        // 기존 코루틴 중단 후 재시작
-        if (_attackCoroutine != null)
-            monster.StopCoroutine(_attackCoroutine);
+        if (_agent != null && _agent.isOnNavMesh)
+        {
+            _agent.isStopped = true;
+            _agent.velocity = Vector3.zero;
+            _agent.ResetPath();
+        }
 
+        if (_attackCoroutine != null)
+        {
+            monster.StopCoroutine(_attackCoroutine);
+        }
+        monster.StartCoroutine(PleaseStopMonster());
         _attackCoroutine = monster.StartCoroutine(AttackCoroutine());
+    }
+    private IEnumerator PleaseStopMonster()
+    {
+        yield return null; // 다음 프레임까지 대기
+        if (_agent != null && _agent.isOnNavMesh)
+        {
+            _agent.isStopped = true;
+            _agent.velocity = Vector3.zero;
+            _agent.ResetPath();
+            Debug.Log("다음 프레임에서 강제로 NavMeshAgent 정지");
+        }
     }
 
     private IEnumerator AttackCoroutine()
     {
-        // 대상이 지정될 때까지 대기
         yield return new WaitUntil(() => _curTarget != null);
 
         if (Time.time - _lastAttackTime < _attackCoolTime)
         {
-            Debug.Log("공격 쿨타임 미도래 → 상태 전환");
+            Debug.Log("공격 쿨타임 끝, 상태 전환");
+            stateMachine.ChangeState(stateMachine.StateDic[Estate.Chase]);
+            _attackCoroutine = null;
             yield break;
         }
 
-        _ani.SetTrigger("Attack");
         _lastAttackTime = Time.time;
 
-        // 공격 타이밍 대기
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1.0f); // 애니메이션 길이 + 후딜
 
-        if (_curTarget != null)
+        if (_agent != null && _agent.isOnNavMesh)
         {
-            _curTarget.Damaged(_attackDamage);
-            Debug.Log("공격 성공 - 데미지 적용");
+            _agent.isStopped = true;
+            _agent.ResetPath();
+            Debug.Log(" 공격 후 어젠트 일시 정지");
         }
 
-        // 후딜
-        yield return new WaitForSeconds(0.4f);
+        yield return new WaitForSeconds(0.8f); // 정지 유지 시간
 
-        // 체이스로 복귀
-        if (!monster._isDead)
+        if (!monster._isDead && stateMachine.CurState == this)
         {
-            monster.Ani.ResetTrigger("Attack");
-            Debug.Log("Attack → Chase 상태로 복귀");
+            Debug.Log("Attack에서 Chase 상태로 복귀");
             stateMachine.ChangeState(stateMachine.StateDic[Estate.Chase]);
         }
+
+        _attackCoroutine = null;
     }
 
     public override void Update()
     {
-        if (_curTarget is MonoBehaviour target)
+        if (_ani == null || _agent == null || !_agent.isOnNavMesh) return;
+
+        AnimatorStateInfo stateInfo = _ani.GetCurrentAnimatorStateInfo(0);
+
+        // 공격 애니메이션 중일 땐 멈춤 유지
+        if (stateInfo.IsTag("Attack") || _ani.IsInTransition(0))
+        {
+            _agent.isStopped = true;
+            _agent.velocity = Vector3.zero;
+            _agent.ResetPath();
+            return;
+        }
+
+        // 애니 끝났으면 Agent 재시작
+        if (_agent.isStopped)
+        {
+            _agent.isStopped = false;
+            Debug.Log(" 공격 애니 끝 어젠트 재시작");
+        }
+
+        // 타겟 추적/공격 처리
+        if (stateMachine.CurState == this && _curTarget is MonoBehaviour target)
         {
             float distance = Vector3.Distance(monster.transform.position, target.transform.position);
-            if (distance > monster.AttackRange)
+
+            if (distance <= monster.AttackRange + 0.3f)
             {
-                _ani.ResetTrigger("Attack");
-                Debug.Log("공격 중 타겟 이탈 → 체이스 전환");
+                Vector3 dir = (target.transform.position - monster.transform.position).normalized;
+                dir.y = 0f;
+                float angle = Vector3.Angle(monster.transform.forward, dir);
+
+                if (angle > 10f)
+                {
+                    // 회전 먼저 수행, 공격은 보류
+                    monster.transform.rotation = Quaternion.Slerp(
+                        monster.transform.rotation,
+                        Quaternion.LookRotation(dir),
+                        10f * Time.deltaTime
+                    );
+                    Debug.Log($"공격 전 회전 중... (angle={angle:F1})");
+                    return;
+                }
+
+                //  회전 완료 ,쿨타임 OK 공격 시도
+                if (IsAttackAvailable())
+                {
+                    Debug.Log("정면 회전 완료 + 쿨타임 완료 Attack()");
+                    Attack(_curTarget);
+                }
+                else
+                {
+                    Debug.Log("쿨타임 대기 중");
+                }
+            }
+            else
+            {
+                Debug.Log($"사거리 벗어남 → Chase 전환 (거리={distance:F2})");
                 stateMachine.ChangeState(stateMachine.StateDic[Estate.Chase]);
             }
         }
+        else if (_curTarget == null)
+        {
+            Debug.Log("타겟 없음 → Chase 전환");
+            stateMachine.ChangeState(stateMachine.StateDic[Estate.Chase]);
+        }
     }
+
 
     public override void Exit()
     {
+        _ani.ResetTrigger("Attack");
+
         if (_attackCoroutine != null)
         {
             monster.StopCoroutine(_attackCoroutine);
@@ -122,7 +270,5 @@ public class Monster_Attack : MonsterState_temp, IAttackable
         {
             _agent.isStopped = false;
         }
-
-        _ani.ResetTrigger("Attack");
     }
 }

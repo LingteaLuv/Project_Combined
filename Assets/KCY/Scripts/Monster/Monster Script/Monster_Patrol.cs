@@ -25,7 +25,7 @@ public class Monster_Patrol : MonsterState_temp
 
         if (_wayPoints == null || _wayPoints.Length == 0)
         {
-            Debug.Log("❌ 순찰 지점이 없습니다.");
+            Debug.Log("순찰 지점이 없습니다.");
             return;
         }
 
@@ -33,14 +33,14 @@ public class Monster_Patrol : MonsterState_temp
         {
             if (_wayPoints[i] == null)
             {
-                Debug.Log("❌ 순찰 포인트를 빠뜨렸습니다.");
+                Debug.Log("순찰 포인트를 빠뜨렸습니다.");
                 return;
             }
         }
 
         if (_agent == null || !_agent.isOnNavMesh)
         {
-            Debug.Log("❌ NavMeshAgent가 NavMesh 위에 없습니다.");
+            Debug.Log("NavMeshAgent가 NavMesh 위에 없습니다.");
             return;
         }
 
@@ -60,7 +60,7 @@ public class Monster_Patrol : MonsterState_temp
         }
         else
         {
-            Debug.LogWarning("[Patrol] 에이전트가 NavMesh 위에 없어 이동 실패");
+            Debug.LogWarning("패트롤 중 어젠트가 내비 위에 없다");
         }
     }
 

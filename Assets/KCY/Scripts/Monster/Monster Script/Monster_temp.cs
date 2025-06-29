@@ -23,6 +23,8 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
     public Rigidbody Rigid;
     public MonsterStateMachine_temp _monsterMerchine;
     public GameObject MonObject;
+    public MonsterHandDetector HandDetector; //  손 감지기 연결용
+
     public BaseState_temp PrevState { get; private set; }
     public bool IsDetecting = false;
 
@@ -59,6 +61,8 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
     private void Awake()
     {
         PlayerLayerMask = LayerMask.GetMask("Player");
+        Ani = GetComponentInChildren<Animator>();
+        HandDetector = GetComponentInChildren<MonsterHandDetector>();
         // target = this as IAttackable; 피격 실험용으로 사용한 코드입니다 나중에 사용할 때 활성화 시켜주면 됩니다.
 
     }
@@ -133,7 +137,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
     {
         if (_isDead) return;
 
-        // 데미지를 Hit 상태로 위임 (중계)sp rm
+        // 데미지를 Hit 상태로 위임 (중계)
         if (_monsterMerchine.StateDic[Estate.Hit] is Monster_Hit hitState)
         {
             hitState.Damaged(damage);
@@ -146,7 +150,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
 
         if (_monsterMerchine.CurState != _monsterMerchine.StateDic[Estate.Patrol])
         {
-            Debug.Log("▶ Patrol 상태가 아니라 감지 무시");
+            Debug.Log("Patrol 상태가 아니라 감지 무시");
             return;
         }
 
@@ -155,4 +159,14 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
         Debug.Log($" 플레이어 감지됨 ({other.name}) Chase 상태로 전이");
         _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.Chase]);
     }
+
+    public void AttackEvent()
+    {
+        Debug.Log("<color=lime>[Monster_temp] AttackEvent 호출됨 </color>");
+        if (_monsterMerchine.CurState is Monster_Attack attackState)
+        {
+            attackState.AttackEvent();
+        }
+    }
+
 }

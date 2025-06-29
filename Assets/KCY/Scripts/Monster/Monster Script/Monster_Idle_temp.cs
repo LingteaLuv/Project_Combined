@@ -31,18 +31,14 @@ public class Monster_Idle : MonsterState_temp
         {
             _navMeshAgent.ResetPath();
             _navMeshAgent.isStopped = true;
-
-            // ✅ [추가] 에이전트 속도 직접 정지
             _navMeshAgent.velocity = Vector3.zero;
-
-            // ✅ [추가] Rigidbody도 멈춤
             monster.Rigid.velocity = Vector3.zero;
             monster.Rigid.angularVelocity = Vector3.zero;
 
             monster.IsDetecting = false;
             monster.TargetPosition = null;
 
-            Debug.Log("아이들 모드로 잠시 길 찾기는 정지 시킵니다.");
+            Debug.Log("아이들 모드 정지");
         }
         else
         {
