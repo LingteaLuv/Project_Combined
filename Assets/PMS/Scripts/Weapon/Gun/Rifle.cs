@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Rifle : GunWeaponBase //이후 총마다 상속을 시켜 줘야 하지 않을까
+public class Rifle : GunWeaponBase 
 {
     private void Awake()
     {
@@ -58,9 +58,9 @@ public class Rifle : GunWeaponBase //이후 총마다 상속을 시켜 줘야 �
     //총알 딜레이 설정
     private IEnumerator ShotDelay()
     {
-        _canShot = false;
+        playerAttack.IsAttacking = false;
         yield return new WaitForSeconds(_fireDelay);
-        _canShot = true;
+        playerAttack.IsAttacking = true;
     }
     private IEnumerator ReloadCorutine()
     {
@@ -97,7 +97,7 @@ public class Rifle : GunWeaponBase //이후 총마다 상속을 시켜 줘야 �
 
             //총알 방향 설정
             BulletBase bullet = bulletObj.GetComponent<BulletBase>();
-            bullet.SetDamage(Damage);
+            bullet.SetDamage(_gunData.AtkDamage);
             if (bullet != null)
             {
                 bullet.SetDirection(_firePoint.forward);

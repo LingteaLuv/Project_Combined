@@ -6,9 +6,9 @@ using UnityEngine.Events;
 public class PlayerAttack : MonoBehaviour
 {
     [SerializeField] Animator _animator; //플레이어의 애니메이터가 필요 -> 공격시 플레이어 애니메이션 재생하기 위하여
-    //[SerializeField][Range(0, 5)] private float _mouseSensitivity = 1;
-    //추후에 플레이어가 어떤 키를 입력했는지 불러올것같아서
-    //[SerializeField] private PlayerInputManager _playerInput;
+                                         //[SerializeField][Range(0, 5)] private float _mouseSensitivity = 1;
+                                         //추후에 플레이어가 어떤 키를 입력했는지 불러올것같아서
+                                         //[SerializeField] private PlayerInputManager _playerInput;partial
 
     [SerializeField] private WeaponBase _currentWeapon;
     //소환되는위치
@@ -18,8 +18,11 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField][Range(0, 2)] private float _startAttackDelay;      //플레이어 근접공격모션 시작 딜레이
     [SerializeField][Range(0, 2)] private float _endAttackDelay;  //플레이어 근접공격모션 종료 딜레이
 
+    [SerializeField] private AnimationClip _melee;
+
     [SerializeField] private bool _canAttack = true;
-    [SerializeField] private bool _isAttacking = false; // 공격 중인지 체크
+
+    public bool IsAttacking { get; set; } //공격중인지 아닌지
 
     [Header("Player Attack AnimatorLayer Settings")]
     [SerializeField] private int targetLayerIndex = 1; // 조절할 레이어 인덱스
@@ -27,7 +30,7 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private float weightChangeSpeed = 2.0f; // 가중치 변경 속도
 
     private PlayerProperty _playerProperty;
-    
+
     private Coroutine _currentAttackCoroutine; // 현재 실행 중인 공격 코루틴
 
     //TODO - 나중에 어디서인가 그 현재 무기가 뭔지 있어야하는 부분이 있지 않을까? Action 연결
@@ -61,39 +64,49 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
+    //IEnumerator -> void
     private IEnumerator MeleeAttackSequence()
     {
         _canAttack = false;
-        _isAttacking = true;
-        Debug.Log("근접 공격 시작 - 선딜 시작");
+        IsAttacking = true;
 
-        // 선딜 대기
-        yield return new WaitForSeconds(_startAttackDelay);
-
-        Debug.Log("선딜 완료 - 애니메이션 실행");
-        _animator.SetLayerWeight(2,1);
+        Debug.Log("애니메이션 실행");
         _animator.SetTrigger("DownAttack");
 
-        // 실제 공격 실행 (애니메이션 이벤트 대신 여기서 실행)
-        PlayerAttackStart();
+        float playerAttackSpeed = _playerProperty.AtkSpeed.Value;
 
-        Debug.Log("공격 실행 - 후딜 시작");
+        if (playerAttackSpeed <= 0)
+        {
+            playerAttackSpeed = 1;
+            Debug.Log("플레이어의 공격속도가 0보다 작기 때문에 공격 할 수 없습니다.");
+            /*_isAttacking = false;
+            _canAttack = true;
+            _currentAttackCoroutine = null;
+            yield break;*/
+        }
+        _animator.SetFloat("AttackSpeed", playerAttackSpeed);
 
-        // 후딜 대기
-        yield return new WaitForSeconds(_endAttackDelay);
 
-        Debug.Log("후딜 완료 - 공격 가능");
+        float currentTime = _melee.length;
+        float coolTime = 1 / playerAttackSpeed;
 
-        _isAttacking = false;
+        Debug.Log($"애니메이션 기본시간 {currentTime}");
+        Debug.Log($"애니메이션 실제재생시간 {(currentTime) / playerAttackSpeed}");
+        Debug.Log($"실제 재생시간 + 공격 속도에 따른 쿨타임 {(currentTime) / playerAttackSpeed + coolTime}");
+        yield return new WaitForSeconds((currentTime) / playerAttackSpeed + coolTime);
+
+        Debug.Log("대기 끝");
+
+
+        IsAttacking = false;
         _canAttack = true;
-        _animator.SetLayerWeight(2,0);
         _currentAttackCoroutine = null;
     }
 
     private void TryAttack()
     {
         // 공격 불가능한 상태면 리턴
-        if (!_canAttack || _isAttacking)
+        if (!_canAttack || IsAttacking)
         {
             Debug.Log("공격 불가능한 상태입니다.");
             return;
@@ -135,9 +148,11 @@ public class PlayerAttack : MonoBehaviour
         if (_currentAttackCoroutine != null)
         {
             StopCoroutine(_currentAttackCoroutine);
+            _currentAttackCoroutine = null;
         }
 
         _currentAttackCoroutine = StartCoroutine(MeleeAttackSequence());
+        MeleeAttackSequence();
     }
 
     private void StartRangedAttack()
