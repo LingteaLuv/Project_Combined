@@ -1,4 +1,5 @@
 
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -8,6 +9,13 @@ public class InvSlotController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     [SerializeField] Button _slotButton;
 
     [SerializeField] private Image _hoverImage;
+
+    [SerializeField] private DoubleClickManage _dcm;
+
+    private void Awake()
+    {
+        _dcm = GetComponentInParent<DoubleClickManage>();
+    }
 
     public void OnEnable()
     {
@@ -31,6 +39,15 @@ public class InvSlotController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     {
         InventoryManager.Instance.Controller.PutItem();
     }
+    public void DCdown()
+    {
+        if (InventoryManager.Instance.Model.InvItems[GetSlotIndex()] == null) return;
+        _dcm.StartCo(GetSlotIndex());
+    }
+    public void DCup()
+    {
+        _dcm.EndCo();
+    }
     public void TrySelect()
     {
         int index = GetSlotIndex();
@@ -52,5 +69,9 @@ public class InvSlotController : MonoBehaviour, IPointerEnterHandler, IPointerEx
     {
         if (InventoryManager.Instance.Controller.IsHolding)
             InventoryManager.Instance.Controller.NextIndex = InventoryManager.Instance.Controller.HoldingIndex;
+    }
+    public void DCexit()
+    {
+        _dcm.IsExist = false;
     }
 }

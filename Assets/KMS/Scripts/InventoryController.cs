@@ -102,8 +102,9 @@ public class InventoryController : MonoBehaviour
     
     public void EquipButton(int index) //해당 인벤토리 칸 아이템(선택된)을 장착시도
     {
+        //if (UISceneLoader.Instance.Playerattack.IsAttacking) return; //공격 중일땐 취소
         Item exist = _model.InvItems[index];
-        if (exist.Data.Type == ItemType.ETC) return;
+        if (exist.Data.Type == ItemType.ETC || exist.Data.Type == ItemType.Material) return;
         if (EquippedSlotIndex[0] == -1 && EquippedSlotIndex[1] == -1) // 선택된게 아예없다면 (이 상황은 없음)
         {
             for (int i= 0; i < 6; i++) // 빈 칸 추척
@@ -217,6 +218,7 @@ public class InventoryController : MonoBehaviour
     }
     public void Equip(int index, bool a = true) //해당 칸 아이템에 대한 장착 시도
     {
+        if (UISceneLoader.Instance.Playerattack.IsAttacking) return; //공격 중일땐 취소
         Item exist = _model.InvItems[index];
         if (a) _hand.AnimationLoad(exist); //a는 애니 실행 여부
         if (exist == null) // 아무것도 안 든다.
@@ -272,7 +274,7 @@ public class InventoryController : MonoBehaviour
          _hand.UpdateItems();
     }
 
-    public void UnEquip(int index)
+    private void UnEquip(int index)
     {
         //해당 인덱스에 뭔가 장착되어 있는가
         if (EquippedSlotIndex[0] == index)

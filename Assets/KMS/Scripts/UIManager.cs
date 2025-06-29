@@ -75,6 +75,7 @@ public class UIManager : SingletonT<UIManager>
         }
         if (Input.GetKeyDown(KeyCode.F))
         {
+            if (Current == ModalUI.inventory) return;
             _playerLoot.TryLoot();
         }
     }

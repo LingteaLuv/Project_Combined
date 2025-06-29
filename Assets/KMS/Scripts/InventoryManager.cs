@@ -84,21 +84,21 @@ public class InventoryManager : SingletonT<InventoryManager>
     private void Update()
     {
 
-
         if (Input.GetKeyDown(KeyCode.Z)) _craft.AddItemByID(1101, 1, 10);
         if (Input.GetKeyDown(KeyCode.X)) _craft.AddItemByID(1102, 1, 10);
         if (Input.GetKeyDown(KeyCode.C)) _craft.AddItemByID(1201, 1, 10);
         if (Input.GetKeyDown(KeyCode.V)) _craft.AddItemByID(1301, 1, 10);
         if (Input.GetKeyDown(KeyCode.B)) _craft.AddItemByID(1401, 1, 10);
         if (Input.GetKeyDown(KeyCode.N)) _craft.AddItemByID(1402, 1, 10);
-
-
-        if (Input.GetKeyDown(KeyCode.Alpha1)) Controller.Equip(0);
-        if (Input.GetKeyDown(KeyCode.Alpha2)) Controller.Equip(1);
-        if (Input.GetKeyDown(KeyCode.Alpha3)) Controller.Equip(2);
-        if (Input.GetKeyDown(KeyCode.Alpha4)) Controller.Equip(3);
-        if (Input.GetKeyDown(KeyCode.Alpha5)) Controller.Equip(4);
-        if (Input.GetKeyDown(KeyCode.Alpha6)) Controller.Equip(5);
+        if (!UISceneLoader.Instance.Playerattack.IsAttacking)
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1)) Controller.Equip(0);
+            if (Input.GetKeyDown(KeyCode.Alpha2)) Controller.Equip(1);
+            if (Input.GetKeyDown(KeyCode.Alpha3)) Controller.Equip(2);
+            if (Input.GetKeyDown(KeyCode.Alpha4)) Controller.Equip(3);
+            if (Input.GetKeyDown(KeyCode.Alpha5)) Controller.Equip(4);
+            if (Input.GetKeyDown(KeyCode.Alpha6)) Controller.Equip(5);
+        }
 
         if (Input.GetKeyDown(KeyCode.P)) DecreaseWeaponDurability();
         if (Input.GetKeyDown(KeyCode.O)) DecreaseShieldDurability();
