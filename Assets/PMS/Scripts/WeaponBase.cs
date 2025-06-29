@@ -12,7 +12,7 @@ public abstract class WeaponBase : MonoBehaviour
     public ItemType ItemType { get { return _itemType; } protected set {_itemType = value; } }
 
     private float _weaponBaseid; 
-    public abstract bool IsAttack { get; }
+    public bool IsAttack { get; private set; }
 
     public abstract void Attack();
 }

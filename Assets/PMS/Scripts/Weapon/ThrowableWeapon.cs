@@ -99,8 +99,6 @@ public class ThrowableWeapon : WeaponBase
         readyToThrow = true;
     }
 
-    public override bool IsAttack => throw new System.NotImplementedException();
-
     private void Reset()
     {
         ItemType = ItemType.Throw;

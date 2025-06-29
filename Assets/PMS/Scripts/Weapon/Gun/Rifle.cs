@@ -58,9 +58,9 @@ public class Rifle : GunWeaponBase
     //총알 딜레이 설정
     private IEnumerator ShotDelay()
     {
-        _canShot = false;
+        playerAttack.IsAttacking = false;
         yield return new WaitForSeconds(_fireDelay);
-        _canShot = true;
+        playerAttack.IsAttacking = true;
     }
     private IEnumerator ReloadCorutine()
     {

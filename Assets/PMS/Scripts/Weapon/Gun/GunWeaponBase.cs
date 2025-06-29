@@ -6,7 +6,7 @@ using UnityEngine;
 public abstract class GunWeaponBase : WeaponBase
 {
     protected GunItem _gunData; //건 데이터
-    
+
     /*
         public int AtkDamage;
         public int Rof;
@@ -18,7 +18,7 @@ public abstract class GunWeaponBase : WeaponBase
         public string ReloadSoundResource;
         public float NoiseLevel;
     */
-
+    [SerializeField] protected PlayerAttack playerAttack;
     //불릿 프리팹
     //추후 프리팹 매니저 관리
     [SerializeField] protected GameObject _bulletPrefab;
@@ -45,7 +45,6 @@ public abstract class GunWeaponBase : WeaponBase
     protected LineRenderer _lineRenderer;
     [SerializeField] protected bool showTrajectory = true;
 
-    protected bool _canShot = true;
     protected bool _isReload = false;
 
     //총알 오브젝트 풀링 관련 변수
@@ -60,7 +59,6 @@ public abstract class GunWeaponBase : WeaponBase
 
     public int Damage { get { return _damage; } private set { } }
 
-    public override bool IsAttack => throw new System.NotImplementedException();
 
     private void Reset()
     {
