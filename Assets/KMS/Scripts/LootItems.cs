@@ -9,7 +9,9 @@ public class LootItems : MonoBehaviour
     public Item[] Items;
 
     public LootInitType InitType = LootInitType.Fixed;
-    public int[] Percentages = new int[6];
+    private int[] Percentages = new int[6];
+
+    private RandomLootTable _rlt;
 
     private void Awake()
     {
@@ -20,6 +22,7 @@ public class LootItems : MonoBehaviour
         }
         else
         {
+            _rlt = GetComponent<RandomLootTable>();
             RandomInit();
         }
     }
@@ -36,7 +39,19 @@ public class LootItems : MonoBehaviour
             Items[i].SetDur((int)(Items[i].MaxDurability * a));
         }
     }
+
     private void RandomInit()
+    {
+        for (int i = 0; i < _rlt._resultItems.Count; i++)
+        {
+            ItemBlocked[i] = true;
+            Items[i] = new Item(_rlt._resultItems[i]);
+            Items[i].SetCount(_rlt._resultItemAmount[i]);
+            float a = UnityEngine.Random.Range(0.6f, 1.0f);
+            Items[i].SetDur((int)(Items[i].MaxDurability * a));
+        }
+    }
+    private void RandomInitlegacy()
     {
         int index = 0;
         for (int i = 0; i < Items.Length; i++)
