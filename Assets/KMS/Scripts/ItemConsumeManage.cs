@@ -25,7 +25,7 @@ public class ItemConsumeManage : MonoBehaviour
         Item item = _model.InvItems[_control.EquippedSlotIndex[0]];
         if (item == null) return; //오른손 빈칸임
         if (item.Data.Type != ItemType.Consumable) return; //소모품 아님
-        //_property.Consume(item.Data); // 효과적용
+        _consume.Consume(item.Data);
         _control.RemoveEquippedItem(0); //오른손 아이템 지움
     }
 

@@ -11,6 +11,8 @@ public class InstantMonsterScirpt : MonoBehaviour
     private InstantAnimation ani;
     private bool isDetecting = false;
     public bool IsFrozen = false;
+    private Collider _currentAttackTarget;
+
 
     private void Awake()
     {
@@ -28,7 +30,7 @@ public class InstantMonsterScirpt : MonoBehaviour
     {
         if (_isDead) return;
         DetectAndMove(other);
-        Attack(other);
+        Attack(other); // 이벤트 공격으로 변경
     }
     private void OnTriggerExit(Collider other)
     {
@@ -98,12 +100,16 @@ public class InstantMonsterScirpt : MonoBehaviour
                     ani.ani.SetBool("IsDetect", false);
                     Debug.Log("코루틴 시작 시도");
                     StartCoroutine(ani.AttackRoutine(other));
-                   
-
                 }
             }
         }
     }
+
+    public void ApplyAttackDamage()
+    {
+        
+    }
+
 
     public void TakeDamage(int damage)
     {
