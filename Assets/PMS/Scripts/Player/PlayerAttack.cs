@@ -77,7 +77,7 @@ public class PlayerAttack : MonoBehaviour
         // 실제 공격 실행 (애니메이션 이벤트 대신 여기서 실행)
         PlayerAttackStart();
 
-        StartCoroutine(AnimatorUtil.CheckFinishAnimation(_animator, 2, "MeleeDownwardAttak"));
+        StartCoroutine(AnimatorUtil.CheckFinishAnimation(_animator, 2, ""));
         Debug.Log("대기 끝");
         // 후딜 대기
         //yield return new WaitForSeconds(_endAttackDelay);
