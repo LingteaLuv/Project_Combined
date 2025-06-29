@@ -41,7 +41,10 @@ public class LootDictionary : ScriptableObject
             
             for (int j = 1; j < parts.Length; j++)
             {
-                values.Add(int.Parse(parts[i]));
+                if (int.TryParse(parts[i], out int value))
+                {
+                    values.Add(value);
+                }
             }
             table.Add(key,values);
         }
