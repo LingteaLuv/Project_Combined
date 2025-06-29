@@ -99,4 +99,21 @@ public static class AnimatorUtil
 
         return true;
     }
+
+    //특정 애니메이션이 끝날 때 까지 대기 하는 코루틴 함수
+
+    public static IEnumerator CheckFinishAnimation(Animator animator, int layerIndex, string animationName)
+    {
+        Debug.Log($"레이어 {layerIndex}의 {animationName} 완료 대기 시작");
+
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(layerIndex);
+
+        // 2. 애니메이션이 완료될 때까지 대기 (루프로 계속 체크)
+        yield return new WaitUntil(() => {
+            AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(layerIndex);
+            return stateInfo.IsName(animationName) &&
+                   stateInfo.normalizedTime >= 1.0f &&
+                   !animator.IsInTransition(layerIndex);
+        });
+    }
 }

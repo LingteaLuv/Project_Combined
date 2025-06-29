@@ -9,6 +9,7 @@ public class PlayerAttack : MonoBehaviour
     //[SerializeField][Range(0, 5)] private float _mouseSensitivity = 1;
     //추후에 플레이어가 어떤 키를 입력했는지 불러올것같아서
     //[SerializeField] private PlayerInputManager _playerInput;
+   
 
     [SerializeField] private WeaponBase _currentWeapon;
     //소환되는위치
@@ -61,32 +62,28 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
-    private IEnumerator MeleeAttackSequence()
+    //IEnumerator -> void
+    private void MeleeAttackSequence()
     {
         _canAttack = false;
         _isAttacking = true;
-        Debug.Log("근접 공격 시작 - 선딜 시작");
 
         // 선딜 대기
-        yield return new WaitForSeconds(_startAttackDelay);
+        //yield return new WaitForSeconds(_startAttackDelay);
 
-        Debug.Log("선딜 완료 - 애니메이션 실행");
-        _animator.SetLayerWeight(2,1);
+        Debug.Log("애니메이션 실행");
         _animator.SetTrigger("DownAttack");
 
         // 실제 공격 실행 (애니메이션 이벤트 대신 여기서 실행)
         PlayerAttackStart();
 
-        Debug.Log("공격 실행 - 후딜 시작");
-
+        StartCoroutine(AnimatorUtil.CheckFinishAnimation(_animator, 1, "meleeDownAtack"));
         // 후딜 대기
-        yield return new WaitForSeconds(_endAttackDelay);
+        //yield return new WaitForSeconds(_endAttackDelay);
 
-        Debug.Log("후딜 완료 - 공격 가능");
 
         _isAttacking = false;
         _canAttack = true;
-        _animator.SetLayerWeight(2,0);
         _currentAttackCoroutine = null;
     }
 
@@ -131,13 +128,14 @@ public class PlayerAttack : MonoBehaviour
     //빠따공격
     private void StartMeleeAttack()
     {
-        // 이전 공격 코루틴이 있다면 정지
+        /*// 이전 공격 코루틴이 있다면 정지
         if (_currentAttackCoroutine != null)
         {
             StopCoroutine(_currentAttackCoroutine);
-        }
+        }*/
 
-        _currentAttackCoroutine = StartCoroutine(MeleeAttackSequence());
+        //currentAttackCoroutine = StartCoroutine(MeleeAttackSequence());
+        MeleeAttackSequence();
     }
 
     private void StartRangedAttack()

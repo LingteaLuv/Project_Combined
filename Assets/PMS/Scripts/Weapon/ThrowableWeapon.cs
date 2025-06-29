@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ThrowableWeapon : WeaponBase
 {
+    [SerializeField] ThrowItem _throwData;
     /*
      * public class ThrowItem : ItemBase
     public float Range;
@@ -15,7 +16,8 @@ public class ThrowableWeapon : WeaponBase
     
     [Header("References")]
     public Transform cam;               //카메라 시점
-    public Transform attackPoint;       //투척 포인트
+    public Transform attackPoint;    //투척 포인트
+    private float _damage => _throwData.AtkDamage;   
     //public GameObject objectToThrow;  //던질 게임 오브젝트 프리팹 -> 추후 오브젝트 풀링 생각해보기 생성/파괴 관련
 
     [Header("Settings")]
@@ -51,11 +53,6 @@ public class ThrowableWeapon : WeaponBase
         
         //해당 오브젝트 파괴 시점을 고려해봐야 할것 같다.
         Destroy(gameObject,10.0f); 
-    }
-
-    private void Throw()
-    {
-        readyToThrow = false;
     }
 
     private void OnCollisionEnter(Collision collision)

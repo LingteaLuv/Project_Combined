@@ -5,7 +5,7 @@ using UnityEngine;
 public class MeleeWeapon : WeaponBase
 {
     [Tooltip("받아올 MeleeItem 스크립트 데이터")]
-    [SerializeField] private MeleeItem _meleeItem;
+    [SerializeField] private MeleeItem _meleeData;
 
     private ItemType _iTemType = ItemType.Melee;
     [SerializeField] private Transform _playerPos; //플레이어의 위치
@@ -36,8 +36,6 @@ public class MeleeWeapon : WeaponBase
 
     public override void Attack()
     {
-        //무기 내구도 감소
-        InventoryManager.Instance.DecreaseWeaponDurability();
         //무기에 달려있는 _attack를 중심으로 범위를 설정하고 타겟레이어와 충돌검사
         /*Collider[] _colliders = Physics.OverlapSphere(_attackPointPos.position, _attackRange, _targetLayer);
 
@@ -83,7 +81,7 @@ public class MeleeWeapon : WeaponBase
         // 가장 가까운 적이 있다면 데미지 부여 로직 실행
         if (closeGameObject != null)//(closestDamageable != null)
         {
-            closeGameObject.GetComponent<IDamageable>().Damaged(_meleeItem.AtkDamage);
+            closeGameObject.GetComponent<IDamageable>().Damaged(_meleeData.AtkDamage);
             //TODO - 시각적 디버깅용 코드 추후 제거 예정
             StartCoroutine(DamageRoutine(closeGameObject.gameObject));
         }

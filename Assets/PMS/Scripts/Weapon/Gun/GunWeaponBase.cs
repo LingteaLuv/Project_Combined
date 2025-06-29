@@ -5,7 +5,7 @@ using UnityEngine;
 
 public abstract class GunWeaponBase : WeaponBase
 {
-    protected GunItem _GunData; //건 데이터
+    protected GunItem _gunData; //건 데이터
     
     /*
         public int AtkDamage;
@@ -24,12 +24,12 @@ public abstract class GunWeaponBase : WeaponBase
     [SerializeField] protected GameObject _bulletPrefab;
 
     //총 본체 관련 변수
-    [SerializeField] protected int _damage => _GunData.AtkDamage;       // 총의 데미지
-    [SerializeField] protected float _range => _GunData.Range;        // 총의 유효 사거리
+    [SerializeField] protected int _damage => _gunData.AtkDamage;     // 총의 데미지
+    [SerializeField] protected float _range => _gunData.Range;        // 총의 유효 사거리
     //[SerializeField] protected float _accuracy;     // 총의 정확도
 
     //총알 제어 관련 변수
-    [SerializeField] protected int _maxAmmoCount => _GunData.AmmoCapacity;       //최대 탄약수
+    [SerializeField] protected int _maxAmmoCount => _gunData.AmmoCapacity;       //최대 탄약수
 
 
     //제쪽에서 관리되는 데이터 테이블 -> 나중에 문성님이 Item필드에 추가해주셔야 제가 값을 건들이면 해당 값이 저장되는 형태

@@ -97,7 +97,7 @@ public class Rifle : GunWeaponBase
 
             //총알 방향 설정
             BulletBase bullet = bulletObj.GetComponent<BulletBase>();
-            bullet.SetDamage(_gunItem.AtkDamage);
+            bullet.SetDamage(_gunData.AtkDamage);
             if (bullet != null)
             {
                 bullet.SetDirection(_firePoint.forward);
