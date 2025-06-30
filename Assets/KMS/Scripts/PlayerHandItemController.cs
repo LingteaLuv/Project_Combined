@@ -22,8 +22,17 @@ public class PlayerHandItemController : MonoBehaviour
 
     private GunWeaponBase _gwb;
 
+    [SerializeField] private AnimationClip _equipMotion;
+    [SerializeField] private AnimationClip _unequipMotion;
+
+    private Coroutine _anico;
+    private WaitForSeconds _equipSc;
+    private WaitForSeconds _unequipSc;
+
     private void Awake()
     {
+        _equipSc = new WaitForSeconds(_equipMotion.length);
+        _unequipSc = new WaitForSeconds(_unequipMotion.length);
         _control = GetComponent<InventoryController>();
         _model = GetComponent<InventoryModel>();
         PrefabIDs = new();
@@ -167,6 +176,7 @@ public class PlayerHandItemController : MonoBehaviour
             {
                 Debug.Log("무기 에서 빈손");
                 _animator.SetTrigger("UnEquip");
+                StartCoroutine(UnequipCoroutine());
             }
         }
         else if (toEquip != null && isBeforeitemNull) // 빈손 > 장비
@@ -176,6 +186,7 @@ public class PlayerHandItemController : MonoBehaviour
             {
                 Debug.Log("빈손 에서 무기");
                 _animator.SetTrigger("Equip");
+                StartCoroutine(EquipCoroutine());
             }
         }
         else // 무기 > 무기
@@ -185,7 +196,21 @@ public class PlayerHandItemController : MonoBehaviour
             {
                 Debug.Log("무기 에서 무기");
                 _animator.SetTrigger("Equip");
+                StartCoroutine(EquipCoroutine());
             }
         }
+    }
+
+    private IEnumerator EquipCoroutine()
+    {
+        _playerAttack.IsAttacking = true;
+        yield return _equipSc;
+        _playerAttack.IsAttacking = false;
+    }
+    private IEnumerator UnequipCoroutine()
+    {
+        _playerAttack.IsAttacking = true;
+        yield return _unequipSc;
+        _playerAttack.IsAttacking = false;
     }
 }
