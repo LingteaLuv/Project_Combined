@@ -122,7 +122,7 @@ public class PlayerAttack : MonoBehaviour
         {
             case ItemType.Melee:
                 StartMeleeAttack();
-                _playerProperty.ExpendAction();
+                _playerProperty.StaminaConsume(3f);
                 break;
             case ItemType.Gun:
                 StartRangedAttack();

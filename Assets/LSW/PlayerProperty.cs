@@ -194,7 +194,7 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
         while (true)
         {
             if (_staminaTimer > 0) break;
-            Stamina.Recover(5f);
+            Stamina.Recover(7f);
             yield return _delay;
         }
         _isOnCorStamina = false;
@@ -218,11 +218,24 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
     */
 
     // 강한 행동에서 호출되는 이벤트에 구독되는 메서드
-    public void ExpendAction()
+    public void StaminaConsume(float amount)
     {
-        Stamina.Decrease(15f);
+        Stamina.Decrease(amount);
         _staminaTimer = 2f;
     }
+    
+    // 달리고 있는 상태에서 호출하는 함수
+    public IEnumerator StaminaConsumePerSecond(float amount, bool isOnRunning)
+    {
+        while (true)
+        {
+            if (!isOnRunning) break;
+            Stamina.Decrease(amount);
+            _staminaTimer = 2f;
+            yield return _delay;
+        }
+    }
+    
     
     private void Init()
     {
