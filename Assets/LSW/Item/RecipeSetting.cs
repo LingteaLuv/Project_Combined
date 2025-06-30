@@ -19,6 +19,7 @@ public class RecipeSetting : MonoBehaviour
     private Image[] _materialImages;
     private TMP_Text[] _materialTexts;
     private TMP_Text[] _currentTexts;
+    private Image[] _currentImage;
     
     public List<Button> CreateBtn { get; private set; }
     public Stack<Button> RecipeBtn { get; private set; }
@@ -37,6 +38,7 @@ public class RecipeSetting : MonoBehaviour
         _materialImages = new Image[4];
         _materialTexts = new TMP_Text[4];
         _currentTexts = new TMP_Text[4];
+        _currentImage = new Image[4];
         CreateBtn = new List<Button>();
         RecipeBtn = new Stack<Button>();
         
@@ -79,21 +81,37 @@ public class RecipeSetting : MonoBehaviour
         if (_hasMaterial1)
         {
             _currentTexts[0].text = _countById[_recipe.MaterialItemId1].ToString();
+            if(_countById[_recipe.MaterialItemId1] >= _recipe.MaterialItemQuantity1)
+            {
+                _currentImage[0].color = Color.white;
+            }
         }
 
         if (_hasMaterial2)
         {
             _currentTexts[1].text = _countById[_recipe.MaterialItemId2].ToString();
+            if(_countById[_recipe.MaterialItemId2] >= _recipe.MaterialItemQuantity2)
+            {
+                _currentImage[1].color = Color.white;
+            }
         }
 
         if (_hasMaterial3)
         {
             _currentTexts[2].text = _countById[_recipe.MaterialItemId3].ToString();
+            if(_countById[_recipe.MaterialItemId3] >= _recipe.MaterialItemQuantity3)
+            {
+                _currentImage[2].color = Color.white;
+            }
         }
 
         if (_hasMaterial4)
         {
             _currentTexts[3].text = _countById[_recipe.MaterialItemId4].ToString();
+            if(_countById[_recipe.MaterialItemId4] >= _recipe.MaterialItemQuantity4)
+            {
+                _currentImage[3].color = Color.white;
+            }
         }
     }
 
@@ -141,6 +159,7 @@ public class RecipeSetting : MonoBehaviour
             if (_hasMaterials[i])
             {
                 _currentTexts[i] = children[i + 1].GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>();
+                _currentImage[i] = children[i + 1].GetChild(1).GetComponent<Image>();
             }
         }
     }
