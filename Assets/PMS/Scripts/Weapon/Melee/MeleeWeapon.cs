@@ -10,7 +10,8 @@ public class MeleeWeapon : WeaponBase
     private ItemType _iTemType = ItemType.Melee;
     [SerializeField] private Transform _playerPos; //플레이어의 위치
     [SerializeField] private Transform _attackPointPos; //공격의 충돌을 감지할 Pivot Transform
- 
+    [SerializeField] private Transform _parent;
+    
     [Header("근접무기 셋팅값")]
     [SerializeField] private float _attackRange;  //근거리 무기의 유효 범위
     [SerializeField] private float _attackAngle; //근거리 무기 유효 각도
@@ -31,6 +32,7 @@ public class MeleeWeapon : WeaponBase
 
     public void Awake()
     {
+        if (transform.parent == null) return;
         Init();
     }
 
