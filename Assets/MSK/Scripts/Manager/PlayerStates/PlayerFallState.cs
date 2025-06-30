@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem.XR;
 using UnityEngine.Rendering;
-using UnityEngine.WSA;
 
 /// <summary>
 /// 점프 없이 낙하 중인 상태입니다.
