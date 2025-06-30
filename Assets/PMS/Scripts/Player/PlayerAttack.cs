@@ -32,6 +32,7 @@ public class PlayerAttack : MonoBehaviour
     private void Awake()
     {
         _left_Hand_target = PlayerWeaponManager.Instance.LeftCurrentWeapon;   
+
         _right_Hand_target = PlayerWeaponManager.Instance.RightCurrentWeapon;
     }
 
