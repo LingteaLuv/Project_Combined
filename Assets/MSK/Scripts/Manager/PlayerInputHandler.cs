@@ -23,7 +23,7 @@ public class PlayerInputHandler : MonoBehaviour
         InteractPressed = Input.GetKeyDown(KeyCode.F);
 
 
-        if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, 0.6f))
+        if (Physics.Raycast(transform.position+Vector3.up * 0.1f, transform.forward, out RaycastHit hit, 0.3f))
         {
             if (hit.collider.CompareTag("Ladder"))
             {

@@ -105,7 +105,7 @@ public class RecipeSetting : MonoBehaviour
     
     private void SetRecipe(int index)
     {
-        _recipe = _itemDictionary.RecipeDic[index + 9001];
+        _recipe = _itemDictionary.RecipeDic[_itemDictionary.RecipeKeys[index]];
     }
     
     private void SetProperty()
