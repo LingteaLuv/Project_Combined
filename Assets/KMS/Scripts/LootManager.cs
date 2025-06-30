@@ -90,6 +90,9 @@ public class LootManager : SingletonT<LootManager>
             if (_lootable.LootItems.ItemBlocked[i])
             {
                 _slotBlockers[i].gameObject.SetActive(true);
+                _itemImages[i].enabled = false;
+                _itemCountTexts[i].enabled = false;
+                _itemDurSliders[i].gameObject.SetActive(false);
                 continue;
             }
             _slotBlockers[i].gameObject.SetActive(false);
