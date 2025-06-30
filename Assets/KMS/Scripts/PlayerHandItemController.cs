@@ -76,6 +76,12 @@ public class PlayerHandItemController : MonoBehaviour
         }
     }
 
+    public void UpdateItemHandle()
+    {
+        UpdateItems();
+        StartCoroutine(UW());
+    }
+
     public void UpdateItems()
     {
         DeholdBoth();
@@ -84,33 +90,30 @@ public class PlayerHandItemController : MonoBehaviour
         if ((rightIndex == leftIndex) && _model.InvItems[rightIndex] == null) return;
         if (rightIndex == -1) //오른손 들린게 없다
         {
-            StartCoroutine(UW()); // 아무것도 안들렸다는 신호를 보낼 것.
             if (leftIndex != -1) //왼손은 들렸다.
             {
                 HoldItem(HandType.left, _model.InvItems[leftIndex].Data.ItemID);
-                return;
+                return; //왼손에만 들린 상황
             }
-            return;
+            return; // 양손 다 텅 빈 상황
         }
         HoldItem(HandType.right, _model.InvItems[rightIndex].Data.ItemID);
         if (_model.InvItems[rightIndex].Data.Type == ItemType.Gun) //들린게 총이면
         {
             GunWeaponBase _gwb = CurrentRightItem.GetComponent<GunWeaponBase>();
-            //_gwb.currentammocount = _model.InvItems[rightIndex].CurrentAmmoCount; (아니면 _model.InvItems[rightIndex]) 그대로 넘김
         }
-        StartCoroutine(UW());
 
 
         // 왼손에 들린게 없거나 두손무기라면 스킵 방패라면 들어주고,
         if (leftIndex == -1)
         {
-            return;
+            return; // 한손무기만 들린 상황
         }
         if (leftIndex == rightIndex)
         {
-            return;
+            return; // 두손무기가 들린 상황
         }
-        HoldItem(HandType.left, _model.InvItems[leftIndex].Data.ItemID);
+        HoldItem(HandType.left, _model.InvItems[leftIndex].Data.ItemID); //한손무기와 방패가 들린 상황
 
 
 
@@ -125,6 +128,7 @@ public class PlayerHandItemController : MonoBehaviour
         
         //생성된 프리팹에 정보를 넘겨주
         _playerAttack.UpdateWeapon(); //생성된 프리팹에서 정보를 받음
+        //여기서 싱글톤ㅇ 점보 넘겨줌
     }
     public void DeholdItem(HandType type)
     {

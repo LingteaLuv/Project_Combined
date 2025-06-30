@@ -271,7 +271,7 @@ public class InventoryController : MonoBehaviour
         }
         _renderer.RenderEquip(EquippedSlotIndex);
         
-         _hand.UpdateItems();
+         _hand.UpdateItemHandle();
     }
 
     private void UnEquip(int index)
@@ -298,7 +298,7 @@ public class InventoryController : MonoBehaviour
             return;
         }
         _renderer.RenderEquip(EquippedSlotIndex);
-        _hand.UpdateItems();
+        _hand.UpdateItemHandle();
     }
     public void UnEquipAfterRemove(int index)
     {
@@ -333,7 +333,7 @@ public class InventoryController : MonoBehaviour
             EquippedSlotIndex[1] = EquippedSlotIndex[0];
         }
         _renderer.RenderEquip(EquippedSlotIndex);
-        _hand.UpdateItems();
+        _hand.UpdateItemHandle();
     }
 
 
