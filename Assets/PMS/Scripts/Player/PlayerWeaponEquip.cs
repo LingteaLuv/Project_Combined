@@ -12,7 +12,7 @@ public class PlayerWeaponEquip : MonoBehaviour
     private void Update()
     {
         //테스트 코드
-        if (Input.GetKeyDown(KeyCode.X))
+        /*if (Input.GetKeyDown(KeyCode.X))
         {
             if (_playerAttack.CurrentWeapon == null) return;
             _animator.SetTrigger("Equip");
@@ -25,6 +25,7 @@ public class PlayerWeaponEquip : MonoBehaviour
             _animator.SetTrigger("UnEquip");
             _animator.SetBool("IsEquipmentChangeable", _isEquipmentChangeable);
         }
+        */
     }
 
     //빈손 일 때랑에서무기제네릭 메서드, 무기에서 빈손, 무기에서 -> 무기 

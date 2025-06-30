@@ -97,16 +97,16 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void UpdateMoveAnimation()
     {
-        Vector3 currentInput = _movement.MoveInput;
-        bool isMoving = currentInput != Vector3.zero;
-
-        if ((_lastMoveInput != Vector3.zero) != isMoving && !_movement.IsOnLadder)
+        //Vector3 currentInput = _movement.MoveInput;
+        bool isMoving = _movement.MoveInput != Vector3.zero;
+        //(_lastMoveInput != Vector3.zero) != isMoving
+        if (!_movement.IsOnLadder)
         {
             _animator.SetBool("IsMove", isMoving);
             //_animator.speed = _animator.speed = _movement.GetAnimatorSpeedMultiplier();
         }
         UpdateGroundParameter();
-        _lastMoveInput = currentInput;
+        //_lastMoveInput = currentInput;
     }
     private void UpdateGroundParameter()
     {
@@ -148,7 +148,7 @@ public class PlayerController : MonoBehaviour
     }
     public void SetAnimatorSpeed()
     {
-        _animator.speed = Mathf.Abs(Input.GetAxis("Vertical"));
+        _animator.SetFloat("ClimbSpeed", Mathf.Abs(Input.GetAxis("Vertical")));
     }
     public void PlayInteractAnimation()
     {

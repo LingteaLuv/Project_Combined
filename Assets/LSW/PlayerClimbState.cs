@@ -14,6 +14,7 @@ public class PlayerClimbState : PlayerState
         Debug.Log("Enter Climb");
         _movement.SetGravity(false);
         _movement.Controller.PlayClimbAnimation();
+        _movement.Rigidbody.constraints = RigidbodyConstraints.FreezePositionY;
     }
 
     /// <summary>
@@ -24,6 +25,9 @@ public class PlayerClimbState : PlayerState
         Debug.Log("Exit Climb");
         _movement.SetGravity(true);
         _movement.Controller.StopClimbAnimation();
+        _movement.Rigidbody.constraints = RigidbodyConstraints.None;
+        _movement.Rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
+        
     }
     public override void FixedTick() { }
 

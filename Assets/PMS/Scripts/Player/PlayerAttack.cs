@@ -12,8 +12,8 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private GameObject[] _testWeapon;
 
     //소환되는 Transform 계층
-    [SerializeField] public GameObject _left_Hand_target;
-    [SerializeField] public GameObject _right_Hand_target;
+    [SerializeField] public WeaponBase _left_Hand_target;
+    [SerializeField] public WeaponBase _right_Hand_target;
 
     [Header("공격 애니메이션 클립")]
     [SerializeField] private AnimationClip _melee;
@@ -31,20 +31,13 @@ public class PlayerAttack : MonoBehaviour
 
     private void Awake()
     {
-        //모든 아이템은 해당 Hand_bone밑에 있다.
-        //_left_Hand_target = GameObject.Find("Hand_L");      
-        //_right_Hand_target = GameObject.Find("Hand_R");
-        _playerProperty = GetComponent<PlayerProperty>();
-    }
-    private void Start()
-    {
-        UpdateWeapon();
-        //Instantiate(Mygun, new Vector3(0, 0, 0), Quaternion.identity,_right_Hand_target.transform);
+        _left_Hand_target = PlayerWeaponManager.Instance.LeftCurrentWeapon;   
+
+        _right_Hand_target = PlayerWeaponManager.Instance.RightCurrentWeapon;
     }
 
     public void UpdateWeapon()
     {
-        //_currentWeapon = _left_Hand_target.GetComponentInChildren<WeaponBase>();
         _currentWeapon = _right_Hand_target.GetComponentInChildren<WeaponBase>();
 
         if(_currentWeapon != null && _currentWeapon.ItemType == ItemType.Gun)
@@ -129,7 +122,7 @@ public class PlayerAttack : MonoBehaviour
         {
             case ItemType.Melee:
                 StartMeleeAttack();
-                _playerProperty.ExpendAction();
+                _playerProperty.StaminaConsume(3f);
                 break;
             case ItemType.Gun:
                 StartRangedAttack();

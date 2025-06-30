@@ -15,7 +15,7 @@ public class PlayerWeaponManager : Singleton<PlayerWeaponManager>
     //소환되는 Transform 계층
     [SerializeField] public GameObject _left_Hand_target;
     [SerializeField] public GameObject _right_Hand_target;
-    
+
     /// <summary>
     /// 플레이어 양손이 바뀐것을 업데이트 / 기본
     /// </summary>
