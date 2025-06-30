@@ -8,6 +8,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     [SerializeField] private Animator _animator; //피격 애니메이션
     [SerializeField] private float _invincibilityTime = 0.5f;  //무적시간
     private bool _isInvincible = false; //무적 인지 아닌지
+    private bool _isLooting = false;
 
     [Header("Health Settings")]
     [SerializeField] private int _maxHp = 100; // 최대 hp 
@@ -92,6 +93,9 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     {
         // 이미 죽었다면 처리 할 필요가 없음
         if (_isDead || _isInvincible) return;
+       
+        //  루팅중이라면 아이템 파밍 초기화
+        LootManager.Instance.CancelBlockHolding();
 
         // 데미지 적용
         _currentHp -= hitDamage;
