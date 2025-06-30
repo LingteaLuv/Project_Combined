@@ -20,7 +20,7 @@ public class PlayerInputHandler : MonoBehaviour
 
         JumpPressed = Input.GetButtonDown("Jump");
         CrouchHeld = Input.GetKey(KeyCode.LeftControl);
-        InteractPressed = Input.GetKeyDown(KeyCode.E);
+        InteractPressed = Input.GetKeyDown(KeyCode.F);
 
 
         if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, 0.6f))

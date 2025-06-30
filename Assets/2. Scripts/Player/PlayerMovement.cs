@@ -11,6 +11,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private PlayerInputHandler _inputHandler;
     [SerializeField] private PlayerProperty _property;
     [SerializeField] public CapsuleCollider CrouchCollider;
+    [SerializeField] private SphereCollider _stateSphereCollider;
 
     public PlayerClimb PlayerClimbHandler { get; private set; } 
     public PlayerController Controller { get; set; }
@@ -34,7 +35,7 @@ public class PlayerMovement : MonoBehaviour
     public bool JumpPressed => _inputHandler.JumpPressed;
     public bool CrouchHeld => _inputHandler.CrouchHeld;
     public bool InteractPressed => _inputHandler.InteractPressed;
-
+    public SphereCollider StateSphereCollider => _stateSphereCollider;
     private void Awake() => Init();
 
     private void Init()
@@ -165,7 +166,11 @@ public class PlayerMovement : MonoBehaviour
     {
         return Mathf.Clamp01(MoveInput.magnitude) * (_property?.MoveSpeed?.Value ?? 0f) + 1;
     }
-
+    public void SetStateColliderRadius(float radius)
+    {
+        if (StateSphereCollider != null)
+            StateSphereCollider.radius = radius;
+    }
     public void SetGravity(bool enabled)
     {
         Rigidbody.useGravity = enabled;
