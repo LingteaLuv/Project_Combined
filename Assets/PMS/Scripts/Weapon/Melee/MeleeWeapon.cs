@@ -29,6 +29,17 @@ public class MeleeWeapon : WeaponBase
         //InventoryManager.Instance.DecreaseWeaponDurability(); 내구도 하락 함수
     }
 
+    public void Awake()
+    {
+        Init();
+    }
+
+    public override void Init()
+    {
+        gameObject.transform.localPosition = _weaponSpawnPos.transform.localPosition;
+        gameObject.transform.localRotation = _weaponSpawnPos.transform.localRotation;
+    }
+
     /// <summary>
     /// Physics.OverlapSphere + 범위 + 애니메이션 Event를 통한 특정 프레임 이벤트 호출, 각도 체크X - 무기기준 
     /// 추후 콜라이더 변경으로 각도가 해결되지 않을 경우에 플레이어 기준으로 각도체크 하는 부분 추가하면 될 것 같다.
