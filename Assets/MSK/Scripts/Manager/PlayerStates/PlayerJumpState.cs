@@ -6,9 +6,6 @@ using UnityEngine;
 /// </summary>
 public class PlayerJumpState : PlayerState
 {
-    // 공중 유지 시간 (짧은 착지 방지용 지연)
-    private float _hangTime = 0.95f;
-    private float _hangTimer;
 
     public PlayerJumpState(PlayerStateMachine fsm, PlayerMovement movement)
         : base(fsm, movement) { }
@@ -20,8 +17,6 @@ public class PlayerJumpState : PlayerState
     public override void Enter()
     {
         _movement.SetStateColliderRadius(15f);
-        _hangTimer = _hangTime;
-
         _movement.Controller.PlayJumpAnimation();
         _movement.Jump();
     }
@@ -41,12 +36,6 @@ public class PlayerJumpState : PlayerState
     /// </summary>
     public override void Tick()
     {
-        if (_hangTimer > 0f)
-        {
-            _hangTimer -= Time.deltaTime;
-            return;
-        }
-
         _fsm.ChangeState(_movement.MoveInput == Vector3.zero
             ? _movement.Controller.IdleState
             : _movement.Controller.MoveState);

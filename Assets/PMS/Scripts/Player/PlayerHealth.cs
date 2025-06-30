@@ -102,7 +102,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         // 이벤트 발생
         OnDamageReceived?.Invoke(hitDamage);        //데미지를 받은 이벤트 - 나중에 플레이어 피격 효과 같은 이펙트 사용할 때 연결해주면 좋을 듯
         OnHealthChanged?.Invoke(_currentHp);        //체력 변경 이벤트 발생 알리기
-
+        Debug.Log($"데미지 : {hitDamage}");
         //플레이어 피격 애니메이션 재생
         _animator.SetTrigger("IsHit");
 
