@@ -7,7 +7,7 @@ public class ThrowableWeapon : WeaponBase
     [SerializeField] ThrowItem _throwData;
     /*
      * public class ThrowItem : ItemBase
-    public float Range;
+    public float Range; -> 아마 최대 범위 키를 눌렀을 때
     public int MaxStack; //?
     public string ThrowSoundResource;
     */
@@ -36,6 +36,12 @@ public class ThrowableWeapon : WeaponBase
             Throw ();
         }
     }*/
+
+    public override void Init()
+    {
+        gameObject.transform.localPosition = _weaponSpawnPos.transform.localPosition;
+        gameObject.transform.localRotation = _weaponSpawnPos.transform.localRotation;
+    }
     
     public override void Attack()
     {
