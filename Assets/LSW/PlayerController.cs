@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
 {
     #region Public 
     public Animator _animator;
-    public PlayerHealth PlayerHealth { get; set; }
+    public PlayerHealth PlayerHealth { get; private set; }
     #endregion
 
     #region State Flags
@@ -74,7 +74,6 @@ public class PlayerController : MonoBehaviour
         _cameraController = GetComponent<PlayerCameraController>();
         _animator = GetComponent<Animator>();
         PlayerHealth = GetComponent<PlayerHealth>();
-        _movement.Controller = this;
 
         PlayerHealth.OnDamageReceived.AddListener(OnPlayerDamaged);
         PlayerHealth.OnPlayerDeath.AddListener(OnPlayerDied);

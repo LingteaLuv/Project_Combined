@@ -1,11 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Water : MonoBehaviour
 {
-    [SerializeField] PlayerMovement _playerMove;
-
     /*  시야 중력 조절용 변수
     [SerializeField] private float _waterDrag;
     [SerializeField] private float _waterFogDensity;
@@ -24,23 +20,34 @@ public class Water : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.transform.tag == "Player")
+        if (other.CompareTag("Player"))
         {
-            GetWater(other);
+            var move = other.GetComponent<PlayerMovement>();
+            if (move != null)
+            {
+                move.SetWater(true);
+                Debug.Log("물 진입");
+            }
         }
     }
     private void OnTriggerExit(Collider other)
     {
-        if (other.transform.tag == "Player")
+        if (other.CompareTag("Player"))
         {
-            GetOutWater(other);
+            var move = other.GetComponent<PlayerMovement>();
+            if (move != null)
+            {
+                move.SetWater(false);
+                Debug.Log("물 나옴");
+            }
         }
     }
-
     private void GetWater(Collider _player)
     {
-        _playerMove.SetWater(true);
+        var move = _player.GetComponent<PlayerMovement>();
+        move.SetWater(true);
 
+        Debug.Log("물 진입");
         //  물속 시야, 중력 조절
         /*
         _player.transform.GetComponent<Rigidbody>().drag = _waterDrag;
@@ -51,17 +58,18 @@ public class Water : MonoBehaviour
     }
     private void GetOutWater(Collider _player)
     {
-        if (_playerMove.IsWater)
+        var move = _player.GetComponent<PlayerMovement>();
+        if (move.IsWater)
         {
-            _playerMove.SetWater(false);
+            move.SetWater(false);
+            Debug.Log("물 나옴");
+            //  물속 시야, 중력 조절
+            /*
+                _player.transform.GetComponent<Rigidbody>().drag = _originDrag;
 
-        //  물속 시야, 중력 조절
-        /*
-            _player.transform.GetComponent<Rigidbody>().drag = _originDrag;
-
-            RenderSettings.fogColor = _originColor;
-            RenderSettings.fogDensity = _originFogDensity;
-        */
+                RenderSettings.fogColor = _originColor;
+                RenderSettings.fogDensity = _originFogDensity;
+            */
         }
     }
 }

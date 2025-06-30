@@ -1070,7 +1070,7 @@ GameObject:
   - component: {fileID: 1964593862695485968}
   - component: {fileID: 7274848817825550862}
   - component: {fileID: 4283433509992019305}
-  - component: {fileID: 6993441559111132614}
+  - component: {fileID: 2237747666078907425}
   m_Layer: 0
   m_Name: Test Player
   m_TagString: Player
@@ -1169,13 +1169,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _inputHandler: {fileID: 4971768646980026932}
   _property: {fileID: 1468800782579498468}
-  CrouchCollider: {fileID: 6993441559111132614}
+  CrouchCollider: {fileID: 3649256841280318188}
   _stateSphereCollider: {fileID: 5980857499091553015}
   _jumpForce: 10
-  _groundCheckDistance: 1.1
+  _groundCheckDistance: 0.5
   _crouchSpeedMultiplier: 0.3
   _waterSpeedMultiplier: 0.5
   _fallMultiplier: 10
+  _runMultiplier: 1.5
 --- !u!114 &4019551735403257646
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1255,15 +1256,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _animator: {fileID: 3416919270886387305}
   _currentWeapon: {fileID: 0}
-  _left_Hand_target: {fileID: 7215050311024742791}
-  _right_Hand_target: {fileID: 7276685749299563295}
-  _startAttackDelay: 1
-  _endAttackDelay: 1
+  _testWeapon: []
+  _left_Hand_target: {fileID: 0}
+  _right_Hand_target: {fileID: 0}
   _melee: {fileID: 0}
-  _canAttack: 1
-  targetLayerIndex: 1
-  targetWeight: 1
-  weightChangeSpeed: 2
 --- !u!114 &7274848817825550862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1279,7 +1275,7 @@ MonoBehaviour:
   _animator: {fileID: 3416919270886387305}
   _invincibilityTime: 0.5
   _maxHp: 100
-  _currentHp: 0
+  _currentHp: 100
   _isDead: 0
   _deathSequenceTime: 3
   OnPlayerDeath:
@@ -1307,13 +1303,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 0}
-  _left_Hand_target: {fileID: 7215050311024742791}
-  _right_Hand_target: {fileID: 7276685749299563295}
+  _isEquipmentChangeable: 0
   _gunAlwaysPos: {fileID: 807172708757541253}
   _gunEquipPos: {fileID: 3591318062922443922}
   _rotationSpeed: 5
-  _currentWeapon: {fileID: 0}
---- !u!136 &6993441559111132614
+  _playerAttack: {fileID: 0}
+--- !u!136 &2237747666078907425
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1333,9 +1328,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.2
-  m_Height: 0.55
+  m_Height: 1.2
   m_Direction: 1
-  m_Center: {x: 0, y: 1.525, z: 0}
+  m_Center: {x: 0, y: 0.465, z: 0}
 --- !u!1 &5205482931358021103
 GameObject:
   m_ObjectHideFlags: 0
@@ -2446,9 +2441,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.2
-  m_Height: 1.2
+  m_Height: 0.55
   m_Direction: 1
-  m_Center: {x: 0, y: 0.65, z: 0}
+  m_Center: {x: 0, y: 1.355, z: 0}
 --- !u!1 &8865040322470204140
 GameObject:
   m_ObjectHideFlags: 0

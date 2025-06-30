@@ -14,7 +14,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private SphereCollider _stateSphereCollider;
 
     public PlayerClimb PlayerClimbHandler { get; private set; } 
-    public PlayerController Controller { get; set; }
+    public PlayerController Controller { get; private set; }
     public Rigidbody Rigidbody { get; private set; }
     public bool IsOnLadder { get; private set; }
     public bool IsGrounded { get; private set; }
@@ -42,6 +42,7 @@ public class PlayerMovement : MonoBehaviour
     {
         Rigidbody = GetComponent<Rigidbody>();
         PlayerClimbHandler = GetComponent<PlayerClimb>();
+        Controller = GetComponent<PlayerController>();
     }
 
     private void Update()
@@ -60,7 +61,7 @@ public class PlayerMovement : MonoBehaviour
         {
             HandleMovement(MoveInput); // 이동 처리
             HandleGravity();
-        } // 중력 처리
+        }
     }
 
     public void HandleMovement(Vector3 inputDir)
@@ -162,6 +163,10 @@ public class PlayerMovement : MonoBehaviour
     public void SetWater(bool water)
     {
         IsWater = water;
+        if (IsWater)
+            Controller.PlayerHealth.ApplyDotDamage(10, 1, 120);
+        else
+            Controller.PlayerHealth.StopDotDamage();
     }
     public void SetRunning(bool running)
     {
