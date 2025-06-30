@@ -36,6 +36,12 @@ public class ThrowableWeapon : WeaponBase
             Throw ();
         }
     }*/
+
+    public override void Init()
+    {
+        gameObject.transform.localPosition = _weaponSpawnPos.transform.localPosition;
+        gameObject.transform.localRotation = _weaponSpawnPos.transform.localRotation;
+    }
     
     public override void Attack()
     {

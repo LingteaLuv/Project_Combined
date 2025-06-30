@@ -11,7 +11,6 @@ public class PlayerAttack : MonoBehaviour
     //테스트 코드 
     [SerializeField] private GameObject[] _testWeapon;
 
-
     //소환되는 Transform 계층
     [SerializeField] public GameObject _left_Hand_target;
     [SerializeField] public GameObject _right_Hand_target;
@@ -19,8 +18,9 @@ public class PlayerAttack : MonoBehaviour
     [Header("공격 애니메이션 클립")]
     [SerializeField] private AnimationClip _melee;
 
-    [SerializeField] private bool _canAttack = true;
-
+    /// <summary>
+    /// 플레이어 공격 못하게 하고 싶을때 IsAttacking = true, 공격하게 하고 싶을 때 IsAttacking = false; 
+    /// </summary>
     public bool IsAttacking { get; set; } //공격중일 때 true, 공격중이 아닐 때 false
 
     private PlayerProperty _playerProperty;
@@ -55,10 +55,8 @@ public class PlayerAttack : MonoBehaviour
 
     void Update()
     {
-        UpdateWeapon();
-
         //테스트 코드
-        if(Input.GetKeyDown(KeyCode.Alpha1))
+        /*if(Input.GetKeyDown(KeyCode.Alpha1))
         {
             Instantiate(_testWeapon[0], new Vector3(0,0,0), Quaternion.identity, _right_Hand_target.transform);
         }
@@ -69,7 +67,7 @@ public class PlayerAttack : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             Instantiate(_testWeapon[2], new Vector3(0, 0, 0), Quaternion.identity, _right_Hand_target.transform);
-        }
+        }*/
         if (Input.GetMouseButtonDown(0))
         {
             TryAttack();
@@ -78,7 +76,6 @@ public class PlayerAttack : MonoBehaviour
 
     private IEnumerator MeleeAttackSequence()
     {
-        _canAttack = false;
         IsAttacking = true;
 
         Debug.Log("애니메이션 실행");
@@ -110,14 +107,13 @@ public class PlayerAttack : MonoBehaviour
 
 
         IsAttacking = false;
-        _canAttack = true;
         _currentAttackCoroutine = null;
     }
 
     private void TryAttack()
     {
         // 공격 불가능한 상태면 리턴
-        if (!_canAttack || IsAttacking)
+        if (IsAttacking)
         {
             Debug.Log("공격 불가능한 상태입니다.");
             return;

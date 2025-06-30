@@ -4,12 +4,10 @@ using UnityEngine;
 
 public class PlayerWeaponEquip : MonoBehaviour
 {
-    #region 추후 이동 - 플레이어 장비 장착 해제 애니메이션를 관리하는 스크립트로
-
     [SerializeField] private Animator _animator;
-    [SerializeField] private GameObject _left_Hand_target;
-    [SerializeField] private GameObject _right_Hand_target;
-    [SerializeField] private bool _isEquipmentChangeable = true; //아이템이 장착,해제가 가능한 시점인지
+
+    [SerializeField] private bool _isEquipmentChangeable = false;
+    //장비 공격 Attack
 
     private void Update()
     {
@@ -35,7 +33,7 @@ public class PlayerWeaponEquip : MonoBehaviour
     [SerializeField] private float _rotationSpeed = 5.0f;
     [SerializeField] private PlayerAttack _playerAttack;
 
-    private void WeaponSetActive()
+    /*private void WeaponSetActive()
     {
         if (_playerAttack.CurrentWeapon == null) return;
         _playerAttack.CurrentWeapon.gameObject.SetActive(true);
@@ -45,7 +43,7 @@ public class PlayerWeaponEquip : MonoBehaviour
     {
         if (_playerAttack.CurrentWeapon == null) return;
         _playerAttack.CurrentWeapon.gameObject.SetActive(false);
-    }
+    }*/
 
 
     //총이 한번에 확돌아가는 문제가 존재
@@ -54,7 +52,6 @@ public class PlayerWeaponEquip : MonoBehaviour
         if (_playerAttack.CurrentWeapon.ItemType != ItemType.Gun) return;
 
         _playerAttack.CurrentWeapon.transform.rotation = _gunEquipPos.rotation;
-        //StartCoroutine(GunLerpRotation());
     }
 
     private void SetGunAlwaysPos()
@@ -78,22 +75,20 @@ public class PlayerWeaponEquip : MonoBehaviour
 
     //무기에서 무기로 호출함수
     //TODO - 애니메이션을 다꺼줘야한다.
-    public void WeaponToWeapon()
+
+    /*public void WeaponToWeapon()
     {
         Debug.Log("무기에서 무기");
-        if (_playerAttack.CurrentWeapon.ItemType == ItemType.Gun || _playerAttack.CurrentWeapon.ItemType == ItemType.Melee)
-            switch (_playerAttack.CurrentWeapon.ItemType)
-            {
-                case ItemType.Melee:
-                    _animator.SetTrigger("Equip");
-                    break;
-                case ItemType.Gun:
-                    _animator.SetTrigger("Equip");
-                    break;
-                default:
-                    Debug.Log($"해당 무기는 장착 애니메이션이 없습니다. {_playerAttack.CurrentWeapon.ItemType}");
-                    break;
-            }
+        if(_playerAttack.CurrentWeapon.ItemType == ItemType.Gun || _playerAttack.CurrentWeapon.ItemType == ItemType.Melee || _playerAttack.CurrentWeapon.ItemType == ItemType.Throw)
+        {
+            _animator.SetTrigger("UnEquip");
+        }
+        //??
+        //??
+        if (_playerAttack.CurrentWeapon.ItemType == ItemType.Gun || _playerAttack.CurrentWeapon.ItemType == ItemType.Melee || _playerAttack.CurrentWeapon.ItemType == ItemType.Throw)
+        {
+            _animator.SetTrigger("Equip");
+        }
     }
 
     //맨손에서 무기로 호출함수
@@ -132,7 +127,5 @@ public class PlayerWeaponEquip : MonoBehaviour
                     Debug.Log($"해당 무기는 장착 해제 애니메이션이 없습니다. {_playerAttack.CurrentWeapon.ItemType}");
                     break;
             }
-    }
-    #endregion
-
+    }*/
 }
