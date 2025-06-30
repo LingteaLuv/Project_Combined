@@ -7,6 +7,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
     [SerializeField] public NavMeshAgent MonsterAgent;
     [SerializeField] public Transform TargetPosition;
     [SerializeField] public LayerMask PlayerLayerMask;
+    [SerializeField] public LayerMask BuildingLayerMask;
     [SerializeField] public float WalkSpeed;
     [SerializeField] public float RunningSpeed;
     [SerializeField] public float CrawlSpeed;
@@ -71,7 +72,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
     {
         Debug.Log("Monster Start()");
         StateMachineInit();
-       
+
     }
 
     private void Update()
@@ -102,7 +103,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
     private void OnTriggerEnter(Collider other)
     {
         DetectPlayer(other);
-        
+
     }
 
     private void OnTriggerStay(Collider other)
@@ -146,12 +147,41 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
     }
     public void DetectPlayer(Collider other)
     {
+        // 레이어를 통한 플레이어 확인 방어 코드 , 플레이어 캐릭터가 아니면 리턴
         if (((1 << other.gameObject.layer) & PlayerLayerMask) == 0) return; // 플레이어가 아님
 
+        // 레어어가 현 상태가 패트롤이 아닌경우 감지 무시 (패트롤의 경우만 감지하고, 공격상태일땐 거리로 측정함, 아이들 모드 역시 무시중)
         if (_monsterMerchine.CurState != _monsterMerchine.StateDic[Estate.Patrol])
         {
             Debug.Log("Patrol 상태가 아니라 감지 무시");
             return;
+        }
+
+        Vector3 dirToPlayer = (other.transform.position - transform.position).normalized;
+        dirToPlayer.y = 0f; // 상황 보고 계단에서 적용이 안되는 경우 y값도 같이 사용한다.
+
+        // 몬스터 정면을 중심으로  플레이어어 위치까지의 각도 대해 
+        float angle = Vector3.Angle(transform.forward, dirToPlayer);
+
+        if (angle > 75f)
+        {
+            Debug.Log("좀비 시야에서 벗어났으니까 추격하지 않습니다.");
+            return;
+        }
+
+        // 좀비 머리 위에서 좀비와 플레이어를 가리키는 방향으로 레이를 쏴서 맞춘 레이어가 빌딩이면 아이들 모드로 가고 - 자연스럽게 패트롤 모드로 갈 수 있도록 유도
+        Ray ray = new Ray(transform.position + Vector3.up * 1f, dirToPlayer);
+        if (Physics.Raycast(ray, out RaycastHit hit, 2f))
+        {
+            if (((1 << other.gameObject.layer) & BuildingLayerMask) != 0)
+            {
+                Debug.Log("건물이랑 붙었다 다시 탐지 하면 안되요");
+                TargetPosition = null;
+                IsDetecting = false;
+
+                _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.Idle]);
+                return;
+            }
         }
 
         TargetPosition = other.transform;
