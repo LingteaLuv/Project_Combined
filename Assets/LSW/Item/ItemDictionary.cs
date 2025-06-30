@@ -13,6 +13,8 @@ public class ItemDictionary : ScriptableObject
     public Dictionary<int, ItemBase> ItemDic { get; private set; }
     public Dictionary<int, Recipe> RecipeDic { get; private set; }
     
+    public List<int> RecipeKeys { get; private set; }
+    
     public void GenerateDic()
     {
         Init();
@@ -38,6 +40,12 @@ public class ItemDictionary : ScriptableObject
         {
             int key = Recipes[i].ItemID;
             RecipeDic.Add(key,Recipes[i]);
+        }
+        
+        RecipeKeys = new List<int>();
+        foreach (var key in RecipeDic.Keys)
+        {
+            RecipeKeys.Add(key);
         }
     }
 }
