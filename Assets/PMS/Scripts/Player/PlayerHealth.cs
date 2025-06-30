@@ -87,6 +87,16 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         // 이미 죽었다면 처리 할 필요가 없음
         if (_isDead || _isInvincible) return;
 
+        //패턴 일치
+        if (PlayerWeaponManager.Instance.LeftCurrentWeapon is IDefendable defendableWeapon) 
+        {
+            //만약 방패가 있다면 해당 방패의 방어력 만큼 hitDamage감소
+            hitDamage -= defendableWeapon.GetDefenseAmount();
+        }
+
+        //방어력이 더크면 힐되므로 0보다 작으면 데미지 0처리
+        hitDamage = Mathf.Max(0, hitDamage);
+
         // 데미지 적용
         _currentHp -= hitDamage;
 

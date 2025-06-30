@@ -442,7 +442,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _availableWeapons: []
   _currentWeapon: {fileID: 0}
-  _currentWeaponPos: {fileID: 1833143514}
+  _currentWeaponPos: {fileID: 0}
   _currentWeaponIndex: 0
   spawn: {fileID: 0}
   _weaponPrefabs:
@@ -1057,37 +1057,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hp: 0
---- !u!1 &1833143514
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1833143515}
-  m_Layer: 0
-  m_Name: PlayerWeaponPos
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1833143515
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1833143514}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10.458513, y: -2.0099852, z: 3.6157193}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1989279175
 GameObject:
   m_ObjectHideFlags: 0
@@ -1446,5 +1415,4 @@ SceneRoots:
   - {fileID: 3529311598477224271}
   - {fileID: 461582464}
   - {fileID: 722965501}
-  - {fileID: 1833143515}
   - {fileID: 58550786}

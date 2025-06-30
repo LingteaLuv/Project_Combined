@@ -12,7 +12,7 @@ public abstract class WeaponBase : MonoBehaviour
     [SerializeField] protected GameObject _weaponSpawnPos;    //플레이어 손위치에 소환도되야하는 위치 local위치를 변경해야 할 것 같음
 
     public ItemType ItemType { get { return _itemType; } protected set {_itemType = value; } }
-    public abstract void Attack(); //자식에서 구현
-
+    public abstract void Attack(); //자식에서 구현 - 무기 공격
+    public virtual void Defense() { }
     public virtual void Init() { }
 }
