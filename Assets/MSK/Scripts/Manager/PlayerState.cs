@@ -38,7 +38,7 @@ public abstract class PlayerState
         }
         return false;
     }
-    protected bool EnterFallState(float delay = 1f)
+    protected bool EnterFallState(float delay = 0.3f)
     {
         if (!_movement.IsGrounded && _movement.Rigidbody.velocity.y < -0.1f)
         {

@@ -34,7 +34,6 @@ public class PlayerMovement : MonoBehaviour
     public bool JumpPressed => _inputHandler.JumpPressed;
     public bool CrouchHeld => _inputHandler.CrouchHeld;
     public bool InteractPressed => _inputHandler.InteractPressed;
-
     private void Awake() => Init();
 
     private void Init()

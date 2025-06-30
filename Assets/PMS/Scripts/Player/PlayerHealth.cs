@@ -24,6 +24,12 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     public UnityEvent<int> OnMaxHealthChanged; // 최대 체력이 바뀌었는지?
     public UnityEvent<int> OnDamageReceived; // 데미지를 얼마나 받았는지 
 
+  
+    // TODO : 임시 외부 참조용 (석규)
+    public int CurrentHp => _currentHp;
+    public bool IsDead => _isDead;
+
+
     //임시로 쓰는 Start()함수입니다. 
     private void Start()
     {
@@ -36,7 +42,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     private void Die()
     {
         if (!_isDead) return;
-
+        
         _isDead = true;
 
         // 사망 이벤트 발생
@@ -98,7 +104,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         OnHealthChanged?.Invoke(_currentHp);        //체력 변경 이벤트 발생 알리기
 
         //플레이어 피격 애니메이션 재생
-        _animator.SetTrigger("Hit");
+        _animator.SetTrigger("IsHit");
 
         // 체력이 0 이하가 되면 사망 처리
         if (_currentHp <= 0 && !_isDead)
@@ -120,7 +126,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         yield return new WaitForSeconds(_deathSequenceTime);
 
         //플레이어 죽음 애니메이션 재생
-        //_animator.SetTrigger("");
+        _animator.SetBool("IsDead", true);
 
         //게임 매니저 게임 오버 처리 함수
         GameManager.Instance.GameOver();
