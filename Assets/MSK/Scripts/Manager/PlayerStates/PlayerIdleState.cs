@@ -10,7 +10,9 @@ public class PlayerIdleState : PlayerState
         : base(fsm, movement) { }
 
     public override void Enter() 
-    { 
+    {
+        _movement.SetStateColliderRadius(8f);
+        _movement.SetStateColliderRadius(6f);
         if (_movement.Controller.IsCrouch)
         {
             _movement.Controller.IsCrouch = false;

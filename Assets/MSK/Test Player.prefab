@@ -1095,6 +1095,7 @@ Transform:
   - {fileID: 8262682867061163793}
   - {fileID: 6163462799022508321}
   - {fileID: 644609340286678781}
+  - {fileID: 4100687486766834523}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &6246840989443490726
@@ -1121,9 +1122,9 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 2
   m_Constraints: 112
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!114 &1468800782579498468
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1169,10 +1170,12 @@ MonoBehaviour:
   _inputHandler: {fileID: 4971768646980026932}
   _property: {fileID: 1468800782579498468}
   CrouchCollider: {fileID: 6993441559111132614}
+  _stateSphereCollider: {fileID: 5980857499091553015}
   _jumpForce: 10
-  _groundCheckDistance: 1.1
-  _crouchSpeedMultiplier: 0.5
-  _fallMultiplier: 5
+  _groundCheckDistance: 0.5
+  _crouchSpeedMultiplier: 0.3
+  _waterSpeedMultiplier: 0.5
+  _fallMultiplier: 10
 --- !u!114 &4019551735403257646
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1220,7 +1223,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _cinemachineBrain: {fileID: 0}
-  _mouseSensitivity: 5
+  _cameraRig: {fileID: 6163462799022508321}
+  _minPitch: 0
+  _maxPitch: 0
+  _mouseSensitivityX: 0.5
+  _mouseSensitivityY: 0.5
 --- !u!114 &5063845729575479195
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1252,8 +1259,8 @@ MonoBehaviour:
   _right_Hand_target: {fileID: 7276685749299563295}
   _startAttackDelay: 1
   _endAttackDelay: 1
+  _melee: {fileID: 0}
   _canAttack: 1
-  _isAttacking: 0
   targetLayerIndex: 1
   targetWeight: 1
   weightChangeSpeed: 2
@@ -1328,7 +1335,60 @@ CapsuleCollider:
   m_Radius: 0.2
   m_Height: 0.91
   m_Direction: 1
-  m_Center: {x: 0, y: 0.455, z: 0}
+  m_Center: {x: 0, y: 1.355, z: 0}
+--- !u!1 &5205482931358021103
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4100687486766834523}
+  - component: {fileID: 5980857499091553015}
+  m_Layer: 0
+  m_Name: SoundColilder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4100687486766834523
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5205482931358021103}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5036777174944931632}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &5980857499091553015
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5205482931358021103}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &5474838762324900133
 GameObject:
   m_ObjectHideFlags: 0
@@ -2345,7 +2405,7 @@ GameObject:
   - component: {fileID: 644609340286678781}
   - component: {fileID: 3649256841280318188}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: ChestColilder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2388,7 +2448,7 @@ CapsuleCollider:
   m_Radius: 0.2
   m_Height: 0.91
   m_Direction: 1
-  m_Center: {x: 0, y: 0.455, z: 0}
+  m_Center: {x: 0, y: 0.465, z: 0}
 --- !u!1 &8865040322470204140
 GameObject:
   m_ObjectHideFlags: 0

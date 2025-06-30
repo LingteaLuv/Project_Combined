@@ -1,4 +1,7 @@
 using UnityEngine;
+using UnityEngine.InputSystem.XR;
+using UnityEngine.Rendering;
+using UnityEngine.WSA;
 
 /// <summary>
 /// 점프 없이 낙하 중인 상태입니다.
@@ -66,23 +69,23 @@ public class PlayerFallState : PlayerState
 
     private void ApplyFallDamage(float distance)
     {
-        float safeHeight = 3.0f;              // 이 높이까지는 무피해
-        float damagePerMeter = 10.0f;         // 1미터당 10 데미지
+        float safeHeight = 3.0f;
+        float dangerHeight = 8.0f;
+        float damagePerMeter = 10.0f;
+
         int damage = 0;
 
-        if (distance > safeHeight)
-        {
+        if (distance > dangerHeight)
+            damage = 999;
+        else if (distance > safeHeight)
             damage = Mathf.RoundToInt((distance - safeHeight) * damagePerMeter);
-        }
+
         if (damage > 0)
         {
             Debug.Log($"낙하 데미지 발생: {damage}");
-
-            var controller = _movement.Controller;
-            controller.HitState.SetDamage(damage);
-            _fsm.ChangeState(controller.HitState);
-
-            return;
+            _movement.Controller.HitState.SetDamage(damage);
+            _fsm.ChangeState(_movement.Controller.HitState);
         }
     }
+
 }
