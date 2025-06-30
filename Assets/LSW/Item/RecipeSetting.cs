@@ -19,6 +19,7 @@ public class RecipeSetting : MonoBehaviour
     private TMP_Text[] _currentTexts;
     
     public List<Button> CreateBtn { get; private set; }
+    public List<Button> RecipeBtn { get; private set; }
 
     private bool _hasMaterial1;
     private bool _hasMaterial2;
@@ -35,6 +36,7 @@ public class RecipeSetting : MonoBehaviour
         _materialTexts = new TMP_Text[4];
         _currentTexts = new TMP_Text[4];
         CreateBtn = new List<Button>();
+        RecipeBtn = new List<Button>();
         
         SetValueEditor();
     }
@@ -120,9 +122,9 @@ public class RecipeSetting : MonoBehaviour
         
         Transform[] children = new Transform[6];
 
-        for (int i = 0; i < targetTransform.childCount-2; i++)
+        for (int i = 0; i < targetTransform.childCount-3; i++)
         {
-            children[i] = targetTransform.GetChild(i + 2);
+            children[i] = targetTransform.GetChild(i + 3);
         }
 
         return children;

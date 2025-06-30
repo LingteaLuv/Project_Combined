@@ -6,11 +6,12 @@ public class RandomLootTable : MonoBehaviour
 {
     [SerializeField] private LootDictionary _lootDic;
     [SerializeField] private string _id;
+    [SerializeField] private string _gridId;
     [SerializeField] private ItemDictionary _itemDic;
     
-    private List<int> _itemId;
-    private List<int> _itemStack;
-    private List<int> _itemWeight;
+    public List<int> _itemId;
+    public List<int> _itemStack;
+    public List<int> _itemWeight;
 
     private int _itemCount;
 
@@ -25,6 +26,8 @@ public class RandomLootTable : MonoBehaviour
     
     public void GenerateItem()
     {
+        _lootDic.GenerateDic();
+        _itemDic.GenerateDic();
         Init();
         int gridNum = SetGridAmount();
         SetItem(gridNum);
@@ -48,13 +51,13 @@ public class RandomLootTable : MonoBehaviour
     
     private int SetGridAmount()
     {
-        int volume = _lootDic.LootGridTable[_id].Count;
+        int volume = _lootDic.LootGridTable[_gridId].Count;
         int[] weightSums = new int[volume];
         for (int i = 0; i < volume; i++)
         {
             for (int j = 0; j < i + 1; j++)
             {
-                weightSums[i] += _lootDic.LootGridTable[_id][j];
+                weightSums[i] += _lootDic.LootGridTable[_gridId][j];
             }
         }
         int rndNum = Random.Range(0, weightSums[volume - 1]);
@@ -63,7 +66,6 @@ public class RandomLootTable : MonoBehaviour
         {
             if (rndNum < weightSums[i]) return i < _itemCount ? i : _itemCount;
         }
-
         return -1;
     }
 
@@ -71,15 +73,15 @@ public class RandomLootTable : MonoBehaviour
     {
         _resultItems = new List<ItemBase>();
         _resultItemAmount = new List<int>();
-        int remaining = _itemCount;
+        int remaining = volume;
         
         while (remaining > 0)
         {
-            if (_itemId.Count == 0) break;
+            if (_itemCount == 0) break;
             
-            int[] weightSums = new int[remaining];
+            int[] weightSums = new int[_itemCount];
             
-            for (int i = 0; i < remaining; i++)
+            for (int i = 0; i < _itemCount; i++)
             {
                 for (int j = 0; j < i + 1; j++)
                 {
@@ -87,9 +89,9 @@ public class RandomLootTable : MonoBehaviour
                 }
             }
         
-            int rndNum = Random.Range(0, weightSums[remaining - 1]);
+            int rndNum = Random.Range(0, weightSums[_itemCount - 1]);
             
-            for (int i = 0; i < remaining; i++)
+            for (int i = 0; i < _itemCount; i++)
             {
                 if (rndNum < weightSums[i])
                 {
@@ -99,6 +101,7 @@ public class RandomLootTable : MonoBehaviour
                     _itemStack.Remove(_itemStack[i]);
                     _itemWeight.Remove(_itemWeight[i]);
                     remaining--;
+                    _itemCount--;
                     break;
                 }
             }

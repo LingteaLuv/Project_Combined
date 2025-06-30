@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[CreateAssetMenu(menuName = "Dictionary/LootDictionary")]
 public class LootDictionary : ScriptableObject
 {
     [Header("Drag&Drop")] 
@@ -18,6 +19,13 @@ public class LootDictionary : ScriptableObject
         TableInit(_enemyLootGridChance,LootGridTable);
     }
 
+    public void GenerateDic()
+    {
+        Init();
+        TableInit(_enemyLoot,LootTable);
+        TableInit(_enemyLootGridChance,LootGridTable);
+    }
+    
     private void TableInit(TextAsset asset, Dictionary<string, List<int>> table)
     {
         if (asset == null) return;
@@ -34,16 +42,15 @@ public class LootDictionary : ScriptableObject
 
             // 문장을 ,(쉼표)로 구분
             string[] parts = line.Split(',');
-
             string key = parts[0];
             
             List<int> values = new List<int>();
             
             for (int j = 1; j < parts.Length; j++)
             {
-                if (int.TryParse(parts[i], out int value))
+                if (int.TryParse(parts[j], out int value))
                 {
-                    values.Add(value);
+                    values.Add(int.Parse(parts[j]));
                 }
             }
             table.Add(key,values);
