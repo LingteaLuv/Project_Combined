@@ -7,8 +7,9 @@ public class PlayerAttack : MonoBehaviour
 {
     [SerializeField] Animator _animator; 
     [SerializeField] private WeaponBase _currentWeapon;
+    public WeaponBase CurrentWeapon { get { return _currentWeapon; } }
     //테스트 코드 
-    [SerializeField] private GameObject Mygun;
+    [SerializeField] private GameObject[] _testWeapon;
 
 
     //소환되는 Transform 계층
@@ -46,7 +47,7 @@ public class PlayerAttack : MonoBehaviour
         //_currentWeapon = _left_Hand_target.GetComponentInChildren<WeaponBase>();
         _currentWeapon = _right_Hand_target.GetComponentInChildren<WeaponBase>();
 
-        if(_currentWeapon.ItemType == ItemType.Gun)
+        if(_currentWeapon != null && _currentWeapon.ItemType == ItemType.Gun)
         {
             _animator.SetTrigger("IsGun");
         }
@@ -54,6 +55,21 @@ public class PlayerAttack : MonoBehaviour
 
     void Update()
     {
+        UpdateWeapon();
+
+        //테스트 코드
+        if(Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            Instantiate(_testWeapon[0], new Vector3(0,0,0), Quaternion.identity, _right_Hand_target.transform);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            Instantiate(_testWeapon[1], new Vector3(0, 0, 0), Quaternion.identity, _right_Hand_target.transform);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            Instantiate(_testWeapon[2], new Vector3(0, 0, 0), Quaternion.identity, _right_Hand_target.transform);
+        }
         if (Input.GetMouseButtonDown(0))
         {
             TryAttack();

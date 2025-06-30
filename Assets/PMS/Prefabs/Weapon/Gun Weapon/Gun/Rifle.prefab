@@ -1,36 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &6330191257860523737
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5516103103221674610}
-  m_Layer: 0
-  m_Name: ref_right_hand_grip
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &5516103103221674610
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6330191257860523737}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0.56763035, y: -0.35428476, z: 0.5856746, w: 0.45745313}
-  m_LocalPosition: {x: 0.032, y: -0.022, z: -0.117}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 6653444200963292964}
-  m_LocalEulerAnglesHint: {x: 69.11852, y: 72.9421, z: 157.9812}
 --- !u!1 &6420633696158897020
 GameObject:
   m_ObjectHideFlags: 0
@@ -62,37 +31,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5521787282042870094}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &7379777417326135276
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4364101530994123898}
-  m_Layer: 0
-  m_Name: ref_left_hand_grip
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4364101530994123898
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7379777417326135276}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0.24672343, y: 0.33669275, z: 0.890877, w: -0.1791751}
-  m_LocalPosition: {x: -0.098, y: 0.014, z: 0.411}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 6653444200963292964}
-  m_LocalEulerAnglesHint: {x: -136.50299, y: 206.08301, z: 12.184998}
 --- !u!1 &9132330297771216111
 GameObject:
   m_ObjectHideFlags: 0
@@ -142,8 +80,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _itemType: 0
-  _weaponSpawnPos: {fileID: 0}
-  _gunData: {fileID: 0}
+  _weaponSpawnPos: {fileID: 1532048868896556364, guid: daf06496e3e2f9f45b04aae11c73e474, type: 3}
+  _gunData: {fileID: 11400000, guid: cf7ae9796dd2eab47a90cc1465e08f45, type: 2}
   playerAttack: {fileID: 7079557454729922155, guid: b6f6362a58c6da943826ee4382c1fb8e, type: 3}
   _bulletPrefab: {fileID: 7623832579036224237, guid: 74850d8f180df244998dcb754d88b24a, type: 3}
   _currentAmmoCount: 30
@@ -388,13 +326,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 4256746541367074, guid: a3fe0be603767ae42a0d14c81d777c2b, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5516103103221674610}
-    - targetCorrespondingSourceObject: {fileID: 4256746541367074, guid: a3fe0be603767ae42a0d14c81d777c2b, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4364101530994123898}
+    m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a3fe0be603767ae42a0d14c81d777c2b, type: 3}
 --- !u!4 &6653444200963292964 stripped

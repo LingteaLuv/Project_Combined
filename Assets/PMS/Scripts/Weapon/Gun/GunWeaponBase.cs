@@ -69,8 +69,8 @@ public abstract class GunWeaponBase : WeaponBase
     public override void Init()
     {
         // localPosition에는 local 좌표를 사용
-        gameObject.transform.localPosition = _weaponSpawnPos.localPosition;
-        gameObject.transform.localRotation = _weaponSpawnPos.localRotation;
+        gameObject.transform.localPosition = _weaponSpawnPos.transform.localPosition;
+        gameObject.transform.localRotation = _weaponSpawnPos.transform.localRotation;
 
         // 또는 world 좌표를 사용하려면
         //gameObject.transform.position = _weaponSpawnPos.position;
