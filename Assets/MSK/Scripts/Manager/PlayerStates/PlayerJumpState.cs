@@ -19,6 +19,7 @@ public class PlayerJumpState : PlayerState
     /// </summary>
     public override void Enter()
     {
+        _movement.SetStateColliderRadius(15f);
         _hangTimer = _hangTime;
 
         _movement.Controller.PlayJumpAnimation();
