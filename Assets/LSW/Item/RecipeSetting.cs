@@ -10,6 +10,8 @@ public class RecipeSetting : MonoBehaviour
     [Header("Drag&Drop")] 
     // ScriptableObjects - New Item Dictionary 드래그
     [SerializeField] private ItemDictionary _itemDictionary;
+
+    [SerializeField] private TextMeshProUGUI _explainText;
     
     private Recipe _recipe;
     
@@ -19,7 +21,7 @@ public class RecipeSetting : MonoBehaviour
     private TMP_Text[] _currentTexts;
     
     public List<Button> CreateBtn { get; private set; }
-    public List<Button> RecipeBtn { get; private set; }
+    public Stack<Button> RecipeBtn { get; private set; }
 
     private bool _hasMaterial1;
     private bool _hasMaterial2;
@@ -36,7 +38,7 @@ public class RecipeSetting : MonoBehaviour
         _materialTexts = new TMP_Text[4];
         _currentTexts = new TMP_Text[4];
         CreateBtn = new List<Button>();
-        RecipeBtn = new List<Button>();
+        RecipeBtn = new Stack<Button>();
         
         SetValueEditor();
     }
@@ -126,7 +128,7 @@ public class RecipeSetting : MonoBehaviour
         {
             children[i] = targetTransform.GetChild(i + 3);
         }
-
+        
         return children;
     }
     
@@ -146,6 +148,9 @@ public class RecipeSetting : MonoBehaviour
     private void MaterialInit(int index)
     {
         Transform[] children = Init(index);
+        
+        Button recipeBtn = transform.GetChild(index).GetChild(0).GetComponent<Button>();
+        RecipeBtn.Push(recipeBtn);
         
         _resultImage = children[0].GetChild(0).GetComponentInChildren<Image>();
         CreateBtn.Add(children[5].GetComponentInChildren<Button>());
@@ -167,6 +172,8 @@ public class RecipeSetting : MonoBehaviour
     private void SetValue()
     {
         _resultImage.sprite = _itemDictionary.ItemDic[_recipe.ResultItemId].Sprite;
+        int resultId = _recipe.ResultItemId;
+        RecipeBtn.Peek().onClick.AddListener(() => _explainText.text = _itemDictionary.ItemDic[resultId].Description);
 
         if (_hasMaterial1)
         {
