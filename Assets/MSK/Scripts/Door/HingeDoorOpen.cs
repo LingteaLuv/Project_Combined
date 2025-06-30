@@ -21,30 +21,35 @@ public class HingeDoorOpen : MonoBehaviour, IInteractable
     }
     private void Init()
     {
-        // DoorType에 따라 닫힌 상태의 기준 회전값 지정
-        float closedY = 0f;
-        switch (_doorType)
+        float closedY = (_doorType == DoorType.RotateRight) ? 180f : 0f;
+        Vector3 euler = transform.eulerAngles;
+
+        // RotateRight일 때만 Z이동 보정
+        if (_doorType == DoorType.RotateRight)
         {
-            case DoorType.RotateRight:
-                closedY = 180f;
-                break;
-            case DoorType.RotateLeft:
-                closedY = 0f;
-                break;
-            case DoorType.Slide:
-                // 슬라이드 문은 각도 적용 없음
-                break;
+            float zSize = 0f;
+            BoxCollider boxCol = GetComponent<BoxCollider>();
+            MeshCollider meshCol = GetComponent<MeshCollider>();
+            if (boxCol != null)
+            {
+                zSize = boxCol.size.z * transform.localScale.z;
+            }
+            else if (meshCol != null)
+            {
+                zSize = meshCol.bounds.size.z;
+            }
+
+            if (zSize > 0)
+            {
+                transform.position += -transform.forward * zSize;
+            }
         }
 
-        // 문 오브젝트의 Y축 회전을 기준 각도로 맞춤
-        Vector3 euler = transform.eulerAngles;
+        // 회전 적용
         euler.y = closedY;
         transform.eulerAngles = euler;
 
-        // 기준(닫힌) 회전값 저장
         _closedRotation = transform.rotation;
-
-        // 열린 상태의 회전값도 같은 방식으로 계산
         float openAngle = _doorType == DoorType.RotateRight ? _openAngle : -_openAngle;
         _openedRotation = _closedRotation * Quaternion.Euler(0, openAngle, 0);
     }
