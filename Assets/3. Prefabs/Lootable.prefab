@@ -190,6 +190,7 @@ GameObject:
   - component: {fileID: 4238681759243675254}
   - component: {fileID: 5224582191735123454}
   - component: {fileID: 3089040123469954203}
+  - component: {fileID: 1516476545681701830}
   m_Layer: 0
   m_Name: Lootable
   m_TagString: Untagged
@@ -235,7 +236,6 @@ MonoBehaviour:
   ItemAmounts: 000000000000000000000000000000000000000000000000
   ItemBlocked: 000000000000
   InitType: 0
-  Percentages: 000000000000000000000000000000000000000000000000
 --- !u!114 &5224582191735123454
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -266,6 +266,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _f: {fileID: 405602926383429565}
   Dark: {fileID: 154621900699548996}
+--- !u!114 &1516476545681701830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3477683226162477495}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c1c7b4da316dd745b578638f53564c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _lootDic: {fileID: 11400000, guid: a69f1794874f054458719654404e5a8a, type: 2}
+  _id: 8001
+  _gridId: 7001
+  _itemDic: {fileID: 11400000, guid: 6226be8830c3e3743a634df8b232ad37, type: 2}
+  _itemId: 
+  _itemStack: 
+  _itemWeight: 
+  _resultItems:
+  - {fileID: 11400000, guid: 0b485874431fed04ab0d803c8468d057, type: 2}
+  - {fileID: 11400000, guid: 9b1f9bc5af8dc3447aa99e2d751261cd, type: 2}
+  - {fileID: 11400000, guid: 9ac6e23d070104948a5dc82d3a3fd657, type: 2}
+  - {fileID: 11400000, guid: 8b9901a6bae8443438725ceb8c079883, type: 2}
+  _resultItemAmount: 02000000010000000300000004000000
 --- !u!1 &3908799733905435133
 GameObject:
   m_ObjectHideFlags: 0

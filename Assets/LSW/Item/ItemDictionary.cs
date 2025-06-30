@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "ItemDictionary")]
+[CreateAssetMenu(menuName = "Dictionary/ItemDictionary")]
 public class ItemDictionary : ScriptableObject
 {
     [SerializeField] public List<ItemBase> Items;

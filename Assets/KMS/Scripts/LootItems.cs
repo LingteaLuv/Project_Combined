@@ -2,7 +2,6 @@ using Unity.VisualScripting;
 using UnityEngine;
 public class LootItems : MonoBehaviour
 {
-
     public ItemBase[] ItemDatas = new ItemBase[6];          
     public int[] ItemAmounts = new int[6];
     public bool[] ItemBlocked = new bool[6];
@@ -19,6 +18,10 @@ public class LootItems : MonoBehaviour
         if (InitType == LootInitType.Fixed)
         {
             FixedInit();
+        }
+        else if(InitType == LootInitType.Random)
+        {
+            RandomInitlegacy();
         }
         else
         {
@@ -82,6 +85,7 @@ public class LootItems : MonoBehaviour
     public enum LootInitType
     {
         Fixed,
-        Random
+        Random,
+        RandomGrid
     }
 }

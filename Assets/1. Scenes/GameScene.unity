@@ -1746,7 +1746,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _lootDic: {fileID: 0}
   _id: 
+  _gridId: 
   _itemDic: {fileID: 11400000, guid: 6226be8830c3e3743a634df8b232ad37, type: 2}
+  _itemId: 
+  _itemStack: 
+  _itemWeight: 
   _resultItems: []
   _resultItemAmount: 
 --- !u!1 &2129697076
@@ -2001,6 +2005,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 2398219002856290519, guid: acd1b0755416bac4f8fe43c6150a258d, type: 3}
+      propertyPath: _melee
+      value: 
+      objectReference: {fileID: 7400000, guid: 2d75a69f6b0ac4a4f851e7d905928bc4, type: 2}
     - target: {fileID: 2491929188289263979, guid: acd1b0755416bac4f8fe43c6150a258d, type: 3}
       propertyPath: _groundCheckDistance
       value: 0.01

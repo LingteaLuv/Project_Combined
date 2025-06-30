@@ -2,7 +2,6 @@ using UnityEditor;
 using UnityEngine;
 
 [CustomEditor(typeof(ItemDictionary))]
-
 public class ItemDicSettingEditor : Editor
 {
     public override void OnInspectorGUI()

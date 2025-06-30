@@ -16,6 +16,7 @@ public class LootManager : SingletonT<LootManager>
 
     public int SlotCount = 6;
 
+    public int CurrentBlockerIndex;
     private SlotBlockerController[] _slotBlockers;
     private LootSlotController[] _lootSlots;
 
@@ -29,10 +30,12 @@ public class LootManager : SingletonT<LootManager>
         SetInstance();
         
         Init();
+
     }
 
     private void Init()
     {
+        CurrentBlockerIndex = -1;
         _itemImages = new Image[SlotCount];
         _itemCountTexts = new TMP_Text[SlotCount];
         _itemDurSliders = new Slider[SlotCount];
@@ -53,6 +56,13 @@ public class LootManager : SingletonT<LootManager>
         UIManager.Instance.ToggleUI(ModalUI.lootTable);
         LootTableUpdate();
 
+    }
+
+    public void CancelBlockHolding()
+    {
+        if (UIManager.Instance.Current != ModalUI.lootTable) return;
+        if (CurrentBlockerIndex == -1) return;
+        _slotBlockers[CurrentBlockerIndex].PointerUp();
     }
 
     public void NewLootableChecked(Lootable _lootable)
