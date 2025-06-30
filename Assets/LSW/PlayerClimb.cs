@@ -12,7 +12,6 @@ public class PlayerClimb : MonoBehaviour
         if (Input.GetKey(KeyCode.W))
         {
             transform.position += Vector3.up * (_climbSpeed * Time.deltaTime);
-            
         }
         if (Input.GetKey(KeyCode.S))
         {
