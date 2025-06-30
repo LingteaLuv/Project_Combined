@@ -5,7 +5,7 @@ using UnityEngine;
 
 public abstract class GunWeaponBase : WeaponBase
 {
-    protected GunItem _gunData; //건 데이터
+    [SerializeField] protected GunItem _gunData; //건 데이터
 
     /*
         public int AtkDamage;
@@ -59,27 +59,30 @@ public abstract class GunWeaponBase : WeaponBase
 
     public int Damage { get { return _damage; } private set { } }
 
+    protected AudioSource audioSource; //공격 사운드
 
     private void Reset()
     {
         _itemType = ItemType.Gun; 
     }
     //무기마다 Init() 불릿 풀 사이즈가 다를 것이고,불릿 프리팹이 다르다. 총 아래에 Bullet 오브젝트가 생성
-    public virtual void Init()
+    public override void Init()
     {
+        // localPosition에는 local 좌표를 사용
+        gameObject.transform.localPosition = _weaponSpawnPos.localPosition;
+        gameObject.transform.localRotation = _weaponSpawnPos.localRotation;
+
+        // 또는 world 좌표를 사용하려면
+        //gameObject.transform.position = _weaponSpawnPos.position;
+        //gameObject.transform.rotation = _weaponSpawnPos.rotation;
+
         _lineRenderer = GetComponent<LineRenderer>();
         _gunBulletObjectPool = new ObjectPool(_bulletPoolSize, _bulletPrefab, gameObject);
-
-        if(_item.Data.Type == ItemType.Gun)
-        {
-
-        }
     }
 
-    protected AudioSource audioSource; //공격 사운드
+    
 
     public override void Attack() { }
-
     #region 총알 궤적을 보여주는 함수
     /// <summary>
     /// 총알 궤적을 보여주는 함수

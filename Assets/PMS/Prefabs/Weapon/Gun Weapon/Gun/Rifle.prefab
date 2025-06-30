@@ -120,7 +120,7 @@ Transform:
   m_GameObject: {fileID: 9132330297771216111}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.131, y: 2.385, z: 0.47}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -142,6 +142,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _itemType: 0
+  _weaponSpawnPos: {fileID: 0}
+  _gunData: {fileID: 0}
   playerAttack: {fileID: 7079557454729922155, guid: b6f6362a58c6da943826ee4382c1fb8e, type: 3}
   _bulletPrefab: {fileID: 7623832579036224237, guid: 74850d8f180df244998dcb754d88b24a, type: 3}
   _currentAmmoCount: 30

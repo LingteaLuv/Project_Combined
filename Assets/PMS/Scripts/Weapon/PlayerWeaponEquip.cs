@@ -9,6 +9,7 @@ public class PlayerWeaponEquip : MonoBehaviour
     [SerializeField] private Animator _animator;
     [SerializeField] private GameObject _left_Hand_target;
     [SerializeField] private GameObject _right_Hand_target;
+    [SerializeField] private bool _isEquipmentChangeable = true; //아이템이 장착,해제가 가능한 시점인지
 
     private void Awake()
     {
@@ -30,12 +31,14 @@ public class PlayerWeaponEquip : MonoBehaviour
         {
             if (_currentWeapon == null) return;
             _animator.SetTrigger("Equip");
+            _animator.SetBool("IsEquipmentChangeable", _isEquipmentChangeable);
         }
         //무기 해제
         if (Input.GetKeyDown(KeyCode.R))
         {
             if (_currentWeapon == null) return;
             _animator.SetTrigger("UnEquip");
+            _animator.SetBool("IsEquipmentChangeable", _isEquipmentChangeable);
         }
     }
 
