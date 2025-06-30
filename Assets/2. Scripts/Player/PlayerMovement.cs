@@ -19,7 +19,7 @@ public class PlayerMovement : MonoBehaviour
     public bool IsOnLadder { get; private set; }
     public bool IsGrounded { get; private set; }
     public bool IsWater { get; private set; }
-
+    public bool IsRunning { get; private set; }
     private bool _jumpConsumedThisFrame;
     private bool _isCrouching;
     private Vector3 _currentRotation;
@@ -30,7 +30,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float _crouchSpeedMultiplier = 0.3f;
     [SerializeField] private float _waterSpeedMultiplier = 0.6f;
     [SerializeField] private float _fallMultiplier = 5f;
-
+    [SerializeField] private float _runMultiplier = 1.5f;
     public Vector3 MoveInput => _inputHandler.MoveInput;
     public bool JumpPressed => _inputHandler.JumpPressed;
     public bool CrouchHeld => _inputHandler.CrouchHeld;
@@ -51,6 +51,7 @@ public class PlayerMovement : MonoBehaviour
         // Raycast로 지면 체크
         IsGrounded = Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, _groundCheckDistance + 0.1f);
         IsOnLadder = _inputHandler.IsOnLadder;
+        IsRunning = _inputHandler.RunPressed;
     }
 
     private void FixedUpdate()
@@ -80,9 +81,12 @@ public class PlayerMovement : MonoBehaviour
             // 경사면 보정 이동
             moveDir = GetSlopeAdjustedMoveDirection(moveDir);
 
+            //  속도 계산 공식
             float speed = _property.MoveSpeed.Value
                 * (_isCrouching ? _crouchSpeedMultiplier : 1f)
-                * (IsWater ? _waterSpeedMultiplier : 1f);
+                * (IsWater ? _waterSpeedMultiplier : 1f)
+                * (IsRunning ? _runMultiplier : 1f);
+
             Vector3 targetVelocity = moveDir * speed;
             targetVelocity.y = Rigidbody.velocity.y; // 수직 속도 유지
             Rigidbody.velocity = Vector3.MoveTowards(Rigidbody.velocity, targetVelocity, 100 * Time.fixedDeltaTime);
@@ -95,8 +99,8 @@ public class PlayerMovement : MonoBehaviour
             }
 
             // 작은 턱 오르기 처리
-            bool downRay = Physics.Raycast(transform.position + Vector3.up * 0.01f, transform.forward, 0.5f);
-            bool middleRay = Physics.Raycast(transform.position + Vector3.up * 0.1f, transform.forward, 0.5f);
+            bool downRay = Physics.Raycast(transform.position + Vector3.up * 0.05f, transform.forward, 0.5f);
+            bool middleRay = Physics.Raycast(transform.position + Vector3.up * 0.2f, transform.forward, 0.5f);
             bool upRay = Physics.Raycast(transform.position + Vector3.up * 0.3f, transform.forward, 0.5f);
 
             if (downRay && middleRay && !upRay)
@@ -156,7 +160,10 @@ public class PlayerMovement : MonoBehaviour
     {
         IsWater = water;
     }
-
+    public void SetRunning(bool running)
+    {
+        IsRunning = running;
+    }
     public void SetRotation(float offset)
     {
         transform.rotation = Quaternion.Euler(0f, offset, 0f);

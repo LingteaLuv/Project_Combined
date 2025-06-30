@@ -158,5 +158,13 @@ public class PlayerController : MonoBehaviour
     {
         _animator.SetBool("IsInteracting", false);
     }
+    public void PlayRunning(bool running)
+    {
+        _animator.SetBool("IsRunning", true);
+    }
+    public void StopRunning(bool running)
+    {
+        _animator.SetBool("IsRunning", false);
+    }
     #endregion
 }
