@@ -51,11 +51,20 @@ public class UIManager : SingletonT<UIManager>
         CraftUI.SetActive(false);
         
         IsUIOpened.OnChanged += SetCursorLock;
+        IsUIOpened.OnChanged += SetCameraLock;
         SetCursorLock(IsUIOpened.Value);
+        SetCameraLock(IsUIOpened.Value);
     }
 
-    private void SetCameraLock() { 
-   
+    private void SetCameraLock(bool isUIOpened) {
+        if (!isUIOpened)
+        {
+            _pcc.ResumeCamera();
+        }
+        else
+        {
+            _pcc.PauseCamera();
+        }
     }
     
     private void SetCursorLock(bool isUIOpened)

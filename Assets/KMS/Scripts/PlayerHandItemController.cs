@@ -100,6 +100,7 @@ public class PlayerHandItemController : MonoBehaviour
         }
         StartCoroutine(UW());
 
+
         // 왼손에 들린게 없거나 두손무기라면 스킵 방패라면 들어주고,
         if (leftIndex == -1)
         {
