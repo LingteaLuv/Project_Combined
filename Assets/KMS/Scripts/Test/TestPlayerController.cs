@@ -6,6 +6,7 @@ using UnityEngine.UIElements;
 public class TestPlayerController : MonoBehaviour
 {
     [SerializeField] Rigidbody rigid;
+    private PlayerAttack pa;
     public float moveSpeed = 4f;
     private void Update()
     {
@@ -16,5 +17,9 @@ public class TestPlayerController : MonoBehaviour
         Vector3 moveDir = transform.forward * m;
 
         rigid.velocity = moveDir * moveSpeed;
+    }
+    private void Awake()
+    {
+        pa = GetComponent<PlayerAttack>();
     }
 }
