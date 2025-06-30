@@ -55,8 +55,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        HandleMovement(MoveInput); // 이동 처리
-        HandleGravity(); // 중력 처리
+        if (!IsOnLadder)
+        {
+            HandleMovement(MoveInput); // 이동 처리
+            HandleGravity();
+        } // 중력 처리
     }
 
     public void HandleMovement(Vector3 inputDir)
@@ -117,7 +120,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleGravity()
     {
-        if (!IsGrounded && Rigidbody.velocity.y < 0f)
+        if (!IsGrounded && Rigidbody.velocity.y < 0.1f)
         {
             Rigidbody.velocity += Vector3.up * Physics.gravity.y * (_fallMultiplier - 1f) * Time.fixedDeltaTime;
         }
