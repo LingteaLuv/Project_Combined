@@ -26,6 +26,8 @@ public class UIManager : SingletonT<UIManager>
     private Coroutine _coroutine;
     private WaitForEndOfFrame _wait;
 
+    private PlayerCameraController _pcc;
+
     public Property<bool> IsUIOpened;
     public ModalUI Current { get; set; }
     private void Awake()
@@ -33,6 +35,7 @@ public class UIManager : SingletonT<UIManager>
         _lootRect = LootUI.GetComponent<RectTransform>();
         _invRect = InvUI.GetComponent<RectTransform>();
         _playerLoot = UISceneLoader.Instance.Playerattack.gameObject.GetComponentInChildren<PlayerLooting>();
+        _pcc = UISceneLoader.Instance.Playerattack.GetComponent<PlayerCameraController>();
         SetInstance();
         IsUIOpened = new Property<bool>(false);
         Current = ModalUI.nothing;
@@ -48,7 +51,20 @@ public class UIManager : SingletonT<UIManager>
         CraftUI.SetActive(false);
         
         IsUIOpened.OnChanged += SetCursorLock;
+        IsUIOpened.OnChanged += SetCameraLock;
         SetCursorLock(IsUIOpened.Value);
+        SetCameraLock(IsUIOpened.Value);
+    }
+
+    private void SetCameraLock(bool isUIOpened) {
+        if (!isUIOpened)
+        {
+            _pcc.ResumeCamera();
+        }
+        else
+        {
+            _pcc.PauseCamera();
+        }
     }
     
     private void SetCursorLock(bool isUIOpened)
