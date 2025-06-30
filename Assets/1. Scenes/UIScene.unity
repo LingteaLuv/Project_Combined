@@ -680,6 +680,7 @@ MonoBehaviour:
   _slots: {fileID: 1966513448}
   _blocks: {fileID: 1609049895}
   SlotCount: 6
+  CurrentBlockerIndex: 0
 --- !u!4 &273058294
 Transform:
   m_ObjectHideFlags: 0
@@ -4823,6 +4824,7 @@ GameObject:
   - component: {fileID: 1635624737}
   - component: {fileID: 1635624743}
   - component: {fileID: 1635624742}
+  - component: {fileID: 1635624744}
   m_Layer: 0
   m_Name: InventoryManage
   m_TagString: Untagged
@@ -4939,6 +4941,18 @@ MonoBehaviour:
   _model: {fileID: 1635624739}
   _itemDictionary: {fileID: 11400000, guid: 6226be8830c3e3743a634df8b232ad37, type: 2}
   _rs: {fileID: 1660819163}
+--- !u!114 &1635624744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1635624736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41eeb78c623beaf4eac6985e4822a9e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1660819162
 PrefabInstance:
   m_ObjectHideFlags: 0
