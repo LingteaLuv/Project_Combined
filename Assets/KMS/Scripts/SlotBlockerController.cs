@@ -17,11 +17,13 @@ public class SlotBlockerController : MonoBehaviour
     {
         _coroutine = StartCoroutine(WaitAndPrint());
         _animator.SetBool("IsPointerDown", true);
+        LootManager.Instance.CurrentBlockerIndex = GetSlotIndex();
     }
     public void PointerUp()
     {
         StopCoroutine(_coroutine);
         _animator.SetBool("IsPointerDown", false);
+        LootManager.Instance.CurrentBlockerIndex = -1;
     }
     private IEnumerator WaitAndPrint()
     {
