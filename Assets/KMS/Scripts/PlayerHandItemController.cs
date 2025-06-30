@@ -108,6 +108,11 @@ public class PlayerHandItemController : MonoBehaviour
     private IEnumerator UW() // 약간 지연 필요
     {
         yield return new WaitForEndOfFrame();
+        if (_model.InvItems[_control.EquippedSlotIndex[0]].Data.Type == ItemType.Gun) //만약 들린게 총이면
+        {
+            CurrentRightItem.GetComponent<GunWeaponBase>()._item = _model.InvItems[_control.EquippedSlotIndex[0]]; //Item정보를 줌(현재탄약수등)
+        }
+        
         //생성된 프리팹에 정보를 넘겨주
         _playerAttack.UpdateWeapon(); //생성된 프리팹에서 정보를 받음
     }
