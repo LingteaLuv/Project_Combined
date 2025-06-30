@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
 {
     #region Public 
     public Animator _animator;
-    public PlayerHealthEdit PlayerHealthEdit { get; private set; }
+    public PlayerHealth PlayerHealth { get; set; }
     #endregion
 
     #region State Flags
@@ -60,6 +60,11 @@ public class PlayerController : MonoBehaviour
     {
         _fsm.FixedUpdate();
     }
+    private void OnDestroy()
+    {
+        PlayerHealth.OnDamageReceived.RemoveListener(OnPlayerDamaged);
+        PlayerHealth.OnPlayerDeath.RemoveListener(OnPlayerDied);
+    }
     #endregion
 
     # region Private Mathood
@@ -68,9 +73,11 @@ public class PlayerController : MonoBehaviour
         _movement = GetComponent<PlayerMovement>();
         _cameraController = GetComponent<PlayerCameraController>();
         _animator = GetComponent<Animator>();
-        PlayerHealthEdit = GetComponent<PlayerHealthEdit>();
+        PlayerHealth = GetComponent<PlayerHealth>();
         _movement.Controller = this;
 
+        PlayerHealth.OnDamageReceived.AddListener(OnPlayerDamaged);
+        PlayerHealth.OnPlayerDeath.AddListener(OnPlayerDied);
 
         _fsm = new PlayerStateMachine();
         FallState = new PlayerFallState(_fsm, _movement);
@@ -105,6 +112,20 @@ public class PlayerController : MonoBehaviour
     {
         bool isGrounded = _movement.IsGrounded;
         _animator.SetBool("IsGround", isGrounded);
+    }
+    private void OnPlayerDamaged(int damage)
+    {
+        // 예시: HitState 진입 + 데미지 전달
+        if (PlayerHealth.IsDead)
+            return;
+
+        _fsm.ChangeState(HitState);
+        HitState.SetDamage(damage);
+    }
+
+    private void OnPlayerDied()
+    {
+        _fsm.ChangeState(DeadState);
     }
     #endregion
 
