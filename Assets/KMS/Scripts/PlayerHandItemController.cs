@@ -88,7 +88,7 @@ public class PlayerHandItemController : MonoBehaviour
         int rightIndex = _control.EquippedSlotIndex[0];
         int leftIndex = _control.EquippedSlotIndex[1];
         if ((rightIndex == leftIndex) && _model.InvItems[rightIndex] == null) return;
-        if (rightIndex == -1) //오른손 들린게 없다
+        if (rightIndex == -1) //오른손 빈 상황
         {
             if (leftIndex != -1) //왼손은 들렸다.
             {
@@ -121,13 +121,15 @@ public class PlayerHandItemController : MonoBehaviour
     private IEnumerator UW() // 약간 지연 필요
     {
         yield return new WaitForEndOfFrame();
-        if (_model.InvItems[_control.EquippedSlotIndex[0]].Data.Type == ItemType.Gun) //만약 들린게 총이면
+        if (_model.InvItems[_control.EquippedSlotIndex[0]] != null)
         {
-            CurrentRightItem.GetComponent<GunWeaponBase>()._item = _model.InvItems[_control.EquippedSlotIndex[0]]; //Item정보를 줌(현재탄약수등)
+            if (_model.InvItems[_control.EquippedSlotIndex[0]].Data.Type == ItemType.Gun) //만약 들린게 총이면
+            {
+                CurrentRightItem.GetComponent<GunWeaponBase>()._item = _model.InvItems[_control.EquippedSlotIndex[0]]; //Item정보를 줌(현재탄약수등)
+            }
         }
-        
-        //생성된 프리팹에 정보를 넘겨주
-        _playerAttack.UpdateWeapon(); //생성된 프리팹에서 정보를 받음
+        //생성된 프리팹의 정보를 받도록
+        PlayerWeaponManager.Instance.UpdateCurrentWeapon();
         //여기서 싱글톤ㅇ 점보 넘겨줌
     }
     public void DeholdItem(HandType type)
