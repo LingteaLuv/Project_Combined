@@ -12,7 +12,7 @@ public class PlayerInputHandler : MonoBehaviour
     public bool IsOnLadder { get; private set; }
     public bool InteractPressed { get; private set; }
     public bool RunPressed { get; private set; }
-    //  public bool TestKey {  get; private set; }
+    public bool TestKey {  get; private set; }
 
     private void Update()
     {
@@ -29,7 +29,7 @@ public class PlayerInputHandler : MonoBehaviour
 
 
         // TODO : Test Key 지워야함
-        //  TestKey = Input.GetKey(KeyCode.P);
+        TestKey = Input.GetKey(KeyCode.P);
 
 
         if (crouch && run)

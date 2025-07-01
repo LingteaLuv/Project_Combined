@@ -39,7 +39,7 @@ public class PlayerMovement : MonoBehaviour
     public bool InteractPressed => _inputHandler.InteractPressed;
 
     //  TODO : Test Key 지우기
-    //public bool TestKey => _inputHandler.TestKey;
+    public bool TestKey => _inputHandler.TestKey;
 
     public SphereCollider StateSphereCollider => _stateSphereCollider;
     private void Awake() => Init();
@@ -64,8 +64,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // if (TestKey)
-        //    MoveLock();
+        //TODO : Test Key 지우기
+        if (TestKey)
+            MoveLock();
         if (!IsOnLadder)
         {
             HandleMovement(MoveInput); // 이동 처리
