@@ -5,14 +5,27 @@ using UnityEngine;
 public class FogControl : MonoBehaviour
 {
     [SerializeField] Animator _anim;
-
-    private void Update()
+    private void Start()
     {
-        if (Input.GetKeyDown(KeyCode.Home)) SetFogTrigger();
+        StartCoroutine(Delay());
+    }
+
+    private void FogUpdate(DayTime time)
+    {
+        Debug.Log(time);
+        if (time == DayTime.MidNight || time == DayTime.Morning)
+        {
+            SetFogTrigger();
+        }
     }
 
     public void SetFogTrigger()
     {
         _anim.SetTrigger("FogToggle");
+    }
+    private IEnumerator Delay()
+    {
+        yield return new WaitForSeconds(1);
+        TimeManager.Instance.CurrentTimeOfDay.OnChanged += FogUpdate;
     }
 }
