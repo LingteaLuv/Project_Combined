@@ -38,9 +38,9 @@ public abstract class PlayerState
         }
         return false;
     }
-    protected bool EnterFallState(float delay = 0.3f)
+    protected bool EnterFallState(float delay = 1f)
     {
-        if (!_movement.IsGrounded && _movement.Rigidbody.velocity.y < -0.1f)
+        if (!_movement.IsGrounded)
         {
             _fallTimer += Time.deltaTime;
             return _fallTimer >= delay;
