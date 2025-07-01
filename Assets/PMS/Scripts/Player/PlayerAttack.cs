@@ -200,6 +200,8 @@ public class PlayerAttack : MonoBehaviour
 
     private void WeaponLogicStopAndAnimationStop()
     {
+        if (CurrentWeapon.ItemType != ItemType.Throw) return;
+
         _animator.speed = 0f;
         StartThrowAttack();
     }

@@ -50,9 +50,9 @@ public class ThrowableWeapon : WeaponBase
 
     public override void Attack()
     {
-        StartCoroutine(WaifForInput());
+        //StartCoroutine(WaifForInput());
 
-        /*Rigidbody rb = gameObject.GetComponent<Rigidbody>();
+        Rigidbody rb = gameObject.GetComponent<Rigidbody>();
 
         transform.parent = null; // 손에서 분리
 
@@ -73,7 +73,7 @@ public class ThrowableWeapon : WeaponBase
 
         rb.maxAngularVelocity = 100;
 
-        rb.angularVelocity = transform.right * 100;*/
+        rb.angularVelocity = transform.right * 100;
         
         //rb.AddTorque(transform.right * 100);
         //rb.AddForce(cam.forward * 1/*_throwData.Rof*/, ForceMode.VelocityChange);
