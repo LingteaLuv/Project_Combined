@@ -224,18 +224,6 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
         _staminaTimer = 2f;
     }
     
-    // 달리고 있는 상태에서 호출하는 함수
-    public IEnumerator StaminaConsumePerSecond(float amount, bool isOnRunning)
-    {
-        while (true)
-        {
-            if (!isOnRunning) break;
-            Stamina.Decrease(amount);
-            _staminaTimer = 2f;
-            yield return _delay;
-        }
-    }
-    
     
     private void Init()
     {
