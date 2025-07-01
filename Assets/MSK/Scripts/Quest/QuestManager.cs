@@ -36,22 +36,23 @@ public class QuestManager : Singleton<QuestManager>
 
 
     /// <summary>
-    /// Npc에게 퀘스트 Npc를 전달
+    /// Npc에게 퀘스트를 Npc 리스트로 전달
     /// </summary>
-    /// <param name="npcId"></param>
-    /// <returns></returns>
-    public List<QuestData> GetQuestsByStartNPC(int npcId)
+    public List<QuestData> GetStartNPC(int npcId)
     {
         return _questDictionary.Values.Where(q => q.StartNPCID == npcId).ToList();
     }
-
+    public List<QuestData> GetEndNPC(int npcId)
+    {
+        return _questDictionary.Values.Where(q => q.EndNPCID == npcId).ToList();
+    }
 
 
     /// <summary>
     /// 연계 퀘스트가 있다면, 상태를 Locked로 초기화합니다.
     /// (NextQuestID가 존재하는 모든 퀘스트에 대해 후속 퀘스트를 잠금 처리)
     /// </summary>
-    public void InitializeQuestLocks()
+    public void InitQuestLock()
     {
         foreach (var quest in _questDictionary.Values)
         {
@@ -72,7 +73,7 @@ public class QuestManager : Singleton<QuestManager>
     /// 전체 퀘스트의 데이터 리스트를 등록/초기화합니다.
     /// </summary>
     /// <param name="questList">등록할 퀘스트 데이터 리스트</param>
-    public void LoadQuestMeta(List<QuestData> questList)
+    public void LoadQuest(List<QuestData> questList)
     {
         AllQuests = questList ?? new List<QuestData>();
         _questDictionary = AllQuests.ToDictionary(q => q.QuestID);
@@ -160,7 +161,6 @@ public class QuestManager : Singleton<QuestManager>
         if (quest.Status == QuestStatus.Locked)
         {
             quest.Status = QuestStatus.Available;
-            // TODO: 해금 알림, UI 표시 등
         }
     }
 
