@@ -2192,37 +2192,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 131755615}
   m_CullTransparentMesh: 1
---- !u!1 &133203830
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 133203831}
-  m_Layer: 0
-  m_Name: QuickSlotManage
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &133203831
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 133203830}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 898.24176, y: 589.63257, z: 3.728334}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &140359437
 GameObject:
   m_ObjectHideFlags: 0
@@ -19468,6 +19437,8 @@ MonoBehaviour:
   InvUI: {fileID: 1714981836}
   CraftUI: {fileID: 1660819164}
   UIGroup: {fileID: 906797619}
+  _propHUI: {fileID: 911169911}
+  _quickslot: {fileID: 993935176}
 --- !u!4 &1356716545
 Transform:
   m_ObjectHideFlags: 0
@@ -32010,7 +31981,6 @@ SceneRoots:
   - {fileID: 1352433877}
   - {fileID: 273058294}
   - {fileID: 279175233}
-  - {fileID: 133203831}
   - {fileID: 1356716545}
   - {fileID: 663459538}
   - {fileID: 1288993714}

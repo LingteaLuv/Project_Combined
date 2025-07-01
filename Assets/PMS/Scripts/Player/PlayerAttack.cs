@@ -31,6 +31,7 @@ public class PlayerAttack : MonoBehaviour
     {
         LeftCurrentWeapon = PlayerWeaponManager.Instance.LeftCurrentWeapon;
         RightCurrentWeapon = PlayerWeaponManager.Instance.RightCurrentWeapon;
+        _playerProperty = GetComponent<PlayerProperty>();
     }
 
     /*public void UpdateWeapon()

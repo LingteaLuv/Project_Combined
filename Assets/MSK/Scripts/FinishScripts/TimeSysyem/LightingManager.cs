@@ -72,7 +72,7 @@ public class LightingManager : MonoBehaviour
             _moonLight.transform.localRotation = Quaternion.Euler(new Vector3(angle + 180f, 170f, 0f));
         }
     }
-
+    
     /// <summary>
     /// 낮/밤 상태에 따라 태양광(_dayLight)과 달빛(_moonLight)을 전환합니다.
     /// </summary>
