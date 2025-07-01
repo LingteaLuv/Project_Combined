@@ -113,6 +113,11 @@ public class Monster_Attack : MonsterState_temp, IAttackable
             _ani.SetBool("isChasing", false);
         }
 
+        if (monster.HandDetector != null)
+        {
+            monster.InvokeRepeating(nameof(monster.HandDetector.DetectPlayer), 0f, 0.1f);
+        }
+
         if (_curTarget is MonoBehaviour target)
         {
             Vector3 dir = (target.transform.position - monster.transform.position).normalized;
@@ -256,6 +261,11 @@ public class Monster_Attack : MonsterState_temp, IAttackable
 
     public override void Exit()
     {
+        if (monster.HandDetector != null)
+        {
+            monster.CancelInvoke(nameof(monster.HandDetector.DetectPlayer));
+        }
+
         _ani.ResetTrigger("Attack");
 
         if (_attackCoroutine != null)

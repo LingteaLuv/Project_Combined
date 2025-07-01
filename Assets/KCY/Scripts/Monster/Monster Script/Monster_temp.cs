@@ -39,45 +39,25 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
     public bool IsDetecting = false;
 
     private Vector3 _buildingSite = Vector3.positiveInfinity;
-    private float _retryDis = 1.5f; 
+    private float _retryDis = 1.5f;
+
+    // 벽 탈출을 위한 탐지 off 쿨타임
+    // 해당 불값이 디텍트 정지시키고, dur값에 다다를 때까지 지속
+    private bool _canDetect = false;
+    private float _detectCoolTime = 0f;
+    private float _detectDur = 3f;
+    private int _wallHitCount = 0;
+    private int _wallLimitedCount = 5;
 
 
-    /// <summary>
-    ///  피격 확인용
-    /// </summary>
-    /// <param name="damage"></param>
-    /*public void Damaged(int damage)
-    {
-        // 죽어 있으면 데미지 받지 말고
-        if (_isDead) return;
 
-        // 좀비 체력 깍기
-        MonsterHp -= damage;
-        Debug.Log($"🩸 피격! 체력: {MonsterHp}");
-        //  피격 모션 발동
-        Ani.SetTrigger("IsHit");
 
-        if (MonsterHp <= 0 && !_isDead)
-        {
-            _isDead = true;
-            Debug.Log("사망");
-            
-            //어젠트로 움직임 제어하므로 어젠트를 정지 시켜주고 속도를 0으로 만들어 준다
-            MonsterAgent.isStopped = true;
-            MonsterAgent.velocity = Vector3.zero;
-            Ani.SetTrigger("Dead");
-        }
-    }*/
-    /// <summary>
-    ///  피격 확인용
-    /// </summary>
-    /// 
     private void Awake()
     {
         PlayerLayerMask = LayerMask.GetMask("Player");
         Ani = GetComponentInChildren<Animator>();
         HandDetector = GetComponentInChildren<MonsterHandDetector>();
-        SightRange = SightCol.radius; // 스피어 콜라이더의 반지름 길이를 할당(추격 사용시 시야각 변화를 위해 할당)
+        
         // target = this as IAttackable; 피격 실험용으로 사용한 코드입니다 나중에 사용할 때 활성화 시켜주면 됩니다.
     }
 
@@ -85,16 +65,32 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
     {
         Debug.Log("Monster Start()");
         StateMachineInit();
+
+        if (SightCol != null)
+        {
+            SightRange = SightCol.radius;
+        }
+        else
+        {
+            Debug.LogError("🟥 SightCol이 할당되지 않았습니다. Monster_temp에 연결하세요!");
+        }
+
     }
 
     private void Update()
     {
+        // 상태머신 업데이트
         _monsterMerchine?.Update();
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        // 벽에 맞았을 때 토글시켜 탐지를 방어하고, 시간초를 업데이트에서 누적시켜 자동 토글로 디텍트를 다시 온으로 만든다/ 오프로 만드는 스위치는 벽에 닿는 것 
+        if (!_canDetect)
         {
-            Debug.Log("스페이스 피격 테스트");
-            (this as IDamageable)?.Damaged(1);
+            _detectCoolTime += Time.deltaTime;
+            if (_detectCoolTime >= _detectDur)
+            {
+                _canDetect = true;
+                _detectCoolTime = 0f;
+            }
         }
     }
 
@@ -110,7 +106,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
         _monsterMerchine.StateDic.Add(Estate.Dead, new Monster_Dead(this));
         _monsterMerchine.StateDic.Add(Estate.ReturnToSpawn, new Monster_ReturnToSpawn(this));
 
-
+        // 처음 시작은 아이들 모드로 시작
         _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.Idle]);
     }
 
@@ -136,15 +132,19 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
     }
 
 
-
-
-
-
-
     public void SightDetectPlayer(Collider other)
     {
         // 레이어를 통한 플레이어 확인 방어 코드 , 플레이어 캐릭터가 아니면 리턴
         if (((1 << other.gameObject.layer) & PlayerLayerMask) == 0) return; // 플레이어가 아님
+
+
+        // 빌딩에서 탈출하기 위한 패트롤용
+        if (!_canDetect)
+        {
+            Debug.Log("현재 디텍트는 on 아직 건물에 안만남");
+            return;
+        }
+
 
         // 레어어가 현 상태가 패트롤이 아닌경우 감지 무시 (패트롤의 경우만 감지하고, 공격상태일땐 거리로 측정함, 아이들 모드 역시 무시중)
         if (_monsterMerchine.CurState != _monsterMerchine.StateDic[Estate.Patrol])
@@ -188,6 +188,20 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
         {
             if (((1 << hit.collider.gameObject.layer) & BuildingLayerMask) != 0)
             {
+
+                // 벽에 부딫힌 횟수 감지
+                // 벽에 5번 부딫히면 그냥 집으로 와라
+                _wallHitCount++;
+
+                if (_wallHitCount >= _wallLimitedCount)
+                {
+                    Debug.Log("벽에 너무 많이 부딫히니까 돌아와");
+                    _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.ReturnToSpawn]);
+                    _wallHitCount = 0;
+                    return;
+                }
+
+
                 // 시작 시의 감지를 통한 확인
                 Debug.Log("건물이랑 붙었다 다시 탐지 하면 안되요");
                
@@ -195,6 +209,10 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
                 _buildingSite = transform.position;
                 TargetPosition = null;
                 IsDetecting = false;
+
+                // 디텍트 방어 중
+                _canDetect = false;
+                _detectCoolTime = 0f;
 
                 _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.Idle]);
                 return;
@@ -224,6 +242,44 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
         _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.Chase]);
 
     }
+
+    public void SoundDetectPlayer(Collider other)
+    {
+        //플레이어나 사운드가 아니면 리턴
+        if (((1 << other.gameObject.layer) & PlayerLayerMask) == 0 && ((1 << other.gameObject.layer) & SoundLayerMask) == 0) return;
+
+        // 소리로 플레이어를 탐색하였을 경우
+        if (((1 << other.gameObject.layer) & PlayerLayerMask) != 0)
+        {
+            Vector3 dirToPlayer = (other.transform.position - transform.position).normalized;
+            if (dirToPlayer != Vector3.zero)
+            {
+                transform.rotation = Quaternion.LookRotation(dirToPlayer);
+            }
+
+            Debug.Log("플레이어의 위치를 소리로 확인하였다 - 돌아보자");
+            return;
+        }
+
+        // 소리로 소리 아이템을 확인한 경우
+        if (((1 << other.gameObject.layer) & SoundLayerMask) != 0)
+        {
+            Vector3 dirToSound = (other.transform.position - transform.position).normalized;
+            if (dirToSound != Vector3.zero)
+            {
+                transform.rotation = Quaternion.LookRotation(dirToSound);
+            }
+
+            Debug.Log("해당 위치에서 소리를 확인하여 돌아봅니다");
+
+            TempPoint = other.transform;
+            BasePoint = TempPoint;
+            _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.Patrol]);
+        }
+
+    }
+
+
 
     public void AttackEvent()
     {

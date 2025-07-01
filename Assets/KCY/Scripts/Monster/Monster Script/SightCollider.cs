@@ -8,7 +8,7 @@ public class SightCollider : MonoBehaviour
 
     private void Awake()
     {
-        _monster = GetComponent<Monster_temp>();
+        _monster = GetComponentInParent<Monster_temp>();
     }
     private void OnTriggerEnter(Collider other)
     {
