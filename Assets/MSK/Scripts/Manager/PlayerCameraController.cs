@@ -19,9 +19,16 @@ public class PlayerCameraController : MonoBehaviour
 
     public float OffsetX { get; private set; }
     public float OffsetY { get; private set; }
-    
+    public bool CameraMove { get; private set; }
+
+    private void Awake()
+    {
+        CameraMove = true;
+    }
     private void Update()
     {
+        if (!CameraMove)
+            return;
         OffsetX += Input.GetAxis("Mouse X") * _mouseSensitivityX;
         OffsetY += Input.GetAxis("Mouse Y") * _mouseSensitivityY;
         OffsetY = Mathf.Clamp(OffsetY, _minPitch, _maxPitch); 
@@ -30,13 +37,12 @@ public class PlayerCameraController : MonoBehaviour
 
     public void PauseCamera()
     {
-        _cinemachineBrain.enabled = false;
+        CameraMove = !CameraMove;
     }
 
     // 카메라 재개
     public void ResumeCamera()
     {
-        _cinemachineBrain.enabled = true;
     }
 
     // lookat, fallow 변경방식
