@@ -14,9 +14,10 @@ public class QuestData :ScriptableObject
     public QuestStatus Status;                    // 상태: Locked, Available, Active, Completed, Closed
 
     public int StartNPCID;   
-    public string StartDialogueID;// 퀘스트 제공(시작) NPC ID
+    public string StartDialogueID;                // 퀘스트 제공(시작) NPC ID
+
     public int EndNPCID;       
-    public string EndDialogueID;// 타겟 NPC ID(필요시, ex: 전달/대화 등)
+    public string EndDialogueID;                  // 타겟 NPC ID(필요시, ex: 전달/대화 등)
 
     public string NextQuestID;
     // 목표(Goal) - 타입에 따라 구조적 분기
@@ -25,7 +26,8 @@ public class QuestData :ScriptableObject
     
     public int TargetMonsterID;                   // (처치) 목표 몬스터 ID
     public int TargetMonsterCount;                // (처치) 목표 처치 
-    
+    public int GoalCount;
+
     public int TargetLocationID;                  // (도달) 목표 위치ID(또는 좌표/타겟ID 등)
 
     // 보상

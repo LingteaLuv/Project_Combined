@@ -11,12 +11,12 @@ using UnityEngine;
 public class QuestManager : Singleton<QuestManager>
 {
     /// <summary>
-    /// 전체 퀘스트의 메타(설계) 데이터 리스트입니다.
+    /// 전체 퀘스트의 데이터 리스트입니다.
     /// </summary>
     public List<QuestData> AllQuests { get; private set; } = new List<QuestData>();
 
     /// <summary>
-    /// 전체 퀘스트의 플레이어별 진행 상태 리스트입니다.
+    /// 전체 퀘스트의 플레이어별 진행 상태 딕셔너리입니다.
     /// </summary>
     private Dictionary<string, QuestData> _questDictionary = new Dictionary<string, QuestData>();
 
@@ -34,10 +34,27 @@ public class QuestManager : Singleton<QuestManager>
     public event Action<QuestData, QuestProgress> OnQuestRewardClaimed;
     #endregion
 
+
     /// <summary>
-    /// 전체 퀘스트의 메타(설계) 데이터 리스트를 등록/초기화합니다.
+    /// Npc에게 퀘스트 Npc를 전달
     /// </summary>
-    /// <param name="questList">등록할 퀘스트 메타 데이터 리스트</param>
+    /// <param name="npcId"></param>
+    /// <returns></returns>
+    public List<QuestData> GetQuestsByStartNPC(int npcId)
+    {
+        return _questDictionary.Values.Where(q => q.StartNPCID == npcId).ToList();
+    }
+    public List<QuestData> GetQuestsByEndNPC(int npcId)
+    {
+        return _questDictionary.Values.Where(q => q.EndNPCID == npcId).ToList();
+    }
+
+
+
+    /// <summary>
+    /// 전체 퀘스트의 데이터 리스트를 등록/초기화합니다.
+    /// </summary>
+    /// <param name="questList">등록할 퀘스트 데이터 리스트</param>
     public void LoadQuestMeta(List<QuestData> questList)
     {
         AllQuests = questList ?? new List<QuestData>();
@@ -52,13 +69,12 @@ public class QuestManager : Singleton<QuestManager>
     /// <returns>성공 시 true</returns>
     public bool AcceptQuest(string questId)
     {
-        var meta = GetQuestMeta(questId);
-        var progress = GetProgress(questId);
-        if (meta == null || progress == null || progress.Status != QuestStatus.Available)
+        if (!_questDictionary.TryGetValue(questId, out var meta))
             return false;
-        progress.Status = QuestStatus.Active;
-        OnQuestAccepted?.Invoke(meta, progress);
-        SaveProgress();
+        if (meta.Status != QuestStatus.Available)
+            return false;
+        meta.Status = QuestStatus.Active;
+        OnQuestAccepted?.Invoke(meta, null);
         return true;
     }
 
@@ -69,15 +85,14 @@ public class QuestManager : Singleton<QuestManager>
     /// <returns>성공 시 true</returns>
     public bool CompleteQuest(string questId)
     {
-        var meta = GetQuestMeta(questId);
-        var progress = GetProgress(questId);
-        if (meta == null || progress == null || progress.Status != QuestStatus.Active)
+        if (!_questDictionary.TryGetValue(questId, out var meta))
+            return false;
+        if (meta.Status != QuestStatus.Active)
             return false;
 
-        quest.Status = QuestStatus.Completed;
-        OnQuestCompleted?.Invoke(quest);
-        // TODO: 보상 지급, 후속 퀘스트 해금, 세이브 등
-        //UpdateQuestStates(); // 완료 후 해금 갱신
+        meta.Status = QuestStatus.Completed;
+        OnQuestCompleted?.Invoke(meta, null);
+        // TODO: 보상 지급, 연계 퀘스트 해금
         return true;
     }
 
@@ -88,13 +103,11 @@ public class QuestManager : Singleton<QuestManager>
     /// <returns>성공 시 true</returns>
     public bool FailQuest(string questId)
     {
-        var meta = GetQuestMeta(questId);
-        var progress = GetProgress(questId);
-        if (meta == null || progress == null || progress.Status != QuestStatus.Completed || progress.IsRewardClaimed)
+        if (!_questDictionary.TryGetValue(questId, out var meta))
             return false;
-        progress.IsRewardClaimed = true;
-        OnQuestRewardClaimed?.Invoke(meta, progress);
-        SaveProgress();
+        if (meta.Status != QuestStatus.Completed)
+            return false;
+        OnQuestRewardClaimed?.Invoke(meta, null);
         return true;
     }
 
@@ -115,27 +128,20 @@ public class QuestManager : Singleton<QuestManager>
     /// </summary>
     public bool IsQuestCompleted(string questId)
     {
-        var progress = GetProgress(questId);
-        return progress != null && progress.Status == QuestStatus.Completed;
+        return _questDictionary.TryGetValue(questId, out var meta) && meta.Status == QuestStatus.Completed;
     }
 
     /// <summary>
     /// 퀘스트 목표 진행(GoalCount) 증가. 처치/수집 등에서 호출.
     /// </summary>
-    private QuestData GetQuestById(string questId)
+    public void GetQuestById(string questId, int amount)
     {
-        var progress = GetProgress(questId);
-        var meta = GetQuestMeta(questId);
-        if (progress == null || meta == null || progress.Status != QuestStatus.Active)
+        if (!_questDictionary.TryGetValue(questId, out var meta))
             return;
-        progress.GoalCount += amount;
-        if (meta.Type == QuestType.Kill && progress.GoalCount >= meta.TargetMonsterCount)
+        if (meta.Status != QuestStatus.Active)
+            return;
+        meta.GoalCount += amount;
+        if (meta.Type == QuestType.Kill && meta.GoalCount >= meta.TargetMonsterCount)
             CompleteQuest(questId);
-        SaveProgress();
     }
-
-    /// <summary>
-    /// 퀘스트 진행 정보를 Json 파일로 저장합니다.
-    /// </summary>
-    //private bool CanUnlockQuest(QuestData quest)
 }
