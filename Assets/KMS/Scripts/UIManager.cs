@@ -9,7 +9,8 @@ public enum ModalUI
 {
     nothing,
     inventory,
-    lootTable
+    lootTable,
+    quest
 }
 public class UIManager : SingletonT<UIManager>
 {
@@ -17,6 +18,7 @@ public class UIManager : SingletonT<UIManager>
     [SerializeField] public GameObject LootUI;
     [SerializeField] public GameObject InvUI;
     [SerializeField] public GameObject CraftUI;
+    [SerializeField] public GameObject QuestLogUI;
 
     [SerializeField] public CanvasGroup UIGroup;
 
@@ -27,6 +29,7 @@ public class UIManager : SingletonT<UIManager>
     private PlayerLooting _playerLoot;
     private RectTransform _lootRect;
     private RectTransform _invRect;
+    private RectTransform _questRect;
 
     private Coroutine _coroutine;
     private WaitForEndOfFrame _wait;
@@ -42,6 +45,7 @@ public class UIManager : SingletonT<UIManager>
     {
         _lootRect = LootUI.GetComponent<RectTransform>();
         _invRect = InvUI.GetComponent<RectTransform>();
+        _questRect = QuestLogUI.GetComponent<RectTransform>();
         _playerLoot = UISceneLoader.Instance.Playerattack.gameObject.GetComponentInChildren<PlayerLooting>();
         _pcc = UISceneLoader.Instance.Playerattack.GetComponent<PlayerCameraController>();
         _pm = UISceneLoader.Instance.Playerattack.GetComponent<PlayerMovement>();
@@ -81,6 +85,7 @@ public class UIManager : SingletonT<UIManager>
         LootUI.SetActive(false);
         InvUI.SetActive(false);
         CraftUI.SetActive(false);
+        QuestLogUI.SetActive(false);
         
         IsUIOpened.OnChanged += SetCursorLock;
         IsUIOpened.OnChanged += SetCameraLock;
@@ -140,6 +145,10 @@ public class UIManager : SingletonT<UIManager>
             if (Current == ModalUI.inventory) return;
             _playerLoot.TryLoot();
         }
+        if (Input.GetKeyDown(KeyCode.Insert))
+        {
+            ToggleUI(ModalUI.quest);
+        }
     }
     public void OpenUI(ModalUI cur)
     {
@@ -158,6 +167,11 @@ public class UIManager : SingletonT<UIManager>
             SetUIPos(_lootRect, 500, 600);
             InvUI.SetActive(true);
             SetUIPos(_invRect, 1100, 450);
+        }
+        else if (Current == ModalUI.quest)
+        {
+            QuestLogUI.SetActive(true);
+            SetUIPos(_invRect, 300, 400);
         }
 
         if (_coroutine != null)
