@@ -19,6 +19,10 @@ public class UIManager : SingletonT<UIManager>
 
     [SerializeField] public CanvasGroup UIGroup;
 
+    [SerializeField] private ParameterHudUI _propHUI;
+
+    [SerializeField] private GameObject _quickslot;
+
     private PlayerLooting _playerLoot;
     private RectTransform _lootRect;
     private RectTransform _invRect;
@@ -29,6 +33,8 @@ public class UIManager : SingletonT<UIManager>
     private PlayerCameraController _pcc;
 
     public Property<bool> IsUIOpened;
+
+    private bool _UILock;
     public ModalUI Current { get; set; }
     private void Awake()
     {
@@ -43,6 +49,29 @@ public class UIManager : SingletonT<UIManager>
         _wait = new WaitForEndOfFrame();
     }
 
+    public void OffQuickslot()
+    {
+        if (_quickslot.activeSelf)
+        {
+            _quickslot.SetActive(false);
+        }
+        else
+        {
+            _quickslot.SetActive(true);
+        }
+    }
+    public void OffHUI()
+    {
+        if (_propHUI.gameObject.activeSelf)
+        {
+            _propHUI.gameObject.SetActive(false);
+        }
+        else
+        {
+            _propHUI.gameObject.SetActive(true);
+        }
+        
+    }
     private void Start() //다꺼줌
     {
         ModalBase.SetActive(false);
@@ -80,9 +109,20 @@ public class UIManager : SingletonT<UIManager>
             Cursor.visible = true;
         }
     }
+
+    public void LockUIUpdate()
+    {
+        _UILock = true;
+        CloseUI();
+    }
+    public void UnlockUIUpdate()
+    {
+        _UILock = false;
+    }
     
     private void Update()
     {
+        if (_UILock) return;
         if (Input.GetKeyDown(KeyCode.Escape)) CloseUI();
         if (Input.GetKeyDown(KeyCode.I))
         {
