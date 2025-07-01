@@ -27,14 +27,12 @@ public class QuestContentControl : MonoBehaviour
     public void ActiveNode(QuestData q)
     {
         //아이디와 일치하는 노드 활성화
-        int.TryParse(q.QuestID, out int id);
-        NodeDict[id].gameObject.SetActive(true);
+        NodeDict[q.QuestID].gameObject.SetActive(true);
     }
     public void CheckNode(QuestData q)
     {
         //아이디와 일치하는 노드 활성화
-        int.TryParse(q.QuestID, out int id);
-        NodeDict[id].Description.fontStyle = TMPro.FontStyles.Strikethrough;
+        NodeDict[q.QuestID].Description.fontStyle = TMPro.FontStyles.Strikethrough;
     }
     public void ClearNode(int ID)
     {

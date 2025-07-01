@@ -6,7 +6,7 @@ using UnityEngine;
 public class DialogueSO : ScriptableObject
 {
     // 각 대사 ID
-    public string DialogueID;
+    public int DialogueID;
     // 대사 출력 NPC, Player일 경우 주인공 독백 처리 => 공백
     public string NPCID;
     // 대사 내용
