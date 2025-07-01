@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class NpcPatrolState : NpcState
 {
-    public NpcPatrolState(NpcStateMachine nsm) { _Nsm = nsm; }
+    public NpcPatrolState(NpcStateMachine nfsm) { _Nfsm = nfsm; }
 
     public override void Enter() { /* ... */ }
     public override void Exit() { /* ... */ }

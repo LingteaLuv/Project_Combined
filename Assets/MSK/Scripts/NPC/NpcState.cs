@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class NpcState
 {
-    protected NpcStateMachine _Nsm;
+    protected NpcStateMachine _Nfsm;
     public abstract void Enter();
     public abstract void Exit();
     public abstract void Tick();

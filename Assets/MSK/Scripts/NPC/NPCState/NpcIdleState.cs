@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class NpcIdleState : NpcState
 {
-    public NpcIdleState(NpcStateMachine nsm) { _Nsm = nsm; }
+    public NpcIdleState(NpcStateMachine nfsm) { _Nfsm = nfsm; }
 
     public override void Enter()
     {
