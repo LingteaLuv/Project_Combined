@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.ConstrainedExecution;
+using UnityEditor.Build;
 using UnityEngine;
 
 
@@ -19,6 +20,10 @@ public class UIManager : SingletonT<UIManager>
 
     [SerializeField] public CanvasGroup UIGroup;
 
+    [SerializeField] private ParameterHudUI _propHUI;
+
+    [SerializeField] private GameObject _quickslot;
+
     private PlayerLooting _playerLoot;
     private RectTransform _lootRect;
     private RectTransform _invRect;
@@ -27,8 +32,11 @@ public class UIManager : SingletonT<UIManager>
     private WaitForEndOfFrame _wait;
 
     private PlayerCameraController _pcc;
+    private PlayerMovement _pm;
 
     public Property<bool> IsUIOpened;
+
+    private bool _UILock;
     public ModalUI Current { get; set; }
     private void Awake()
     {
@@ -36,6 +44,7 @@ public class UIManager : SingletonT<UIManager>
         _invRect = InvUI.GetComponent<RectTransform>();
         _playerLoot = UISceneLoader.Instance.Playerattack.gameObject.GetComponentInChildren<PlayerLooting>();
         _pcc = UISceneLoader.Instance.Playerattack.GetComponent<PlayerCameraController>();
+        _pm = UISceneLoader.Instance.Playerattack.GetComponent<PlayerMovement>();
         SetInstance();
         IsUIOpened = new Property<bool>(false);
         Current = ModalUI.nothing;
@@ -43,6 +52,29 @@ public class UIManager : SingletonT<UIManager>
         _wait = new WaitForEndOfFrame();
     }
 
+    public void OffQuickslot()
+    {
+        if (_quickslot.activeSelf)
+        {
+            _quickslot.SetActive(false);
+        }
+        else
+        {
+            _quickslot.SetActive(true);
+        }
+    }
+    public void OffHUI()
+    {
+        if (_propHUI.gameObject.activeSelf)
+        {
+            _propHUI.gameObject.SetActive(false);
+        }
+        else
+        {
+            _propHUI.gameObject.SetActive(true);
+        }
+        
+    }
     private void Start() //다꺼줌
     {
         ModalBase.SetActive(false);
@@ -52,10 +84,14 @@ public class UIManager : SingletonT<UIManager>
         
         IsUIOpened.OnChanged += SetCursorLock;
         IsUIOpened.OnChanged += SetCameraLock;
+        IsUIOpened.OnChanged += SetMoveLock;
         SetCursorLock(IsUIOpened.Value);
         SetCameraLock(IsUIOpened.Value);
     }
-
+    private void SetMoveLock(bool b)
+    {
+        _pm.MoveLock();
+    }
     private void SetCameraLock(bool isUIOpened) {
         if (!isUIOpened)
         {
@@ -80,9 +116,20 @@ public class UIManager : SingletonT<UIManager>
             Cursor.visible = true;
         }
     }
+
+    public void LockUIUpdate()
+    {
+        _UILock = true;
+        CloseUI();
+    }
+    public void UnlockUIUpdate()
+    {
+        _UILock = false;
+    }
     
     private void Update()
     {
+        if (_UILock) return;
         if (Input.GetKeyDown(KeyCode.Escape)) CloseUI();
         if (Input.GetKeyDown(KeyCode.I))
         {

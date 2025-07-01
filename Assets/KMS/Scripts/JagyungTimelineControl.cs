@@ -7,15 +7,38 @@ using UnityEngine.Timeline;
 public class JagyungTimelineControl : MonoBehaviour
 {
     [SerializeField] PlayableDirector _pd;
+    [SerializeField] PlayerCameraController _pcc;
+    [SerializeField] PlayerMovement _pm;
 
-    private bool _already;
+    private WaitForSeconds _wfs;
+    private bool _hasRun;
+    
+
+    private void Awake()
+    { 
+        _wfs = new WaitForSeconds((float)_pd.duration);
+    }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!_already && other.tag == "Player")
+        if (!_hasRun && other.tag == "Player")
         {
-            _already = true;
+            _hasRun = true;
             _pd.Play();
+            StartCoroutine(DisableControl());
         }
+    }
+
+    private IEnumerator DisableControl()
+    {
+        UIManager.Instance.LockUIUpdate();
+        UIManager.Instance.OffHUI();
+        UIManager.Instance.OffQuickslot();
+        _pm.MoveLock();
+        yield return _wfs;
+        UIManager.Instance.UnlockUIUpdate();
+        UIManager.Instance.OffHUI();
+        UIManager.Instance.OffQuickslot();
+        _pm.MoveLock();
     }
 }
