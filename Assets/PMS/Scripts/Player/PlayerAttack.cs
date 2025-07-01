@@ -8,8 +8,6 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] Animator _animator; 
     [SerializeField] private WeaponBase _currentWeapon;
     public WeaponBase CurrentWeapon { get { return _currentWeapon; } }
-    //테스트 코드 
-    [SerializeField] private GameObject[] _testWeapon;
 
     //소환되는 Transform 계층
     [SerializeField] public WeaponBase LeftCurrentWeapon;

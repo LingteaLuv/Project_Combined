@@ -52,7 +52,7 @@ public class ThrowableWeapon : WeaponBase
 
         rb.useGravity = true;
 
-        rb.AddForce(cam.forward * 5 + cam.up *3/*_throwData.Rof*/, ForceMode.Impulse);
+        rb.AddForce(cam.forward * 1/*_throwData.Rof*/, ForceMode.Impulse);
 
         Invoke(nameof(ResetThrow), throwCooldown); //이런 식으로 간단한 쿨타임 구현이 가능
         

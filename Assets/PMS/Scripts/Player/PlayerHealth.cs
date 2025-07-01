@@ -95,7 +95,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         if (_isDead || _isInvincible) return;
        
         //  루팅중이라면 아이템 파밍 초기화
-        LootManager.Instance.CancelBlockHolding();
+        // LootManager.Instance.CancelBlockHolding();
 
         //패턴 일치
         if (PlayerWeaponManager.Instance.LeftCurrentWeapon is IDefendable defendableWeapon) 

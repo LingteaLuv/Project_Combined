@@ -101,9 +101,9 @@ public abstract class GunWeaponBase : WeaponBase
         // 무기 방향 → 카메라 방향
         /*transform.rotation = Quaternion.Euler
         (_camera.transform.eulerAngles.x, _camera.transform.eulerAngles.y, 0);*/
-    // 발사체 방향 = 무기 방향
-    //bullet.transform.rotation = transform.rotation;
-    float speed = bulletSpeed;
+        // 발사체 방향 = 무기 방향
+        //bullet.transform.rotation = transform.rotation;
+         float speed = bulletSpeed;
         // 궤적 및 발사체 시작 속도
         Vector3 startVel = transform.forward * speed;
         // 궤적 발사체 운동 동기화, 계산
