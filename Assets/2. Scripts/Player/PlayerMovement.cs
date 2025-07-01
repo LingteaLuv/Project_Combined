@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -24,6 +25,8 @@ public class PlayerMovement : MonoBehaviour
 
     private bool _jumpConsumedThisFrame;
     private bool _isCrouching;
+    private bool _isConsumingStamina;
+    private WaitForSeconds _delay;
     private Vector3 _currentRotation;
 
     [Header("Settings")]
@@ -50,6 +53,7 @@ public class PlayerMovement : MonoBehaviour
         PlayerClimbHandler = GetComponent<PlayerClimb>();
         Controller = GetComponent<PlayerController>();
         CanMove = true;
+        _delay = new WaitForSeconds(1f);
     }
 
     private void Update()
@@ -60,8 +64,23 @@ public class PlayerMovement : MonoBehaviour
         IsGrounded = Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, _groundCheckDistance + 0.1f);
         IsOnLadder = _inputHandler.IsOnLadder;
         IsRunning = _inputHandler.RunPressed;
+        if (IsRunning && !_isConsumingStamina && (_property.Stamina.Value > 5f))
+        {
+            StartCoroutine(StaminaConsumePerSecond(5f));
+        }
     }
-
+    private IEnumerator StaminaConsumePerSecond(float amount)
+    {
+        _isConsumingStamina = true;
+        while (true)
+        {
+            if (!IsRunning) break;
+            _property.StaminaConsume(amount);
+            yield return _delay;
+        }
+        _isConsumingStamina = false;
+    }
+    
     private void FixedUpdate()
     {
         //TODO : Test Key 지우기
@@ -101,7 +120,7 @@ public class PlayerMovement : MonoBehaviour
             float speed = _property.MoveSpeed.Value
                 * (_isCrouching ? _crouchSpeedMultiplier : 1f)
                 * (IsWater ? _waterSpeedMultiplier : 1f)
-                * (IsRunning ? _runMultiplier : 1f);
+                * (IsRunning && (_property.Stamina.Value > 5f) ? _runMultiplier : 1f);
 
             Vector3 targetVelocity = moveDir * speed;
             targetVelocity.y = Rigidbody.velocity.y; // 수직 속도 유지
@@ -158,7 +177,7 @@ public class PlayerMovement : MonoBehaviour
 
     public bool CanJump()
     {
-        return !_jumpConsumedThisFrame && JumpPressed && IsGrounded;
+        return !_jumpConsumedThisFrame && JumpPressed && IsGrounded && !IsJumpAnimationPlaying();
     }
 
     public void Jump()
@@ -188,7 +207,10 @@ public class PlayerMovement : MonoBehaviour
     {
         transform.rotation = Quaternion.Euler(0f, offset, 0f);
     }
-
+    public bool IsJumpAnimationPlaying()
+    {
+        return Controller._animator.GetCurrentAnimatorStateInfo(0).IsName("Jump");
+    }
     public float GetAnimatorSpeedMultiplier()
     {
         return Mathf.Clamp01(MoveInput.magnitude) * (_property?.MoveSpeed?.Value ?? 0f) + 1;
