@@ -73,15 +73,15 @@ public class CreateQuestSO : EditorWindow
                     break;
             }
             quest.Description = parts[2];
-            quest.StartNPCID = parts[3];
+            quest.StartNPCID = int.Parse(parts[3]);
             quest.StartDialogueID = int.Parse(parts[4]);
-            quest.EndNPCID = parts[5];
+            quest.EndNPCID = int.Parse(parts[5]);
             quest.EndDialogueID = int.Parse(parts[6]);
             quest.RequiredItemID = parts[7];
             quest.RequiredItemQuantity = int.Parse(parts[8]);
             quest.RewardItemID = parts[9];
             quest.RewardItemQuantity = int.Parse(parts[10]);
-            quest.NextQuestID = int.Parse(parts[11]);
+            quest.NextQuestID = int.Parse(parts[11]); // => 0으로 요청
             
             string assetPath = $"{folderPath}/Quest_{questId}.Asset";
             AssetDatabase.CreateAsset(quest, assetPath);

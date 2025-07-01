@@ -18,7 +18,7 @@ public class QuestManager : Singleton<QuestManager>
     /// <summary>
     /// 전체 퀘스트의 플레이어별 진행 상태 딕셔너리입니다.
     /// </summary>
-    private Dictionary<string, QuestData> _questDictionary = new Dictionary<string, QuestData>();
+    private Dictionary<int, QuestData> _questDictionary = new Dictionary<int, QuestData>();
 
     /// <summary>
     /// 플레이어의 현재 챕터(비트 플래그)
@@ -57,7 +57,7 @@ public class QuestManager : Singleton<QuestManager>
         foreach (var quest in _questDictionary.Values)
         {
             // NextQuestID가 존재하는 경우
-            if (!string.IsNullOrEmpty(quest.NextQuestID))
+            if (quest.NextQuestID != 0)
             {
                 // 딕셔너리에서 다음 퀘스트를 탐색
                 if (_questDictionary.TryGetValue(quest.NextQuestID, out var nextQuest))
@@ -85,7 +85,7 @@ public class QuestManager : Singleton<QuestManager>
     /// </summary>
     /// <param name="questId">수락할 퀘스트 ID</param>
     /// <returns>성공 시 true</returns>
-    public bool AcceptQuest(string questId)
+    public bool AcceptQuest(int questId)
     {
         if (!_questDictionary.TryGetValue(questId, out var meta))
             return false;
@@ -101,7 +101,7 @@ public class QuestManager : Singleton<QuestManager>
     /// </summary>
     /// <param name="questId">완료할 퀘스트 ID</param>
     /// <returns>성공 시 true</returns>
-    public bool CompleteQuest(string questId)
+    public bool CompleteQuest(int questId)
     {
         if (!_questDictionary.TryGetValue(questId, out var meta))
             return false;
@@ -119,7 +119,7 @@ public class QuestManager : Singleton<QuestManager>
     /// </summary>
     /// <param name="questId">종료할 퀘스트 ID</param>
     /// <returns>성공 시 true</returns>
-    public bool CloseQuest(string questId)
+    public bool CloseQuest(int questId)
     {
         if (!_questDictionary.TryGetValue(questId, out var meta))
             return false;
@@ -129,7 +129,7 @@ public class QuestManager : Singleton<QuestManager>
         meta.Status = QuestStatus.Closed;
 
         // NextQuestID가 null/빈문자열이 아니면 다음 퀘스트 해금 시도
-        if (!string.IsNullOrEmpty(meta.NextQuestID) &&
+        if (meta.NextQuestID != 0 &&
             _questDictionary.TryGetValue(meta.NextQuestID, out var nextQuest))
         {
             UpdateQuestStates(nextQuest);
@@ -143,7 +143,7 @@ public class QuestManager : Singleton<QuestManager>
     /// </summary>
     /// <param name="questId">실패 처리할 퀘스트 ID</param>
     /// <returns>성공 시 true</returns>
-    public bool FailQuest(string questId)
+    public bool FailQuest(int questId)
     {
         if (!_questDictionary.TryGetValue(questId, out var meta))
             return false;
@@ -167,7 +167,7 @@ public class QuestManager : Singleton<QuestManager>
     /// <summary>
     /// 해당 퀘스트가 해금(Available) 조건을 만족하는지 판별합니다.
     /// </summary>
-    public bool IsQuestCompleted(string questId)
+    public bool IsQuestCompleted(int questId)
     {
         return _questDictionary.TryGetValue(questId, out var meta) && meta.Status == QuestStatus.Completed;
     }
@@ -175,14 +175,12 @@ public class QuestManager : Singleton<QuestManager>
     /// <summary>
     /// 퀘스트 목표 진행(GoalCount) 증가. 처치/수집 등에서 호출.
     /// </summary>
-    public void GetQuestById(string questId, int amount)
+    public void GetQuestById(int questId, int amount)
     {
         if (!_questDictionary.TryGetValue(questId, out var meta))
             return;
         if (meta.Status != QuestStatus.Active)
             return;
-        meta.GoalCount += amount;
-        if (meta.Type == QuestType.Kill && meta.GoalCount >= meta.TargetMonsterCount)
-            CompleteQuest(questId);
+        CompleteQuest(questId);
     }
 }

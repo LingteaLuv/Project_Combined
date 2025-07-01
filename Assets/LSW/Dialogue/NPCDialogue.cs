@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class NPCDialogue : MonoBehaviour
 {
-    [Header("Drag&Drop")] 
-    [SerializeField] private NPCSO _data;
+    public NPCSO Data { get; }
     
     private List<int> _startQuest;
     private List<int> _endQuest;
@@ -20,6 +19,7 @@ public class NPCDialogue : MonoBehaviour
         _startQuest = new List<int>();
         _endQuest = new List<int>();
     }
+    
 
     // 퀘스트 매니저 => 퀘스트를 관리하는 Dictionary
     private void CheckQuest(Dictionary<int,QuestData> playerQuest)

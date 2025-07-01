@@ -12,9 +12,9 @@ public class QuestData :ScriptableObject
     public QuestStatus Status;                   // 상태: Locked, Available, Active, Completed, Closed
     public string Description;                   // 퀘스트 설명(생존일지에 작성될 내용)
     
-    public string StartNPCID;                    // 퀘스트 제공(시작) NPC ID  
+    public int StartNPCID;                    // 퀘스트 제공(시작) NPC ID  
     public int StartDialogueID;               // 시작 NPC 퀘스트 대사
-    public string EndNPCID;                      // 퀘스트 완료(종료) NPC ID(대화,회수)
+    public int EndNPCID;                      // 퀘스트 완료(종료) NPC ID(대화,회수)
     public int EndDialogueID;                 // 종료 NPC 퀘스트 대사  
     
     public string RequiredItemID;                // (전달,회수) 목표 아이템 ID
