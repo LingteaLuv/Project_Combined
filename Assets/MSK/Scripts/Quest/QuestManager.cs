@@ -44,12 +44,29 @@ public class QuestManager : Singleton<QuestManager>
     {
         return _questDictionary.Values.Where(q => q.StartNPCID == npcId).ToList();
     }
-    public List<QuestData> GetQuestsByEndNPC(int npcId)
+
+
+
+    /// <summary>
+    /// 연계 퀘스트가 있다면, 상태를 Locked로 초기화합니다.
+    /// (NextQuestID가 존재하는 모든 퀘스트에 대해 후속 퀘스트를 잠금 처리)
+    /// </summary>
+    public void InitializeQuestLocks()
     {
-        return _questDictionary.Values.Where(q => q.EndNPCID == npcId).ToList();
+        foreach (var quest in _questDictionary.Values)
+        {
+            // NextQuestID가 존재하는 경우
+            if (!string.IsNullOrEmpty(quest.NextQuestID))
+            {
+                // 딕셔너리에서 다음 퀘스트를 탐색
+                if (_questDictionary.TryGetValue(quest.NextQuestID, out var nextQuest))
+                {
+                    // 상태를 Locked로 설정
+                    nextQuest.Status = QuestStatus.Locked;
+                }
+            }
+        }
     }
-
-
 
     /// <summary>
     /// 전체 퀘스트의 데이터 리스트를 등록/초기화합니다.
@@ -92,7 +109,31 @@ public class QuestManager : Singleton<QuestManager>
 
         meta.Status = QuestStatus.Completed;
         OnQuestCompleted?.Invoke(meta, null);
-        // TODO: 보상 지급, 연계 퀘스트 해금
+        // TODO: 보상 지급
+        return true;
+    }
+
+    /// <summary>
+    /// 퀘스트를 종료(Closed) 상태로 변경하고, 연계 퀘스트가 있다면 해금합니다.
+    /// </summary>
+    /// <param name="questId">종료할 퀘스트 ID</param>
+    /// <returns>성공 시 true</returns>
+    public bool CloseQuest(string questId)
+    {
+        if (!_questDictionary.TryGetValue(questId, out var meta))
+            return false;
+        if (meta.Status != QuestStatus.Completed)
+            return false;
+
+        meta.Status = QuestStatus.Closed;
+
+        // NextQuestID가 null/빈문자열이 아니면 다음 퀘스트 해금 시도
+        if (!string.IsNullOrEmpty(meta.NextQuestID) &&
+            _questDictionary.TryGetValue(meta.NextQuestID, out var nextQuest))
+        {
+            UpdateQuestStates(nextQuest);
+        }
+
         return true;
     }
 
