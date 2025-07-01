@@ -8,15 +8,14 @@ public class MeleeWeapon : WeaponBase
     [SerializeField] private MeleeItem _meleeData;
 
     private ItemType _iTemType = ItemType.Melee;
-    [SerializeField] private Transform _playerPos; //플레이어의 위치
+    [SerializeField] private Transform _playerPos;      //플레이어의 위치
     [SerializeField] private Transform _attackPointPos; //공격의 충돌을 감지할 Pivot Transform
-    [SerializeField] private Transform _parent;
-    
-    [Header("근접무기 셋팅값")]
-    [SerializeField] private float _attackRange;  //근거리 무기의 유효 범위
-    [SerializeField] private float _attackAngle; //근거리 무기 유효 각도
-
     [SerializeField] private LayerMask _targetLayer;
+
+    [Tooltip("기획분들이 설정해주시면 좋겠습니다.")]
+    [Header("직접 셋팅해야 하는 값")]
+    [SerializeField] private float _attackRange;        //근거리 무기의 유효 범위
+    [SerializeField] private float _attackAngle;        //근거리 무기 유효 각도
     /* 
      * 기획팀에서 어떤부분을 요구할지 몰라 여러가지 공격 로직을 구현했습니다.
      * TODO - 공격속도에 대한 코드 부분이 존재하지 않네요,추가해야 할 것 같습니다.
@@ -26,13 +25,11 @@ public class MeleeWeapon : WeaponBase
 
     private void Reset()
     {
-        _itemType = ItemType.Melee;
         //InventoryManager.Instance.DecreaseWeaponDurability(); 내구도 하락 함수
     }
 
     public void Awake()
     {
-        if (transform.parent == null) return;
         Init();
     }
 
@@ -62,14 +59,19 @@ public class MeleeWeapon : WeaponBase
                 StartCoroutine(DamageRoutine(target.gameObject));
             }
         }*/
+        //현재 무기 내구도 감소
+        //InventoryManager.Instance.DecreaseWeaponDurability();
+
         // 무기에 달려있는 _attack를 중심으로 범위를 설정하고 타겟레이어와 충돌검사
         Collider[] colliders = Physics.OverlapSphere(_attackPointPos.position, _attackRange, _targetLayer);
 
         // 가장 가까운 타겟을 찾기 위한 변수 초기화
         //IDamageable closestDamageable = null;
         GameObject closeGameObject = null;
-
         float minDistance = float.MaxValue; // 초기 최소 거리는 무한대로 설정
+
+        // 플레이어의 앞쪽 방향 벡터
+        Vector3 playerForward = _playerPos.transform.forward;
 
         // 9. 충돌체를 저장한 배열을 순회하며 가장 가까운 적 찾기
         foreach (Collider targetCollider in colliders)
@@ -77,15 +79,24 @@ public class MeleeWeapon : WeaponBase
             IDamageable damageable = targetCollider.GetComponent<IDamageable>();
             if (damageable != null)
             {
-                // 현재 공격 지점과 타겟 간의 거리 계산
-                float distance = Vector3.Distance(_attackPointPos.position, targetCollider.transform.position);
+                // 플레이어에서 타겟으로의 방향 벡터
+                Vector3 directionToTarget = (targetCollider.transform.position - _playerPos.transform.position).normalized;
 
-                // 만약 현재 타겟이 이전에 찾은 타겟보다 더 가깝다면
-                if (distance < minDistance)
+                // 플레이어의 앞쪽 방향과 타겟 방향 사이의 각도 계산
+                float angle = Vector3.Angle(playerForward, directionToTarget);
+
+                // 각도 안에 존재하는지 확인
+                if (angle <= (_attackAngle / 2))
                 {
-                    minDistance = distance;
-                    //closestDamageable = damageable;
-                    closeGameObject = targetCollider.gameObject;
+                    // 현재 공격 지점과 타겟 간의 거리 계산
+                    float distance = Vector3.Distance(_attackPointPos.position, targetCollider.transform.position);
+                    // 만약 현재 타겟이 이전에 찾은 타겟보다 더 가깝다면
+                    if (distance < minDistance)
+                    {
+                        minDistance = distance;
+                        //closestDamageable = damageable;
+                        closeGameObject = targetCollider.gameObject;
+                    }
                 }
             }
         }
