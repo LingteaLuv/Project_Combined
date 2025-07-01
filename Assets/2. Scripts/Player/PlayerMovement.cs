@@ -22,10 +22,11 @@ public class PlayerMovement : MonoBehaviour
     public bool IsWater { get; private set; }
     public bool IsRunning { get; private set; }
     public bool CanMove { get; private set; }
+    public bool CanRun { get; private set; }
+    public bool IsConsumingStamina { get; private set; }
 
     private bool _jumpConsumedThisFrame;
     private bool _isCrouching;
-    private bool _isConsumingStamina;
     private WaitForSeconds _delay;
     private Vector3 _currentRotation;
 
@@ -64,21 +65,25 @@ public class PlayerMovement : MonoBehaviour
         IsGrounded = Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, _groundCheckDistance + 0.1f);
         IsOnLadder = _inputHandler.IsOnLadder;
         IsRunning = _inputHandler.RunPressed;
-        if (IsRunning && !_isConsumingStamina && (_property.Stamina.Value > 5f))
+        if (IsRunning && !IsConsumingStamina && (_property.Stamina.Value > 5f))
         {
             StartCoroutine(StaminaConsumePerSecond(5f));
         }
+        if(_property.Stamina.Value < 5f)
+            CanRun = false;
+        else
+            CanRun = true;
     }
     private IEnumerator StaminaConsumePerSecond(float amount)
     {
-        _isConsumingStamina = true;
+        IsConsumingStamina = true;
         while (true)
         {
             if (!IsRunning) break;
             _property.StaminaConsume(amount);
             yield return _delay;
         }
-        _isConsumingStamina = false;
+        IsConsumingStamina = false;
     }
     
     private void FixedUpdate()
@@ -199,10 +204,6 @@ public class PlayerMovement : MonoBehaviour
         else
             Controller.PlayerHealth.StopDotDamage();
     }
-    public void SetRunning(bool running)
-    {
-        IsRunning = running;
-    }
     public void SetRotation(float offset)
     {
         transform.rotation = Quaternion.Euler(0f, offset, 0f);
@@ -210,10 +211,6 @@ public class PlayerMovement : MonoBehaviour
     public bool IsJumpAnimationPlaying()
     {
         return Controller._animator.GetCurrentAnimatorStateInfo(0).IsName("Jump");
-    }
-    public float GetAnimatorSpeedMultiplier()
-    {
-        return Mathf.Clamp01(MoveInput.magnitude) * (_property?.MoveSpeed?.Value ?? 0f) + 1;
     }
     public void SetStateColliderRadius(float radius)
     {
