@@ -35,10 +35,12 @@ public class JagyungTimelineControl : MonoBehaviour
         UIManager.Instance.OffHUI();
         UIManager.Instance.OffQuickslot();
         _pm.MoveLock();
+        _pcc.PauseCamera();
         yield return _wfs;
         UIManager.Instance.UnlockUIUpdate();
         UIManager.Instance.OffHUI();
         UIManager.Instance.OffQuickslot();
         _pm.MoveLock();
+        _pcc.PauseCamera();
     }
 }
