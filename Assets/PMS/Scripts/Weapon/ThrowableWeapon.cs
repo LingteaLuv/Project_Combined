@@ -16,10 +16,10 @@ public class ThrowableWeapon : WeaponBase
     [Header("References")]
     public Transform cam;               //카메라 시점
     public Transform attackPoint;    //투척 포인트
-    private float _damage => _throwData.AtkDamage;   
+    private float _damage => _throwData.AtkDamage;
     //public GameObject objectToThrow;  //던질 게임 오브젝트 프리팹 -> 추후 오브젝트 풀링 생각해보기 생성/파괴 관련
-
-    [Header("Settings")]
+    [SerializeField] private float _moveSpeed;
+    private Vector3 targetRot;
     public int throwCooldown;           //던지기 쿨다운
 
     private float throwUpwardForce = 5;     //던지기 위쪽 힘 
@@ -38,12 +38,56 @@ public class ThrowableWeapon : WeaponBase
 
     public override void Init()
     {
-        gameObject.transform.localPosition = _weaponSpawnPos.transform.localPosition;
-        gameObject.transform.localRotation = _weaponSpawnPos.transform.localRotation;
+        if (_weaponSpawnPos == null) {
+            Debug.Log("무기의 스폰포인트가 지정되어 있지 않습니다.");
+            return;
+        }
+        else { 
+            gameObject.transform.localPosition = _weaponSpawnPos.transform.localPosition;
+            gameObject.transform.localRotation = _weaponSpawnPos.transform.localRotation;
+        }
     }
-    
+
     public override void Attack()
     {
+        StartCoroutine(WaifForInput());
+
+        /*Rigidbody rb = gameObject.GetComponent<Rigidbody>();
+
+        transform.parent = null; // 손에서 분리
+
+        rb.isKinematic = false;
+
+        rb.useGravity = true;
+
+        transform.rotation = cam.transform.rotation;
+
+        //
+        //카메라 -> 에임시스템? -> 어려울것같다
+        //방향 * 힘 ?
+        
+        targetRot = transform.forward * _moveSpeed + transform.up * 1f;
+        //targetRot = ((transform.forward * 1f) + (transform.up * 0.05f)).normalized;
+
+        rb.velocity = targetRot;
+
+        rb.maxAngularVelocity = 100;
+
+        rb.angularVelocity = transform.right * 100;*/
+        
+        //rb.AddTorque(transform.right * 100);
+        //rb.AddForce(cam.forward * 1/*_throwData.Rof*/, ForceMode.VelocityChange);
+        //rb.AddTorque(cam.right* 300 , ForceMode.Impulse);
+
+        //Invoke(nameof(ResetThrow), throwCooldown); //이런 식으로 간단한 쿨타임 구현이 가능
+        //해당 오브젝트 파괴 시점을 고려해봐야 할것 같다.
+        //Destroy(gameObject,10.0f);
+    }
+
+    private IEnumerator WaifForInput()
+    {
+        yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+
         Rigidbody rb = gameObject.GetComponent<Rigidbody>();
 
         transform.parent = null; // 손에서 분리
@@ -52,13 +96,30 @@ public class ThrowableWeapon : WeaponBase
 
         rb.useGravity = true;
 
-        rb.AddForce(cam.forward * 1/*_throwData.Rof*/, ForceMode.Impulse);
+        transform.rotation = cam.transform.rotation;
+
+        //
+        //카메라 -> 에임시스템? -> 어려울것같다
+        //방향 * 힘 ?
+
+        targetRot = transform.forward * _moveSpeed + transform.up * 1f;
+        //targetRot = ((transform.forward * 1f) + (transform.up * 0.05f)).normalized;
+
+        rb.velocity = targetRot;
+
+        rb.maxAngularVelocity = 100;
+
+        rb.angularVelocity = transform.right * 100;
+
+        //rb.AddTorque(transform.right * 100);
+        //rb.AddForce(cam.forward * 1/*_throwData.Rof*/, ForceMode.VelocityChange);
+        //rb.AddTorque(cam.right* 300 , ForceMode.Impulse);
 
         Invoke(nameof(ResetThrow), throwCooldown); //이런 식으로 간단한 쿨타임 구현이 가능
-        
         //해당 오브젝트 파괴 시점을 고려해봐야 할것 같다.
-        Destroy(gameObject,10.0f); 
+        Destroy(gameObject, 10.0f);
     }
+
 
     private void OnCollisionEnter(Collision collision)
     {

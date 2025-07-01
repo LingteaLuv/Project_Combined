@@ -197,4 +197,14 @@ public class PlayerAttack : MonoBehaviour
 
         Debug.Log($"레이어 {layerIndex}의 가중치를 {weight}로 설정했습니다.");
     }
+
+    private void WeaponLogicStopAndAnimationStop()
+    {
+        _animator.speed = 0f;
+        StartThrowAttack();
+    }
+    private IEnumerator WaifForInput()
+    {
+        yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+    }
 }

@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class CurrentWeaponCheck : StateMachineBehaviour
 {
-    [SerializeField] private PlayerAttack _playerAttack;
+    [SerializeField] private WeaponBase _currentWeapon;
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (_playerAttack == null)
+        if (_currentWeapon == null)
         {
-            _playerAttack = animator.GetComponent<PlayerAttack>();
+            _currentWeapon = PlayerWeaponManager.Instance.RightCurrentWeapon;
         }
-        if (_playerAttack != null && _playerAttack.CurrentWeapon != null)
+        if (_currentWeapon != null)
         {
-            if (_playerAttack.CurrentWeapon.ItemType == ItemType.Gun)
+            if (_currentWeapon.ItemType == ItemType.Gun)
             {
                 animator.SetBool("IsGun", true);
             }
