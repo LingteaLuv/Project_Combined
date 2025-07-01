@@ -15,11 +15,17 @@ public class PlayerMoveState : PlayerState
         {
             _movement.Controller.IsCrouch = false;
         }
+
     }
 
     public override void Exit() { }
     public override void Tick()
     {
+        if (_movement.IsRunning)
+            _movement.Controller._animator.SetBool("IsRunning", true);
+        else
+            _movement.Controller._animator.SetBool("IsRunning", false);
+
         if (_movement.MoveInput == Vector3.zero)
         {
             _fsm.ChangeState(_movement.Controller.IdleState);

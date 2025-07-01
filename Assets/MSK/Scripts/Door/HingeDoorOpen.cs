@@ -1,8 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class HingeDoorOpen : MonoBehaviour, IInteractable
 {
@@ -24,8 +21,37 @@ public class HingeDoorOpen : MonoBehaviour, IInteractable
     }
     private void Init()
     {
+        float closedY = (_doorType == DoorType.RotateRight) ? 180f : 0f;
+        Vector3 euler = transform.eulerAngles;
+
+        // RotateRight일 때만 Z이동 보정
+        if (_doorType == DoorType.RotateRight)
+        {
+            float zSize = 0f;
+            BoxCollider boxCol = GetComponent<BoxCollider>();
+            MeshCollider meshCol = GetComponent<MeshCollider>();
+            if (boxCol != null)
+            {
+                zSize = boxCol.size.z * transform.localScale.z;
+            }
+            else if (meshCol != null)
+            {
+                zSize = meshCol.bounds.size.z;
+            }
+
+            if (zSize > 0)
+            {
+                transform.position += -transform.forward * zSize;
+            }
+        }
+
+        // 회전 적용
+        euler.y = closedY;
+        transform.eulerAngles = euler;
+
         _closedRotation = transform.rotation;
-        _openedRotation = _closedRotation * Quaternion.Euler(0, _openAngle * (_doorType == DoorType.RotateRight ? 1 : -1), 0);
+        float openAngle = _doorType == DoorType.RotateRight ? _openAngle : -_openAngle;
+        _openedRotation = _closedRotation * Quaternion.Euler(0, openAngle, 0);
     }
     public void Interact()
     {
