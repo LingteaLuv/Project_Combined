@@ -163,11 +163,11 @@ public class PlayerController : MonoBehaviour
     {
         _animator.SetBool("IsInteracting", false);
     }
-    public void PlayRunning(bool running)
+    public void PlayRunning()
     {
         _animator.SetBool("IsRunning", true);
     }
-    public void StopRunning(bool running)
+    public void StopRunning()
     {
         _animator.SetBool("IsRunning", false);
     }
