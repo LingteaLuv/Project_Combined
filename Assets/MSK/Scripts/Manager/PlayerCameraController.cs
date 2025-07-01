@@ -39,9 +39,11 @@ public class PlayerCameraController : MonoBehaviour
         SettingManager.Instance.FOV.OnChanged += FOVUpdate;
         SettingManager.Instance.MouseXSpeed.OnChanged += MouseXSpeedUpdate;
         SettingManager.Instance.MouseYSpeed.OnChanged += MouseYSpeedUpdate;
+
+        GameManager.Instance.OnGameOver += Unsubscribe;
     }
     
-    private void OnDestroy()
+    private void Unsubscribe()
     {
         // Destroy될 경우 구독 해제
         SettingManager.Instance.FOV.OnChanged -= FOVUpdate;
@@ -59,13 +61,13 @@ public class PlayerCameraController : MonoBehaviour
     // 마우스 민감도 설정 값 반영
     private void MouseXSpeedUpdate(float value)
     {
-        float speedX = Mathf.Lerp(0, 1, value);
+        float speedX = Mathf.Lerp(0.1f, 2f, value);
         MouseXSensitivity.Value = speedX;
     }
     
     private void MouseYSpeedUpdate(float value)
     {
-        float speedY = Mathf.Lerp(0, 1, value);
+        float speedY = Mathf.Lerp(0.1f, 2f, value);
         MouseYSensitivity.Value = speedY;
     }
     
