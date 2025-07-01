@@ -31,7 +31,6 @@ public class JagyungTimelineControl : MonoBehaviour
 
     private IEnumerator DisableControl()
     {
-        Debug.Log("진입");
         UIManager.Instance.LockUIUpdate();
         UIManager.Instance.OffHUI();
         UIManager.Instance.OffQuickslot();
