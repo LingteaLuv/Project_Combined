@@ -18,7 +18,7 @@ public class QuestManager : Singleton<QuestManager>
     /// <summary>
     /// 전체 퀘스트의 플레이어별 진행 상태 딕셔너리입니다.
     /// </summary>
-    private Dictionary<int, QuestData> _questDictionary = new Dictionary<int, QuestData>();
+    public Dictionary<int, QuestData> QuestDictionary { get; private set; } = new Dictionary<int, QuestData>(){};
 
     /// <summary>
     /// 플레이어의 현재 챕터(비트 플래그)
@@ -36,15 +36,17 @@ public class QuestManager : Singleton<QuestManager>
 
 
     /// <summary>
-    /// Npc에게 퀘스트를 Npc 리스트로 전달
+    /// Npc에게 조건에 부합하는 퀘스트를 Npc 리스트로 전달 => key를 전달하도록 수정
     /// </summary>
-    public List<QuestData> GetStartNPC(int npcId)
+    public List<int> GetStartNPC(int npcId)
     {
-        return _questDictionary.Values.Where(q => q.StartNPCID == npcId).ToList();
+        return QuestDictionary.Keys.Where(q => QuestDictionary[q].StartNPCID == npcId).ToList();
+        // 기존 : return QuestDictionary.Values.Where(q => q.StartNPCID == npcId).ToList();
     }
-    public List<QuestData> GetEndNPC(int npcId)
+    public List<int> GetEndNPC(int npcId)
     {
-        return _questDictionary.Values.Where(q => q.EndNPCID == npcId).ToList();
+        return QuestDictionary.Keys.Where(q => QuestDictionary[q].EndNPCID == npcId).ToList();
+        // 기존 : return QuestDictionary.Values.Where(q => q.EndNPCID == npcId).ToList();
     }
 
 
@@ -54,13 +56,13 @@ public class QuestManager : Singleton<QuestManager>
     /// </summary>
     public void InitQuestLock()
     {
-        foreach (var quest in _questDictionary.Values)
+        foreach (var quest in QuestDictionary.Values)
         {
             // NextQuestID가 존재하는 경우
             if (quest.NextQuestID != 0)
             {
                 // 딕셔너리에서 다음 퀘스트를 탐색
-                if (_questDictionary.TryGetValue(quest.NextQuestID, out var nextQuest))
+                if (QuestDictionary.TryGetValue(quest.NextQuestID, out var nextQuest))
                 {
                     // 상태를 Locked로 설정
                     nextQuest.Status = QuestStatus.Locked;
@@ -87,7 +89,7 @@ public class QuestManager : Singleton<QuestManager>
     /// <returns>성공 시 true</returns>
     public bool AcceptQuest(int questId)
     {
-        if (!_questDictionary.TryGetValue(questId, out var meta))
+        if (!QuestDictionary.TryGetValue(questId, out var meta))
             return false;
         if (meta.Status != QuestStatus.Available)
             return false;
@@ -103,7 +105,7 @@ public class QuestManager : Singleton<QuestManager>
     /// <returns>성공 시 true</returns>
     public bool CompleteQuest(int questId)
     {
-        if (!_questDictionary.TryGetValue(questId, out var meta))
+        if (!QuestDictionary.TryGetValue(questId, out var meta))
             return false;
         if (meta.Status != QuestStatus.Active)
             return false;
@@ -121,7 +123,7 @@ public class QuestManager : Singleton<QuestManager>
     /// <returns>성공 시 true</returns>
     public bool CloseQuest(int questId)
     {
-        if (!_questDictionary.TryGetValue(questId, out var meta))
+        if (!QuestDictionary.TryGetValue(questId, out var meta))
             return false;
         if (meta.Status != QuestStatus.Completed)
             return false;
@@ -130,7 +132,7 @@ public class QuestManager : Singleton<QuestManager>
 
         // NextQuestID가 null/빈문자열이 아니면 다음 퀘스트 해금 시도
         if (meta.NextQuestID != 0 &&
-            _questDictionary.TryGetValue(meta.NextQuestID, out var nextQuest))
+            QuestDictionary.TryGetValue(meta.NextQuestID, out var nextQuest))
         {
             UpdateQuestStates(nextQuest);
         }
@@ -145,7 +147,7 @@ public class QuestManager : Singleton<QuestManager>
     /// <returns>성공 시 true</returns>
     public bool FailQuest(int questId)
     {
-        if (!_questDictionary.TryGetValue(questId, out var meta))
+        if (!QuestDictionary.TryGetValue(questId, out var meta))
             return false;
         if (meta.Status != QuestStatus.Completed)
             return false;
@@ -169,7 +171,7 @@ public class QuestManager : Singleton<QuestManager>
     /// </summary>
     public bool IsQuestCompleted(int questId)
     {
-        return _questDictionary.TryGetValue(questId, out var meta) && meta.Status == QuestStatus.Completed;
+        return QuestDictionary.TryGetValue(questId, out var meta) && meta.Status == QuestStatus.Completed;
     }
 
     /// <summary>
@@ -177,7 +179,7 @@ public class QuestManager : Singleton<QuestManager>
     /// </summary>
     public void GetQuestById(int questId, int amount)
     {
-        if (!_questDictionary.TryGetValue(questId, out var meta))
+        if (!QuestDictionary.TryGetValue(questId, out var meta))
             return;
         if (meta.Status != QuestStatus.Active)
             return;

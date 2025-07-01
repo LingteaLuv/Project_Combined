@@ -1,52 +1,58 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class NPCDialogue : MonoBehaviour
 {
-    public NPCSO Data { get; }
+    [SerializeField] private NPCSO _data;
     
     private List<int> _startQuest;
     private List<int> _endQuest;
-    
-    public void GetStartQuestID()
-    {
-        //퀘스트 매니저한테 퀘스트를 받아서 설정
-    }
+
+    public int CurrentDialogueID { get; private set; }
 
     private void Awake()
     {
         _startQuest = new List<int>();
         _endQuest = new List<int>();
+        Init();
+    }
+
+    private void Start()
+    {
+        _startQuest = QuestManager.Instance.GetStartNPC(_data.NPCID);
+        _endQuest = QuestManager.Instance.GetEndNPC(_data.NPCID);
     }
     
-
     // 퀘스트 매니저 => 퀘스트를 관리하는 Dictionary
-    private void CheckQuest(Dictionary<int,QuestData> playerQuest)
+    public void CheckQuest(Dictionary<int,QuestData> playerQuest)
     {
         for (int i = 0; i < _startQuest.Count; i++)
         {
             if (playerQuest[_startQuest[i]].Status == QuestStatus.Available)
             {
-                DialogueManager.Instance.GetDialogue(playerQuest[_startQuest[i]].StartDialogueID);
+                CurrentDialogueID = playerQuest[_startQuest[i]].StartDialogueID;
+                break;
             }
+            Init();
         }
         
         for (int i = 0; i < _endQuest.Count; i++)
         {
             if (playerQuest[_endQuest[i]].Status == QuestStatus.Completed)
             {
-                DialogueManager.Instance.GetDialogue(playerQuest[_startQuest[i]].EndDialogueID);
-                playerQuest[playerQuest[_startQuest[i]].NextQuestID].Status = QuestStatus.Available;
+                CurrentDialogueID = playerQuest[_startQuest[i]].EndDialogueID;
+                break;
+                // todo : 여기서 처리하면 안되고, 실제로 플레이어가 보상을 받고 대화가 끝날 때 호출해야할듯 
+                // playerQuest[playerQuest[_startQuest[i]].NextQuestID].Status = QuestStatus.Available;
             }
+            Init();
         }
     }
-    
-// 퀘스트 ID => Available
-// 얘의 대사 출력이 바뀌는
-// if(id 검사해서 Available이면)
-// DialogueManager.Instance.GetDialogue(StartDialogueID)
 
-// if(id 검사해서 Completed이면)
-// DialogueManager.Instance.GetDialogue(EndDialogueID)
+    private void Init()
+    {
+        CurrentDialogueID = _data.BasicDialogueID;
+    }
 }

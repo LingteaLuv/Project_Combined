@@ -5,23 +5,20 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "NPC")]
 public class NPCSO : ScriptableObject
 {
-    public string NPCID;
+    public int NPCID;
 
     // 등장조건 
     public string NPCTriggerID;
-    public string BasicDialogueID;
+    public int BasicDialogueID;
 
     public string Trigger1;
-    public string Trigger1Dialogue;
+    public int Trigger1DialogueID;
     public string Trigger2;
-    public string Trigger2Dialogue;
+    public int Trigger2DialogueID;
     public string Trigger3;
-    public string Trigger3Dialogue;
+    public int Trigger3DialogueID;
 
-    public int StartQusetID;
+    public int StartQuestID;
     public int TriggerQuestID;
     public int QuestTriggerID;
-
-    public int StartDialogueID;
-    public int EndDialogueID;
 }
