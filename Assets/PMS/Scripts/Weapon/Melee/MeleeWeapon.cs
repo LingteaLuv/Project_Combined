@@ -60,7 +60,7 @@ public class MeleeWeapon : WeaponBase
             }
         }*/
         //현재 무기 내구도 감소
-        //InventoryManager.Instance.DecreaseWeaponDurability();
+        InventoryManager.Instance.DecreaseWeaponDurability();
 
         // 무기에 달려있는 _attack를 중심으로 범위를 설정하고 타겟레이어와 충돌검사
         Collider[] colliders = Physics.OverlapSphere(_attackPointPos.position, _attackRange, _targetLayer);
