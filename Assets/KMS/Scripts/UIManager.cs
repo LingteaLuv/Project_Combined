@@ -86,7 +86,6 @@ public class UIManager : SingletonT<UIManager>
         IsUIOpened.OnChanged += SetCameraLock;
         IsUIOpened.OnChanged += SetMoveLock;
         SetCursorLock(IsUIOpened.Value);
-        SetCameraLock(IsUIOpened.Value);
     }
     private void SetMoveLock(bool b)
     {
@@ -95,7 +94,7 @@ public class UIManager : SingletonT<UIManager>
     private void SetCameraLock(bool isUIOpened) {
         if (!isUIOpened)
         {
-            _pcc.ResumeCamera();
+            _pcc.PauseCamera();
         }
         else
         {
