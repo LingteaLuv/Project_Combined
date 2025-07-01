@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.ConstrainedExecution;
+using UnityEditor.Build;
 using UnityEngine;
 
 
@@ -31,6 +32,7 @@ public class UIManager : SingletonT<UIManager>
     private WaitForEndOfFrame _wait;
 
     private PlayerCameraController _pcc;
+    private PlayerMovement _pm;
 
     public Property<bool> IsUIOpened;
 
@@ -42,6 +44,7 @@ public class UIManager : SingletonT<UIManager>
         _invRect = InvUI.GetComponent<RectTransform>();
         _playerLoot = UISceneLoader.Instance.Playerattack.gameObject.GetComponentInChildren<PlayerLooting>();
         _pcc = UISceneLoader.Instance.Playerattack.GetComponent<PlayerCameraController>();
+        _pm = UISceneLoader.Instance.Playerattack.GetComponent<PlayerMovement>();
         SetInstance();
         IsUIOpened = new Property<bool>(false);
         Current = ModalUI.nothing;
@@ -81,10 +84,14 @@ public class UIManager : SingletonT<UIManager>
         
         IsUIOpened.OnChanged += SetCursorLock;
         IsUIOpened.OnChanged += SetCameraLock;
+        IsUIOpened.OnChanged += SetMoveLock;
         SetCursorLock(IsUIOpened.Value);
         SetCameraLock(IsUIOpened.Value);
     }
-
+    private void SetMoveLock(bool b)
+    {
+        _pm.MoveLock();
+    }
     private void SetCameraLock(bool isUIOpened) {
         if (!isUIOpened)
         {

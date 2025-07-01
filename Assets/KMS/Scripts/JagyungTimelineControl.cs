@@ -8,6 +8,7 @@ public class JagyungTimelineControl : MonoBehaviour
 {
     [SerializeField] PlayableDirector _pd;
     [SerializeField] PlayerCameraController _pcc;
+    [SerializeField] PlayerMovement _pm;
 
     private WaitForSeconds _wfs;
     private bool _hasRun;
@@ -33,9 +34,11 @@ public class JagyungTimelineControl : MonoBehaviour
         UIManager.Instance.LockUIUpdate();
         UIManager.Instance.OffHUI();
         UIManager.Instance.OffQuickslot();
+        _pm.MoveLock();
         yield return _wfs;
         UIManager.Instance.UnlockUIUpdate();
         UIManager.Instance.OffHUI();
         UIManager.Instance.OffQuickslot();
+        _pm.MoveLock();
     }
 }
