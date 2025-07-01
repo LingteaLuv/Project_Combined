@@ -12,8 +12,8 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private GameObject[] _testWeapon;
 
     //소환되는 Transform 계층
-    [SerializeField] public WeaponBase _left_Hand_target;
-    [SerializeField] public WeaponBase _right_Hand_target;
+    [SerializeField] public WeaponBase LeftCurrentWeapon;
+    [SerializeField] public WeaponBase RightCurrentWeapon;
 
     [Header("공격 애니메이션 클립")]
     [SerializeField] private AnimationClip _melee;
@@ -31,12 +31,11 @@ public class PlayerAttack : MonoBehaviour
 
     private void Awake()
     {
-        _left_Hand_target = PlayerWeaponManager.Instance.LeftCurrentWeapon;   
-
-        _right_Hand_target = PlayerWeaponManager.Instance.RightCurrentWeapon;
+        LeftCurrentWeapon = PlayerWeaponManager.Instance.LeftCurrentWeapon;
+        RightCurrentWeapon = PlayerWeaponManager.Instance.RightCurrentWeapon;
     }
 
-    public void UpdateWeapon()
+    /*public void UpdateWeapon()
     {
         _currentWeapon = _right_Hand_target.GetComponentInChildren<WeaponBase>();
 
@@ -44,10 +43,11 @@ public class PlayerAttack : MonoBehaviour
         {
             _animator.SetTrigger("IsGun");
         }
-    }
+    }*/
 
     void Update()
     {
+        RightCurrentWeapon = PlayerWeaponManager.Instance.RightCurrentWeapon;
         //테스트 코드
         /*if(Input.GetKeyDown(KeyCode.Alpha1))
         {
@@ -112,13 +112,13 @@ public class PlayerAttack : MonoBehaviour
             return;
         }
 
-        if (_currentWeapon == null)
+        if (RightCurrentWeapon == null)
         {
-            Debug.Log("현재 손에 무기가 없습니다");
+            Debug.Log("현재 손에 공격무기가 없습니다");
             return;
         }
 
-        switch (_currentWeapon.ItemType)
+        switch (RightCurrentWeapon.ItemType)
         {
             case ItemType.Melee:
                 StartMeleeAttack();
@@ -131,7 +131,7 @@ public class PlayerAttack : MonoBehaviour
                 StartThrowAttack();
                 break;
             default:
-                Debug.Log($"알 수 없는 무기 타입: {_currentWeapon.ItemType}");
+                Debug.Log($"알 수 없는 무기 타입: {RightCurrentWeapon.ItemType}");
                 break;
         }
     }
@@ -140,7 +140,7 @@ public class PlayerAttack : MonoBehaviour
     //애니메이션 이벤트에서 호출 되는 함수 - Melee Attack,Throw Attack
     public void PlayerAttackStart()
     {
-        _currentWeapon.Attack();
+        RightCurrentWeapon.Attack();
     }  
 
     //빠따공격 실행
@@ -171,7 +171,7 @@ public class PlayerAttack : MonoBehaviour
     private void StartThrowAttack()
     {
         _animator.SetTrigger("Throw");
-        _animator.SetLayerWeight(4, 1); //Throw Layer 
+        _animator.SetLayerWeight(3, 1); //Throw Layer 
     }
 
     /// <summary>

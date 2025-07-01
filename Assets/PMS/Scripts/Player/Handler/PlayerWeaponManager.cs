@@ -16,6 +16,21 @@ public class PlayerWeaponManager : Singleton<PlayerWeaponManager>
     [SerializeField] public GameObject _left_Hand_target;
     [SerializeField] public GameObject _right_Hand_target;
 
+
+    private void Update()
+    {
+        if(_left_Hand_target == null)
+        {
+            Debug.Log("왼손참조 X");
+        }
+        if (_right_Hand_target == null)
+        {
+            Debug.Log("오른손 참조 X");
+        }
+        UpdateCurrentWeapon();
+        Debug.Log(LeftCurrentWeapon);
+        Debug.Log(RightCurrentWeapon);  
+    }
     /// <summary>
     /// 플레이어 양손이 바뀐것을 업데이트 / 기본
     /// </summary>

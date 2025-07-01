@@ -4,15 +4,14 @@ using UnityEngine;
 
 public class ThrowableWeapon : WeaponBase
 {
-    [SerializeField] ThrowItem _throwData;
     /*
      * public class ThrowItem : ItemBase
     public float Range; -> 아마 최대 범위 키를 눌렀을 때
     public int MaxStack; //?
     public string ThrowSoundResource;
     */
-
-    [SerializeField] private ThrowItem _throwItem;
+    [Tooltip("SO데이터")]
+    [SerializeField] private ThrowItem _throwData;
     
     [Header("References")]
     public Transform cam;               //카메라 시점
@@ -23,7 +22,7 @@ public class ThrowableWeapon : WeaponBase
     [Header("Settings")]
     public int throwCooldown;           //던지기 쿨다운
 
-    private float throwUpwardForce;     //던지기 위쪽 힘 
+    private float throwUpwardForce = 5;     //던지기 위쪽 힘 
 
     private bool readyToThrow;          
 
@@ -49,11 +48,11 @@ public class ThrowableWeapon : WeaponBase
 
         transform.parent = null; // 손에서 분리
 
-        rb.AddForce(cam.forward * _throwItem.Rof, ForceMode.Impulse);
-
-        rb.isKinematic = true;
+        rb.isKinematic = false;
 
         rb.useGravity = true;
+
+        rb.AddForce(cam.forward * 5 + cam.up *3/*_throwData.Rof*/, ForceMode.Impulse);
 
         Invoke(nameof(ResetThrow), throwCooldown); //이런 식으로 간단한 쿨타임 구현이 가능
         
@@ -66,7 +65,7 @@ public class ThrowableWeapon : WeaponBase
         //패턴 매칭
         if (collision.gameObject.GetComponent<IDamageable>() is IDamageable damageable)
         {
-            damageable.Damaged(_throwItem.AtkDamage);
+            damageable.Damaged(1/*_throwData.AtkDamage*/);
         }
     }
 
