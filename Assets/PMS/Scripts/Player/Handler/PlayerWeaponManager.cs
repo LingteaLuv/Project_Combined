@@ -19,17 +19,8 @@ public class PlayerWeaponManager : Singleton<PlayerWeaponManager>
 
     private void Update()
     {
-        if(_left_Hand_target == null)
-        {
-            Debug.Log("왼손참조 X");
-        }
-        if (_right_Hand_target == null)
-        {
-            Debug.Log("오른손 참조 X");
-        }
+        //테스트코드
         UpdateCurrentWeapon();
-        Debug.Log(LeftCurrentWeapon);
-        Debug.Log(RightCurrentWeapon);  
     }
     /// <summary>
     /// 플레이어 양손이 바뀐것을 업데이트 / 기본

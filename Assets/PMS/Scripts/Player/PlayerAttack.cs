@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 using UnityEngine.Events;
 
 public class PlayerAttack : MonoBehaviour
@@ -27,6 +28,14 @@ public class PlayerAttack : MonoBehaviour
     //TODO - 나중에 어디서인가 그 현재 무기가 뭔지 있어야하는 부분이 있지 않을까? Action 연결
     // 플레이어의 왼쪽 오른쪽 들고있는 템이 뭔지 바뀌는 이벤트가 존재 할 때 나도 업데이트해서 사용할 수 있지 않을까?
 
+    void Start()
+    {
+        var rigBuilder = GetComponent<RigBuilder>();
+        if (rigBuilder != null)
+        {
+            rigBuilder.Build();
+        }
+    }
     private void Awake()
     {
         LeftCurrentWeapon = PlayerWeaponManager.Instance.LeftCurrentWeapon;
@@ -158,14 +167,13 @@ public class PlayerAttack : MonoBehaviour
     //원거리 공격 실행
     private void StartRangedAttack()
     {
-        // 원거리 무기는 즉시 공격  애니메이션 나중에
-        PlayerAttackStart();
+        _animator.SetBool("IsAim",true);
     }
 
     //레이어를 일단은 혼자 쓰는 것 같은데 계속 플레이어의 animtor가 수정될 일이 많은데
     //AnimatorUtil 유틸 클래스로 SetLayerWeight함수를
     //특정 레이어의 이름으로 찾아보도록 하는 함수를 만들어보자 -> 추후 -> StateBehaviour사용
- 
+
     private void StartThrowAttack()
     {
         _animator.SetTrigger("Throw");
