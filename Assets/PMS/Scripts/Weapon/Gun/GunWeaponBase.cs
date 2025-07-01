@@ -68,6 +68,7 @@ public abstract class GunWeaponBase : WeaponBase
     //무기마다 Init() 불릿 풀 사이즈가 다를 것이고,불릿 프리팹이 다르다. 총 아래에 Bullet 오브젝트가 생성
     public override void Init()
     {
+        PlayerAttack.OnAttackStateChanged += OnAttackStateChanged;
         // localPosition에는 local 좌표를 사용
         gameObject.transform.localPosition = _weaponSpawnPos.transform.localPosition;
         gameObject.transform.localRotation = _weaponSpawnPos.transform.localRotation;
@@ -80,9 +81,6 @@ public abstract class GunWeaponBase : WeaponBase
         _gunBulletObjectPool = new ObjectPool(_bulletPoolSize, _bulletPrefab, gameObject);
     }
 
-    
-
-    public override void Attack() { }
     #region 총알 궤적을 보여주는 함수
     /// <summary>
     /// 총알 궤적을 보여주는 함수

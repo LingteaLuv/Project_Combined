@@ -38,6 +38,7 @@ public class ThrowableWeapon : WeaponBase
 
     public override void Init()
     {
+        PlayerAttack.OnAttackStateChanged += OnAttackStateChanged;
         if (_weaponSpawnPos == null) {
             Debug.Log("무기의 스폰포인트가 지정되어 있지 않습니다.");
             return;
@@ -50,38 +51,7 @@ public class ThrowableWeapon : WeaponBase
 
     public override void Attack()
     {
-        //StartCoroutine(WaifForInput());
-
-        Rigidbody rb = gameObject.GetComponent<Rigidbody>();
-
-        transform.parent = null; // 손에서 분리
-
-        rb.isKinematic = false;
-
-        rb.useGravity = true;
-
-        transform.rotation = cam.transform.rotation;
-
-        //
-        //카메라 -> 에임시스템? -> 어려울것같다
-        //방향 * 힘 ?
-        
-        targetRot = transform.forward * _moveSpeed + transform.up * 1f;
-        //targetRot = ((transform.forward * 1f) + (transform.up * 0.05f)).normalized;
-
-        rb.velocity = targetRot;
-
-        rb.maxAngularVelocity = 100;
-
-        rb.angularVelocity = transform.right * 100;
-        
-        //rb.AddTorque(transform.right * 100);
-        //rb.AddForce(cam.forward * 1/*_throwData.Rof*/, ForceMode.VelocityChange);
-        //rb.AddTorque(cam.right* 300 , ForceMode.Impulse);
-
-        //Invoke(nameof(ResetThrow), throwCooldown); //이런 식으로 간단한 쿨타임 구현이 가능
-        //해당 오브젝트 파괴 시점을 고려해봐야 할것 같다.
-        //Destroy(gameObject,10.0f);
+        ExecuteAttack();
     }
 
     private IEnumerator WaifForInput()
@@ -168,5 +138,46 @@ public class ThrowableWeapon : WeaponBase
     private void Reset()
     {
         ItemType = ItemType.Throw;
+    }
+
+    protected override void ExecuteAttack()
+    {
+        //StartCoroutine(WaifForInput());
+
+        Rigidbody rb = gameObject.GetComponent<Rigidbody>();
+
+        transform.parent = null; // 손에서 분리
+
+        rb.isKinematic = false;
+
+        rb.useGravity = true;
+
+        transform.rotation = cam.transform.rotation;
+
+        //
+        //카메라 -> 에임시스템? -> 어려울것같다
+        //방향 * 힘 ?
+
+        targetRot = transform.forward * _moveSpeed + transform.up * 1f;
+        //targetRot = ((transform.forward * 1f) + (transform.up * 0.05f)).normalized;
+
+        rb.velocity = targetRot;
+
+        rb.maxAngularVelocity = 100;
+
+        rb.angularVelocity = transform.right * 100;
+
+        //rb.AddTorque(transform.right * 100);
+        //rb.AddForce(cam.forward * 1/*_throwData.Rof*/, ForceMode.VelocityChange);
+        //rb.AddTorque(cam.right* 300 , ForceMode.Impulse);
+
+        //Invoke(nameof(ResetThrow), throwCooldown); //이런 식으로 간단한 쿨타임 구현이 가능
+        //해당 오브젝트 파괴 시점을 고려해봐야 할것 같다.
+        //Destroy(gameObject,10.0f);
+    }
+
+    private void OnDestroy()
+    {
+        PlayerAttack.OnAttackStateChanged -= OnAttackStateChanged;
     }
 }

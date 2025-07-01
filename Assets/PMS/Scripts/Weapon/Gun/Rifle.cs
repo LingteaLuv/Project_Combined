@@ -66,6 +66,36 @@ public class Rifle : GunWeaponBase
             InventoryManager.Instance.Consume.Reload();
         }
     }
+    public override void Attack()
+    {
+        ExecuteAttack();
+    }
+
+    // ========== 이벤트 시스템 오버라이드 ==========
+    protected override void OnAttackStateChanged(bool canAttack)
+    {
+        base.OnAttackStateChanged(canAttack);
+
+        // 총기 특화 로직 (예: 조준 상태 해제)
+        if (!canAttack && _animator != null)
+        {
+            // 공격 불가능할 때 조준 해제
+            //_animator.SetBool("IsAim", false);
+        }
+    }
+
+    protected override void OnAttackStarted()
+    {
+        base.OnAttackStarted();
+        // 총기 공격 시작 시 특별한 로직이 있다면 여기에
+    }
+
+    protected override void OnAttackEnded()
+    {
+        base.OnAttackEnded();
+        // 총기 공격 종료 시 특별한 로직이 있다면 여기에
+    }
+
 
     //총알 딜레이 설정
     private IEnumerator ShotDelay()
@@ -81,8 +111,7 @@ public class Rifle : GunWeaponBase
         _isReload = false;
     }
 
-    //외부에서 사용할 총을 쏘는 함수
-    public override void Attack()
+    protected override void ExecuteAttack()
     {
         if (_item.CurrentAmmoCount == 0)
         {
@@ -115,4 +144,44 @@ public class Rifle : GunWeaponBase
             Debug.Log("총알이 준비되어 있지 않습니다");
         }
     }
+
+    private void OnDestroy()
+    {
+        PlayerAttack.OnAttackStateChanged -= OnAttackStateChanged;
+    }
+
+    /*
+    public override void Attack()
+    {
+        if (_item.CurrentAmmoCount == 0)
+        {
+            Debug.Log("R키를 눌러 장전하세요");
+            return;
+        }
+
+        //발사 할 수 있는 총알이 있는지 총알풀 검사
+        GameObject bulletObj = _gunBulletObjectPool.GetInactive();
+
+        if (bulletObj != null && _item.CurrentAmmoCount > 0)  //만약 들고 왔다면 
+        {
+            // 발사 딜레이 시작 (총알이 실제로 발사될 때만)
+            StartCoroutine(ShotDelay());
+            //총알 위치 설정
+            bulletObj.transform.position = _firePoint.transform.position;
+
+            //총알 방향 설정
+            BulletBase bullet = bulletObj.GetComponent<BulletBase>();
+            bullet.SetDamage(_gunData.AtkDamage);
+            if (bullet != null)
+            {
+                bullet.SetDirection(_firePoint.forward);
+            }
+            bulletObj.SetActive(true); //해당 총알을 활성화시킴
+            _bulletcaseParticle.Play();
+        }
+        else
+        {
+            Debug.Log("총알이 준비되어 있지 않습니다");
+        }
+    }*/
 }

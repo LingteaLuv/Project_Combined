@@ -35,16 +35,35 @@ public class MeleeWeapon : WeaponBase
 
     public override void Init()
     {
+        PlayerAttack.OnAttackStateChanged += OnAttackStateChanged;
         gameObject.transform.localPosition = _weaponSpawnPos.transform.localPosition;
         gameObject.transform.localRotation = _weaponSpawnPos.transform.localRotation;
+    }
+
+    public override void Attack()
+    {
+        base.Attack();
+    }
+
+    // ========== 이벤트 시스템 오버라이드 ==========
+    protected override void OnAttackStateChanged(bool canAttack)
+    {
+        base.OnAttackStateChanged(canAttack);
+
+        // 근접 무기 특화 로직이 있다면 여기에
+        if (!canAttack)
+        {
+            // 예: 공격 불가능할 때 특별한 이펙트 중단 등
+        }
     }
 
     /// <summary>
     /// Physics.OverlapSphere + 범위 + 애니메이션 Event를 통한 특정 프레임 이벤트 호출, 각도 체크X - 무기기준 
     /// 추후 콜라이더 변경으로 각도가 해결되지 않을 경우에 플레이어 기준으로 각도체크 하는 부분 추가하면 될 것 같다.
     /// </summary>
-    public override void Attack()
+    protected override void ExecuteAttack() 
     {
+        Debug.Log("▶ ExecuteAttack() 시작");
         //무기에 달려있는 _attack를 중심으로 범위를 설정하고 타겟레이어와 충돌검사
         /*Collider[] _colliders = Physics.OverlapSphere(_attackPointPos.position, _attackRange, _targetLayer);
 
@@ -60,11 +79,11 @@ public class MeleeWeapon : WeaponBase
             }
         }*/
         //현재 무기 내구도 감소
-        InventoryManager.Instance.DecreaseWeaponDurability();
+        //InventoryManager.Instance.DecreaseWeaponDurability();
 
         // 무기에 달려있는 _attack를 중심으로 범위를 설정하고 타겟레이어와 충돌검사
         Collider[] colliders = Physics.OverlapSphere(_attackPointPos.position, _attackRange, _targetLayer);
-
+        Debug.Log($"▶ 감지된 Collider 수: {colliders.Length}");
         // 가장 가까운 타겟을 찾기 위한 변수 초기화
         //IDamageable closestDamageable = null;
         GameObject closeGameObject = null;
@@ -76,6 +95,7 @@ public class MeleeWeapon : WeaponBase
         // 9. 충돌체를 저장한 배열을 순회하며 가장 가까운 적 찾기
         foreach (Collider targetCollider in colliders)
         {
+            Debug.Log($"▶ 검사 대상: {targetCollider.name}");
             IDamageable damageable = targetCollider.GetComponent<IDamageable>();
             if (damageable != null)
             {
@@ -90,6 +110,7 @@ public class MeleeWeapon : WeaponBase
                 {
                     // 현재 공격 지점과 타겟 간의 거리 계산
                     float distance = Vector3.Distance(_attackPointPos.position, targetCollider.transform.position);
+                    Debug.Log($"▶ {targetCollider.name}: angle={angle}, limit={_attackAngle / 2}");
                     // 만약 현재 타겟이 이전에 찾은 타겟보다 더 가깝다면
                     if (distance < minDistance)
                     {
@@ -98,12 +119,21 @@ public class MeleeWeapon : WeaponBase
                         closeGameObject = targetCollider.gameObject;
                     }
                 }
+                else
+                {
+                    Debug.Log($"▶ {targetCollider.name} 은 각도 조건을 통과 못함.");
+                }
+            }
+            else
+            {
+                Debug.Log($"▶ {targetCollider.name} 은 IDamageable 이 없음");
             }
         }
 
         // 가장 가까운 적이 있다면 데미지 부여 로직 실행
         if (closeGameObject != null)//(closestDamageable != null)
         {
+            Debug.Log($"▶ 공격 성공: {closeGameObject.name}");
             closeGameObject.GetComponent<IDamageable>().Damaged(_meleeData.AtkDamage);
             //TODO - 시각적 디버깅용 코드 추후 제거 예정
             StartCoroutine(DamageRoutine(closeGameObject.gameObject));
@@ -112,6 +142,11 @@ public class MeleeWeapon : WeaponBase
         {
             Debug.Log("공격 범위 내에 적이 없습니다.");
         }
+    }
+
+    private void OnDestroy()
+    {
+        PlayerAttack.OnAttackStateChanged -= OnAttackStateChanged;
     }
 
     /// <summary>

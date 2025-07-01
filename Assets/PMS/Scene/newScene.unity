@@ -1103,7 +1103,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7184183692969798166, guid: 90667faa5fa49494892f6fd5fd3da41d, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7214956016995065466, guid: 90667faa5fa49494892f6fd5fd3da41d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1146,6 +1146,14 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7995656472945629749, guid: 90667faa5fa49494892f6fd5fd3da41d, type: 3}
+      propertyPath: _attackAngle
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 7995656472945629749, guid: 90667faa5fa49494892f6fd5fd3da41d, type: 3}
+      propertyPath: _attackRange
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7995656472945629749, guid: 90667faa5fa49494892f6fd5fd3da41d, type: 3}
       propertyPath: _targetLayer.m_Bits
       value: 8192
       objectReference: {fileID: 0}
@@ -1156,6 +1164,10 @@ PrefabInstance:
     - target: {fileID: 8354941466206641841, guid: 90667faa5fa49494892f6fd5fd3da41d, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8675600799327375214, guid: 90667faa5fa49494892f6fd5fd3da41d, type: 3}
+      propertyPath: m_ExcludeLayers.m_Bits
+      value: 4294967295
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

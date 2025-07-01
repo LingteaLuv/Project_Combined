@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,10 +7,44 @@ using UnityEngine.Events;
 
 public class PlayerAttack : MonoBehaviour
 {
+    private bool _isAttacking = false;
+    /// <summary>
+    /// 플레이어 공격 상태 - 이벤트를 통해 무기들에게 알림
+    /// </summary>
+    public bool IsAttacking //공격중일 때 true, 공격중이 아닐 때 false
+    {
+        get => _isAttacking;
+        set
+        {
+            if (_isAttacking != value)
+            {
+                _isAttacking = value;
+                // 공격 상태가 변경될 때마다 이벤트 발생
+                OnAttackStateChanged?.Invoke(!_isAttacking); // CanAttack 상태 전달
+
+                if (_isAttacking)
+                    OnAttackStart?.Invoke();
+                else
+                    OnAttackEnd?.Invoke();
+            }
+        }
+    }
+
+    // ========== 이벤트 시스템 추가 ==========
+    // 공격 상태 변경 이벤트 (무기들이 구독할 이벤트) <- 이친구가 IsAttacking의 값을 바꿔줍니다.
+    public static event Action<bool> OnAttackStateChanged;
+
+    // 공격 시작 할 때 이벤트
+    public static event Action OnAttackStart;
+
+    // 공격 종료 할 때 이벤트
+    public static event Action OnAttackEnd;
+
+
     [SerializeField] Animator _animator; 
     [SerializeField] private WeaponBase _currentWeapon;
     public WeaponBase CurrentWeapon { get { return _currentWeapon; } }
-
+    
     //소환되는 Transform 계층
     [SerializeField] public WeaponBase LeftCurrentWeapon;
     [SerializeField] public WeaponBase RightCurrentWeapon;
@@ -20,7 +55,6 @@ public class PlayerAttack : MonoBehaviour
     /// <summary>
     /// 플레이어 공격 못하게 하고 싶을때 IsAttacking = true, 공격하게 하고 싶을 때 IsAttacking = false; 
     /// </summary>
-    public bool IsAttacking { get; set; } //공격중일 때 true, 공격중이 아닐 때 false
 
     private PlayerProperty _playerProperty;
     private Coroutine _currentAttackCoroutine; // 현재 실행 중인 공격 코루틴
@@ -28,14 +62,6 @@ public class PlayerAttack : MonoBehaviour
     //TODO - 나중에 어디서인가 그 현재 무기가 뭔지 있어야하는 부분이 있지 않을까? Action 연결
     // 플레이어의 왼쪽 오른쪽 들고있는 템이 뭔지 바뀌는 이벤트가 존재 할 때 나도 업데이트해서 사용할 수 있지 않을까?
 
-    void Start()
-    {
-        var rigBuilder = GetComponent<RigBuilder>();
-        if (rigBuilder != null)
-        {
-            rigBuilder.Build();
-        }
-    }
     private void Awake()
     {
         LeftCurrentWeapon = PlayerWeaponManager.Instance.LeftCurrentWeapon;
