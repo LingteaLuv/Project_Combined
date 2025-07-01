@@ -5,32 +5,25 @@ using UnityEngine.Events;
 
 public class PlayerAttack : MonoBehaviour
 {
-    [SerializeField] Animator _animator; //플레이어의 애니메이터가 필요 -> 공격시 플레이어 애니메이션 재생하기 위하여
-                                         //[SerializeField][Range(0, 5)] private float _mouseSensitivity = 1;
-                                         //추후에 플레이어가 어떤 키를 입력했는지 불러올것같아서
-                                         //[SerializeField] private PlayerInputManager _playerInput;partial
-
+    [SerializeField] Animator _animator; 
     [SerializeField] private WeaponBase _currentWeapon;
-    //소환되는위치
-    [SerializeField] public GameObject _left_Hand_target;
-    [SerializeField] public GameObject _right_Hand_target;
+    public WeaponBase CurrentWeapon { get { return _currentWeapon; } }
+    //테스트 코드 
+    [SerializeField] private GameObject[] _testWeapon;
 
-    [SerializeField][Range(0, 2)] private float _startAttackDelay;      //플레이어 근접공격모션 시작 딜레이
-    [SerializeField][Range(0, 2)] private float _endAttackDelay;  //플레이어 근접공격모션 종료 딜레이
+    //소환되는 Transform 계층
+    [SerializeField] public WeaponBase _left_Hand_target;
+    [SerializeField] public WeaponBase _right_Hand_target;
 
+    [Header("공격 애니메이션 클립")]
     [SerializeField] private AnimationClip _melee;
 
-    [SerializeField] private bool _canAttack = true;
-
-    public bool IsAttacking { get; set; } //공격중인지 아닌지
-
-    [Header("Player Attack AnimatorLayer Settings")]
-    [SerializeField] private int targetLayerIndex = 1; // 조절할 레이어 인덱스
-    [SerializeField] private float targetWeight = 1.0f; // 목표 가중치 (0~1)
-    [SerializeField] private float weightChangeSpeed = 2.0f; // 가중치 변경 속도
+    /// <summary>
+    /// 플레이어 공격 못하게 하고 싶을때 IsAttacking = true, 공격하게 하고 싶을 때 IsAttacking = false; 
+    /// </summary>
+    public bool IsAttacking { get; set; } //공격중일 때 true, 공격중이 아닐 때 false
 
     private PlayerProperty _playerProperty;
-
     private Coroutine _currentAttackCoroutine; // 현재 실행 중인 공격 코루틴
 
     //TODO - 나중에 어디서인가 그 현재 무기가 뭔지 있어야하는 부분이 있지 않을까? Action 연결
@@ -38,36 +31,44 @@ public class PlayerAttack : MonoBehaviour
 
     private void Awake()
     {
-        //모든 아이템은 해당 Hand_bone밑에 있다.
-        //_left_Hand_target = GameObject.Find("Hand_L");      
-        //_right_Hand_target = GameObject.Find("Hand_R");
-        _playerProperty = GetComponent<PlayerProperty>();
-    }
-    private void Start()
-    {
-        UpdateWeapon();
+        _left_Hand_target = PlayerWeaponManager.Instance.LeftCurrentWeapon;   
+
+        _right_Hand_target = PlayerWeaponManager.Instance.RightCurrentWeapon;
     }
 
-    //손에 어떤 무기가 있는지 검사해야한다.
-    //계속 감지해야하는데 플레이어가 사용할 무기가 Instantiate 되엇을 때 or 퀵슬롯 변경을 통한 SetActive가 되었을 때
-    //이벤트 같은 것을 사용해 메서드 등록하여 감지하면 좋을 것 같다.
     public void UpdateWeapon()
     {
         _currentWeapon = _right_Hand_target.GetComponentInChildren<WeaponBase>();
+
+        if(_currentWeapon != null && _currentWeapon.ItemType == ItemType.Gun)
+        {
+            _animator.SetTrigger("IsGun");
+        }
     }
 
     void Update()
     {
+        //테스트 코드
+        /*if(Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            Instantiate(_testWeapon[0], new Vector3(0,0,0), Quaternion.identity, _right_Hand_target.transform);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            Instantiate(_testWeapon[1], new Vector3(0, 0, 0), Quaternion.identity, _right_Hand_target.transform);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            Instantiate(_testWeapon[2], new Vector3(0, 0, 0), Quaternion.identity, _right_Hand_target.transform);
+        }*/
         if (Input.GetMouseButtonDown(0))
         {
             TryAttack();
         }
     }
 
-    //IEnumerator -> void
     private IEnumerator MeleeAttackSequence()
     {
-        _canAttack = false;
         IsAttacking = true;
 
         Debug.Log("애니메이션 실행");
@@ -86,10 +87,10 @@ public class PlayerAttack : MonoBehaviour
         }
         _animator.SetFloat("AttackSpeed", playerAttackSpeed);
 
-
         float currentTime = _melee.length;
         float coolTime = 1 / playerAttackSpeed;
 
+        //디버깅용 코드
         Debug.Log($"애니메이션 기본시간 {currentTime}");
         Debug.Log($"애니메이션 실제재생시간 {(currentTime) / playerAttackSpeed}");
         Debug.Log($"실제 재생시간 + 공격 속도에 따른 쿨타임 {(currentTime) / playerAttackSpeed + coolTime}");
@@ -99,14 +100,13 @@ public class PlayerAttack : MonoBehaviour
 
 
         IsAttacking = false;
-        _canAttack = true;
         _currentAttackCoroutine = null;
     }
 
     private void TryAttack()
     {
         // 공격 불가능한 상태면 리턴
-        if (!_canAttack || IsAttacking)
+        if (IsAttacking)
         {
             Debug.Log("공격 불가능한 상태입니다.");
             return;
@@ -122,7 +122,7 @@ public class PlayerAttack : MonoBehaviour
         {
             case ItemType.Melee:
                 StartMeleeAttack();
-                _playerProperty.ExpendAction();
+                _playerProperty.StaminaConsume(3f);
                 break;
             case ItemType.Gun:
                 StartRangedAttack();
@@ -136,12 +136,14 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
+    //플레이어 공격 실제 로직 실행하는 함수
+    //애니메이션 이벤트에서 호출 되는 함수 - Melee Attack,Throw Attack
     public void PlayerAttackStart()
     {
         _currentWeapon.Attack();
     }  
 
-    //빠따공격
+    //빠따공격 실행
     private void StartMeleeAttack()
     {
         // 이전 공격 코루틴이 있다면 정지
@@ -155,6 +157,7 @@ public class PlayerAttack : MonoBehaviour
         MeleeAttackSequence();
     }
 
+    //원거리 공격 실행
     private void StartRangedAttack()
     {
         // 원거리 무기는 즉시 공격  애니메이션 나중에
@@ -162,14 +165,14 @@ public class PlayerAttack : MonoBehaviour
     }
 
     //레이어를 일단은 혼자 쓰는 것 같은데 계속 플레이어의 animtor가 수정될 일이 많은데
-    //AnimatorUtil 유틸 클래스로 SetLayerWeight함수를 특정 레이어의 이름으로 찾아보도록 하는 함수를 만들어보자.
+    //AnimatorUtil 유틸 클래스로 SetLayerWeight함수를
+    //특정 레이어의 이름으로 찾아보도록 하는 함수를 만들어보자 -> 추후 -> StateBehaviour사용
+ 
     private void StartThrowAttack()
     {
         _animator.SetTrigger("Throw");
         _animator.SetLayerWeight(4, 1); //Throw Layer 
     }
-
-    //원거리 공격
 
     /// <summary>
     /// 특정 레이어의 가중치를 즉시 설정

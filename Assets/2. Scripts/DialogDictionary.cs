@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-[CreateAssetMenu(menuName = "DialogDictionary")]
+[CreateAssetMenu(menuName = "Dictionary/DialogDictionary")]
 public class DialogDictionary : ScriptableObject
 {
     [SerializeField] private TextAsset _dialogFile;

@@ -22,8 +22,17 @@ public class PlayerHandItemController : MonoBehaviour
 
     private GunWeaponBase _gwb;
 
+    [SerializeField] private AnimationClip _equipMotion;
+    [SerializeField] private AnimationClip _unequipMotion;
+
+    private Coroutine _anico;
+    private WaitForSeconds _equipSc;
+    private WaitForSeconds _unequipSc;
+
     private void Awake()
     {
+        _equipSc = new WaitForSeconds(_equipMotion.length);
+        _unequipSc = new WaitForSeconds(_unequipMotion.length);
         _control = GetComponent<InventoryController>();
         _model = GetComponent<InventoryModel>();
         PrefabIDs = new();
@@ -36,8 +45,10 @@ public class PlayerHandItemController : MonoBehaviour
     {
         _playerAttack = UISceneLoader.Instance.Playerattack;
         _animator = _playerAttack.GetComponent<Animator>();
-        Right = _playerAttack._right_Hand_target.transform;
-        Left = _playerAttack._left_Hand_target.transform;
+        Debug.Log(_playerAttack);
+        Debug.Log(_playerAttack._right_Hand_target);
+        Right = PlayerWeaponManager.Instance._right_Hand_target.transform;
+        Left = PlayerWeaponManager.Instance._left_Hand_target.transform;
     }
 
     //public void Subscribe(HandType type, ItemHolder holder)
@@ -67,40 +78,44 @@ public class PlayerHandItemController : MonoBehaviour
         }
     }
 
+    public void UpdateItemHandle()
+    {
+        UpdateItems();
+        StartCoroutine(UW());
+    }
+
     public void UpdateItems()
     {
         DeholdBoth();
         int rightIndex = _control.EquippedSlotIndex[0];
         int leftIndex = _control.EquippedSlotIndex[1];
         if ((rightIndex == leftIndex) && _model.InvItems[rightIndex] == null) return;
-        if (rightIndex == -1) //오른손 들린게 없다
+        if (rightIndex == -1) //오른손 빈 상황
         {
-            StartCoroutine(UW()); // 아무것도 안들렸다는 신호를 보낼 것.
             if (leftIndex != -1) //왼손은 들렸다.
             {
                 HoldItem(HandType.left, _model.InvItems[leftIndex].Data.ItemID);
-                return;
+                return; //왼손에만 들린 상황
             }
-            return;
+            return; // 양손 다 텅 빈 상황
         }
         HoldItem(HandType.right, _model.InvItems[rightIndex].Data.ItemID);
         if (_model.InvItems[rightIndex].Data.Type == ItemType.Gun) //들린게 총이면
         {
             GunWeaponBase _gwb = CurrentRightItem.GetComponent<GunWeaponBase>();
-            //_gwb.currentammocount = _model.InvItems[rightIndex].CurrentAmmoCount; (아니면 _model.InvItems[rightIndex]) 그대로 넘김
         }
-        StartCoroutine(UW());
+
 
         // 왼손에 들린게 없거나 두손무기라면 스킵 방패라면 들어주고,
         if (leftIndex == -1)
         {
-            return;
+            return; // 한손무기만 들린 상황
         }
         if (leftIndex == rightIndex)
         {
-            return;
+            return; // 두손무기가 들린 상황
         }
-        HoldItem(HandType.left, _model.InvItems[leftIndex].Data.ItemID);
+        HoldItem(HandType.left, _model.InvItems[leftIndex].Data.ItemID); //한손무기와 방패가 들린 상황
 
 
 
@@ -108,8 +123,16 @@ public class PlayerHandItemController : MonoBehaviour
     private IEnumerator UW() // 약간 지연 필요
     {
         yield return new WaitForEndOfFrame();
-        //생성된 프리팹에 정보를 넘겨주
-        _playerAttack.UpdateWeapon(); //생성된 프리팹에서 정보를 받음
+        if (_model.InvItems[_control.EquippedSlotIndex[0]] != null)
+        {
+            if (_model.InvItems[_control.EquippedSlotIndex[0]].Data.Type == ItemType.Gun) //만약 들린게 총이면
+            {
+                CurrentRightItem.GetComponent<GunWeaponBase>()._item = _model.InvItems[_control.EquippedSlotIndex[0]]; //Item정보를 줌(현재탄약수등)
+            }
+        }
+        //생성된 프리팹의 정보를 받도록
+        PlayerWeaponManager.Instance.UpdateCurrentWeapon();
+        //여기서 싱글톤ㅇ 점보 넘겨줌
     }
     public void DeholdItem(HandType type)
     {
@@ -162,6 +185,7 @@ public class PlayerHandItemController : MonoBehaviour
             {
                 Debug.Log("무기 에서 빈손");
                 _animator.SetTrigger("UnEquip");
+                StartCoroutine(UnequipCoroutine());
             }
         }
         else if (toEquip != null && isBeforeitemNull) // 빈손 > 장비
@@ -171,6 +195,7 @@ public class PlayerHandItemController : MonoBehaviour
             {
                 Debug.Log("빈손 에서 무기");
                 _animator.SetTrigger("Equip");
+                StartCoroutine(EquipCoroutine());
             }
         }
         else // 무기 > 무기
@@ -180,7 +205,21 @@ public class PlayerHandItemController : MonoBehaviour
             {
                 Debug.Log("무기 에서 무기");
                 _animator.SetTrigger("Equip");
+                StartCoroutine(EquipCoroutine());
             }
         }
+    }
+
+    private IEnumerator EquipCoroutine()
+    {
+        _playerAttack.IsAttacking = true;
+        yield return _equipSc;
+        _playerAttack.IsAttacking = false;
+    }
+    private IEnumerator UnequipCoroutine()
+    {
+        _playerAttack.IsAttacking = true;
+        yield return _unequipSc;
+        _playerAttack.IsAttacking = false;
     }
 }

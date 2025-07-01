@@ -48,7 +48,7 @@ public class CraftingController : MonoBehaviour
         {
             int index = i;
             UIBinder.Instance.GetCraftingUI().CreateBtn[index].onClick.AddListener
-                (() => Craft(_itemDictionary.RecipeDic[index + 9001]));
+                (() => Craft(_itemDictionary.RecipeDic[_itemDictionary.RecipeKeys[index]]));
         }
     }
     

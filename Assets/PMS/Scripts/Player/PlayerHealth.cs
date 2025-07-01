@@ -8,6 +8,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     [SerializeField] private Animator _animator; //피격 애니메이션
     [SerializeField] private float _invincibilityTime = 0.5f;  //무적시간
     private bool _isInvincible = false; //무적 인지 아닌지
+    private bool _isLooting = false;
 
     [Header("Health Settings")]
     [SerializeField] private int _maxHp = 100; // 최대 hp 
@@ -24,6 +25,12 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     public UnityEvent<int> OnMaxHealthChanged; // 최대 체력이 바뀌었는지?
     public UnityEvent<int> OnDamageReceived; // 데미지를 얼마나 받았는지 
 
+  
+    // TODO : 임시 외부 참조용 (석규)
+    public int CurrentHp => _currentHp;
+    public bool IsDead => _isDead;
+
+
     //임시로 쓰는 Start()함수입니다. 
     private void Start()
     {
@@ -36,7 +43,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     private void Die()
     {
         if (!_isDead) return;
-
+        
         _isDead = true;
 
         // 사망 이벤트 발생
@@ -86,6 +93,19 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     {
         // 이미 죽었다면 처리 할 필요가 없음
         if (_isDead || _isInvincible) return;
+       
+        //  루팅중이라면 아이템 파밍 초기화
+        LootManager.Instance.CancelBlockHolding();
+
+        //패턴 일치
+        if (PlayerWeaponManager.Instance.LeftCurrentWeapon is IDefendable defendableWeapon) 
+        {
+            //만약 방패가 있다면 해당 방패의 방어력 만큼 hitDamage감소
+            hitDamage -= defendableWeapon.GetDefenseAmount();
+        }
+
+        //방어력이 더크면 힐되므로 0보다 작으면 데미지 0처리
+        hitDamage = Mathf.Max(0, hitDamage);
 
         // 데미지 적용
         _currentHp -= hitDamage;
@@ -96,9 +116,9 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         // 이벤트 발생
         OnDamageReceived?.Invoke(hitDamage);        //데미지를 받은 이벤트 - 나중에 플레이어 피격 효과 같은 이펙트 사용할 때 연결해주면 좋을 듯
         OnHealthChanged?.Invoke(_currentHp);        //체력 변경 이벤트 발생 알리기
-
+        Debug.Log($"데미지 : {hitDamage}");
         //플레이어 피격 애니메이션 재생
-        _animator.SetTrigger("Hit");
+        _animator.SetTrigger("IsHit");
 
         // 체력이 0 이하가 되면 사망 처리
         if (_currentHp <= 0 && !_isDead)
@@ -120,7 +140,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         yield return new WaitForSeconds(_deathSequenceTime);
 
         //플레이어 죽음 애니메이션 재생
-        //_animator.SetTrigger("");
+        _animator.SetBool("IsDead", true);
 
         //게임 매니저 게임 오버 처리 함수
         GameManager.Instance.GameOver();

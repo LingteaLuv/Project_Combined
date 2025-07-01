@@ -3,7 +3,8 @@ using UnityEngine;
 
 public class DoorInteractable : MonoBehaviour, IInteractable
 {
-    [SerializeField] private ItemBase testKeys;
+    [Header("Test Door Init")]
+    [SerializeField] private ItemBase testKeys; // 문 자체가 열쇠를 가지도록 테스트
     private HingeDoorOpen _door;
 
     private void Awake()

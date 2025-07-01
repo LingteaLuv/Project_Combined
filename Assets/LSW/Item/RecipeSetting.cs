@@ -10,6 +10,8 @@ public class RecipeSetting : MonoBehaviour
     [Header("Drag&Drop")] 
     // ScriptableObjects - New Item Dictionary 드래그
     [SerializeField] private ItemDictionary _itemDictionary;
+
+    [SerializeField] private TextMeshProUGUI _explainText;
     
     private Recipe _recipe;
     
@@ -17,8 +19,10 @@ public class RecipeSetting : MonoBehaviour
     private Image[] _materialImages;
     private TMP_Text[] _materialTexts;
     private TMP_Text[] _currentTexts;
+    private Image[] _currentImage;
     
     public List<Button> CreateBtn { get; private set; }
+    public Stack<Button> RecipeBtn { get; private set; }
 
     private bool _hasMaterial1;
     private bool _hasMaterial2;
@@ -34,7 +38,9 @@ public class RecipeSetting : MonoBehaviour
         _materialImages = new Image[4];
         _materialTexts = new TMP_Text[4];
         _currentTexts = new TMP_Text[4];
+        _currentImage = new Image[4];
         CreateBtn = new List<Button>();
+        RecipeBtn = new Stack<Button>();
         
         SetValueEditor();
     }
@@ -75,21 +81,37 @@ public class RecipeSetting : MonoBehaviour
         if (_hasMaterial1)
         {
             _currentTexts[0].text = _countById[_recipe.MaterialItemId1].ToString();
+            if(_countById[_recipe.MaterialItemId1] >= _recipe.MaterialItemQuantity1)
+            {
+                _currentImage[0].color = Color.white;
+            }
         }
 
         if (_hasMaterial2)
         {
             _currentTexts[1].text = _countById[_recipe.MaterialItemId2].ToString();
+            if(_countById[_recipe.MaterialItemId2] >= _recipe.MaterialItemQuantity2)
+            {
+                _currentImage[1].color = Color.white;
+            }
         }
 
         if (_hasMaterial3)
         {
             _currentTexts[2].text = _countById[_recipe.MaterialItemId3].ToString();
+            if(_countById[_recipe.MaterialItemId3] >= _recipe.MaterialItemQuantity3)
+            {
+                _currentImage[2].color = Color.white;
+            }
         }
 
         if (_hasMaterial4)
         {
             _currentTexts[3].text = _countById[_recipe.MaterialItemId4].ToString();
+            if(_countById[_recipe.MaterialItemId4] >= _recipe.MaterialItemQuantity4)
+            {
+                _currentImage[3].color = Color.white;
+            }
         }
     }
 
@@ -101,7 +123,7 @@ public class RecipeSetting : MonoBehaviour
     
     private void SetRecipe(int index)
     {
-        _recipe = _itemDictionary.RecipeDic[index + 9001];
+        _recipe = _itemDictionary.RecipeDic[_itemDictionary.RecipeKeys[index]];
     }
     
     private void SetProperty()
@@ -120,11 +142,11 @@ public class RecipeSetting : MonoBehaviour
         
         Transform[] children = new Transform[6];
 
-        for (int i = 0; i < targetTransform.childCount-2; i++)
+        for (int i = 0; i < targetTransform.childCount-3; i++)
         {
-            children[i] = targetTransform.GetChild(i + 2);
+            children[i] = targetTransform.GetChild(i + 3);
         }
-
+        
         return children;
     }
     
@@ -137,6 +159,7 @@ public class RecipeSetting : MonoBehaviour
             if (_hasMaterials[i])
             {
                 _currentTexts[i] = children[i + 1].GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>();
+                _currentImage[i] = children[i + 1].GetChild(1).GetComponent<Image>();
             }
         }
     }
@@ -144,6 +167,9 @@ public class RecipeSetting : MonoBehaviour
     private void MaterialInit(int index)
     {
         Transform[] children = Init(index);
+        
+        Button recipeBtn = transform.GetChild(index).GetChild(0).GetComponent<Button>();
+        RecipeBtn.Push(recipeBtn);
         
         _resultImage = children[0].GetChild(0).GetComponentInChildren<Image>();
         CreateBtn.Add(children[5].GetComponentInChildren<Button>());
@@ -165,6 +191,8 @@ public class RecipeSetting : MonoBehaviour
     private void SetValue()
     {
         _resultImage.sprite = _itemDictionary.ItemDic[_recipe.ResultItemId].Sprite;
+        int resultId = _recipe.ResultItemId;
+        RecipeBtn.Peek().onClick.AddListener(() => _explainText.text = _itemDictionary.ItemDic[resultId].Description);
 
         if (_hasMaterial1)
         {
