@@ -52,7 +52,7 @@ public class QuestManager : Singleton<QuestManager>
     public void LoadQuests(List<QuestData> questList)
     {
         AllQuests = questList ?? new List<QuestData>();
-        _questDictionary = AllQuests.ToDictionary(q => q.QuestID);
+        //_questDictionary = AllQuests.ToDictionary(q => q.QuestID);
         //UpdateQuestStates();
     }
 

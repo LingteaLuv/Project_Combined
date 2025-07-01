@@ -7,7 +7,7 @@ public class DialogueManager : Singleton<DialogueManager>
     [SerializeField]
     private List<DialogueSO> _dialogues;
     
-    private Dictionary<string, DialogueSO> _dialogueDic;
+    private Dictionary<int, DialogueSO> _dialogueDic;
     private void Awake()
     {
         Init();
@@ -20,7 +20,7 @@ public class DialogueManager : Singleton<DialogueManager>
 
     private void Init()
     {
-        _dialogueDic = new Dictionary<string, DialogueSO>();
+        _dialogueDic = new Dictionary<int, DialogueSO>();
 
         for (int i = 0; i < _dialogues.Count; i++)
         {
@@ -28,7 +28,7 @@ public class DialogueManager : Singleton<DialogueManager>
         }
     }
 
-    public DialogueSO GetDialogue(string id)
+    public DialogueSO GetDialogue(int id)
     {
         return _dialogueDic[id];
     }
