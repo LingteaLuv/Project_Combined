@@ -5,11 +5,11 @@
 [System.Flags]
 public enum QuestType
 {
-    Talk = 0,       // NPC와의 대화(또는 튜토리얼용)
-    Delivery = 0 << 1,  // 아이템 전달/전달 퀘스트
-    Kill = 0 << 2,  // 몬스터 처치 퀘스트
-    Survive = 0 << 3,  // 시간 버티기 퀘스트
-    Reach = 0 << 4,  // 특정 위치 도달 퀘스트
+    Talk     = 0,           // NPC와의 대화(또는 튜토리얼용)
+    Delivery = 1 << 1,  // 아이템 전달/전달 퀘스트
+    Kill     = 1 << 2,      // 몬스터 처치 퀘스트
+    Survive  = 1 << 3,   // 시간 버티기 퀘스트
+    Reach    = 1 << 4,     // 특정 위치 도달 퀘스트
     // 필요시 추가 타입 확장
 }
 
