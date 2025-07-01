@@ -5,22 +5,27 @@ using UnityEngine;
 public class RandomLootTable : MonoBehaviour
 {
     [SerializeField] private LootDictionary _lootDic;
-    [SerializeField] private string _id;
-    [SerializeField] private string _gridId;
     [SerializeField] private ItemDictionary _itemDic;
+    // [SerializeField] private MonsterDictionary _monsterDic; 
+    [SerializeField] private string _monsterID;
+    
+    private string _id;
+    private string _gridId;
     
     public List<int> _itemId;
     public List<int> _itemStack;
     public List<int> _itemWeight;
 
     private int _itemCount;
-
-    // todo : 생성한 아이템, 수량 Lootable class에 연동하는 작업
+    
     public List<ItemBase> _resultItems;
     public List<int> _resultItemAmount;
 
     private void Start()
     {
+        //todo 몬스터 도감이 완성되면 참조 걸고 주석 해제
+        //_id = _monsterDic.monsterInfo[_monsterID].LootID;
+        //_gridId = _monsterDic.monsterInfo[_monsterID].LootGridChanceID;
         GenerateItem();
     }
     

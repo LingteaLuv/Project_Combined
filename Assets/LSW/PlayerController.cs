@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
 {
     #region Public 
     public Animator _animator;
-    public PlayerHealth PlayerHealth { get; set; }
+    public PlayerHealth PlayerHealth { get; private set; }
     #endregion
 
     #region State Flags
@@ -50,6 +50,12 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         _fsm.Update();
+        if (!_movement.CanMove) {
+            _animator.SetBool("IsRunning", false);
+            _animator.SetBool("IsMove", false);
+            _fsm.ChangeState(IdleState);
+            return;
+        }
         if (_cameraController._cinemachineBrain.enabled)
         {
             _movement.SetRotation(_cameraController.OffsetX);
@@ -74,7 +80,6 @@ public class PlayerController : MonoBehaviour
         _cameraController = GetComponent<PlayerCameraController>();
         _animator = GetComponent<Animator>();
         PlayerHealth = GetComponent<PlayerHealth>();
-        _movement.Controller = this;
 
         PlayerHealth.OnDamageReceived.AddListener(OnPlayerDamaged);
         PlayerHealth.OnPlayerDeath.AddListener(OnPlayerDied);
@@ -157,6 +162,14 @@ public class PlayerController : MonoBehaviour
     public void StopInteractAnimation()
     {
         _animator.SetBool("IsInteracting", false);
+    }
+    public void PlayRunning(bool running)
+    {
+        _animator.SetBool("IsRunning", true);
+    }
+    public void StopRunning(bool running)
+    {
+        _animator.SetBool("IsRunning", false);
     }
     #endregion
 }

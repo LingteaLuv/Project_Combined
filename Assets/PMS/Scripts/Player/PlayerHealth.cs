@@ -8,7 +8,6 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     [SerializeField] private Animator _animator; //피격 애니메이션
     [SerializeField] private float _invincibilityTime = 0.5f;  //무적시간
     private bool _isInvincible = false; //무적 인지 아닌지
-    private bool _isLooting = false;
 
     [Header("Health Settings")]
     [SerializeField] private int _maxHp = 100; // 최대 hp 
@@ -29,7 +28,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     // TODO : 임시 외부 참조용 (석규)
     public int CurrentHp => _currentHp;
     public bool IsDead => _isDead;
-
+    private Coroutine _dotCoroutine;
+    private bool _isDotActive;
 
     //임시로 쓰는 Start()함수입니다. 
     private void Start()
@@ -130,6 +130,32 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         StartCoroutine(InvincibilityCoroutine()); //사망하지 않았으면 무적시간 부여 
     }
 
+
+    /// <summary>
+    /// 플레이어에게 도트 데미지를 적용합니다. 도트 데미지 적용 중에는 피격 에니메이션이 없습니다.
+    /// </summary>
+    /// <param name="damage">틱당 데미지</param>
+    /// <param name="tick">간격(초)</param>
+    /// <param name="duration">전체 지속 시간(초)</param>
+    public void ApplyDotDamage(int damage, float tick, float duration)
+    {
+        if (_dotCoroutine != null)
+        {
+            StopCoroutine(_dotCoroutine);
+            _dotCoroutine = null;
+        }
+        _dotCoroutine = StartCoroutine(DotDamage(damage, tick, duration));
+    }
+    public void StopDotDamage()
+    {
+        if (_dotCoroutine != null)
+        {
+            StopCoroutine(_dotCoroutine);
+            _dotCoroutine = null;
+            _isDotActive = false;
+            Debug.Log("도트 데미지 강제 종료!");
+        }
+    }
     /// <summary>
     /// 플레이어 죽으면 잠깐 애니메이션 기다리고 게임 오버 처리하기 위해 만든 코루틴입니다.
     /// </summary>
@@ -158,5 +184,25 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
         _isInvincible = false;
         Debug.Log("무적 시간 종료");
+    }
+
+    private IEnumerator DotDamage(int damage, float tick, float duration)
+    {
+        _isDotActive = true;
+        float elapsed = 0f;
+
+        while (elapsed < duration && !_isDead)
+        {
+            Damaged(damage);
+            Debug.Log($"도트 데미지 적용 {_currentHp} - {damage}");
+
+            if (_currentHp <= 0)
+                break;
+
+            yield return new WaitForSeconds(tick);
+            elapsed += tick;
+        }
+        _dotCoroutine = null;
+        _isDotActive = false;
     }
 }
