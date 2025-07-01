@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Rifle : GunWeaponBase 
-{
+{   
     [SerializeField] private Animator _animator;
     private void Awake()
     {
@@ -22,6 +22,7 @@ public class Rifle : GunWeaponBase
             if (Input.GetMouseButtonDown(0))
             {
                 Attack();
+                InventoryManager.Instance.DecreaseWeaponDurability();
             }
             // 마우스 우클릭을 누르는 순간 (조준 시작)
             if (Input.GetMouseButtonDown(1))
@@ -43,6 +44,7 @@ public class Rifle : GunWeaponBase
                 }
                 if (Input.GetMouseButtonUp(0))
                 {
+                    InventoryManager.Instance.DecreaseWeaponDurability();
                     Attack();
                 }
             }
@@ -60,8 +62,8 @@ public class Rifle : GunWeaponBase
 
         if (Input.GetKeyDown(KeyCode.R) && !_isReload)
         {
-            StartCoroutine(ReloadCorutine());
-            Debug.Log("총 재장전중");
+            //이미 탄창이 max탄창이거나 && 총알이 없을 없을 때 false return
+            InventoryManager.Instance.Consume.Reload();
         }
     }
 
@@ -74,22 +76,15 @@ public class Rifle : GunWeaponBase
     }
     private IEnumerator ReloadCorutine()
     {
-        //장전 애니메이션 재생 추가
-
         _isReload = true;
-
-        _currentAmmoCount = _maxAmmoCount;
-
         yield return new WaitForSeconds(_reloadTime);
-
-
         _isReload = false;
     }
 
     //외부에서 사용할 총을 쏘는 함수
     public override void Attack()
     {
-        if (_currentAmmoCount == 0)
+        if (_item.CurrentAmmoCount == 0)
         {
             Debug.Log("R키를 눌러 장전하세요");
             return;
@@ -98,7 +93,7 @@ public class Rifle : GunWeaponBase
         //발사 할 수 있는 총알이 있는지 총알풀 검사
         GameObject bulletObj = _gunBulletObjectPool.GetInactive();
 
-        if (bulletObj != null && _currentAmmoCount > 0)  //만약 들고 왔다면 
+        if (bulletObj != null && _item.CurrentAmmoCount > 0)  //만약 들고 왔다면 
         {
             // 발사 딜레이 시작 (총알이 실제로 발사될 때만)
             StartCoroutine(ShotDelay());
@@ -114,8 +109,6 @@ public class Rifle : GunWeaponBase
             }
             bulletObj.SetActive(true); //해당 총알을 활성화시킴
             _bulletcaseParticle.Play();
-
-            _currentAmmoCount--; //총알 한발씩 제거
         }
         else
         {

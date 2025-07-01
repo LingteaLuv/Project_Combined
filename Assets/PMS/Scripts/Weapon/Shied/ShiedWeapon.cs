@@ -5,7 +5,7 @@ using UnityEngine;
 public class ShiedWeapon : WeaponBase, IDefendable
 {
     //읽어오는 SO데이터 값
-    protected ShieldItem _shiedData;
+    [SerializeField]protected ShieldItem _shiedData;
     private Transform _playerPos;
     [SerializeField]public int _defenseAmount => _shiedData.DefenseAmount;
 
@@ -16,6 +16,16 @@ public class ShiedWeapon : WeaponBase, IDefendable
     private void Reset()
     {
         _itemType = ItemType.Shield;
+    }
+    public void Awake()
+    {
+        Init();
+    }
+
+    public override void Init()
+    {
+        gameObject.transform.localPosition = _weaponSpawnPos.transform.localPosition;
+        gameObject.transform.localRotation = _weaponSpawnPos.transform.localRotation;
     }
 
     public override void Attack()

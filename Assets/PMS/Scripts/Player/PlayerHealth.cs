@@ -102,6 +102,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         {
             //만약 방패가 있다면 해당 방패의 방어력 만큼 hitDamage감소
             hitDamage -= defendableWeapon.GetDefenseAmount();
+            InventoryManager.Instance.DecreaseShieldDurability();
         }
 
         //방어력이 더크면 힐되므로 0보다 작으면 데미지 0처리
