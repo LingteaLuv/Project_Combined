@@ -50,6 +50,12 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         _fsm.Update();
+        if (!_movement.CanMove) {
+            _animator.SetBool("IsRunning", false);
+            _animator.SetBool("IsMove", false);
+            _fsm.ChangeState(IdleState);
+            return;
+        }
         if (_cameraController._cinemachineBrain.enabled)
         {
             _movement.SetRotation(_cameraController.OffsetX);

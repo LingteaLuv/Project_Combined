@@ -9,9 +9,10 @@ public class PlayerInputHandler : MonoBehaviour
     public Vector3 MoveInput { get; private set; }
     public bool JumpPressed { get; private set; }
     public bool CrouchHeld { get; private set; }
-    public bool IsOnLadder { get; private set;} 
+    public bool IsOnLadder { get; private set; }
     public bool InteractPressed { get; private set; }
     public bool RunPressed { get; private set; }
+    public bool TestKey {  get; private set; }
 
     private void Update()
     {
@@ -25,6 +26,10 @@ public class PlayerInputHandler : MonoBehaviour
         bool run = Input.GetKey(KeyCode.LeftShift);
 
         InteractPressed = Input.GetKeyDown(KeyCode.F);
+
+
+        // TODO : Test Key 지워야함
+        TestKey = Input.GetKey(KeyCode.P);
 
 
         if (crouch && run)

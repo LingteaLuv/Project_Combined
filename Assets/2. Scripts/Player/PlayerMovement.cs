@@ -20,6 +20,8 @@ public class PlayerMovement : MonoBehaviour
     public bool IsGrounded { get; private set; }
     public bool IsWater { get; private set; }
     public bool IsRunning { get; private set; }
+    public bool CanMove { get; private set; }
+
     private bool _jumpConsumedThisFrame;
     private bool _isCrouching;
     private Vector3 _currentRotation;
@@ -35,6 +37,10 @@ public class PlayerMovement : MonoBehaviour
     public bool JumpPressed => _inputHandler.JumpPressed;
     public bool CrouchHeld => _inputHandler.CrouchHeld;
     public bool InteractPressed => _inputHandler.InteractPressed;
+
+    //  TODO : Test Key 지우기
+    public bool TestKey => _inputHandler.TestKey;
+
     public SphereCollider StateSphereCollider => _stateSphereCollider;
     private void Awake() => Init();
 
@@ -43,6 +49,7 @@ public class PlayerMovement : MonoBehaviour
         Rigidbody = GetComponent<Rigidbody>();
         PlayerClimbHandler = GetComponent<PlayerClimb>();
         Controller = GetComponent<PlayerController>();
+        CanMove = true;
     }
 
     private void Update()
@@ -57,6 +64,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        //TODO : Test Key 지우기
+        if (TestKey)
+            MoveLock();
         if (!IsOnLadder)
         {
             HandleMovement(MoveInput); // 이동 처리
@@ -67,6 +77,8 @@ public class PlayerMovement : MonoBehaviour
     public void HandleMovement(Vector3 inputDir)
     {
         Camera cam = Camera.main;
+        if (!CanMove)   //  CanMove가 False면 이동 제한
+            return;
         if (cam == null) return;
 
         // 카메라 기준 이동 벡터
@@ -190,4 +202,8 @@ public class PlayerMovement : MonoBehaviour
     {
         Rigidbody.useGravity = enabled;
     }
+    public void MoveLock()
+    {
+        CanMove = !CanMove;
+    } 
 }
