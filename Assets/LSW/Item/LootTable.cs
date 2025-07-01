@@ -8,9 +8,9 @@ public class RandomLootTable : MonoBehaviour
     [SerializeField] private ItemDictionary _itemDic;
     // [SerializeField] private MonsterDictionary _monsterDic; 
     [SerializeField] private string _monsterID;
-    
-    private string _id;
-    private string _gridId;
+
+    private string _id = "8001";
+    private string _gridId = "7001";
     
     public List<int> _itemId;
     public List<int> _itemStack;
