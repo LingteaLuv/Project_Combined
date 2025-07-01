@@ -15,12 +15,12 @@ GameObject:
   - component: {fileID: 4641101541179441587}
   - component: {fileID: 7202955045668988188}
   m_Layer: 0
-  m_Name: TestSphere
+  m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &9203693147943862603
 Transform:
   m_ObjectHideFlags: 0
@@ -130,7 +130,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
@@ -147,10 +147,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _itemType: 6
+  _weaponSpawnPos: {fileID: 0}
+  _throwData: {fileID: 0}
   cam: {fileID: 0}
-  attackPoint: {fileID: 0}
-  objectToThrow: {fileID: 5305995702532645337}
+  attackPoint: {fileID: 9203693147943862603}
   throwCooldown: 5
-  throwKey: 323
-  throwForce: 5
-  throwUpwardForce: 5

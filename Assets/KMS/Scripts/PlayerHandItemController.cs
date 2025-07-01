@@ -46,7 +46,6 @@ public class PlayerHandItemController : MonoBehaviour
         _playerAttack = UISceneLoader.Instance.Playerattack;
         _animator = _playerAttack.GetComponent<Animator>();
         Debug.Log(_playerAttack);
-        Debug.Log(_playerAttack._right_Hand_target);
         Right = PlayerWeaponManager.Instance._right_Hand_target.transform;
         Left = PlayerWeaponManager.Instance._left_Hand_target.transform;
     }
