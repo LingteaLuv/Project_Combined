@@ -16,7 +16,7 @@ public class QuestManager : Singleton<QuestManager>
     /// <summary>
     /// 퀘스트 ID로 빠르게 접근할 수 있는 캐시 딕셔너리
     /// </summary>
-    private Dictionary<int, QuestData> _questDictionary = new Dictionary<int, QuestData>();
+    private Dictionary<string, QuestData> _questDictionary = new Dictionary<string, QuestData>();
 
     /// <summary>
     /// 플레이어의 현재 챕터(비트 플래그)
@@ -53,7 +53,7 @@ public class QuestManager : Singleton<QuestManager>
     {
         AllQuests = questList ?? new List<QuestData>();
         _questDictionary = AllQuests.ToDictionary(q => q.QuestID);
-        UpdateQuestStates();
+        //UpdateQuestStates();
     }
 
     /// <summary>
@@ -61,7 +61,7 @@ public class QuestManager : Singleton<QuestManager>
     /// </summary>
     /// <param name="questId">수락할 퀘스트 ID</param>
     /// <returns>성공 시 true</returns>
-    public bool AcceptQuest(int questId)
+    public bool AcceptQuest(string questId)
     {
         var quest = GetQuestById(questId);
         if (quest == null || quest.Status != QuestStatus.Available)
@@ -78,7 +78,7 @@ public class QuestManager : Singleton<QuestManager>
     /// </summary>
     /// <param name="questId">완료할 퀘스트 ID</param>
     /// <returns>성공 시 true</returns>
-    public bool CompleteQuest(int questId)
+    public bool CompleteQuest(string questId)
     {
         var quest = GetQuestById(questId);
         if (quest == null || quest.Status != QuestStatus.Active)
@@ -87,7 +87,7 @@ public class QuestManager : Singleton<QuestManager>
         quest.Status = QuestStatus.Completed;
         OnQuestCompleted?.Invoke(quest);
         // TODO: 보상 지급, 후속 퀘스트 해금, 세이브 등
-        UpdateQuestStates(); // 완료 후 해금 갱신
+        //UpdateQuestStates(); // 완료 후 해금 갱신
         return true;
     }
 
@@ -96,7 +96,7 @@ public class QuestManager : Singleton<QuestManager>
     /// </summary>
     /// <param name="questId">실패 처리할 퀘스트 ID</param>
     /// <returns>성공 시 true</returns>
-    public bool FailQuest(int questId)
+    public bool FailQuest(string questId)
     {
         var quest = GetQuestById(questId);
         if (quest == null || quest.Status != QuestStatus.Active)
@@ -111,22 +111,19 @@ public class QuestManager : Singleton<QuestManager>
     /// 챕터 진입/선행퀘스트 클리어 등 변화에 따라
     /// 잠긴 퀘스트를 해금(Available) 처리합니다.
     /// </summary>
-    public void UpdateQuestStates()
+    public void UpdateQuestStates(QuestData quest)
     {
-        foreach (var quest in AllQuests)
+        if (quest.Status == QuestStatus.Locked)
         {
-            if (quest.Status == QuestStatus.Locked && CanUnlockQuest(quest))
-            {
-                quest.Status = QuestStatus.Available;
-                // TODO: 해금 알림, UI 표시 등
-            }
+            quest.Status = QuestStatus.Available;
+            // TODO: 해금 알림, UI 표시 등
         }
     }
 
     /// <summary>
     /// 퀘스트 완료 여부를 반환합니다.
     /// </summary>
-    public bool IsQuestCompleted(int questId)
+    public bool IsQuestCompleted(string questId)
     {
         var quest = GetQuestById(questId);
         return quest != null && quest.Status == QuestStatus.Completed;
@@ -135,7 +132,7 @@ public class QuestManager : Singleton<QuestManager>
     /// <summary>
     /// QuestID로 퀘스트를 빠르게 조회합니다.
     /// </summary>
-    private QuestData GetQuestById(int questId)
+    private QuestData GetQuestById(string questId)
     {
         if (_questDictionary == null) return null;
         _questDictionary.TryGetValue(questId, out var quest);
@@ -145,9 +142,5 @@ public class QuestManager : Singleton<QuestManager>
     /// <summary>
     /// 챕터, 선행퀘스트 등 해금 조건을 만족하는지 검사합니다.
     /// </summary>
-    private bool CanUnlockQuest(QuestData quest)
-    {
-        return quest.IsChapterUnlocked(CurrentChapter) &&
-               (!quest.HasPrerequisite || quest.PrerequisiteQuestIDs.All(IsQuestCompleted));
-    }
+    //private bool CanUnlockQuest(QuestData quest)
 }
