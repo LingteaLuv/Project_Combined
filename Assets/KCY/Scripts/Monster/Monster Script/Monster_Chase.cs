@@ -60,7 +60,7 @@ public class Monster_Chase : MonsterState_temp
 
         if (_agent != null)
         {
-            _agent.speed = monster.RunningSpeed;
+            _agent.speed = monster.ChaseMoveSpeed;
             _agent.stoppingDistance = 0.8f; // ← 적당한 거리 유지 (AttackRange보다 작거나 비슷하게)
             _agent.isStopped = false;
         }
@@ -77,7 +77,7 @@ public class Monster_Chase : MonsterState_temp
         float distance = Vector3.Distance(monster.transform.position, targetPos);
 
         // 1. 공격 사거리 도달
-        if (distance <= monster.AttackRange)
+        if (distance <= monster.AtkRange)
         {
             Debug.Log(" 공격 범위 도달 → Attack 상태 전이");
             stateMachine.ChangeState(stateMachine.StateDic[Estate.Attack]);

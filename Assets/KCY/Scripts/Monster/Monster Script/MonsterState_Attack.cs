@@ -211,7 +211,7 @@ public class Monster_Attack : MonsterState_temp, IAttackable
         {
             float distance = Vector3.Distance(monster.transform.position, target.transform.position);
 
-            if (distance <= monster.AttackRange + 0.3f)
+            if (distance <= monster.AtkRange + 0.3f)
             {
                 Vector3 dir = (target.transform.position - monster.transform.position).normalized;
                 dir.y = 0f;
