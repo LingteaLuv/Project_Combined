@@ -21,7 +21,7 @@ public class JagyungTimelineControl : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!_hasRun && other.tag == "Player")
+        if (!_hasRun && other.CompareTag("Player"))
         {
             _hasRun = true;
             _pd.Play();
@@ -31,6 +31,7 @@ public class JagyungTimelineControl : MonoBehaviour
 
     private IEnumerator DisableControl()
     {
+        Debug.Log("진입");
         UIManager.Instance.LockUIUpdate();
         UIManager.Instance.OffHUI();
         UIManager.Instance.OffQuickslot();
