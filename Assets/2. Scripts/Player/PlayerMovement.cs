@@ -158,7 +158,7 @@ public class PlayerMovement : MonoBehaviour
 
     public bool CanJump()
     {
-        return !_jumpConsumedThisFrame && JumpPressed && IsGrounded;
+        return !_jumpConsumedThisFrame && JumpPressed && IsGrounded && !IsJumpAnimationPlaying();
     }
 
     public void Jump()
@@ -188,7 +188,10 @@ public class PlayerMovement : MonoBehaviour
     {
         transform.rotation = Quaternion.Euler(0f, offset, 0f);
     }
-
+    public bool IsJumpAnimationPlaying()
+    {
+        return Controller._animator.GetCurrentAnimatorStateInfo(0).IsName("Jump");
+    }
     public float GetAnimatorSpeedMultiplier()
     {
         return Mathf.Clamp01(MoveInput.magnitude) * (_property?.MoveSpeed?.Value ?? 0f) + 1;
