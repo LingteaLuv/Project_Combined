@@ -104,14 +104,14 @@ public class TimeManager : Singleton<TimeManager>
     #endregion
 
     #region Test Code
-/*
-    private void Start()
-    {
-       CurrentHour.OnChanged += hour =>
+    /*
+        private void Start()
         {
-            Debug.Log($"[TimeManager] 현재 시간: {GetFormattedTime()}");
-        };
-    }
-*/
+           CurrentHour.OnChanged += hour =>
+            {
+                Debug.Log($"[TimeManager] 현재 시간: {GetFormattedTime()}");
+            };
+        }
+    */
     #endregion
 }
