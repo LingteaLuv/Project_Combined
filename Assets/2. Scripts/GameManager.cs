@@ -1,9 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : Singleton<GameManager>
 {
+    public event Action OnGameOver;
+    
     protected override void Awake()
     {
         base.Awake();
@@ -13,11 +17,12 @@ public class GameManager : Singleton<GameManager>
     public void GameOver()
     {
         // Todo : 게임 오버 메서드
+        OnGameOver?.Invoke();
     }
 
     public void GameStart()
     {
-        // Todo : 게임 시작 메서드
+        SceneManager.LoadScene("1. Scenes/GameScene",0);
     }
     
     private void Init()

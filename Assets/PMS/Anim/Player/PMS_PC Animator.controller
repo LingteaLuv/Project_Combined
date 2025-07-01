@@ -544,7 +544,7 @@ AnimatorState:
   - {fileID: 6082365569622720491}
   - {fileID: 5806339187760352365}
   - {fileID: -2044943071864256227}
-  - {fileID: 592354476874416026}
+  - {fileID: 5710770165276516670}
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
@@ -1368,7 +1368,7 @@ AnimatorController:
   - serializedVersion: 5
     m_Name: Throw Layer
     m_StateMachine: {fileID: -6749894945375015513}
-    m_Mask: {fileID: 31900000, guid: 8f8daa9c7548c0449b43713b5389047a, type: 2}
+    m_Mask: {fileID: 31900000, guid: 5a62591044dc8144ab1057ba13da87ca, type: 2}
     m_Motions: []
     m_Behaviours: []
     m_BlendingMode: 0
@@ -1695,7 +1695,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a0e769745e729f4bbe0708b7ab16edf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerAttack: {fileID: 0}
+  _currentWeapon: {fileID: 0}
 --- !u!1102 &4781476129088297508
 AnimatorState:
   serializedVersion: 6
@@ -1800,6 +1800,31 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1101 &5710770165276516670
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 1
+    m_ConditionEvent: IsClimb
+    m_EventTreshold: 0
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: 6242138491612206149}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0.25
+  m_TransitionOffset: 0
+  m_ExitTime: 0.8684211
+  m_HasExitTime: 0
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 1
 --- !u!1101 &5806339187760352365
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -1888,10 +1913,7 @@ AnimatorStateTransition:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: 
-  m_Conditions:
-  - m_ConditionMode: 1
-    m_ConditionEvent: IsAim
-    m_EventTreshold: 0
+  m_Conditions: []
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -6652023582591467940}
   m_Solo: 0

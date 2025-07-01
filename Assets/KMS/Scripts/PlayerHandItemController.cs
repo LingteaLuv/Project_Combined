@@ -46,7 +46,6 @@ public class PlayerHandItemController : MonoBehaviour
         _playerAttack = UISceneLoader.Instance.Playerattack;
         _animator = _playerAttack.GetComponent<Animator>();
         Debug.Log(_playerAttack);
-        Debug.Log(_playerAttack._right_Hand_target);
         Right = PlayerWeaponManager.Instance._right_Hand_target.transform;
         Left = PlayerWeaponManager.Instance._left_Hand_target.transform;
     }
@@ -123,11 +122,14 @@ public class PlayerHandItemController : MonoBehaviour
     private IEnumerator UW() // 약간 지연 필요
     {
         yield return new WaitForEndOfFrame();
-        if (_model.InvItems[_control.EquippedSlotIndex[0]] != null)
+        if (_control.EquippedSlotIndex[0] != -1)
         {
-            if (_model.InvItems[_control.EquippedSlotIndex[0]].Data.Type == ItemType.Gun) //만약 들린게 총이면
+            if (_model.InvItems[_control.EquippedSlotIndex[0]] != null)
             {
-                CurrentRightItem.GetComponent<GunWeaponBase>()._item = _model.InvItems[_control.EquippedSlotIndex[0]]; //Item정보를 줌(현재탄약수등)
+                if (_model.InvItems[_control.EquippedSlotIndex[0]].Data.Type == ItemType.Gun) //만약 들린게 총이면
+                {
+                    CurrentRightItem.GetComponent<GunWeaponBase>()._item = _model.InvItems[_control.EquippedSlotIndex[0]]; //Item정보를 줌(현재탄약수등)
+                }
             }
         }
         //생성된 프리팹의 정보를 받도록
