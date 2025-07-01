@@ -156,6 +156,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player 2
       objectReference: {fileID: 0}
+    - target: {fileID: 1445429338377079032, guid: 767b841270b372a4880d8fe8acf04ae1, type: 3}
+      propertyPath: m_IgnoreTag
+      value: Weapon
+      objectReference: {fileID: 0}
+    - target: {fileID: 1445429338377079032, guid: 767b841270b372a4880d8fe8acf04ae1, type: 3}
+      propertyPath: m_CollideAgainst.m_Bits
+      value: 16590
+      objectReference: {fileID: 0}
     - target: {fileID: 8042063570979225412, guid: 767b841270b372a4880d8fe8acf04ae1, type: 3}
       propertyPath: _playerCam
       value: 
@@ -174,7 +182,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9006626092610377214, guid: 767b841270b372a4880d8fe8acf04ae1, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -225
+      value: -290
       objectReference: {fileID: 0}
     - target: {fileID: 9006626092610377214, guid: 767b841270b372a4880d8fe8acf04ae1, type: 3}
       propertyPath: m_LocalRotation.w
@@ -846,7 +854,7 @@ Transform:
   m_GameObject: {fileID: 785100889}
   serializedVersion: 2
   m_LocalRotation: {x: -0.23613158, y: 0.0010632384, z: 0.00025837074, w: 0.9717205}
-  m_LocalPosition: {x: 0, y: 0, z: -228}
+  m_LocalPosition: {x: 0, y: 0, z: -293}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1495,7 +1503,7 @@ GameObject:
   - component: {fileID: 1426233792}
   - component: {fileID: 1426233791}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Ladder
   m_TagString: Ladder
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2358,10 +2366,10 @@ SceneRoots:
   - {fileID: 2680733720150146159}
   - {fileID: 100217704}
   - {fileID: 1118514366}
-  - {fileID: 901851607}
   - {fileID: 2010076223}
   - {fileID: 1426233792}
   - {fileID: 1173915233}
+  - {fileID: 901851607}
   - {fileID: 868323040}
   - {fileID: 1071987639}
   - {fileID: 1343882796}
