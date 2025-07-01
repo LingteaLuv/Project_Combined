@@ -50,6 +50,7 @@ public class Monster_Chase : MonsterState_temp
         Debug.Log("체이싱 상태 진입");
         _missingTime = 0f;
 
+        // 몬스터 애니메이션 용 방어코드
         if (monster.Ani != null)
         {
             monster.Ani.ResetTrigger("Attack");
@@ -58,6 +59,7 @@ public class Monster_Chase : MonsterState_temp
             
         }
 
+        // 어젠트 방어 - 어젠트 속도 조절/ 공격을 위해 몬스터가 목적지와의 멈출 간격/ 몬스터 이동
         if (_agent != null)
         {
             _agent.speed = monster.ChaseMoveSpeed;

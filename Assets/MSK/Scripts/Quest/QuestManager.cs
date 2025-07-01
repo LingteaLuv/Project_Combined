@@ -18,11 +18,7 @@ public class QuestManager : Singleton<QuestManager>
     /// <summary>
     /// 전체 퀘스트의 플레이어별 진행 상태 리스트입니다.
     /// </summary>
-    public List<QuestProgress> ProgressList { get; private set; } = new List<QuestProgress>();
-
-    // 내부 캐싱용 딕셔너리 (ID→퀘스트)
-    private Dictionary<int, QuestData> questMetaDict = new Dictionary<int, QuestData>();
-    private Dictionary<int, QuestProgress> questProgressDict = new Dictionary<int, QuestProgress>();
+    private Dictionary<string, QuestData> _questDictionary = new Dictionary<string, QuestData>();
 
     /// <summary>
     /// 플레이어의 현재 챕터(비트 플래그)
@@ -45,53 +41,16 @@ public class QuestManager : Singleton<QuestManager>
     public void LoadQuestMeta(List<QuestData> questList)
     {
         AllQuests = questList ?? new List<QuestData>();
-        questMetaDict = AllQuests.ToDictionary(q => q.QuestID);
+        _questDictionary = AllQuests.ToDictionary(q => q.QuestID);
+        //UpdateQuestStates();
     }
 
     /// <summary>
     /// 전체 퀘스트의 플레이어별 진행 데이터 리스트를 등록/초기화합니다.
     /// </summary>
-    /// <param name="progressList">등록할 진행 데이터 리스트</param>
-    public void LoadQuestProgress(List<QuestProgress> progressList)
-    {
-        ProgressList = progressList ?? new List<QuestProgress>();
-        questProgressDict = ProgressList.ToDictionary(qp => qp.QuestID);
-    }
-
-    /// <summary>
-    /// 퀘스트 메타(설계) 정보를 퀘스트ID로 반환합니다.
-    /// </summary>
-    /// <param name="questId">퀘스트ID</param>
-    /// <returns>QuestData 또는 null</returns>
-    public QuestData GetQuestMeta(int questId) =>
-        questMetaDict.TryGetValue(questId, out var meta) ? meta : null;
-
-    /// <summary>
-    /// 퀘스트 진행(플레이어 상태) 정보를 퀘스트ID로 반환합니다.
-    /// </summary>
-    /// <param name="questId">퀘스트ID</param>
-    /// <returns>QuestProgress 또는 null</returns>
-    public QuestProgress GetProgress(int questId) =>
-        questProgressDict.TryGetValue(questId, out var progress) ? progress : null;
-
-    /// <summary>
-    /// 상태별(예: Available/Completed 등) 퀘스트 메타 리스트를 반환합니다.
-    /// </summary>
-    /// <param name="status">필터할 퀘스트 상태</param>
-    /// <returns>상태별 QuestData 리스트</returns>
-    public List<QuestData> GetQuestsByStatus(QuestStatus status)
-    {
-        return ProgressList
-            .Where(qp => qp.Status == status)
-            .Select(qp => GetQuestMeta(qp.QuestID)).Where(meta => meta != null).ToList();
-    }
-
-    /// <summary>
-    /// 퀘스트를 수락(진행 상태로 변경)합니다.
-    /// </summary>
-    /// <param name="questId">수락할 퀘스트ID</param>
-    /// <returns>성공 시 true, 실패 시 false</returns>
-    public bool AcceptQuest(int questId)
+    /// <param name="questId">수락할 퀘스트 ID</param>
+    /// <returns>성공 시 true</returns>
+    public bool AcceptQuest(string questId)
     {
         var meta = GetQuestMeta(questId);
         var progress = GetProgress(questId);
@@ -106,27 +65,28 @@ public class QuestManager : Singleton<QuestManager>
     /// <summary>
     /// 퀘스트를 완료(Completed) 상태로 변경합니다.
     /// </summary>
-    /// <param name="questId">완료할 퀘스트ID</param>
-    /// <returns>성공 시 true, 실패 시 false</returns>
-    public bool CompleteQuest(int questId)
+    /// <param name="questId">완료할 퀘스트 ID</param>
+    /// <returns>성공 시 true</returns>
+    public bool CompleteQuest(string questId)
     {
         var meta = GetQuestMeta(questId);
         var progress = GetProgress(questId);
         if (meta == null || progress == null || progress.Status != QuestStatus.Active)
             return false;
-        progress.Status = QuestStatus.Completed;
-        OnQuestCompleted?.Invoke(meta, progress);
-        UpdateQuestUnlockStates();
-        SaveProgress();
+
+        quest.Status = QuestStatus.Completed;
+        OnQuestCompleted?.Invoke(quest);
+        // TODO: 보상 지급, 후속 퀘스트 해금, 세이브 등
+        //UpdateQuestStates(); // 완료 후 해금 갱신
         return true;
     }
 
     /// <summary>
     /// 퀘스트 보상을 수령 처리합니다.
     /// </summary>
-    /// <param name="questId">보상받을 퀘스트ID</param>
-    /// <returns>성공 시 true, 실패 시 false</returns>
-    public bool ClaimReward(int questId)
+    /// <param name="questId">실패 처리할 퀘스트 ID</param>
+    /// <returns>성공 시 true</returns>
+    public bool FailQuest(string questId)
     {
         var meta = GetQuestMeta(questId);
         var progress = GetProgress(questId);
@@ -141,36 +101,19 @@ public class QuestManager : Singleton<QuestManager>
     /// <summary>
     /// 챕터/선행퀘스트 해금 조건을 만족하는 퀘스트를 Available로 갱신합니다.
     /// </summary>
-    public void UpdateQuestUnlockStates()
+    public void UpdateQuestStates(QuestData quest)
     {
-        foreach (var progress in ProgressList)
+        if (quest.Status == QuestStatus.Locked)
         {
-            var meta = GetQuestMeta(progress.QuestID);
-            if (progress.Status == QuestStatus.Locked && meta != null && IsQuestUnlockable(meta))
-                progress.Status = QuestStatus.Available;
+            quest.Status = QuestStatus.Available;
+            // TODO: 해금 알림, UI 표시 등
         }
     }
 
     /// <summary>
     /// 해당 퀘스트가 해금(Available) 조건을 만족하는지 판별합니다.
     /// </summary>
-    /// <param name="meta">퀘스트 메타 정보</param>
-    /// <returns>해금 가능하면 true</returns>
-    private bool IsQuestUnlockable(QuestData meta)
-    {
-        if (!meta.IsChapterUnlocked(CurrentChapter))
-            return false;
-        if (meta.PrerequisiteQuestIDs != null && meta.PrerequisiteQuestIDs.Any(id => !IsQuestCompleted(id)))
-            return false;
-        return true;
-    }
-
-    /// <summary>
-    /// 퀘스트가 Completed 상태인지 확인합니다.
-    /// </summary>
-    /// <param name="questId">퀘스트ID</param>
-    /// <returns>완료 상태면 true</returns>
-    public bool IsQuestCompleted(int questId)
+    public bool IsQuestCompleted(string questId)
     {
         var progress = GetProgress(questId);
         return progress != null && progress.Status == QuestStatus.Completed;
@@ -179,9 +122,7 @@ public class QuestManager : Singleton<QuestManager>
     /// <summary>
     /// 퀘스트 목표 진행(GoalCount) 증가. 처치/수집 등에서 호출.
     /// </summary>
-    /// <param name="questId">퀘스트ID</param>
-    /// <param name="amount">증가 수치(기본 1)</param>
-    public void AddGoalCount(int questId, int amount = 1)
+    private QuestData GetQuestById(string questId)
     {
         var progress = GetProgress(questId);
         var meta = GetQuestMeta(questId);
@@ -196,37 +137,5 @@ public class QuestManager : Singleton<QuestManager>
     /// <summary>
     /// 퀘스트 진행 정보를 Json 파일로 저장합니다.
     /// </summary>
-    public void SaveProgress()
-    {
-        var json = JsonUtility.ToJson(new QuestProgressListWrapper(ProgressList));
-        System.IO.File.WriteAllText(SavePath, json);
-    }
-
-    /// <summary>
-    /// Json 파일에서 퀘스트 진행 정보를 불러옵니다.
-    /// </summary>
-    public void LoadProgressFromFile()
-    {
-        if (System.IO.File.Exists(SavePath))
-        {
-            var json = System.IO.File.ReadAllText(SavePath);
-            var wrapper = JsonUtility.FromJson<QuestProgressListWrapper>(json);
-            LoadQuestProgress(wrapper.progressList);
-        }
-    }
-
-    /// <summary>
-    /// 퀘스트 진행 저장 파일 경로
-    /// </summary>
-    private string SavePath => $"{Application.persistentDataPath}/quest_progress.json";
-
-    /// <summary>
-    /// Json 저장/로드용 래퍼 클래스
-    /// </summary>
-    [Serializable]
-    private class QuestProgressListWrapper
-    {
-        public List<QuestProgress> progressList;
-        public QuestProgressListWrapper(List<QuestProgress> list) { progressList = list; }
-    }
+    //private bool CanUnlockQuest(QuestData quest)
 }

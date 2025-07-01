@@ -7,7 +7,6 @@ using UnityEngine;
 /// </summary>
 public static class AnimatorUtil 
 {
-
     /// <summary>
     /// 특정 레이어의 가중치를 즉시 설정
     /// </summary>

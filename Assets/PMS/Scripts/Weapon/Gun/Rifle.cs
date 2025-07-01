@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Rifle : GunWeaponBase 
 {
+    [SerializeField] private Animator _animator;
     private void Awake()
     {
         Init();     //나중에 플레이어 해당 사용할려고 할 때
@@ -16,35 +17,44 @@ public class Rifle : GunWeaponBase
 
     private void Update()
     {
-        if(Input.GetMouseButtonDown(0))
+        if (_animator.GetBool("IsAim") == true)
         {
-            Attack();
-        }
-        // 마우스 우클릭을 누르는 순간 (조준 시작)
-        if (Input.GetMouseButtonDown(1))
-        {
-            // 총알 궤적 미리보기를 위한 로직 (옵션)
-            _lineRenderer.enabled = true; // 라인 렌더러 활성화
-            GameObject bulletObj = _gunBulletObjectPool.GetInactive(); // 궤적 미리보기를 위해 임시 객체 가져오기 (실제 발사 아님)
-            UpdateTrajectory(bulletObj, bulletObj.GetComponent<BulletBase>()._speed); // 궤적 업데이트
-        }
-        // 마우스 우클릭이 눌려 있는 동안 (조준 유지)
-        if (Input.GetMouseButton(1))
-        {           
-            // 여기서는 궤적 미리보기를 계속 업데이트
-            if (_lineRenderer != null && showTrajectory) // showTrajectory 변수를 활용하여 궤적 표시 여부 제어
+            if (Input.GetMouseButtonDown(0))
             {
-                _lineRenderer.enabled = true; // 라인 렌더러 활성화
-                UpdateTrajectory(null, _bulletPrefab.GetComponent<BulletBase>()._speed); // 궤적 미리보기 업데이트
+                Attack();
             }
-        }
-        // 마우스 우클릭을 떼는 순간 (조준 해제)
-        if (Input.GetMouseButtonUp(1))
-        {
-            if (_lineRenderer != null)
+            // 마우스 우클릭을 누르는 순간 (조준 시작)
+            if (Input.GetMouseButtonDown(1))
             {
-                _lineRenderer.enabled = false; // 라인 렌더러 비활성화
-                _lineRenderer.positionCount = 0; // 혹시 모를 잔상을 위해 정점 개수를 0으로 설정
+                // 총알 궤적 미리보기를 위한 로직 (옵션)
+
+                _lineRenderer.enabled = true; // 라인 렌더러 활성화
+                GameObject bulletObj = _gunBulletObjectPool.GetInactive(); // 궤적 미리보기를 위해 임시 객체 가져오기 (실제 발사 아님)
+                UpdateTrajectory(bulletObj, bulletObj.GetComponent<BulletBase>()._speed); // 궤적 업데이트
+            }
+            // 마우스 우클릭이 눌려 있는 동안 (조준 유지)
+            if (Input.GetMouseButton(1))
+            {
+                // 여기서는 궤적 미리보기를 계속 업데이트
+                if (_lineRenderer != null && showTrajectory) // showTrajectory 변수를 활용하여 궤적 표시 여부 제어
+                {
+                    _lineRenderer.enabled = true; // 라인 렌더러 활성화
+                    UpdateTrajectory(null, _bulletPrefab.GetComponent<BulletBase>()._speed); // 궤적 미리보기 업데이트
+                }
+                if (Input.GetMouseButtonUp(0))
+                {
+                    Attack();
+                }
+            }
+            // 마우스 우클릭을 떼는 순간 (조준 해제)
+            if (Input.GetMouseButtonUp(1))
+            {
+                if (_lineRenderer != null)
+                {
+                    _lineRenderer.enabled = false; // 라인 렌더러 비활성화
+                    _lineRenderer.positionCount = 0; // 혹시 모를 잔상을 위해 정점 개수를 0으로 설정
+                }
+                _animator.SetBool("IsAim", false);
             }
         }
 

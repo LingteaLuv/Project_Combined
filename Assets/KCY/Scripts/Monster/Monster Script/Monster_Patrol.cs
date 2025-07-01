@@ -15,18 +15,17 @@ public class Monster_Patrol : MonsterState_temp
     public Transform SpawnPoint; // 제일 먼저 스폰하는 곳에서의 장소(해당 장소는 불변)
     public Transform TempPoint; // 이벤트 발생 - 해당 지역으로 가서 해당 장소에 그 이벤트를 발견해 처음 멈춰선 곳의, 상태 전환전에 현재의 포지션 값
     public Transform BasePoint; // 스폰과 템프의 중계역할을 할 예정, 처음은 스폰으로, 추적 후에는 템프로, 다시 돌아와서는 스폰으로
-    public float PatrolRadius; // 패트롤 반경 
+    public float PatrolRadius = 6f; // 패트롤 반경 
     private float _sightAngle; // 시야각 (패트롤 중에는 해당 시야각을 늘려줘야 한다.)
     public float LimitTryCount = 10f;
 
     // 60초 후엔 스폰 자리로 돌아가야 한다.
     public float SearchTime = 0f; // SpawnPoint로의 회귀 시간
-    public float SearchDuration = 60f;//
+    public float SearchDuration = 60f;//PatrolRadiu
 
     // 15초 간 머물러야 한다.
     public float StayTimer = 0f;
     public float StayDuration = 15f;
-
     private bool isHeadRot = false;
 
     private NavMeshAgent _agent;
@@ -47,6 +46,8 @@ public class Monster_Patrol : MonsterState_temp
         // 나중에 피드백 받고 수정할 것
         _sightAngle = monster.SightAngle * 1.5f;
 
+        Debug.Log($"[패트롤 Init] BasePoint: {BasePoint?.name}, 위치: {BasePoint?.position}");
+
         // 유효성 검사(에이전트 보유, 내비 이탈 - 다음을 리턴)
         if (_agent == null || !_agent.isOnNavMesh)
         {
@@ -61,6 +62,10 @@ public class Monster_Patrol : MonsterState_temp
         if (RandomPatrolPoint(out Vector3 startPos))
         {
             _agent.SetDestination(startPos);
+        }
+        else
+        {
+            Debug.LogWarning("Patrol 위치 생성 실패 → 다음 프레임에 재시도");
         }
 
     }
@@ -85,16 +90,30 @@ public class Monster_Patrol : MonsterState_temp
         {
             // 반지름이 PartolRadius 인 원에 임의의 점을 반환하고  해당 점의 좌표를  xz좌표로 반환한다.
             Vector2 randomPatrolpoint = Random.insideUnitCircle * PatrolRadius;
+
+            Vector3 basePos = BasePoint.position;
+            basePos.y = 0f;
             Vector3 destination = BasePoint.position + new Vector3(randomPatrolpoint.x, 0, randomPatrolpoint.y);
 
+            Debug.Log($"[🟡 시도 {i + 1}] 생성된 점: {destination}");
+
             // destination 이치 근처 내비메쉬 확인하고 해당 내비의 위치를 인자로 반환 
-            if (NavMesh.SamplePosition(destination, out NavMeshHit hit, 2f, NavMesh.AllAreas))
+            if (NavMesh.SamplePosition(destination, out NavMeshHit hit, 4f, NavMesh.AllAreas))
             {
+                Debug.Log($"[🟢 유효한 내비 위치]: {hit.position}");
+
                 // 해당 점이 내비위에 있어도 갈 수 없으면 고장난다 따라서 해당 점으로 진짜 갈 수 있는지 유효성 검사
                 if (_agent.CalculatePath(hit.position, path) && path.status == NavMeshPathStatus.PathComplete)
                 {
+                    Debug.Log($"패트롤 성공 목적지: {hit.position}");
                     result = hit.position;
+                    result.y = monster.transform.position.y;
+                    Debug.Log($"[✅ 패트롤 목적지 확정]: {result}");
                     return true;
+                }
+                else
+                {
+                    Debug.Log("경로 계산 실패");
                 }
             }
         }
@@ -161,11 +180,16 @@ public class Monster_Patrol : MonsterState_temp
         // 목적지에 거의 다 왔을 경우 다음 목적지로
         if (_agent.remainingDistance <= _compareDis && _agent.velocity.sqrMagnitude <= 0.01f)
         {
+            // 목적지에 다왔을 때 정지해 있는 모션
+            monster.Ani.SetBool("isPatrol", false);
+
+
             // 고개 돌리기 (10초 마다)_ 대충 해당 시간 안에 고개 돌리고 봐야함
             if (StayTimer >= 5f && StayTimer <= 15f && !isHeadRot)
             {
                 monster.Ani.SetBool("isHeadTurn", true);
                 monster.Ani.SetTrigger("Turn");
+                monster.StartCoroutine(SmoothTurn(1f));
                 monster.transform.rotation = Quaternion.Euler(0, monster.transform.eulerAngles.y + 180f, 0);
                 monster.StartCoroutine(ResetHeadTurn());
                 isHeadRot = true;
@@ -187,6 +211,7 @@ public class Monster_Patrol : MonsterState_temp
                     _agent.SetDestination(nextPos);
                     Debug.DrawLine(BasePoint.position, nextPos, Color.green, 1f);
 
+                    monster.Ani.SetBool("isPatrol", true);
                     isHeadRot = false;
                 }
 
@@ -194,6 +219,22 @@ public class Monster_Patrol : MonsterState_temp
             }
         }
     }
+    private IEnumerator SmoothTurn(float duration = 1f)
+    {
+        Quaternion startRot = monster.transform.rotation;
+        Quaternion targetRot = startRot * Quaternion.Euler(0, 180f, 0);
+
+        float t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime / duration;
+            monster.transform.rotation = Quaternion.Slerp(startRot, targetRot, t);
+            yield return null;
+        }
+
+        monster.transform.rotation = targetRot; // 정확히 맞춰 마무리
+    }
+
     // 애니메이션 전용 코루틴, 고개 돌려야 해요/.
     private IEnumerator ResetHeadTurn()
     {
