@@ -29,7 +29,8 @@ public class DialogueManager : Singleton<DialogueManager>
     //  버튼 입력 전까지 대기상태
     private int _selectedNextId = -1;
     [SerializeField] private TextMeshProUGUI _npcName;
-    
+
+    private Coroutine _dialogueCoroutine;
     private WaitForSeconds _delay;
     private NPCDialogue _curNPC;
     
@@ -92,7 +93,11 @@ public class DialogueManager : Singleton<DialogueManager>
         // 현재 대화중인 NPC(_curNPC) 감지한 NPC로 설정
         _curNPC = npc;
         // 해당 NPC의 현재 대사를 출력하는 코루틴 호출
-        StartCoroutine(PrintOut());
+        if (_dialogueCoroutine == null)
+        {
+            _dialogueCoroutine = StartCoroutine(PrintOut());
+        }
+        
     }
 
     public Dictionary<int, int> GetDialogueFlow(string id)
@@ -119,6 +124,8 @@ public class DialogueManager : Singleton<DialogueManager>
         // startID를 DialogueDic가 가지는지 확인하고, 해당 Dialogue가 마지막일 때까지
         while (DialogueDic.ContainsKey(startId))
         {
+            //yield return new WaitWhile(() => Input.GetKey(KeyCode.F));
+            
             _npcName.text = NPCDic[DialogueDic[startId].NPCID].Name;
             
             // Dialogue 한글자씩 출력, F를 누르면 대사 한 번에 보이도록(스킵) 구현
@@ -150,13 +157,14 @@ public class DialogueManager : Singleton<DialogueManager>
         }
         yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.F));
         _dialogueCanvas.SetActive(false);
+        _dialogueCoroutine = null;
     }
 
     private bool SkipRequested()
     {
         return Input.GetKeyDown(KeyCode.Q);
     }
-
+    
     /// <summary>
     /// 대사와 선택지를 출력하고 분기 처리용 오버로드 함수
     /// </summary>
