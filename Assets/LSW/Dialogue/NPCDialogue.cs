@@ -60,21 +60,21 @@ public class NPCDialogue : MonoBehaviour
         }
     }
 
-    /*private void CheckTrigger()
+    private void CheckTrigger()
     {
-        if (_data.Trigger1 != null && DialogueManager.Instance.TriggerDic[_data.Trigger1] = true)
+        if (_data.Trigger1 != null && DialogueManager.Instance.TriggerDic[_data.Trigger1] == true)
         {
             _currentFlow = _data.Trigger1DialogueID;
         }
-        if (_data.Trigger2 != null && DialogueManager.Instance.TriggerDic[_data.Trigger2] = true)
+        if (_data.Trigger2 != null && DialogueManager.Instance.TriggerDic[_data.Trigger2] == true)
         {
             _currentFlow = _data.Trigger2DialogueID;
         }
-        if (_data.Trigger3 != null && DialogueManager.Instance.TriggerDic[_data.Trigger3] = true)
+        if (_data.Trigger3 != null && DialogueManager.Instance.TriggerDic[_data.Trigger3] == true)
         {
             _currentFlow = _data.Trigger3DialogueID;
         }
-    }*/
+    }
     
     public void CheckLoop(int id)
     {
