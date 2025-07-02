@@ -5,24 +5,63 @@ using UnityEditor;
 
 public class CreateQuestSO : EditorWindow
 {
-    private TextAsset _csvFile;
+    private TextAsset _questFile;
+    private TextAsset _choiceFile;
+    private TextAsset _dialogueFile;
+    private TextAsset _npcFile;
 
-    [MenuItem("Tools/CSV to Quest")]
+    [MenuItem("Tools/CSV to Quest/Dialogue/NPC")]
     public static void ShowWindow()
     {
-        GetWindow<CreateQuestSO>("CSV to Quest");
+        GetWindow<CreateQuestSO>("CSV to Quest/Dialogue/NPC");
     }
 
     private void OnGUI()
     {
         GUILayout.Label("CSV To Quest Generator", EditorStyles.boldLabel);
-        _csvFile = (TextAsset)EditorGUILayout.ObjectField("Quest CSV", _csvFile, typeof(TextAsset), false);
+        _questFile = (TextAsset)EditorGUILayout.ObjectField("Quest CSV", _questFile, typeof(TextAsset), false);
+        _choiceFile = (TextAsset)EditorGUILayout.ObjectField("Choice CSV", _choiceFile, typeof(TextAsset), false);
+        _dialogueFile = (TextAsset)EditorGUILayout.ObjectField("Dialogue CSV", _dialogueFile, typeof(TextAsset), false);
+        _npcFile = (TextAsset)EditorGUILayout.ObjectField("NPC CSV", _npcFile, typeof(TextAsset), false);
 
         if (GUILayout.Button("Generate Quest"))
         {
-            if (_csvFile != null)
+            if (_questFile != null)
             {
                 CreateQuestFromCSV();
+            }
+            else
+            {
+                Debug.LogWarning("CSV 파일이 지정되지 않았습니다.");
+            }
+        }
+        if (GUILayout.Button("Generate Choice"))
+        {
+            if (_choiceFile != null)
+            {
+                CreateChoiceFromCSV();
+            }
+            else
+            {
+                Debug.LogWarning("CSV 파일이 지정되지 않았습니다.");
+            }
+        }
+        if (GUILayout.Button("Generate Dialogue"))
+        {
+            if (_dialogueFile != null)
+            {
+                CreateDialogueFromCSV();
+            }
+            else
+            {
+                Debug.LogWarning("CSV 파일이 지정되지 않았습니다.");
+            }
+        }
+        if (GUILayout.Button("Generate NPC"))
+        {
+            if (_npcFile != null)
+            {
+                CreateNPCFromCSV();
             }
             else
             {
@@ -33,8 +72,8 @@ public class CreateQuestSO : EditorWindow
     
     private void CreateQuestFromCSV()
     {
-        if (_csvFile == null) return;
-        string[] lines = _csvFile.text.Split('\n');
+        if (_questFile == null) return;
+        string[] lines = _questFile.text.Split('\n');
 
         string folderPath = "Assets/ScriptableObjects/Quest";
         if (!AssetDatabase.IsValidFolder(folderPath))
@@ -89,5 +128,54 @@ public class CreateQuestSO : EditorWindow
         }
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
+    }
+
+    private void CreateChoiceFromCSV()
+    {
+        if (_questFile == null) return;
+        string[] lines = _questFile.text.Split('\n');
+
+        string folderPath = "Assets/ScriptableObjects/Choice";
+        if (!AssetDatabase.IsValidFolder(folderPath))
+        {
+            AssetDatabase.CreateFolder("Assets/ScriptableObjects","Choice");
+        }
+
+        for (int i = 1; i < lines.Length; i++)
+        {
+            // 문장의 앞,뒤 공백 제거
+            string line = lines[i].Trim();
+
+            // 공백을 제거했을 때 아무 것도 없는 경우 스킵
+            if (string.IsNullOrEmpty(line)) continue;
+
+            // 문장을 ,(쉼표)로 구분
+            string[] parts = line.Split(',');
+            
+            DialogueChoiceSO choice = ScriptableObject.CreateInstance<DialogueChoiceSO>();
+            
+            string choiceId = parts[0];
+            choice.DialogueChoiceID = choiceId;
+            
+            choice.Number1 = parts[1];
+            choice.NextDialogue1ID = int.Parse(parts[2]);
+            choice.Number2 = parts[3];
+            choice.NextDialogue2ID = int.Parse(parts[4]);
+            choice.Number3 = parts[5];
+            choice.NextDialogue3ID = int.Parse(parts[6]);
+            
+            string assetPath = $"{folderPath}/Choice_{choiceId}.Asset";
+            AssetDatabase.CreateAsset(choice, assetPath);
+        }
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+    }
+    
+    private void CreateDialogueFromCSV()
+    {
+    }
+    
+    private void CreateNPCFromCSV()
+    {
     }
 }

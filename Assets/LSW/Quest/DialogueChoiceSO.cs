@@ -5,7 +5,7 @@ using UnityEngine;
 public class DialogueChoiceSO : ScriptableObject
 {
     // 선택지 그룹 ID
-    public int DialogueChoiceID;
+    public string DialogueChoiceID;
     // 선택지 대사
     public string Number1;
     // 선택지 선택시 다음 대사

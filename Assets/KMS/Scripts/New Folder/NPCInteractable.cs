@@ -12,10 +12,10 @@ public enum NPCState
 }
 public class NPCInteractable : MonoBehaviour
 {
-    [SerializeField] NPCSO _data;
+    [SerializeField] public NPCDialogue Dialogue;
 
-    [SerializeField] GameObject _ballon;
-    [SerializeField] TMP_Text _ballonText;
+    [SerializeField] private GameObject _ballon;
+    [SerializeField] private TMP_Text _ballonText;
 
     public Property<NPCState> State = new Property<NPCState>(NPCState.Normal);
 

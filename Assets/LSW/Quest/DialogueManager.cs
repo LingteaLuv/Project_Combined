@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -24,7 +25,7 @@ public class DialogueManager : Singleton<DialogueManager>
     private NPCDialogue _curNPC;
     
     public Dictionary<int, DialogueSO> DialogueDic { get; private set; }
-    public Dictionary<int, DialogueChoiceSO> ChoiceDic { get; private set; }
+    public Dictionary<string, DialogueChoiceSO> ChoiceDic { get; private set; }
 
     public Dictionary<string, NPCSO> NPCDic { get; private set; }
     
@@ -47,7 +48,7 @@ public class DialogueManager : Singleton<DialogueManager>
         }
         _delay = new WaitForSeconds(0.05f);
 
-        ChoiceDic = new Dictionary<int, DialogueChoiceSO>();
+        ChoiceDic = new Dictionary<string, DialogueChoiceSO>();
         foreach (var c in _choicesDialogues)
             ChoiceDic.Add(c.DialogueChoiceID, c);
         HideAllButtons();
@@ -70,7 +71,7 @@ public class DialogueManager : Singleton<DialogueManager>
         Dictionary<int, int> dic = new Dictionary<int, int>();
         foreach (var dialogue in DialogueDic.Values)
         {
-            if (dialogue.NPCID == id)
+            if (dialogue.NPCID == id && dialogue.LoofDialogueID != 0)
             {
                 dic.Add(dialogue.DialogueID,dialogue.LoofDialogueID);
             }
@@ -82,12 +83,11 @@ public class DialogueManager : Singleton<DialogueManager>
     {
         // NPC가 담당하는 퀘스트를 확인하여 관련 대사를 출력해야하는지 확인 
         _curNPC.CheckQuest(QuestManager.Instance.QuestDictionary);
-        
         // 시작 대사 ID를 현재 대사로 설정 
         int startId = _curNPC.CurrentDialogueID;
-        _curNPC.CheckLoop(startId);
+        
         // startID를 DialogueDic가 가지는지 확인하고, 해당 Dialogue가 마지막일 때까지
-        while (DialogueDic.ContainsKey(startId) && !DialogueDic[startId].EndCheck)
+        while (DialogueDic.ContainsKey(startId))
         {
             _npcName.text = NPCDic[DialogueDic[startId].NPCID].Name;
             
@@ -95,10 +95,28 @@ public class DialogueManager : Singleton<DialogueManager>
             yield return ScriptSetting.WriteWords(_scriptScreen, DialogueDic[startId].DialogueText, _delay, () => SkipRequested());
             
             // 다음 대사 ID 변경
-            startId = DialogueDic[startId].LoofDialogueID;
-            
-            // 플레이어 입력까지 대기(F)
-            yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.F));
+            if (!String.IsNullOrEmpty(DialogueDic[startId].DialogueChoiceID))
+            {
+                DialogueChoiceSO choice = ChoiceDic[DialogueDic[startId].DialogueChoiceID];
+                ShowChoiceButtons(choice);
+                _selectedNextId = -1;
+                yield return new WaitUntil(() => _selectedNextId != -1);
+                startId = _selectedNextId;
+            }
+            else
+            {
+                if (DialogueDic[startId].EndCheck)
+                {
+                    _curNPC.CheckLoop(startId);
+                    break;
+                }
+                else
+                {
+                    startId++;
+                }
+                // 플레이어 입력까지 대기(F)
+                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.F));
+            }
         }
     }
 
