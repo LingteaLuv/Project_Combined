@@ -39,7 +39,7 @@ public class NPCDialogue : MonoBehaviour
     }
     private void CheckQuest(Dictionary<string,QuestData> playerQuest)
     {
-        for (int i = 0; i < _endQuest.Count; i++)
+        for (int i = 1; i < _endQuest.Count; i++)
         {
             if (playerQuest[_endQuest[i]].Status == QuestStatus.Completed)
             {
