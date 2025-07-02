@@ -18,7 +18,7 @@ public class ItemConsumeManage : MonoBehaviour
         _model = GetComponent<InventoryModel>();
         _consume = UISceneLoader.Instance.Playerattack.GetComponent<IConsumeHandler>();
     }
-    public void Consume()
+    public void Consume() // 착용한 소모품을 아예 지워버림
     {
         //현재 오른손 아이템 확인해서 소모템이면 지우고, 착용템 사라졌을때 처리, 효과 적용
         if (_control.EquippedSlotIndex[0] == -1) return; //오른손 할당없음

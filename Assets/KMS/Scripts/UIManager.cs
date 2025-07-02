@@ -92,6 +92,7 @@ public class UIManager : SingletonT<UIManager>
         IsUIOpened.OnChanged += SetCursorLock;
         IsUIOpened.OnChanged += SetCameraLock;
         IsUIOpened.OnChanged += SetMoveLock;
+        IsUIOpened.OnChanged += SetAttackLock;
         SetCursorLock(IsUIOpened.Value);
     }
     private void SetMoveLock(bool b)
@@ -148,7 +149,6 @@ public class UIManager : SingletonT<UIManager>
     private void Update()
     {
         if (_UILock) return;
-        if (UISceneLoader.Instance.Playerattack.IsAttacking) return; // 공격 중에 불가
         if (Input.GetKeyDown(KeyCode.Escape)) CloseUI();
         if (Input.GetKeyDown(KeyCode.I))
         {
@@ -171,6 +171,7 @@ public class UIManager : SingletonT<UIManager>
     public void OpenUI(ModalUI cur)
     {
         if (IsUIOpened.Value) return; //다른게 열려있음
+        if (UISceneLoader.Instance.Playerattack.IsAttacking) return; // 공격 중에 불가
         IsUIOpened.Value = true;
         ModalBase.SetActive(true);
         Current = cur;
