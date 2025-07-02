@@ -34,7 +34,24 @@ public class QuestManager : Singleton<QuestManager>
     public event Action<QuestData, QuestProgress> OnQuestRewardClaimed;
     #endregion
 
+    public Dictionary<string, string> TriggerDictionary { get; private set; }
 
+    protected override void Awake()
+    {
+        base.Awake();
+        Init();
+    }
+    
+    private void Init()
+    {
+        TriggerDictionary = new Dictionary<string, string>();
+        for (int i = 0; i < AllQuests.Count; i++)
+        {
+            TriggerDictionary.Add(AllQuests[i].TriggerID1,AllQuests[i].QuestID);
+            TriggerDictionary.Add(AllQuests[i].TriggerID2,AllQuests[i].QuestID);
+        }
+    }
+    
     /// <summary>
     /// Npc에게 조건에 부합하는 퀘스트를 Npc 리스트로 전달 => key를 전달하도록 수정
     /// </summary>
