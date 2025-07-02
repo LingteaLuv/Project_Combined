@@ -31,7 +31,13 @@ public class NPCDialogue : MonoBehaviour
     }
     
     // 퀘스트 매니저 => 퀘스트를 관리하는 Dictionary
-    public void CheckQuest(Dictionary<string,QuestData> playerQuest)
+    public void CheckDialogue(Dictionary<string,QuestData> playerQuest)
+    {
+        CheckQuest(playerQuest);
+        //CheckTrigger();
+        Init();
+    }
+    private void CheckQuest(Dictionary<string,QuestData> playerQuest)
     {
         for (int i = 0; i < _endQuest.Count; i++)
         {
@@ -52,9 +58,24 @@ public class NPCDialogue : MonoBehaviour
                 return;
             }
         }
-        Init();
     }
 
+    private void CheckTrigger()
+    {
+        if (_data.Trigger1 != null && DialogueManager.Instance.TriggerDic[_data.Trigger1] == true)
+        {
+            _currentFlow = _data.Trigger1DialogueID;
+        }
+        if (_data.Trigger2 != null && DialogueManager.Instance.TriggerDic[_data.Trigger2] == true)
+        {
+            _currentFlow = _data.Trigger2DialogueID;
+        }
+        if (_data.Trigger3 != null && DialogueManager.Instance.TriggerDic[_data.Trigger3] == true)
+        {
+            _currentFlow = _data.Trigger3DialogueID;
+        }
+    }
+    
     public void CheckLoop(int id)
     {
         if (_dialogueFlow.TryGetValue(id, out int nextDialogueID))

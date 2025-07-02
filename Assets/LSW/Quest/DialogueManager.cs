@@ -10,7 +10,10 @@ public class DialogueManager : Singleton<DialogueManager>
 {
     [SerializeField] private List<DialogueSO> _dialogues;
     [SerializeField] private List<DialogueChoiceSO> _choicesDialogues;
+    [SerializeField] private List<NPCSO> _npc;
+    
     [SerializeField] private TextMeshProUGUI _scriptScreen;
+    [SerializeField] private GameObject _dialogueCanvas;
 
     [SerializeField] private GameObject _button1Obj;
     [SerializeField] private GameObject _button2Obj;
@@ -25,7 +28,6 @@ public class DialogueManager : Singleton<DialogueManager>
 
     //  버튼 입력 전까지 대기상태
     private int _selectedNextId = -1;
-    [SerializeField] private List<NPCSO> _npc;
     [SerializeField] private TextMeshProUGUI _npcName;
     
     private WaitForSeconds _delay;
@@ -34,6 +36,7 @@ public class DialogueManager : Singleton<DialogueManager>
     public Dictionary<int, DialogueSO> DialogueDic { get; private set; }
     public Dictionary<string, DialogueChoiceSO> ChoiceDic { get; private set; }
 
+    public Dictionary<string, bool> TriggerDic { get; private set; }
     public Dictionary<string, NPCSO> NPCDic { get; private set; }
     
     private void Awake()
@@ -45,6 +48,7 @@ public class DialogueManager : Singleton<DialogueManager>
     {
         DialogueDic = new Dictionary<int, DialogueSO>();
         NPCDic = new Dictionary<string, NPCSO>();
+        TriggerDic = new Dictionary<string, bool>();
         for (int i = 0; i < _dialogues.Count; i++)
         {
             DialogueDic.Add(_dialogues[i].DialogueID, _dialogues[i]);
@@ -53,6 +57,15 @@ public class DialogueManager : Singleton<DialogueManager>
         {
             NPCDic.Add(_npc[i].NPCID, _npc[i]);
         }
+
+        for (int i = 0; i < _dialogues.Count; i++)
+        {
+            if (!TriggerDic.ContainsKey(_dialogues[i].TriggerID))
+            {
+                TriggerDic.Add(_dialogues[i].TriggerID,false);
+            }
+        }
+        
         _delay = new WaitForSeconds(0.05f);
 
         ChoiceDic = new Dictionary<string, DialogueChoiceSO>();
@@ -67,6 +80,7 @@ public class DialogueManager : Singleton<DialogueManager>
         Button2Text = _button2Obj.GetComponentInChildren<TMP_Text>(true);
         Button3Text = _button3Obj.GetComponentInChildren<TMP_Text>(true);
         HideAllButtons();
+        _dialogueCanvas.SetActive(false);
     }
 
     /// <summary>
@@ -96,8 +110,9 @@ public class DialogueManager : Singleton<DialogueManager>
     
     private IEnumerator PrintOut()
     {
+        _dialogueCanvas.SetActive(true);
         // NPC가 담당하는 퀘스트를 확인하여 관련 대사를 출력해야하는지 확인 
-        _curNPC.CheckQuest(QuestManager.Instance.QuestDictionary);
+        _curNPC.CheckDialogue(QuestManager.Instance.QuestDictionary);
         // 시작 대사 ID를 현재 대사로 설정 
         int startId = _curNPC.CurrentDialogueID;
         
@@ -133,11 +148,13 @@ public class DialogueManager : Singleton<DialogueManager>
                 yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.F));
             }
         }
+        yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.F));
+        _dialogueCanvas.SetActive(false);
     }
 
     private bool SkipRequested()
     {
-        return Input.GetKeyDown(KeyCode.F);
+        return Input.GetKeyDown(KeyCode.Q);
     }
 
     /// <summary>
@@ -149,18 +166,17 @@ public class DialogueManager : Singleton<DialogueManager>
         DialogueSO dialogue = DialogueDic[dialogueId];
         yield return ScriptSetting.WriteWords(_scriptScreen, dialogue.DialogueText, new WaitForSeconds(0.05f), () => SkipRequested());
 
-            if (!String.IsNullOrEmpty(dialogue.DialogueChoiceID))
-            {
-                DialogueChoiceSO choice = ChoiceDic[dialogue.DialogueChoiceID];
-                ShowChoiceButtons(choice);
+        if (!String.IsNullOrEmpty(dialogue.DialogueChoiceID))
+        {
+            DialogueChoiceSO choice = ChoiceDic[dialogue.DialogueChoiceID];
+            ShowChoiceButtons(choice);
+            _selectedNextId = -1;
+                
+            yield return new WaitUntil(() => _selectedNextId != -1);
 
-                _selectedNextId = -1;
-
-                yield return new WaitUntil(() => _selectedNextId != -1);
-
-                yield return StartCoroutine(PrintOut(_selectedNextId));
-                yield break;
-            }
+            yield return StartCoroutine(PrintOut(_selectedNextId));
+            yield break;
+        }
 
         if (dialogue.EndCheck)
         {
@@ -187,6 +203,7 @@ public class DialogueManager : Singleton<DialogueManager>
         _button1Obj.SetActive(false);
         _button2Obj.SetActive(false);
         _button3Obj.SetActive(false);
+        _button1Obj.transform.parent.gameObject.SetActive(true);
     }
     /// <summary>
     /// 개별 버튼의 텍스트와 클릭 이벤트를 설정한다.

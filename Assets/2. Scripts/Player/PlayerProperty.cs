@@ -290,7 +290,7 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
         while (true)
         {
             yield return _delay;
-            Hp.Decrease(20f);
+            Hp.Decrease(damage);
         }
     }
 }
