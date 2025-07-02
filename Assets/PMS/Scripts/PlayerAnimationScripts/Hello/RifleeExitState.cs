@@ -11,7 +11,7 @@ public class RifleeExitState : StateMachineBehaviour
         {
             _playerAttack = animator.gameObject.GetComponent<PlayerAttack>();
         }
-        //_playerAttack._rifle.isAiming = false;
+        _playerAttack._rifle._lineRenderer.enabled = false;
     }
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {

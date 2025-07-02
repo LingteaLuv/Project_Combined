@@ -91,7 +91,7 @@ public class PlayerAttack : MonoBehaviour
         RightCurrentWeapon = PlayerWeaponManager.Instance.RightCurrentWeapon;
         _rifle = RightCurrentWeapon.GetComponent<Rifle>();
 
-        if(_rifle == null)
+        /*if(_rifle == null)
         {
             Debug.Log("참조가 안됨");
         }
@@ -116,12 +116,12 @@ public class PlayerAttack : MonoBehaviour
             {
                 RightCurrentWeapon.Attack();
             }
-        }
+        }*/
     }
 
-    private void ToggleAimMode()
+    public void ToggleAimMode()
     {
-        if (_rifle != null) return;
+        if (_rifle == null) return;
 
         if (_rifle.isAiming)
         {

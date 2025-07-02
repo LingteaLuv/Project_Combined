@@ -82,17 +82,17 @@ public class Rifle : GunWeaponBase
     public void StartAim()
     {
         isAiming = true;
-        _lineRenderer.enabled = true;
-        bulletObj = _gunBulletObjectPool.GetInactive();
-        UpdateTrajectory(bulletObj, _bulletPrefab.GetComponent<BulletBase>()._speed);
+        //UpdateTrajectory(bulletObj, _bulletPrefab.GetComponent<BulletBase>()._speed);
         _animator.SetBool("IsAim", true);
     }
 
     public void UpdateAim()
     {
+        if(_lineRenderer.enabled == false) _lineRenderer.enabled = true;
         if (_lineRenderer != null && showTrajectory)
         {
-            UpdateTrajectory(null, _bulletPrefab.GetComponent<BulletBase>()._speed);
+            bulletObj = _gunBulletObjectPool.GetInactive();
+            UpdateTrajectory(bulletObj, _bulletPrefab.GetComponent<BulletBase>()._speed);
         }
     }
 
@@ -101,7 +101,6 @@ public class Rifle : GunWeaponBase
         isAiming = false;
         _lineRenderer.enabled = false;
         _lineRenderer.positionCount = 0;
-        _animator.SetBool("IsAim", false);
     }
 
     /*
