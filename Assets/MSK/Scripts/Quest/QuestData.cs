@@ -24,4 +24,5 @@ public class QuestData :ScriptableObject
     public int RewardItemQuantity;            // 보상 아이템 수량
     
     public int NextQuestID;                   // 다음 연계 퀘스트 ID
+    public string EndDescription;
 }

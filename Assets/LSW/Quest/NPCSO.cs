@@ -7,6 +7,7 @@ public class NPCSO : ScriptableObject
 {
     public int NPCID;
 
+    public string Name;
     // 등장조건 
     public string NPCTriggerID;
     public int BasicDialogueID;

@@ -81,7 +81,8 @@ public class CreateQuestSO : EditorWindow
             quest.RequiredItemQuantity = int.Parse(parts[8]);
             quest.RewardItemID = parts[9];
             quest.RewardItemQuantity = int.Parse(parts[10]);
-            quest.NextQuestID = int.Parse(parts[11]); // => 0으로 요청
+            quest.NextQuestID = int.Parse(parts[11]);
+            quest.EndDescription = parts[12];// => 0으로 요청
             
             string assetPath = $"{folderPath}/Quest_{questId}.Asset";
             AssetDatabase.CreateAsset(quest, assetPath);
