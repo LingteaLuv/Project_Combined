@@ -88,9 +88,6 @@ public class PlayerMovement : MonoBehaviour
     
     private void FixedUpdate()
     {
-        //TODO : Test Key 지우기
-        if (TestKey)
-            MoveLock();
         if (!IsOnLadder)
         {
             HandleMovement(MoveInput); // 이동 처리
@@ -182,7 +179,7 @@ public class PlayerMovement : MonoBehaviour
 
     public bool CanJump()
     {
-        return !_jumpConsumedThisFrame && JumpPressed && IsGrounded && !IsJumpAnimationPlaying();
+        return CanMove && !_jumpConsumedThisFrame && JumpPressed && IsGrounded && !IsJumpAnimationPlaying();
     }
 
     public void Jump()
