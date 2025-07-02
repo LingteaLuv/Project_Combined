@@ -34,12 +34,14 @@ public class JagyungTimelineControl : MonoBehaviour
         UIManager.Instance.LockUIUpdate();
         UIManager.Instance.OffHUI();
         UIManager.Instance.OffQuickslot();
+        UISceneLoader.Instance.Playerattack.IsAttacking = true;
         _pm.MoveLock();
         _pcc.PauseCamera();
         yield return _wfs;
         UIManager.Instance.UnlockUIUpdate();
         UIManager.Instance.OffHUI();
         UIManager.Instance.OffQuickslot();
+        UISceneLoader.Instance.Playerattack.IsAttacking = false;
         _pm.MoveLock();
         _pcc.PauseCamera();
     }
