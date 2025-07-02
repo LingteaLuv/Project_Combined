@@ -129,34 +129,27 @@ public class DialogueManager : Singleton<DialogueManager>
     /// 대사와 선택지를 출력하고 분기 처리용 오버로드 함수
     /// </summary>
     /// <param name="startId">출력할 대사의 ID</param>
-    private IEnumerator PrintOut(int startId)
+    private IEnumerator PrintOut(int dialogueId)
     {
-        while (DialogueDic.ContainsKey(startId))
-        {
-            if (_npcName != null && NPCDic.ContainsKey(DialogueDic[startId].NPCID))
-                _npcName.text = NPCDic[DialogueDic[startId].NPCID].Name;
+        DialogueSO dialogue = DialogueDic[dialogueId];
+        yield return ScriptSetting.WriteWords(_scriptScreen, dialogue.DialogueText, new WaitForSeconds(0.05f), () => SkipRequested());
 
-            DialogueSO dialogue = DialogueDic[startId];
-            yield return ScriptSetting.WriteWords(_scriptScreen, dialogue.DialogueText, _delay, () => SkipRequested());
-
-            if (dialogue.DialogueChoiceID != 0)
+            if (!String.IsNullOrEmpty(dialogue.DialogueChoiceID))
             {
                 DialogueChoiceSO choice = ChoiceDic[dialogue.DialogueChoiceID];
                 ShowChoiceButtons(choice);
 
                 _selectedNextId = -1;
+
                 yield return new WaitUntil(() => _selectedNextId != -1);
 
-                startId = _selectedNextId;
-                continue;
+                yield return StartCoroutine(PrintOut(_selectedNextId));
+                yield break;
             }
-            if (dialogue.EndCheck)
-            {
-                startId++;
-                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.F));
-                continue;
-            }
-            break;
+
+        if (dialogue.EndCheck)
+        {
+            yield return StartCoroutine(PrintOut(dialogueId + 1));
         }
     }
 
