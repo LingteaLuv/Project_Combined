@@ -54,6 +54,7 @@ public class NPCDialogue : MonoBehaviour
         {
             if (playerQuest[_startQuest[i]].Status == QuestStatus.Available)
             {
+                Debug.Log("진입");
                 CurrentDialogueID = playerQuest[_startQuest[i]].StartDialogueID;
                 return;
             }
@@ -62,15 +63,15 @@ public class NPCDialogue : MonoBehaviour
 
     private void CheckTrigger()
     {
-        if (_data.Trigger1 != null && DialogueManager.Instance.TriggerDic[_data.Trigger1] == true)
+        if (_data.Trigger1 != null && DialogueManager.Instance.TriggerDic[_data.Trigger1].Value)
         {
             _currentFlow = _data.Trigger1DialogueID;
         }
-        if (_data.Trigger2 != null && DialogueManager.Instance.TriggerDic[_data.Trigger2] == true)
+        if (_data.Trigger2 != null && DialogueManager.Instance.TriggerDic[_data.Trigger2].Value)
         {
             _currentFlow = _data.Trigger2DialogueID;
         }
-        if (_data.Trigger3 != null && DialogueManager.Instance.TriggerDic[_data.Trigger3] == true)
+        if (_data.Trigger3 != null && DialogueManager.Instance.TriggerDic[_data.Trigger3].Value)
         {
             _currentFlow = _data.Trigger3DialogueID;
         }

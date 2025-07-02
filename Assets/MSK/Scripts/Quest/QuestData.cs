@@ -25,4 +25,7 @@ public class QuestData :ScriptableObject
     
     public string NextQuestID;                   // 다음 연계 퀘스트 ID
     public string EndDescription;
+
+    public string TriggerID1;
+    public string TriggerID2;
 }

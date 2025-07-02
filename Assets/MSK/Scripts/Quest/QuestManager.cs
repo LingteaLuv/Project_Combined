@@ -48,8 +48,7 @@ public class QuestManager : Singleton<QuestManager>
         return QuestDictionary.Keys.Where(q => QuestDictionary[q].EndNPCID == npcId).ToList();
         // 기존 : return QuestDictionary.Values.Where(q => q.EndNPCID == npcId).ToList();
     }
-
-
+    
     /// <summary>
     /// 연계 퀘스트가 있다면, 상태를 Locked로 초기화합니다.
     /// (NextQuestID가 존재하는 모든 퀘스트에 대해 후속 퀘스트를 잠금 처리)
@@ -70,7 +69,7 @@ public class QuestManager : Singleton<QuestManager>
             }
         }
     }
-
+    
     /// <summary>
     /// 전체 퀘스트의 데이터 리스트를 등록/초기화합니다.
     /// </summary>
