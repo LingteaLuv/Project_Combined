@@ -88,4 +88,14 @@ public class NPCDialogue : MonoBehaviour
     {
         CurrentDialogueID = _currentFlow;
     }
+
+
+    //TODO : 테스트 코드 
+    private void OnMouseDown()
+    {
+        if (DialogueManager.Instance != null)
+        {
+            DialogueManager.Instance.SetDialogue(this);
+        }
+    }
 }
