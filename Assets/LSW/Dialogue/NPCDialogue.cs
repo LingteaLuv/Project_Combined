@@ -28,13 +28,54 @@ public class NPCDialogue : MonoBehaviour
         _endQuest = QuestManager.Instance.GetEndNPC(_data.NPCID);
         _dialogueFlow = DialogueManager.Instance.GetDialogueFlow(_data.NPCID);
         _currentFlow = _data.BasicDialogueID;
+
+        QuestManager.Instance.OnQuestAccepted += (data, progress) => CheckQuestAccepted(data, progress);
+        QuestManager.Instance.OnQuestCompleted += (data, progress) => CheckQuestCompleted(data, progress);
+    }
+
+    private void CheckQuestAccepted(QuestData data, QuestProgress progress)
+    {
+        if (data.StartNPCID == _data.NPCID)
+        {
+            if (data.TriggerID1 == _data.Trigger1)
+            {
+                _currentFlow = _data.Trigger1DialogueID;
+            }
+            else if (data.TriggerID1 == _data.Trigger2)
+            {
+                _currentFlow = _data.Trigger2DialogueID;
+            }
+            else if (data.TriggerID1 == _data.Trigger2)
+            {
+                _currentFlow = _data.Trigger3DialogueID;
+            }
+        }
+    }
+
+    private void CheckQuestCompleted(QuestData data, QuestProgress progress)
+    {
+        if (data.EndNPCID == _data.NPCID)
+        {
+            if (data.TriggerID2 == _data.Trigger1)
+            {
+                _currentFlow = _data.Trigger1DialogueID;
+            }
+            else if (data.TriggerID2 == _data.Trigger2)
+            {
+                _currentFlow = _data.Trigger2DialogueID;
+            }
+            else if (data.TriggerID2 == _data.Trigger2)
+            {
+                _currentFlow = _data.Trigger3DialogueID;
+            }
+        }
     }
     
     // 퀘스트 매니저 => 퀘스트를 관리하는 Dictionary
     public void CheckDialogue(Dictionary<string,QuestData> playerQuest)
     {
         CheckQuest(playerQuest);
-        //CheckTrigger();
+        CheckTrigger();
         Init();
     }
     private void CheckQuest(Dictionary<string,QuestData> playerQuest)
@@ -54,7 +95,6 @@ public class NPCDialogue : MonoBehaviour
         {
             if (playerQuest[_startQuest[i]].Status == QuestStatus.Available)
             {
-                Debug.Log("진입");
                 CurrentDialogueID = playerQuest[_startQuest[i]].StartDialogueID;
                 return;
             }
@@ -97,6 +137,7 @@ public class NPCDialogue : MonoBehaviour
         if (DialogueManager.Instance != null)
         {
             DialogueManager.Instance.SetDialogue(this);
+            Debug.Log(_data.NPCID);
         }
     }
 }

@@ -129,9 +129,9 @@ public class DialogueManager : Singleton<DialogueManager>
             
             _npcName.text = NPCDic[DialogueDic[startId].NPCID].Name;
             
+            TriggerDic[DialogueDic[startId].TriggerID].Value = true;
             // Dialogue 한글자씩 출력, F를 누르면 대사 한 번에 보이도록(스킵) 구현
             yield return ScriptSetting.WriteWords(_scriptScreen, DialogueDic[startId].DialogueText, _delay, () => SkipRequested());
-          
             QuestManager.Instance.QuestType(DialogueDic[startId].TriggerID);
             
             // 다음 대사 ID 변경
