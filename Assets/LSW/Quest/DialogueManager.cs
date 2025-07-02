@@ -15,7 +15,7 @@ public class DialogueManager : Singleton<DialogueManager>
     [SerializeField] public Button Button2;
     [SerializeField] public Button Button3;
 
-    //  해당 대사를 쳤는가?
+    //  버튼 입력 전까지 대기상태
     private int _selectedNextId = -1;
     [SerializeField] private List<NPCSO> _npc;
     [SerializeField] private TextMeshProUGUI _npcName;
@@ -113,14 +113,14 @@ public class DialogueManager : Singleton<DialogueManager>
     /// <param name="startId">출력할 대사의 ID</param>
     private IEnumerator PrintOut(int startId)
     {
-        while (DialogueDic.ContainsKey(startId) && DialogueDic[startId].EndCheck)
+        while (DialogueDic.ContainsKey(startId))
         {
-            // (1) NPC 이름 표시 (옵션)
             if (_npcName != null && NPCDic.ContainsKey(DialogueDic[startId].NPCID))
                 _npcName.text = NPCDic[DialogueDic[startId].NPCID].Name;
+
             DialogueSO dialogue = DialogueDic[startId];
             yield return ScriptSetting.WriteWords(_scriptScreen, dialogue.DialogueText, _delay, () => SkipRequested());
-            // (2) 선택지 분기 처리
+
             if (dialogue.DialogueChoiceID != 0)
             {
                 DialogueChoiceSO choice = ChoiceDic[dialogue.DialogueChoiceID];
@@ -129,13 +129,16 @@ public class DialogueManager : Singleton<DialogueManager>
                 _selectedNextId = -1;
                 yield return new WaitUntil(() => _selectedNextId != -1);
 
-                // (선택지 클릭 시 새 분기 대사ID로 jump)
                 startId = _selectedNextId;
                 continue;
             }
-            // (3) 연속 대사: 다음 번호로 진행
-            startId++;
-            yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.F));
+            if (dialogue.EndCheck)
+            {
+                startId++;
+                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.F));
+                continue;
+            }
+            break;
         }
     }
 
