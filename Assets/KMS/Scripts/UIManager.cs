@@ -108,6 +108,18 @@ public class UIManager : SingletonT<UIManager>
             _pcc.PauseCamera();
         }
     }
+
+    private void SetAttackLock(bool isUIOpened)
+    {
+        if (!isUIOpened)
+        {
+            UISceneLoader.Instance.Playerattack.IsAttacking = false;
+        }
+        else
+        {
+            UISceneLoader.Instance.Playerattack.IsAttacking = true;
+        }
+    }
     
     private void SetCursorLock(bool isUIOpened)
     {
@@ -136,6 +148,7 @@ public class UIManager : SingletonT<UIManager>
     private void Update()
     {
         if (_UILock) return;
+        if (UISceneLoader.Instance.Playerattack.IsAttacking) return; // 공격 중에 불가
         if (Input.GetKeyDown(KeyCode.Escape)) CloseUI();
         if (Input.GetKeyDown(KeyCode.I))
         {
