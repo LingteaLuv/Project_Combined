@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-[CreateAssetMenu(menuName = "Dictionary/DialogDictionary")]
-public class DialogDictionary : ScriptableObject
+[CreateAssetMenu(menuName = "Dictionary/PopUpDictionary")]
+public class PopUpDictionary : ScriptableObject
 {
     [SerializeField] private TextAsset _dialogFile;
     
@@ -27,7 +27,7 @@ public class DialogDictionary : ScriptableObject
         // 해당 파일이 없으면 돌아가기
         if (_dialogFile == null)
         {
-	        Debug.LogWarning($"[DialogDictionary] CSV File not found.");
+	        Debug.LogWarning($"[PopUpDictionary] CSV File not found.");
 	        return;
         }
 
@@ -85,7 +85,7 @@ public class DialogDictionary : ScriptableObject
     {
 	    if(_popUpTexts.TryGetValue(id, out var texts)) return texts;
         
-        Debug.LogWarning($"[DialogDictionary] ID '{id}' not found.");
+        Debug.LogWarning($"[PopUpDictionary] ID '{id}' not found.");
         return null;
     }
 }

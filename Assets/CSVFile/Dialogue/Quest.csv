@@ -1,2 +1,2 @@
-﻿QuestID,QuestType,StartDescription,StartNpcID,StartDialougeID,EndNpcID,EndDialougeID,RequiredItemID,RequiredItemQuantity,RewardItemID,RewardItemQuantity,NextQuestID,EndDescription
-MQ01,Delivery,캠핑장에 있는 군인1가 군인2에게 통신칩 전달을 요청했다.,Soldier1,7001,Soldier2,7007,4001,1,4002,1,MQ02,캠핑장에 있는 군인2에게 통신칩을 전달했다.
+﻿QuestID,QuestType,StartDescription,StartNpcID,StartDialougeID,EndNpcID,EndDialougeID,RequiredItemID,RequiredItemQuantity,RewardItemID,RewardItemQuantity,NextQuestID,EndDescription,ReceiveTrigger,ClearTrigger
+MQ01,Delivery,캠핑장에 있는 군인1가 군인2에게 통신칩 전달을 요청했다.,Soldier1,7001,Soldier2,7007,4001,1,4002,1,MQ02,캠핑장에 있는 군인2에게 통신칩을 전달했다.,MQ01Receive,MQ01Clear
