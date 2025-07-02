@@ -81,6 +81,5 @@ public class PlayerNPCInteractor : MonoBehaviour
         if (_interactable == null) return false;
         DialogueManager.Instance.SetDialogue(_interactable.Dialogue);
         return true;
-
     }
 }
