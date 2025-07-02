@@ -1,7 +1,10 @@
 
+using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor.ShaderGraph;
 using UnityEngine;
+using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 
 public class InventoryManager : SingletonT<InventoryManager>
@@ -76,6 +79,15 @@ public class InventoryManager : SingletonT<InventoryManager>
         return canAdd;
     }
 
+    public int GetNullSpaceCount()
+    {
+        int sum = 0;
+        for (int i = 6; i < _model.InvItems.Length; i++)
+        {
+            if (_model.InvItems[i] == null) sum++;
+        }
+        return sum;
+    }
 
 
     public void DecreaseWeaponDurability(int amount = 1)
@@ -89,7 +101,26 @@ public class InventoryManager : SingletonT<InventoryManager>
     public bool AddItemByID(int id, int count)
     {
         int d = Craft.GetMaxDur(id);
-        return Craft.AddItemByID(id, count, d);
+        if( Craft.AddItemByID(id, count, d))
+        {
+            StartCoroutine(CheckQuestItem());
+            return true;
+        }
+        return false;
+    }
+
+    private IEnumerator CheckQuestItem()
+    {
+        yield return new WaitForEndOfFrame();
+        foreach (QuestData q in QuestManager.Instance.AcceptedItemQuestList)
+        {
+            int.TryParse(q.RequiredItemID, out int reqID);
+            if (_craft.CountByID[reqID] >= q.RequiredItemQuantity) //충분히 가지고 있음
+            {
+                QuestManager.Instance.CompleteQuest(q.QuestID);
+                QuestManager.Instance.AcceptedItemQuestList.Remove(q);
+            }
+        }
     }
     public bool RemoveItemByID(int id, int count)
     {

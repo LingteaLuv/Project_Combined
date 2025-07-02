@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 /// <summary>
 /// 게임 내 모든 퀘스트의 메타데이터와 진행 정보를 통합 관리하는 싱글톤 매니저 클래스입니다.
@@ -40,6 +41,7 @@ public class QuestManager : Singleton<QuestManager>
     public event Action<QuestData, QuestProgress> OnQuestRewardClaimed;
     #endregion
 
+    public List<QuestData> AcceptedItemQuestList { get; set; } = new List<QuestData>(); //추가 작성된 부분
 
 
     protected override void Awake()
@@ -71,7 +73,7 @@ public class QuestManager : Singleton<QuestManager>
     {
         return QuestDictionary.Keys.Where(q => QuestDictionary[q].EndNPCID == npcId).ToList();
     }
-    public void QuestType(string triggerId)
+    public void SetQuestType(string triggerId)
     {
         //  트리거명으로 QuestID를 찾기
         if (!TriggerDictionary.TryGetValue(triggerId, out var questId))
@@ -147,9 +149,28 @@ public class QuestManager : Singleton<QuestManager>
             return false;
         if (meta.Status != QuestStatus.Available)
             return false;
+        if (meta.Type == QuestType.Delivery && meta.RequiredItemQuantity > InventoryManager.Instance.GetNullSpaceCount()) //추가 작성된 부분
+            return false;
         meta.Status = QuestStatus.Active;
+
+        CheckItemQuest(meta); //추가 작성된 부분
+
         OnQuestAccepted?.Invoke(meta, null);
         return true;
+    }
+
+    private void CheckItemQuest(QuestData meta) //추가 작성된 부분
+    {
+        if(meta.Type == QuestType.Delivery)
+        {
+            AcceptedItemQuestList.Add(meta);
+            int.TryParse(meta.RequiredItemID, out int req);
+            InventoryManager.Instance.AddItemByID(req, meta.RequiredItemQuantity);
+        }
+        else if (meta.Type == QuestType.Collect)
+        {
+            AcceptedItemQuestList.Add(meta);
+        }
     }
 
     /// <summary>
@@ -183,8 +204,13 @@ public class QuestManager : Singleton<QuestManager>
             return false;
         if (meta.Status != QuestStatus.Completed)
             return false;
+        if (meta.RewardItemQuantity > InventoryManager.Instance.GetNullSpaceCount()) //추가 작성된 부분
+            return false;
 
         meta.Status = QuestStatus.Closed;
+
+        int.TryParse(meta.RewardItemID, out int rew); // 추가 작성된 부분
+        InventoryManager.Instance.AddItemByID(rew, meta.RewardItemQuantity); // 추가 작성된 부분
 
         // NextQuestID가 null/빈문자열이 아니면 다음 퀘스트 해금 시도
         if (!String.IsNullOrEmpty(meta.NextQuestID) &&
