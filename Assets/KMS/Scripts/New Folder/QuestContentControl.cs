@@ -6,7 +6,7 @@ public class QuestContentControl : MonoBehaviour
 {
     [SerializeField] private GameObject _questNode;
 
-    public Dictionary<int, QuestNode> NodeDict;
+    public Dictionary<string, QuestNode> NodeDict;
     void Start()
     {
         //퀘스트 목록을 순회한다. 목록을 순회하면서 게임오브젝트를 생성하면서 그 게임오브젝트와 아이디를 nodedict에 처넣는다.
@@ -34,12 +34,12 @@ public class QuestContentControl : MonoBehaviour
         //아이디와 일치하는 노드 활성화
         NodeDict[q.QuestID].Description.fontStyle = TMPro.FontStyles.Strikethrough;
     }
-    public void ClearNode(int ID)
+    public void ClearNode(string ID)
     {
         //아이디와 일치하는 노드의 글씨에 선을 긋는다.
         NodeDict[ID].Description.fontStyle = TMPro.FontStyles.Strikethrough;
     }
-    public void ActiveNode(int ID)
+    public void ActiveNode(string ID)
     {
         //아이디와 일치하는 노드 활성화
         NodeDict[ID].gameObject.SetActive(true);

@@ -25,7 +25,7 @@ public class DialogueManager : Singleton<DialogueManager>
     public Dictionary<int, DialogueSO> DialogueDic { get; private set; }
     public Dictionary<int, DialogueChoiceSO> ChoiceDic { get; private set; }
 
-    public Dictionary<int, NPCSO> NPCDic { get; private set; }
+    public Dictionary<string, NPCSO> NPCDic { get; private set; }
     
     private void Awake()
     {
@@ -35,7 +35,7 @@ public class DialogueManager : Singleton<DialogueManager>
     private void Init()
     {
         DialogueDic = new Dictionary<int, DialogueSO>();
-        NPCDic = new Dictionary<int, NPCSO>();
+        NPCDic = new Dictionary<string, NPCSO>();
         for (int i = 0; i < _dialogues.Count; i++)
         {
             DialogueDic.Add(_dialogues[i].DialogueID, _dialogues[i]);
@@ -64,7 +64,7 @@ public class DialogueManager : Singleton<DialogueManager>
         StartCoroutine(PrintOut());
     }
 
-    public Dictionary<int, int> GetDialogueFlow(int id)
+    public Dictionary<int, int> GetDialogueFlow(string id)
     {
         Dictionary<int, int> dic = new Dictionary<int, int>();
         foreach (var dialogue in DialogueDic.Values)
@@ -86,15 +86,15 @@ public class DialogueManager : Singleton<DialogueManager>
         int startId = _curNPC.CurrentDialogueID;
         _curNPC.CheckLoop(startId);
         // startID를 DialogueDic가 가지는지 확인하고, 해당 Dialogue가 마지막일 때까지
-        while (DialogueDic.ContainsKey(startId) && DialogueDic[startId].EndCheck)
+        while (DialogueDic.ContainsKey(startId) && !DialogueDic[startId].EndCheck)
         {
             _npcName.text = NPCDic[DialogueDic[startId].NPCID].Name;
             
             // Dialogue 한글자씩 출력, F를 누르면 대사 한 번에 보이도록(스킵) 구현
             yield return ScriptSetting.WriteWords(_scriptScreen, DialogueDic[startId].DialogueText, _delay, () => SkipRequested());
             
-            // 대사가 연속되니까 startID에 1을 더함
-            startId++;
+            // 다음 대사 ID 변경
+            startId = DialogueDic[startId].LoofDialogueID;
             
             // 플레이어 입력까지 대기(F)
             yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.F));
