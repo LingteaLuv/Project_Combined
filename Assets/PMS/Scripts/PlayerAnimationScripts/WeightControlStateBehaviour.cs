@@ -14,11 +14,7 @@ public class WeightControlStateBehaviour : StateMachineBehaviour
             _playerAttack = animator.gameObject.GetComponent<PlayerAttack>();
         }
     }
-    public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {
-        if (Input.GetMouseButtonDown(1))
-            _playerAttack.StartAim();
-    }
+
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         _playerAttack.IsAttacking = true;

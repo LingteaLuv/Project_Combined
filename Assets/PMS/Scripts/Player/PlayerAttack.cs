@@ -47,7 +47,7 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] public WeaponBase LeftCurrentWeapon;
     [SerializeField] public WeaponBase RightCurrentWeapon;
 
-    private Rifle _rifle;//캐싱
+    public Rifle _rifle;//캐싱
 
     [Header("공격 애니메이션 클립")]
     [SerializeField] private AnimationClip _melee;
@@ -87,10 +87,49 @@ public class PlayerAttack : MonoBehaviour
 
     void Update()
     {
+        //테스트 코드
         RightCurrentWeapon = PlayerWeaponManager.Instance.RightCurrentWeapon;
+        _rifle = RightCurrentWeapon.GetComponent<Rifle>();
+
+        if(_rifle == null)
+        {
+            Debug.Log("참조가 안됨");
+        }
+        // 좌클릭 : 무조건 발사
         if (Input.GetMouseButtonDown(0))
         {
             TryAttack();
+        }
+
+        // 우클릭 : 조준 모드 토글
+        if (Input.GetMouseButtonDown(1) && RightCurrentWeapon.ItemType == ItemType.Gun)
+        {
+            Debug.Log("why");
+            ToggleAimMode();
+        }
+
+        // 조준 모드면 궤적 계속 갱신
+        if (_rifle != null && _rifle.isAiming)
+        {
+            _rifle.UpdateAim();
+            if(Input.GetMouseButtonDown(1))
+            {
+                RightCurrentWeapon.Attack();
+            }
+        }
+    }
+
+    private void ToggleAimMode()
+    {
+        if (_rifle != null) return;
+
+        if (_rifle.isAiming)
+        {
+            _rifle.EndAim();
+        }
+        else
+        {
+            _rifle.StartAim();
         }
     }
 
@@ -147,7 +186,7 @@ public class PlayerAttack : MonoBehaviour
                 _playerProperty.StaminaConsume(3f);
                 break;
             case ItemType.Gun:
-                StartRangedAttack();
+                PlayerAttackStart(); //좌클릭시 바로 발사
                 break;
             case ItemType.Throw:
                 StartThrowAttack();
@@ -176,12 +215,6 @@ public class PlayerAttack : MonoBehaviour
         }
 
         _currentAttackCoroutine = StartCoroutine(MeleeAttackSequence());
-    }
-
-    //원거리 공격 실행
-    private void StartRangedAttack()
-    {
-        _animator.SetBool("IsAim",true);
     }
 
     //레이어를 일단은 혼자 쓰는 것 같은데 계속 플레이어의 animtor가 수정될 일이 많은데

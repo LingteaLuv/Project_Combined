@@ -7,6 +7,7 @@ public class Rifle : GunWeaponBase
     [SerializeField] public Animator _animator;
     private float currentWeaponAmmo = 10;
     public bool isAiming = false;
+    private GameObject bulletObj;
     private void Awake()
     {
         Init();     //나중에 플레이어 해당 사용할려고 할 때
@@ -82,7 +83,8 @@ public class Rifle : GunWeaponBase
     {
         isAiming = true;
         _lineRenderer.enabled = true;
-        UpdateTrajectory(null, _bulletPrefab.GetComponent<BulletBase>()._speed);
+        bulletObj = _gunBulletObjectPool.GetInactive();
+        UpdateTrajectory(bulletObj, _bulletPrefab.GetComponent<BulletBase>()._speed);
         _animator.SetBool("IsAim", true);
     }
 

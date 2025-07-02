@@ -15,6 +15,7 @@ public class RifleAimState : StateMachineBehaviour
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        /*
         _playerAttack.UpdateAim();
 
         if (Input.GetMouseButtonDown(0))
@@ -22,5 +23,6 @@ public class RifleAimState : StateMachineBehaviour
 
         if (Input.GetMouseButtonDown(1))
             _playerAttack.EndAim();
+        */
     }
 }
