@@ -23,7 +23,8 @@ public class HingeDoorOpen : MonoBehaviour, IInteractable
     {
         float closedY = (_doorType == DoorType.RotateRight) ? 180f : 0f;
         Vector3 euler = transform.eulerAngles;
-
+        euler.y = closedY;
+        transform.eulerAngles = euler;
         // RotateRight일 때만 Z이동 보정
         if (_doorType == DoorType.RotateRight)
         {
@@ -44,11 +45,6 @@ public class HingeDoorOpen : MonoBehaviour, IInteractable
                 transform.position += -transform.forward * zSize;
             }
         }
-
-        // 회전 적용
-        euler.y = closedY;
-        transform.eulerAngles = euler;
-
         _closedRotation = transform.rotation;
         float openAngle = _doorType == DoorType.RotateRight ? _openAngle : -_openAngle;
         _openedRotation = _closedRotation * Quaternion.Euler(0, openAngle, 0);
