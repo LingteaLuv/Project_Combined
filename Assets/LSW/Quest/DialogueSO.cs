@@ -12,7 +12,7 @@ public class DialogueSO : ScriptableObject
     // 대사 내용
     public string DialogueText;
     // 선택지 묶음 ID
-    public int DialogueChoiceID;
+    public string DialogueChoiceID;
     // 대화가 한 번 진행되면 진행되는 dialogue
     public int LoofDialogueID;
     public bool EndCheck;
