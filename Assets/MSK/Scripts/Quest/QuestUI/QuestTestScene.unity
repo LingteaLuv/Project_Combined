@@ -155,6 +155,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data: {fileID: 11400000, guid: 48d0b98d7195e8d4fb0f9f9fe4bcf3b1, type: 2}
+  _startQuest: []
+  _endQuest: []
 --- !u!65 &37117738
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -719,6 +721,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28d66f447465eee4293afe9dc7c291cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AllQuests:
+  - {fileID: 11400000, guid: 19b6999779fd5364693c33ec31301e80, type: 2}
 --- !u!4 &1562814849
 Transform:
   m_ObjectHideFlags: 0
@@ -886,6 +890,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data: {fileID: 11400000, guid: 4f7cc9f29ba146549851d1febfc201a2, type: 2}
+  _startQuest: []
+  _endQuest: []
 --- !u!1 &1628033694
 GameObject:
   m_ObjectHideFlags: 0

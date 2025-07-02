@@ -13,7 +13,7 @@ public class QuestManager : Singleton<QuestManager>
     /// <summary>
     /// 전체 퀘스트의 데이터 리스트입니다.
     /// </summary>
-    public List<QuestData> AllQuests { get; private set; } = new List<QuestData>();
+    [SerializeField] public List<QuestData> AllQuests;
 
     /// <summary>
     /// 전체 퀘스트의 플레이어별 진행 상태 딕셔너리입니다.
@@ -56,7 +56,8 @@ public class QuestManager : Singleton<QuestManager>
             TriggerDictionary.Add(AllQuests[i].TriggerID1, AllQuests[i].QuestID);
             TriggerDictionary.Add(AllQuests[i].TriggerID2, AllQuests[i].QuestID);
         }
-        AllQuests = Resources.LoadAll<QuestData>("Quests").ToList();
+        Debug.Log(TriggerDictionary.Count);
+        //AllQuests = Resources.LoadAll<QuestData>("Quests").ToList();
         SetQuestDictionary();
     }
     

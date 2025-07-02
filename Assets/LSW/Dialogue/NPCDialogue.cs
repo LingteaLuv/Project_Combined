@@ -9,7 +9,7 @@ public class NPCDialogue : MonoBehaviour
 
     private Dictionary<int, int> _dialogueFlow;
     public List<string> _startQuest;
-    private List<string> _endQuest;
+    public List<string> _endQuest;
     
     private int _currentFlow;
 
@@ -84,7 +84,7 @@ public class NPCDialogue : MonoBehaviour
         {
             if (playerQuest[_endQuest[i]].Status == QuestStatus.Completed)
             {
-                CurrentDialogueID = playerQuest[_startQuest[i]].EndDialogueID;
+                CurrentDialogueID = playerQuest[_endQuest[i]].EndDialogueID;
                 return;
                 // todo : 여기서 처리하면 안되고, 실제로 플레이어가 보상을 받고 대화가 끝날 때 호출해야할듯 
                 // playerQuest[playerQuest[_startQuest[i]].NextQuestID].Status = QuestStatus.Available;
