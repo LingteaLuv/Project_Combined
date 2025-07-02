@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -109,29 +110,33 @@ public class DialogueManager : Singleton<DialogueManager>
     /// <summary>
     /// 대사와 선택지를 출력하고 분기 처리용 오버로드 함수
     /// </summary>
-    /// <param name="dialogueId">출력할 대사의 ID</param>
-    private IEnumerator PrintOut(int dialogueId)
+    /// <param name="startId">출력할 대사의 ID</param>
+    private IEnumerator PrintOut(int startId)
     {
-        DialogueSO dialogue = DialogueDic[dialogueId];
-        yield return ScriptSetting.WriteWords(_scriptScreen, dialogue.DialogueText, new WaitForSeconds(0.05f), () => SkipRequested());
-
-        if (dialogue.DialogueChoiceID != 0)
+        while (DialogueDic.ContainsKey(startId) && DialogueDic[startId].EndCheck)
         {
-            DialogueChoiceSO choice = ChoiceDic[dialogue.DialogueChoiceID];
-            ShowChoiceButtons(choice);
+            // (1) NPC 이름 표시 (옵션)
+            if (_npcName != null && NPCDic.ContainsKey(DialogueDic[startId].NPCID))
+                _npcName.text = NPCDic[DialogueDic[startId].NPCID].Name;
+            DialogueSO dialogue = DialogueDic[startId];
+            yield return ScriptSetting.WriteWords(_scriptScreen, dialogue.DialogueText, _delay, () => SkipRequested());
+            // (2) 선택지 분기 처리
+            if (dialogue.DialogueChoiceID != 0)
+            {
+                DialogueChoiceSO choice = ChoiceDic[dialogue.DialogueChoiceID];
+                ShowChoiceButtons(choice);
 
-            _selectedNextId = -1;
-            yield return new WaitUntil(() => _selectedNextId != -1);
+                _selectedNextId = -1;
+                yield return new WaitUntil(() => _selectedNextId != -1);
 
-            yield return StartCoroutine(PrintOut(_selectedNextId));
-            yield break;
+                // (선택지 클릭 시 새 분기 대사ID로 jump)
+                startId = _selectedNextId;
+                continue;
+            }
+            // (3) 연속 대사: 다음 번호로 진행
+            startId++;
+            yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.F));
         }
-
-        if (dialogue.EndCheck)
-        {
-            yield return StartCoroutine(PrintOut(dialogueId + 1));
-        }
-        // else: 대화 종료
     }
 
     /// <summary>
@@ -174,9 +179,8 @@ public class DialogueManager : Singleton<DialogueManager>
             });
         }
         else
-        {
             btn.gameObject.SetActive(false);
-        }
+
     }
 
     public void StartDialogueFromId(int dialogueId)
