@@ -23,8 +23,7 @@ public class QuestManager : Singleton<QuestManager>
     /// <summary>
     /// 전체 트리거와 매칭되는 퀘스트ID를 저장하는 딕셔너리입니다.
     /// </summary>
-    public Dictionary<string, string> TriggerDictionary { get; private set; } = new Dictionary<string, string>(){};
-
+    public Dictionary<string, string> TriggerDictionary { get; private set; }
     /// <summary>
     /// 플레이어의 현재 챕터(비트 플래그)
     /// </summary>
@@ -41,7 +40,7 @@ public class QuestManager : Singleton<QuestManager>
     public event Action<QuestData, QuestProgress> OnQuestRewardClaimed;
     #endregion
 
-    public Dictionary<string, string> TriggerDictionary { get; private set; }
+
 
     protected override void Awake()
     {
