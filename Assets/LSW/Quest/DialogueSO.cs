@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [CreateAssetMenu(menuName = "Dialogue")]
 public class DialogueSO : ScriptableObject
@@ -14,7 +15,7 @@ public class DialogueSO : ScriptableObject
     // 선택지 묶음 ID
     public string DialogueChoiceID;
     // 대화가 한 번 진행되면 진행되는 dialogue
-    public int LoofDialogueID;
+    public int LoopDialogueID;
     public bool EndCheck;
     public string TriggerID;
 }

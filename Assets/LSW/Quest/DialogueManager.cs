@@ -70,9 +70,9 @@ public class DialogueManager : Singleton<DialogueManager>
         Dictionary<int, int> dic = new Dictionary<int, int>();
         foreach (var dialogue in DialogueDic.Values)
         {
-            if (dialogue.NPCID == id && dialogue.LoofDialogueID != 0)
+            if (dialogue.NPCID == id && dialogue.LoopDialogueID != 0)
             {
-                dic.Add(dialogue.DialogueID,dialogue.LoofDialogueID);
+                dic.Add(dialogue.DialogueID,dialogue.LoopDialogueID);
             }
         }
         return dic;
