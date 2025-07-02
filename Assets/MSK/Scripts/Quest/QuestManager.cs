@@ -40,35 +40,35 @@ public class QuestManager : Singleton<QuestManager>
     #endregion
 
 
+    private void Awake() => Init();
+
+    private void Init()
+    {
+        AllQuests = Resources.LoadAll<QuestData>("Quests").ToList();
+        SetQuestDictionary();
+        //TODO : 트리거 퀘스트 딕셔너리 추가하기
+    }
+
     /// <summary>
     /// Npc에게 조건에 부합하는 퀘스트를 Npc 리스트로 전달 => key를 전달하도록 수정
     /// </summary>
     public List<string> GetStartNPC(string npcId)
     {
         return QuestDictionary.Keys.Where(q => QuestDictionary[q].StartNPCID == npcId).ToList();
-        // 기존 : return QuestDictionary.Values.Where(q => q.StartNPCID == npcId).ToList();
     }
     public List<string> GetEndNPC(string npcId)
     {
         return QuestDictionary.Keys.Where(q => QuestDictionary[q].EndNPCID == npcId).ToList();
-        // 기존 : return QuestDictionary.Values.Where(q => q.EndNPCID == npcId).ToList();
     }
 
 
     public void QuestType(string triggerId)
     {
-
-        //  해당 트리거가 딕셔너리 1에 있으면
-        //  트리거1_01 (Recive),  퀘스트1
-        //  트리거1_02 (Clear), 퀘스트 1
-
-        //  Dictionary <트리거, 퀘스트 이름> 에서 퀘스트 이름 추출
-
-        //  퀘스트 이름에 해당하는 퀘스트 딕서너리로 접근    // 1. 트리거명으로 QuestID를 찾기
+        //  트리거명으로 QuestID를 찾기
         if (!TriggerDictionary.TryGetValue(triggerId, out var questId))
             return;
 
-        // 2. QuestID로 QuestDictionary에서 QuestData를 찾기
+        //  QuestID로 QuestDictionary에서 QuestData를 찾기
         if (!QuestDictionary.TryGetValue(questId, out var meta))
             return;
 
@@ -232,5 +232,17 @@ public class QuestManager : Singleton<QuestManager>
         if (meta.Status != QuestStatus.Active)
             return;
         CompleteQuest(questId);
+    }
+
+    /// <summary>
+    /// 모든 퀘스트 리스트를 가져옵니다.
+    /// </summary>
+    private void SetQuestDictionary()
+    {
+        QuestDictionary = new Dictionary<string, QuestData>();
+        foreach (var quest in AllQuests)
+        {
+            QuestDictionary[quest.QuestID] = quest;
+        }
     }
 }
