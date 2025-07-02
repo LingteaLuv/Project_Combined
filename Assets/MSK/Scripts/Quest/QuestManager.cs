@@ -21,6 +21,11 @@ public class QuestManager : Singleton<QuestManager>
     public Dictionary<string, QuestData> QuestDictionary { get; private set; } = new Dictionary<string, QuestData>(){};
 
     /// <summary>
+    /// 전체 트리거와 매칭되는 퀘스트ID를 저장하는 딕셔너리입니다.
+    /// </summary>
+    public Dictionary<string, string> TriggerDictionary { get; private set; } = new Dictionary<string, string>(){};
+
+    /// <summary>
     /// 플레이어의 현재 챕터(비트 플래그)
     /// </summary>
     public Chapter CurrentChapter { get; set; } = Chapter.Chapter1;
@@ -47,6 +52,47 @@ public class QuestManager : Singleton<QuestManager>
     {
         return QuestDictionary.Keys.Where(q => QuestDictionary[q].EndNPCID == npcId).ToList();
         // 기존 : return QuestDictionary.Values.Where(q => q.EndNPCID == npcId).ToList();
+    }
+
+
+    public void QuestType(string triggerId)
+    {
+
+        //  해당 트리거가 딕셔너리 1에 있으면
+        //  트리거1_01 (Recive),  퀘스트1
+        //  트리거1_02 (Clear), 퀘스트 1
+
+        //  Dictionary <트리거, 퀘스트 이름> 에서 퀘스트 이름 추출
+
+        //  퀘스트 이름에 해당하는 퀘스트 딕서너리로 접근    // 1. 트리거명으로 QuestID를 찾기
+        if (!TriggerDictionary.TryGetValue(triggerId, out var questId))
+            return;
+
+        // 2. QuestID로 QuestDictionary에서 QuestData를 찾기
+        if (!QuestDictionary.TryGetValue(questId, out var meta))
+            return;
+
+        switch (meta.Status)
+        {
+            case QuestStatus.Locked:
+                break;
+            case QuestStatus.Available:
+                // 수락 가능한 퀘스트
+                AcceptQuest(meta.QuestID);
+                break;
+            case QuestStatus.Active:
+                // 진행 중인 퀘스트
+                CompleteQuest(meta.QuestID);
+                break;
+            case QuestStatus.Completed:
+                // 완료된 퀘스트
+                CloseQuest(meta.QuestID);
+                break;
+            case QuestStatus.Closed:
+                break;
+            default:
+                break;
+        }
     }
 
 
@@ -112,7 +158,9 @@ public class QuestManager : Singleton<QuestManager>
 
         meta.Status = QuestStatus.Completed;
         OnQuestCompleted?.Invoke(meta, null);
+
         // TODO: 보상 지급
+        
         return true;
     }
 
