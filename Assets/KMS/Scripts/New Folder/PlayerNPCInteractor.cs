@@ -76,10 +76,11 @@ public class PlayerNPCInteractor : MonoBehaviour
         }
     }
 
-    public void TryInteract()
+    public bool TryInteract()
     {
-        if (_interactable == null) return;
-        //DialogueManager.Instance.SetDialogue();
+        if (_interactable == null) return false;
+        DialogueManager.Instance.SetDialogue(_interactable.Dialogue);
+        return true;
 
     }
 }
