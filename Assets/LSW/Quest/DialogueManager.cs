@@ -2,22 +2,32 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DialogueManager : Singleton<DialogueManager>
 {
     
     [SerializeField] private List<DialogueSO> _dialogues;
+    [SerializeField] private List<DialogueChoiceSO> _choicesDialogues;
     [SerializeField] private TextMeshProUGUI _scriptScreen;
+
+    [SerializeField] public Button Button1;
+    [SerializeField] public Button Button2;
+    [SerializeField] public Button Button3;
+
+    //  해당 대사를 쳤는가?
+    private int _selectedNextId = -1;
     
     private WaitForSeconds _delay;
     private NPCDialogue _curNPC;
     
     public Dictionary<int, DialogueSO> DialogueDic { get; private set; }
+    public Dictionary<string, DialogueChoiceSO> ChoiceDic { get; private set; }
+
     private void Awake()
     {
         Init();
     }
-
     private void Init()
     {
         DialogueDic = new Dictionary<int, DialogueSO>();
@@ -26,6 +36,11 @@ public class DialogueManager : Singleton<DialogueManager>
             DialogueDic.Add(_dialogues[i].DialogueID, _dialogues[i]);
         }
         _delay = new WaitForSeconds(0.05f);
+
+        ChoiceDic = new Dictionary<string, DialogueChoiceSO>();
+        foreach (var c in _choicesDialogues)
+            ChoiceDic.Add(c.DialogueChoiceID, c);
+        HideAllButtons();
     }
 
     /// <summary>
@@ -66,4 +81,83 @@ public class DialogueManager : Singleton<DialogueManager>
     {
         return Input.GetKeyDown(KeyCode.F);
     }
+
+    /// <summary>
+    /// 대사와 선택지를 출력하고 분기 처리용 오버로드 함수
+    /// </summary>
+    /// <param name="dialogueId">출력할 대사의 ID</param>
+    private IEnumerator PrintOut(int dialogueId)
+    {
+        DialogueSO dialogue = DialogueDic[dialogueId];
+        yield return ScriptSetting.WriteWords(_scriptScreen, dialogue.DialogueText, new WaitForSeconds(0.05f), () => SkipRequested());
+
+        if (!string.IsNullOrEmpty(dialogue.DialogueChoiceID))
+        {
+            DialogueChoiceSO choice = ChoiceDic[dialogue.DialogueChoiceID];
+            ShowChoiceButtons(choice);
+
+            _selectedNextId = -1;
+            yield return new WaitUntil(() => _selectedNextId != -1);
+
+            yield return StartCoroutine(PrintOut(_selectedNextId));
+            yield break;
+        }
+
+        if (dialogue.EndCheck)
+        {
+            yield return StartCoroutine(PrintOut(dialogueId + 1));
+        }
+        // else: 대화 종료
+    }
+
+    /// <summary>
+    /// 선택지 버튼 UI를 한 번에 세팅한다.
+    /// </summary>
+    /// <param name="choice">선택지 ScriptableObject</param>
+    private void ShowChoiceButtons(DialogueChoiceSO choice)
+    {
+        SetChoiceButton(Button1, choice.Number1, choice.NextDialogue1ID);
+        SetChoiceButton(Button2, choice.Number2, choice.NextDialogue2ID);
+        SetChoiceButton(Button3, choice.Number3, choice.NextDialogue3ID);
+    }
+
+    /// <summary>
+    /// 선택지 버튼을 숨긴다.
+    /// </summary>
+    private void HideAllButtons()
+    {
+        Button1.gameObject.SetActive(false);
+        Button2.gameObject.SetActive(false);
+        Button3.gameObject.SetActive(false);
+    }
+    /// <summary>
+    /// 개별 버튼의 텍스트와 클릭 이벤트를 설정한다.
+    /// </summary>
+    /// <param name="btn">버튼</param>
+    /// <param name="label">텍스트</param>
+    /// <param name="nextDialogueId">분기될 다음 대사 ID</param>
+    private void SetChoiceButton(Button btn, string label, string nextDialogueId)
+    {
+        if (!string.IsNullOrEmpty(label))
+        {
+            btn.gameObject.SetActive(true);
+            btn.GetComponentInChildren<TMP_Text>().text = label;
+            btn.onClick.RemoveAllListeners();
+            btn.onClick.AddListener(() =>
+            {
+                _selectedNextId = int.Parse(nextDialogueId);
+                HideAllButtons();
+            });
+        }
+        else
+        {
+            btn.gameObject.SetActive(false);
+        }
+    }
+
+    public void StartDialogueFromId(int dialogueId)
+    {
+        StartCoroutine(PrintOut(dialogueId));
+    }
+
 }
