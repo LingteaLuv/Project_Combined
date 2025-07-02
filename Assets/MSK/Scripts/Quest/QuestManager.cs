@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -13,12 +14,13 @@ public class QuestManager : Singleton<QuestManager>
     /// <summary>
     /// 전체 퀘스트의 데이터 리스트입니다.
     /// </summary>
-    [SerializeField] public List<QuestData> AllQuests;
+    [SerializeField] private List<QuestData> allQuests = new List<QuestData>();
+    public List<QuestData> AllQuests => allQuests;
 
     /// <summary>
     /// 전체 퀘스트의 플레이어별 진행 상태 딕셔너리입니다.
     /// </summary>
-    public Dictionary<string, QuestData> QuestDictionary { get; private set; } = new Dictionary<string, QuestData>(){};
+    [SerializeField] public Dictionary<string, QuestData> QuestDictionary { get; private set; } = new Dictionary<string, QuestData>(){};
 
     /// <summary>
     /// 전체 트리거와 매칭되는 퀘스트ID를 저장하는 딕셔너리입니다.
@@ -50,15 +52,13 @@ public class QuestManager : Singleton<QuestManager>
 
     private void Init()
     {
+        SetQuestDictionary();
         TriggerDictionary = new Dictionary<string, string>();
         for (int i = 0; i < AllQuests.Count; i++)
         {
             TriggerDictionary.Add(AllQuests[i].TriggerID1, AllQuests[i].QuestID);
             TriggerDictionary.Add(AllQuests[i].TriggerID2, AllQuests[i].QuestID);
         }
-        Debug.Log(TriggerDictionary.Count);
-        //AllQuests = Resources.LoadAll<QuestData>("Quests").ToList();
-        SetQuestDictionary();
     }
     
     /// <summary>
@@ -74,37 +74,49 @@ public class QuestManager : Singleton<QuestManager>
     }
     public void QuestType(string triggerId)
     {
-        //  트리거명으로 QuestID를 찾기
+        // 트리거명으로 QuestID를 찾기
         if (!TriggerDictionary.TryGetValue(triggerId, out var questId))
+        {
+            Debug.LogWarning($"[QuestType] TriggerDictionary에 triggerId({triggerId}) 없음");
             return;
+        }
 
-        //  QuestID로 QuestDictionary에서 QuestData를 찾기
+        // QuestID로 QuestDictionary에서 QuestData를 찾기
         if (!QuestDictionary.TryGetValue(questId, out var meta))
+        {
+            Debug.LogWarning($"[QuestType] QuestDictionary에 questId({questId}) 없음");
             return;
+        }
+
+        Debug.Log($"[QuestType] questId: {questId}, 현재 상태: {meta.Status}");
 
         switch (meta.Status)
         {
             case QuestStatus.Locked:
+                Debug.Log("[QuestType] Locked");
                 break;
             case QuestStatus.Available:
-                // 수락 가능한 퀘스트
+                Debug.Log("[QuestType] Available");
                 AcceptQuest(meta.QuestID);
                 break;
             case QuestStatus.Active:
-                // 진행 중인 퀘스트
+                Debug.Log("[QuestType] Active");
                 CompleteQuest(meta.QuestID);
                 break;
             case QuestStatus.Completed:
-                // 완료된 퀘스트
+                Debug.Log("[QuestType] Completed");
                 CloseQuest(meta.QuestID);
                 break;
             case QuestStatus.Closed:
+                Debug.Log("[QuestType] Closed");
                 break;
             default:
+                Debug.Log("[QuestType] 기타");
                 break;
         }
     }
-    
+
+
     /// <summary>
     /// 연계 퀘스트가 있다면, 상태를 Locked로 초기화합니다.
     /// (NextQuestID가 존재하는 모든 퀘스트에 대해 후속 퀘스트를 잠금 처리)
@@ -132,7 +144,7 @@ public class QuestManager : Singleton<QuestManager>
     /// <param name="questList">등록할 퀘스트 데이터 리스트</param>
     public void LoadQuest(List<QuestData> questList)
     {
-        AllQuests = questList ?? new List<QuestData>();
+        allQuests = questList ?? new List<QuestData>();
         //_questDictionary = AllQuests.ToDictionary(q => q.QuestID);
         //UpdateQuestStates();
     }
@@ -282,10 +294,6 @@ public class QuestManager : Singleton<QuestManager>
         }
         return null;
     }
-
-    /// <summary>
-    /// 모든 퀘스트 리스트를 가져옵니다.
-    /// </summary>
     private void SetQuestDictionary()
     {
         QuestDictionary = new Dictionary<string, QuestData>();
@@ -293,5 +301,7 @@ public class QuestManager : Singleton<QuestManager>
         {
             QuestDictionary[quest.QuestID] = quest;
         }
+
+        Debug.Log($"[SetQuestDictionary] QuestDictionary.Count = {QuestDictionary.Count}");
     }
 }
