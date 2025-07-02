@@ -1,4 +1,5 @@
 
+using System;
 using UnityEngine;
 
 
@@ -77,7 +78,7 @@ public class InventoryRenderer : MonoBehaviour
         {
             _model.InvSlotPanelImages[before].color = _model.SlotColor;
         }
-        if (current != -1)
+        if (current != -1 && _model.InvItems[current].Data.Type != ItemType.Quest)
         {
             _model.InvSlotPanelImages[current].color = new Color(1f, 0f, 0f);
             _model.TrashButton.SetActive(true);
