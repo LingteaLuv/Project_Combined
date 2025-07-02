@@ -88,9 +88,6 @@ public class PlayerMovement : MonoBehaviour
     
     private void FixedUpdate()
     {
-        //TODO : Test Key 지우기
-        if (TestKey)
-            MoveLock();
         if (!IsOnLadder)
         {
             HandleMovement(MoveInput); // 이동 처리
@@ -139,8 +136,8 @@ public class PlayerMovement : MonoBehaviour
             }
 
             // 작은 턱 오르기 처리
-            bool downRay = Physics.Raycast(transform.position + Vector3.up * 0.02f, transform.forward, 0.5f);
-            bool middleRay = Physics.Raycast(transform.position + Vector3.up * 0.1f, transform.forward, 0.5f);
+            bool downRay = Physics.Raycast(transform.position + Vector3.up * 0.1f, transform.forward, 0.5f);
+            bool middleRay = Physics.Raycast(transform.position + Vector3.up * 0.2f, transform.forward, 0.5f);
             bool upRay = Physics.Raycast(transform.position + Vector3.up * 0.3f, transform.forward, 0.5f);
 
             if (downRay && middleRay && !upRay)
@@ -182,7 +179,7 @@ public class PlayerMovement : MonoBehaviour
 
     public bool CanJump()
     {
-        return !_jumpConsumedThisFrame && JumpPressed && IsGrounded && !IsJumpAnimationPlaying();
+        return CanMove && !_jumpConsumedThisFrame && JumpPressed && IsGrounded && !IsJumpAnimationPlaying();
     }
 
     public void Jump()
@@ -199,10 +196,12 @@ public class PlayerMovement : MonoBehaviour
     public void SetWater(bool water)
     {
         IsWater = water;
+        /*
         if (IsWater)
             Controller.PlayerHealth.ApplyDotDamage(10, 1, 120);
         else
             Controller.PlayerHealth.StopDotDamage();
+        */
     }
     public void SetRotation(float offset)
     {

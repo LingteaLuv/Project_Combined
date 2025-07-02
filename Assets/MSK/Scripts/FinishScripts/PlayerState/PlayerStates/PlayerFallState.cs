@@ -7,7 +7,6 @@ using UnityEngine.Rendering;
 /// </summary>
 public class PlayerFallState : PlayerState
 {
-    private float _airTime;
     private float _lastYPos;
     private float _currentY;
     private bool _wasGrounded;
@@ -20,7 +19,6 @@ public class PlayerFallState : PlayerState
         Debug.Log("낙하상태 진입");
         _movement.Controller._animator.SetBool("IsFalling", true);
         _lastYPos = _movement.transform.position.y;
-        _airTime = 0;
         _wasGrounded = false;
     }
 
@@ -33,20 +31,12 @@ public class PlayerFallState : PlayerState
     {
         bool isGrounded = _movement.IsGrounded;
 
-        // 채공 시간 누적
-        if (!isGrounded)
-        {
-            _airTime += Time.deltaTime;
-        }
-
         // 착지한 순간 감지
         if (_wasGrounded == false && isGrounded)
         {
             _currentY = _movement.transform.position.y;
             float fallDistance = _lastYPos - _currentY;
             ApplyFallDamage(fallDistance);
-
-            _airTime = 0;
         }
 
         // 상태 전이 ,Hit 중이면 전이 막기

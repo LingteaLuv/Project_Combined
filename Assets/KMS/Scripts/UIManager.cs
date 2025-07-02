@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Runtime.ConstrainedExecution;
-using UnityEditor.Build;
 using UnityEngine;
 
 
@@ -27,6 +27,7 @@ public class UIManager : SingletonT<UIManager>
     [SerializeField] private GameObject _quickslot;
 
     private PlayerLooting _playerLoot;
+    private PlayerNPCInteractor _playerNPCInt;
     private RectTransform _lootRect;
     private RectTransform _invRect;
     private RectTransform _questRect;
@@ -47,6 +48,7 @@ public class UIManager : SingletonT<UIManager>
         _invRect = InvUI.GetComponent<RectTransform>();
         _questRect = QuestLogUI.GetComponent<RectTransform>();
         _playerLoot = UISceneLoader.Instance.Playerattack.gameObject.GetComponentInChildren<PlayerLooting>();
+        _playerNPCInt = UISceneLoader.Instance.Playerattack.gameObject.GetComponentInChildren<PlayerNPCInteractor>();
         _pcc = UISceneLoader.Instance.Playerattack.GetComponent<PlayerCameraController>();
         _pm = UISceneLoader.Instance.Playerattack.GetComponent<PlayerMovement>();
         SetInstance();
@@ -142,10 +144,13 @@ public class UIManager : SingletonT<UIManager>
         }
         if (Input.GetKeyDown(KeyCode.F))
         {
-            if (Current == ModalUI.inventory) return;
-            _playerLoot.TryLoot();
+            if (!_playerNPCInt.TryInteract())
+            {
+                if (Current == ModalUI.inventory || Current == ModalUI.quest) return;
+                _playerLoot.TryLoot();
+            }
         }
-        if (Input.GetKeyDown(KeyCode.Insert))
+        if (Input.GetKeyDown(KeyCode.Q))
         {
             ToggleUI(ModalUI.quest);
         }
@@ -171,7 +176,7 @@ public class UIManager : SingletonT<UIManager>
         else if (Current == ModalUI.quest)
         {
             QuestLogUI.SetActive(true);
-            SetUIPos(_invRect, 300, 400);
+            SetUIPos(_questRect, 600, 150);
         }
 
         if (_coroutine != null)
@@ -228,6 +233,7 @@ public class UIManager : SingletonT<UIManager>
         LootUI.SetActive(false);
         InvUI.SetActive(false);
         CraftUI.SetActive(false);
+        QuestLogUI.SetActive(false);
         ModalBase.SetActive(false);
         IsUIOpened.Value = false;
         Current = ModalUI.nothing;

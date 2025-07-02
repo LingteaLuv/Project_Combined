@@ -5,10 +5,10 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "NPC")]
 public class NPCSO : ScriptableObject
 {
-    public int NPCID;
+    public string NPCID;
 
+    public string Name;
     // 등장조건 
-    public string NPCTriggerID;
     public int BasicDialogueID;
 
     public string Trigger1;
