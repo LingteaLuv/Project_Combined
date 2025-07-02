@@ -57,31 +57,31 @@ public class CreateQuestSO : EditorWindow
             quest.Status = QuestStatus.Locked;
             
             string questId = parts[0];
-            quest.QuestID = int.Parse(questId);
+            quest.QuestID = questId;
             
             string type = parts[1];
             switch (type)
             {
-                case "talk" :
+                case "Talk" :
                     quest.Type = QuestType.Talk;
                     break;
-                case "delivery" :
+                case "Delivery" :
                     quest.Type = QuestType.Delivery;
                     break;
-                case "collect" :
+                case "Collect" :
                     quest.Type = QuestType.Collect;
                     break;
             }
             quest.Description = parts[2];
-            quest.StartNPCID = int.Parse(parts[3]);
+            quest.StartNPCID = parts[3];
             quest.StartDialogueID = int.Parse(parts[4]);
-            quest.EndNPCID = int.Parse(parts[5]);
+            quest.EndNPCID = parts[5];
             quest.EndDialogueID = int.Parse(parts[6]);
             quest.RequiredItemID = parts[7];
             quest.RequiredItemQuantity = int.Parse(parts[8]);
             quest.RewardItemID = parts[9];
             quest.RewardItemQuantity = int.Parse(parts[10]);
-            quest.NextQuestID = int.Parse(parts[11]);
+            quest.NextQuestID = parts[11];
             quest.EndDescription = parts[12];// => 0으로 요청
             
             string assetPath = $"{folderPath}/Quest_{questId}.Asset";
