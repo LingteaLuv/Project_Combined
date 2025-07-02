@@ -82,7 +82,6 @@ public class Rifle : GunWeaponBase
     public void StartAim()
     {
         isAiming = true;
-        //UpdateTrajectory(bulletObj, _bulletPrefab.GetComponent<BulletBase>()._speed);
         _animator.SetBool("IsAim", true);
     }
 

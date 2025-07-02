@@ -17,8 +17,8 @@ public class RifleAimState : StateMachineBehaviour
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        
-        _playerAttack.UpdateAim();
+        //이게 자꾸 문제였네
+        if (flag != false) _playerAttack.UpdateAim();
 
         if (Input.GetMouseButtonDown(0))
             _playerAttack.RightCurrentWeapon.Attack();
