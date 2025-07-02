@@ -12,9 +12,16 @@ public class DialogueManager : Singleton<DialogueManager>
     [SerializeField] private List<DialogueChoiceSO> _choicesDialogues;
     [SerializeField] private TextMeshProUGUI _scriptScreen;
 
-    [SerializeField] public Button Button1;
-    [SerializeField] public Button Button2;
-    [SerializeField] public Button Button3;
+    [SerializeField] private GameObject _button1Obj;
+    [SerializeField] private GameObject _button2Obj;
+    [SerializeField] private GameObject _button3Obj;
+
+    private Button Button1;
+    private Button Button2;
+    private Button Button3;
+    private TMP_Text Button1Text;
+    private TMP_Text Button2Text;
+    private TMP_Text Button3Text;
 
     //  버튼 입력 전까지 대기상태
     private int _selectedNextId = -1;
@@ -51,6 +58,14 @@ public class DialogueManager : Singleton<DialogueManager>
         ChoiceDic = new Dictionary<string, DialogueChoiceSO>();
         foreach (var c in _choicesDialogues)
             ChoiceDic.Add(c.DialogueChoiceID, c);
+
+        Button1 = _button1Obj.GetComponentInChildren<Button>(true);
+        Button2 = _button2Obj.GetComponentInChildren<Button>(true);
+        Button3 = _button3Obj.GetComponentInChildren<Button>(true);
+
+        Button1Text = _button1Obj.GetComponentInChildren<TMP_Text>(true);
+        Button2Text = _button2Obj.GetComponentInChildren<TMP_Text>(true);
+        Button3Text = _button3Obj.GetComponentInChildren<TMP_Text>(true);
         HideAllButtons();
     }
 
@@ -159,9 +174,9 @@ public class DialogueManager : Singleton<DialogueManager>
     /// <param name="choice">선택지 ScriptableObject</param>
     private void ShowChoiceButtons(DialogueChoiceSO choice)
     {
-        SetChoiceButton(Button1, choice.Number1, choice.NextDialogue1ID);
-        SetChoiceButton(Button2, choice.Number2, choice.NextDialogue2ID);
-        SetChoiceButton(Button3, choice.Number3, choice.NextDialogue3ID);
+        SetChoiceButton(_button1Obj, Button1, Button1Text, choice.Number1, choice.NextDialogue1ID);
+        SetChoiceButton(_button2Obj, Button2, Button2Text, choice.Number2, choice.NextDialogue2ID);
+        SetChoiceButton(_button3Obj, Button3, Button3Text, choice.Number3, choice.NextDialogue3ID);
     }
 
     /// <summary>
@@ -169,9 +184,9 @@ public class DialogueManager : Singleton<DialogueManager>
     /// </summary>
     private void HideAllButtons()
     {
-        Button1.gameObject.SetActive(false);
-        Button2.gameObject.SetActive(false);
-        Button3.gameObject.SetActive(false);
+        _button1Obj.SetActive(false);
+        _button2Obj.SetActive(false);
+        _button3Obj.SetActive(false);
     }
     /// <summary>
     /// 개별 버튼의 텍스트와 클릭 이벤트를 설정한다.
@@ -179,12 +194,12 @@ public class DialogueManager : Singleton<DialogueManager>
     /// <param name="btn">버튼</param>
     /// <param name="label">텍스트</param>
     /// <param name="nextDialogueId">분기될 다음 대사 ID</param>
-    private void SetChoiceButton(Button btn, string label, int nextDialogueId)
+    private void SetChoiceButton(GameObject buttonObj, Button btn, TMP_Text btnText, string label, int nextDialogueId)
     {
         if (!string.IsNullOrEmpty(label))
         {
-            btn.gameObject.SetActive(true);
-            btn.GetComponentInChildren<TMP_Text>().text = label;
+            buttonObj.SetActive(true);  // 부모 오브젝트 활성화
+            btnText.text = label;
             btn.onClick.RemoveAllListeners();
             btn.onClick.AddListener(() =>
             {
@@ -193,8 +208,9 @@ public class DialogueManager : Singleton<DialogueManager>
             });
         }
         else
-            btn.gameObject.SetActive(false);
-
+        {
+            buttonObj.SetActive(false); // 부모 오브젝트 비활성화
+        }
     }
 
     public void StartDialogueFromId(int dialogueId)
