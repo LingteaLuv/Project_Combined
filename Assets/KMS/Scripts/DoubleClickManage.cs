@@ -13,7 +13,7 @@ public class DoubleClickManage : MonoBehaviour
 
     private void Awake()
     {
-        _wfs = new WaitForSeconds(2f);
+        _wfs = new WaitForSeconds(1f);
         _current = -1;
         _count = 0;
     }
