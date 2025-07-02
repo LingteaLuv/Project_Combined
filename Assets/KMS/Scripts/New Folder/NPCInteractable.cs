@@ -30,6 +30,7 @@ public class NPCInteractable : MonoBehaviour
 
         QuestManager.Instance.OnQuestAccepted += SetAcceptedText;
         QuestManager.Instance.OnQuestCompleted += SetCompletedText;
+        QuestManager.Instance.OnQuestClosed += SetClosedText;
     }
 
 
