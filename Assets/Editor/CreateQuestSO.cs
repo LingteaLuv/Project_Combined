@@ -276,10 +276,9 @@ public class CreateQuestSO : EditorWindow
             string npcID = parts[0];
             npc.NPCID = npcID;
             npc.Name = parts[1];
-            npc.NPCTriggerID = parts[2];
-            npc.BasicDialogueID = int.Parse(parts[3]);
-            npc.Trigger1 = parts[4];
-            if (int.TryParse(parts[5], out int trigger1Id))
+            npc.BasicDialogueID = int.Parse(parts[2]);
+            npc.Trigger1 = parts[3];
+            if (int.TryParse(parts[4], out int trigger1Id))
             {
                 npc.Trigger1DialogueID = trigger1Id;
             }
@@ -287,8 +286,8 @@ public class CreateQuestSO : EditorWindow
             {
                 npc.Trigger1DialogueID = 0;
             }
-            npc.Trigger2 = parts[6];
-            if (int.TryParse(parts[7], out int trigger2Id))
+            npc.Trigger2 = parts[5];
+            if (int.TryParse(parts[6], out int trigger2Id))
             {
                 npc.Trigger2DialogueID = trigger2Id;
             }
@@ -296,8 +295,8 @@ public class CreateQuestSO : EditorWindow
             {
                 npc.Trigger2DialogueID = 0;
             }
-            npc.Trigger3 = parts[8];
-            if (int.TryParse(parts[9], out int trigger3Id))
+            npc.Trigger3 = parts[7];
+            if (int.TryParse(parts[8], out int trigger3Id))
             {
                 npc.Trigger3DialogueID = trigger3Id;
             }
@@ -305,7 +304,7 @@ public class CreateQuestSO : EditorWindow
             {
                 npc.Trigger3DialogueID = 0;
             }
-            if (int.TryParse(parts[10], out int startId))
+            if (int.TryParse(parts[9], out int startId))
             {
                 npc.StartQuestID = startId;
             }
@@ -313,7 +312,7 @@ public class CreateQuestSO : EditorWindow
             {
                 npc.StartQuestID = 0;
             }
-            if (int.TryParse(parts[11], out int questId))
+            if (int.TryParse(parts[10], out int questId))
             {
                 npc.TriggerQuestID = questId;
             }
@@ -321,7 +320,7 @@ public class CreateQuestSO : EditorWindow
             {
                 npc.TriggerQuestID = 0;
             }
-            if (int.TryParse(parts[12], out int triggerId))
+            if (int.TryParse(parts[11], out int triggerId))
             {
                 npc.QuestTriggerID = triggerId;
             }

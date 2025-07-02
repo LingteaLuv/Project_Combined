@@ -82,7 +82,7 @@ public class DialogueManager : Singleton<DialogueManager>
     private IEnumerator PrintOut()
     {
         // NPC가 담당하는 퀘스트를 확인하여 관련 대사를 출력해야하는지 확인 
-        _curNPC.CheckQuest(QuestManager.Instance.QuestDictionary);
+        _curNPC.CheckDialogue(QuestManager.Instance.QuestDictionary);
         // 시작 대사 ID를 현재 대사로 설정 
         int startId = _curNPC.CurrentDialogueID;
         
