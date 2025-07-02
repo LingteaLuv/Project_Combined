@@ -11,15 +11,18 @@ public class QuestContentControl : MonoBehaviour
     {
         //퀘스트 목록을 순회한다. 목록을 순회하면서 게임오브젝트를 생성하면서 그 게임오브젝트와 아이디를 nodedict에 처넣는다.
         //생성 후 디스크립션 바로 적용, 이후 비활성화
-        //Dictionary<int, QuestData> quests = new(); //예시
-        //
-        //foreach (KeyValuePair<int, QuestData> q in quests)
-        //{
-        //    GameObject go = Instantiate(_questNode, gameObject.transform);
-        //    go.SetActive(false);
-        //    NodeDict.Add(q.Key, go.GetComponent<QuestNode>());
-        //}
-        //
+        Dictionary<int, QuestData> quests = new(); //예시
+        
+        foreach (KeyValuePair<int, QuestData> q in quests)
+        {
+            GameObject go = Instantiate(_questNode, gameObject.transform);
+            NodeDict.Add(q.Key, go.GetComponent<QuestNode>());
+            NodeDict[q.Key].Description.text = q.Value.Description;
+            NodeDict[q.Key].EndDescription.text = q.Value.EndDescription;
+            NodeDict[q.Key].EndDescription.enabled = false;
+            go.SetActive(false);
+        }
+        
         //QuestManager.Instance.OnQuestAccepted += ActiveNode;
         //QuestManager.Instance.OnQuestCompleted += CheckNode;
         
@@ -32,7 +35,8 @@ public class QuestContentControl : MonoBehaviour
     public void CheckNode(QuestData q)
     {
         //아이디와 일치하는 노드 활성화
-        NodeDict[q.QuestID].Description.fontStyle = TMPro.FontStyles.Strikethrough;
+        NodeDict[q.QuestID].Description.fontStyle = TMPro.FontStyles.Strikethrough | TMPro.FontStyles.Bold;
+        NodeDict[q.QuestID].EndDescription.enabled = true;
     }
     public void ClearNode(int ID)
     {
