@@ -5,10 +5,10 @@ using UnityEngine;
 
 public class NPCDialogue : MonoBehaviour
 {
-    [SerializeField] private NPCSO _data;
+    [SerializeField] public NPCSO _data;
 
     private Dictionary<int, int> _dialogueFlow;
-    private List<string> _startQuest;
+    public List<string> _startQuest;
     private List<string> _endQuest;
     
     private int _currentFlow;

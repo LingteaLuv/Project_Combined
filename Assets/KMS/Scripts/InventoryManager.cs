@@ -1,4 +1,6 @@
 
+using System.Collections.Generic;
+using UnityEditor.ShaderGraph;
 using UnityEngine;
 
 
@@ -74,6 +76,42 @@ public class InventoryManager : SingletonT<InventoryManager>
         return canAdd;
     }
 
+
+
+    public void DecreaseWeaponDurability(int amount = 1)
+    {
+        _controller.Dur(0, amount);
+    }
+    public void DecreaseShieldDurability(int amount = 1)
+    {
+        _controller.Dur(1, amount);
+    }
+    public bool AddItemByID(int id, int count)
+    {
+        int d = Craft.GetMaxDur(id);
+        return Craft.AddItemByID(id, count, d);
+    }
+    public bool RemoveItemByID(int id, int count)
+    {
+        return Craft.RemoveItemByID(id, count);
+    }
+    public void ReduceRightHandItem()
+    {
+        Controller.ReduceEquippedItem(0, 1);
+    }
+    public bool FindItemByID(int id, bool remove = true) //해당 아이템 있으면 1개 지우고 true 반환.
+    {
+        if (_craft.CountByID[id] > 0)
+        {
+            if (remove) // true(기본값) 이면 지움
+            {
+                _controller.RemoveItem(_itemDictionary.ItemDic[id], 1);
+            }
+            return true;
+        }
+        return false;
+    }
+
     public ItemBase CurrentWeapon()
     {
         if (Controller.EquippedSlotIndex[0] == -1)
@@ -85,15 +123,27 @@ public class InventoryManager : SingletonT<InventoryManager>
             return _model.InvItems[Controller.EquippedSlotIndex[0]].Data;
         }
     }
+
+    private List<int> _itemlist;
+    int num = 0;
+    private void Start()
+    {
+        _itemlist = new();
+        foreach (int q in _craft._itemDictionary.ItemDic.Keys)
+        {
+            _itemlist.Add(q);
+            Debug.Log(q);
+        }
+    }
     private void Update()
     {
 
-        if (Input.GetKeyDown(KeyCode.Z)) _craft.AddItemByID(1101, 1, 10);
-        if (Input.GetKeyDown(KeyCode.X)) _craft.AddItemByID(1102, 1, 10);
-        if (Input.GetKeyDown(KeyCode.C)) _craft.AddItemByID(1201, 1, 10);
-        if (Input.GetKeyDown(KeyCode.V)) _craft.AddItemByID(1301, 1, 10);
-        if (Input.GetKeyDown(KeyCode.B)) _craft.AddItemByID(1401, 1, 10);
-        if (Input.GetKeyDown(KeyCode.N)) _craft.AddItemByID(1402, 1, 10);
+        if (Input.GetKeyDown(KeyCode.Z)) AddItemByID(1101, 1);
+        if (Input.GetKeyDown(KeyCode.X)) AddItemByID(1102, 1);
+        if (Input.GetKeyDown(KeyCode.C)) AddItemByID(1201, 1);
+        if (Input.GetKeyDown(KeyCode.V)) AddItemByID(1301, 1);
+        if (Input.GetKeyDown(KeyCode.B)) AddItemByID(1401, 1);
+        if (Input.GetKeyDown(KeyCode.N)) AddItemByID(1402, 1);
         if (!UISceneLoader.Instance.Playerattack.IsAttacking)
         {
             if (Input.GetKeyDown(KeyCode.Alpha1)) Controller.Equip(0);
@@ -107,16 +157,13 @@ public class InventoryManager : SingletonT<InventoryManager>
         if (Input.GetKeyDown(KeyCode.P)) DecreaseWeaponDurability();
         if (Input.GetKeyDown(KeyCode.O)) DecreaseShieldDurability();
         HoldSlot.transform.position = Input.mousePosition;
-    }
 
-
-    public void DecreaseWeaponDurability(int amount = 1)
-    {
-        _controller.Dur(0, amount);
-    }
-    public void DecreaseShieldDurability(int amount = 1)
-    {
-        _controller.Dur(1, amount);
+        if (Input.GetKeyDown(KeyCode.Delete))
+        {
+            AddItemByID(_itemlist[num], 1);
+            num++;
+            if (num == _itemlist.Count) num = 0;
+        }
     }
     /// <summary>
     /// 0 <- 오른손 아이템, 1 <- 왼손 아이템
@@ -127,18 +174,5 @@ public class InventoryManager : SingletonT<InventoryManager>
     public ItemBase GetHandItem(int hand)
     {
        return _model.InvItems[_controller.EquippedSlotIndex[hand]].Data;
-    }
-
-    public bool FindItemByID(int id, bool remove = true) //해당 아이템 있으면 1개 지우고 true 반환.
-    {
-        if (_craft.CountByID[id] > 0)
-        {
-            if (remove) // true(기본값) 이면 지움
-            {
-                _controller.RemoveItem(_itemDictionary.ItemDic[id], 1);
-            }
-            return true;
-        }
-        return false;
     }
 }
