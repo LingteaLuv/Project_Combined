@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class TextManager : Singleton<TextManager>
 {
@@ -11,7 +12,7 @@ public class TextManager : Singleton<TextManager>
     private MemoPopupUI _memoPopUpUI;
     
     // CSV파일의 데이터를 가지고 있는 TextLoader를 참조
-    [SerializeField] private DialogDictionary _dialogDic;
+    [FormerlySerializedAs("_dialogDic")] [SerializeField] private PopUpDictionary _popUpDic;
 
     private bool _isOnPopUp;
 
@@ -25,7 +26,7 @@ public class TextManager : Singleton<TextManager>
     private void Start()
     {
         ConfigUI();
-        _dialogDic.Init();
+        _popUpDic.Init();
     }
 
     private void Update()
@@ -63,7 +64,7 @@ public class TextManager : Singleton<TextManager>
         ConfigUI();
         
         // CSV 파일에 저장되어있는 데이터 불러오기
-        string[] popupTexts = _dialogDic.GetPopUpText(id);
+        string[] popupTexts = _popUpDic.GetPopUpText(id);
         //string popupHeadText = _dialogDic.GetPopupText(id);
         // PopUp UI 활성화 및 출력
         _popUpUI.gameObject.SetActive(true);
@@ -79,7 +80,7 @@ public class TextManager : Singleton<TextManager>
         ConfigUI();
         
         // CSV 파일에 저장되어있는 데이터 불러오기
-        string[] popupTexts = _dialogDic.GetPopUpText(id);
+        string[] popupTexts = _popUpDic.GetPopUpText(id);
         //string popupHeadText = _dialogDic.GetPopupText(id);
         
         // PopUp UI 활성화 및 출력

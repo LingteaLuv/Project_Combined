@@ -5,7 +5,6 @@ using UnityEngine;
 public class Rifle : GunWeaponBase 
 {   
     [SerializeField] public Animator _animator;
-    private float currentWeaponAmmo = 10;
     public bool isAiming = false;
     private GameObject bulletObj;
     private void Awake()
@@ -40,7 +39,7 @@ public class Rifle : GunWeaponBase
 
     protected override void ExecuteAttack()
     {
-        /*if (_item == null)
+        if (_item == null)
         {
             Debug.Log("_item의 객체가 Null 입니다.");
             return;
@@ -50,16 +49,16 @@ public class Rifle : GunWeaponBase
         {
             Debug.Log("R키를 눌러 장전하세요");
             return;
-        }*/
-        //_item.CurrentAmmoCount = 10;
+        }
 
         //발사 할 수 있는 총알이 있는지 총알풀 검사
         GameObject bulletObj = _gunBulletObjectPool.GetInactive();
 
-        if (bulletObj != null )//&& _item.CurrentAmmoCount > 0)  //만약 들고 왔다면 
+        if (bulletObj != null && _item.CurrentAmmoCount > 0)  //만약 들고 왔다면 
         {
             // 발사 딜레이 시작 (총알이 실제로 발사될 때만)
             //StartCoroutine(ShotDelay());
+            _item.CurrentAmmoCount--;
             //총알 위치 설정
             bulletObj.transform.position = _firePoint.transform.position;
 
