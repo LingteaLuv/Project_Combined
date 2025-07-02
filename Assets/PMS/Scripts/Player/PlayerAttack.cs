@@ -1,18 +1,53 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Animations.Rigging;
-using UnityEngine.Events;
 
 public class PlayerAttack : MonoBehaviour
 {
+    private bool _isAttacking = false;
+    /// <summary>
+    /// 플레이어 공격 상태 - 이벤트를 통해 무기들에게 알림
+    /// </summary>
+    public bool IsAttacking //공격중일 때 true, 공격중이 아닐 때 false
+    {
+        get => _isAttacking;
+        set
+        {
+            if (_isAttacking != value)
+            {
+                _isAttacking = value;
+                // 공격 상태가 변경될 때마다 이벤트 발생
+                OnAttackStateChanged?.Invoke(!_isAttacking); // CanAttack 상태 전달
+
+                if (_isAttacking)
+                    OnAttackStart?.Invoke();
+                else
+                    OnAttackEnd?.Invoke();
+            }
+        }
+    }
+
+    // ========== 이벤트 시스템 추가 ==========
+    // 공격 상태 변경 이벤트 (무기들이 구독할 이벤트) <- 이친구가 IsAttacking의 값을 바꿔줍니다.
+    public static event Action<bool> OnAttackStateChanged;
+
+    // 공격 시작 할 때 이벤트
+    public static event Action OnAttackStart;
+
+    // 공격 종료 할 때 이벤트
+    public static event Action OnAttackEnd;
+
+
     [SerializeField] Animator _animator; 
     [SerializeField] private WeaponBase _currentWeapon;
     public WeaponBase CurrentWeapon { get { return _currentWeapon; } }
-
+    
     //소환되는 Transform 계층
     [SerializeField] public WeaponBase LeftCurrentWeapon;
     [SerializeField] public WeaponBase RightCurrentWeapon;
+
+    public Rifle _rifle;//캐싱
 
     [Header("공격 애니메이션 클립")]
     [SerializeField] private AnimationClip _melee;
@@ -20,7 +55,6 @@ public class PlayerAttack : MonoBehaviour
     /// <summary>
     /// 플레이어 공격 못하게 하고 싶을때 IsAttacking = true, 공격하게 하고 싶을 때 IsAttacking = false; 
     /// </summary>
-    public bool IsAttacking { get; set; } //공격중일 때 true, 공격중이 아닐 때 false
 
     private PlayerProperty _playerProperty;
     private Coroutine _currentAttackCoroutine; // 현재 실행 중인 공격 코루틴
@@ -28,50 +62,74 @@ public class PlayerAttack : MonoBehaviour
     //TODO - 나중에 어디서인가 그 현재 무기가 뭔지 있어야하는 부분이 있지 않을까? Action 연결
     // 플레이어의 왼쪽 오른쪽 들고있는 템이 뭔지 바뀌는 이벤트가 존재 할 때 나도 업데이트해서 사용할 수 있지 않을까?
 
-    void Start()
-    {
-        var rigBuilder = GetComponent<RigBuilder>();
-        if (rigBuilder != null)
-        {
-            rigBuilder.Build();
-        }
-    }
     private void Awake()
     {
+        //이벤트 구독 - 오른쪽 무기가 바뀔 때마다 알림받기
+        PlayerWeaponManager.OnRightWeaponChanged += OnRightWeaponChanged;
         LeftCurrentWeapon = PlayerWeaponManager.Instance.LeftCurrentWeapon;
         RightCurrentWeapon = PlayerWeaponManager.Instance.RightCurrentWeapon;
         _playerProperty = GetComponent<PlayerProperty>();
     }
 
-    /*public void UpdateWeapon()
+    //오른쪽 무기가 변경될 때 호출되는 콜백 함수
+    private void OnRightWeaponChanged(WeaponBase newWeapon)
     {
-        _currentWeapon = _right_Hand_target.GetComponentInChildren<WeaponBase>();
-
-        if(_currentWeapon != null && _currentWeapon.ItemType == ItemType.Gun)
+        // 라이플 참조 업데이트
+        if (newWeapon != null && newWeapon.ItemType == ItemType.Gun)
         {
-            _animator.SetTrigger("IsGun");
+            _rifle = newWeapon.GetComponent<Rifle>();
         }
-    }*/
+        else
+        {
+            _rifle = null;
+        }
+    }
 
     void Update()
     {
-        RightCurrentWeapon = PlayerWeaponManager.Instance.RightCurrentWeapon;
         //테스트 코드
-        /*if(Input.GetKeyDown(KeyCode.Alpha1))
+        RightCurrentWeapon = PlayerWeaponManager.Instance.RightCurrentWeapon;
+        _rifle = RightCurrentWeapon.GetComponent<Rifle>();
+
+        /*if(_rifle == null)
         {
-            Instantiate(_testWeapon[0], new Vector3(0,0,0), Quaternion.identity, _right_Hand_target.transform);
+            Debug.Log("참조가 안됨");
         }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            Instantiate(_testWeapon[1], new Vector3(0, 0, 0), Quaternion.identity, _right_Hand_target.transform);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            Instantiate(_testWeapon[2], new Vector3(0, 0, 0), Quaternion.identity, _right_Hand_target.transform);
-        }*/
+        // 좌클릭 : 무조건 발사
         if (Input.GetMouseButtonDown(0))
         {
             TryAttack();
+        }
+
+        // 우클릭 : 조준 모드 토글
+        if (Input.GetMouseButtonDown(1) && RightCurrentWeapon.ItemType == ItemType.Gun)
+        {
+            Debug.Log("why");
+            ToggleAimMode();
+        }
+
+        // 조준 모드면 궤적 계속 갱신
+        if (_rifle != null && _rifle.isAiming)
+        {
+            _rifle.UpdateAim();
+            if(Input.GetMouseButtonDown(1))
+            {
+                RightCurrentWeapon.Attack();
+            }
+        }*/
+    }
+
+    public void ToggleAimMode()
+    {
+        if (_rifle == null) return;
+
+        if (_rifle.isAiming)
+        {
+            _rifle.EndAim();
+        }
+        else
+        {
+            _rifle.StartAim();
         }
     }
 
@@ -113,12 +171,7 @@ public class PlayerAttack : MonoBehaviour
 
     private void TryAttack()
     {
-        // 공격 불가능한 상태면 리턴
-        if (IsAttacking)
-        {
-            Debug.Log("공격 불가능한 상태입니다.");
-            return;
-        }
+        if (IsAttacking) return; 
 
         if (RightCurrentWeapon == null)
         {
@@ -133,7 +186,7 @@ public class PlayerAttack : MonoBehaviour
                 _playerProperty.StaminaConsume(3f);
                 break;
             case ItemType.Gun:
-                StartRangedAttack();
+                PlayerAttackStart(); //좌클릭시 바로 발사
                 break;
             case ItemType.Throw:
                 StartThrowAttack();
@@ -162,13 +215,6 @@ public class PlayerAttack : MonoBehaviour
         }
 
         _currentAttackCoroutine = StartCoroutine(MeleeAttackSequence());
-        MeleeAttackSequence();
-    }
-
-    //원거리 공격 실행
-    private void StartRangedAttack()
-    {
-        _animator.SetBool("IsAim",true);
     }
 
     //레이어를 일단은 혼자 쓰는 것 같은데 계속 플레이어의 animtor가 수정될 일이 많은데
@@ -217,5 +263,26 @@ public class PlayerAttack : MonoBehaviour
     private IEnumerator WaifForInput()
     {
         yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+    }
+
+    public void StartAim()
+    {
+        if (_rifle == null) return;
+        
+        _rifle.StartAim();
+    }
+
+    public void UpdateAim()
+    {
+        if (_rifle == null) return;
+
+        _rifle.UpdateAim();
+    }
+
+    public void EndAim()
+    {
+        if(_rifle == null) return;
+
+        _rifle.EndAim();
     }
 }

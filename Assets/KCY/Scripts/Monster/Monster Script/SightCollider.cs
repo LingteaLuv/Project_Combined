@@ -12,6 +12,7 @@ public class SightCollider : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("SightCollider.OnTriggerEnter 호출됨");
         _monster.SightDetectPlayer(other);
     }
 
@@ -26,12 +27,14 @@ public class SightCollider : MonoBehaviour
 
         if (_monster.IsDetecting && _monster.TargetPosition == other.transform)
         {
-            Debug.Log(" 플레이어 감지 해제 → Idle 상태 복귀");
-            _monster.TargetPosition = null;
+            Debug.Log(" 플레이어 감지 해제 Idle 상태 복귀");
+            Debug.Log(" 제발 돌아와 이 ㅆ");
+          
             _monster.IsDetecting = false;
+            _monster.IsSightDetecting = false;
 
             // 감지해서 나간 대상이 플레이어였을 경우 해당 위치를 임시 포인트로 잡고 해당 방향을 기준으로 패트롤을 진행한다.
-            _monster.TempPoint = other.transform;
+            _monster.TempPoint = _monster.transform.position;
             _monster._monsterMerchine.ChangeState(_monster._monsterMerchine.StateDic[Estate.Idle]);
         }
     }
