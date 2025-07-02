@@ -35,6 +35,8 @@ public class QuestManager : Singleton<QuestManager>
     public event Action<QuestData, QuestProgress> OnQuestAccepted;
     /// <summary>퀘스트 완료 시 알림 이벤트</summary>
     public event Action<QuestData, QuestProgress> OnQuestCompleted;
+    /// <summary>퀘스트 종료 시 알림 이벤트</summary>
+    public event Action<QuestData, QuestProgress> OnQuestClosed;
     /// <summary>퀘스트 보상 수령 시 알림 이벤트</summary>
     public event Action<QuestData, QuestProgress> OnQuestRewardClaimed;
     #endregion
@@ -60,8 +62,6 @@ public class QuestManager : Singleton<QuestManager>
     {
         return QuestDictionary.Keys.Where(q => QuestDictionary[q].EndNPCID == npcId).ToList();
     }
-
-
     public void QuestType(string triggerId)
     {
         //  트리거명으로 QuestID를 찾기
@@ -232,6 +232,46 @@ public class QuestManager : Singleton<QuestManager>
         if (meta.Status != QuestStatus.Active)
             return;
         CompleteQuest(questId);
+    }
+
+    /// <summary>
+    /// NPC의 ID로 해당 NPC가 표시해야 할 퀘스트 상태를 반환합니다.
+    /// 완료 NPC(EndNPCID)가 우선이며, 그 후 수주 NPC(StartNPCID)를 검사합니다.
+    /// </summary>
+    public QuestStatus? GetNpcQuestStatus(string npcId)
+    {
+        var quests = QuestDictionary.Values;
+
+        //  EndNPCID
+        var endQuest = quests.FirstOrDefault(q => q.EndNPCID == npcId);
+        if (endQuest != null)
+        {
+            switch (endQuest.Status)
+            {
+                case QuestStatus.Completed:  // 완료 가능
+                    return QuestStatus.Completed;
+                case QuestStatus.Active:     // 진행 중
+                    return QuestStatus.Active;
+                default:
+                    break;
+            }
+        }
+
+        // StartNPCID
+        var startQuest = quests.FirstOrDefault(q => q.StartNPCID == npcId);
+        if (startQuest != null)
+        {
+            switch (startQuest.Status)
+            {
+                case QuestStatus.Available:  // 수주 가능
+                    return QuestStatus.Available;
+                case QuestStatus.Active:     // 진행 중
+                    return QuestStatus.Active;
+                default:
+                    return null;
+            }
+        }
+        return null;
     }
 
     /// <summary>
