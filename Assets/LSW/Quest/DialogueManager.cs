@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
 
 public class DialogueManager : Singleton<DialogueManager>
 {
@@ -18,15 +17,13 @@ public class DialogueManager : Singleton<DialogueManager>
     //  해당 대사를 쳤는가?
     private int _selectedNextId = -1;
     [SerializeField] private List<NPCSO> _npc;
-    
-    [SerializeField] private TextMeshProUGUI _scriptScreen;
     [SerializeField] private TextMeshProUGUI _npcName;
     
     private WaitForSeconds _delay;
     private NPCDialogue _curNPC;
     
     public Dictionary<int, DialogueSO> DialogueDic { get; private set; }
-    public Dictionary<string, DialogueChoiceSO> ChoiceDic { get; private set; }
+    public Dictionary<int, DialogueChoiceSO> ChoiceDic { get; private set; }
 
     public Dictionary<int, NPCSO> NPCDic { get; private set; }
     
@@ -49,7 +46,7 @@ public class DialogueManager : Singleton<DialogueManager>
         }
         _delay = new WaitForSeconds(0.05f);
 
-        ChoiceDic = new Dictionary<string, DialogueChoiceSO>();
+        ChoiceDic = new Dictionary<int, DialogueChoiceSO>();
         foreach (var c in _choicesDialogues)
             ChoiceDic.Add(c.DialogueChoiceID, c);
         HideAllButtons();
@@ -118,7 +115,7 @@ public class DialogueManager : Singleton<DialogueManager>
         DialogueSO dialogue = DialogueDic[dialogueId];
         yield return ScriptSetting.WriteWords(_scriptScreen, dialogue.DialogueText, new WaitForSeconds(0.05f), () => SkipRequested());
 
-        if (!string.IsNullOrEmpty(dialogue.DialogueChoiceID))
+        if (dialogue.DialogueChoiceID != 0)
         {
             DialogueChoiceSO choice = ChoiceDic[dialogue.DialogueChoiceID];
             ShowChoiceButtons(choice);
@@ -163,7 +160,7 @@ public class DialogueManager : Singleton<DialogueManager>
     /// <param name="btn">버튼</param>
     /// <param name="label">텍스트</param>
     /// <param name="nextDialogueId">분기될 다음 대사 ID</param>
-    private void SetChoiceButton(Button btn, string label, string nextDialogueId)
+    private void SetChoiceButton(Button btn, string label, int nextDialogueId)
     {
         if (!string.IsNullOrEmpty(label))
         {
@@ -172,7 +169,7 @@ public class DialogueManager : Singleton<DialogueManager>
             btn.onClick.RemoveAllListeners();
             btn.onClick.AddListener(() =>
             {
-                _selectedNextId = int.Parse(nextDialogueId);
+                _selectedNextId = nextDialogueId;
                 HideAllButtons();
             });
         }
