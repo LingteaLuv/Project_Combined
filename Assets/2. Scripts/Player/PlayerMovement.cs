@@ -199,10 +199,12 @@ public class PlayerMovement : MonoBehaviour
     public void SetWater(bool water)
     {
         IsWater = water;
+        /*
         if (IsWater)
             Controller.PlayerHealth.ApplyDotDamage(10, 1, 120);
         else
             Controller.PlayerHealth.StopDotDamage();
+        */
     }
     public void SetRotation(float offset)
     {

@@ -131,7 +131,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         StartCoroutine(InvincibilityCoroutine()); //사망하지 않았으면 무적시간 부여 
     }
 
-
+    /*
     /// <summary>
     /// 플레이어에게 도트 데미지를 적용합니다. 도트 데미지 적용 중에는 피격 에니메이션이 없습니다.
     /// </summary>
@@ -156,7 +156,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable
             _isDotActive = false;
             Debug.Log("도트 데미지 강제 종료!");
         }
-    }
+    }*/
+
     /// <summary>
     /// 플레이어 죽으면 잠깐 애니메이션 기다리고 게임 오버 처리하기 위해 만든 코루틴입니다.
     /// </summary>
@@ -186,7 +187,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         _isInvincible = false;
         Debug.Log("무적 시간 종료");
     }
-
+    /*
     private IEnumerator DotDamage(int damage, float tick, float duration)
     {
         _isDotActive = true;
@@ -205,5 +206,5 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         }
         _dotCoroutine = null;
         _isDotActive = false;
-    }
+    }*/
 }
