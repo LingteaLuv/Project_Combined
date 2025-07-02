@@ -139,8 +139,8 @@ public class PlayerMovement : MonoBehaviour
             }
 
             // 작은 턱 오르기 처리
-            bool downRay = Physics.Raycast(transform.position + Vector3.up * 0.02f, transform.forward, 0.5f);
-            bool middleRay = Physics.Raycast(transform.position + Vector3.up * 0.1f, transform.forward, 0.5f);
+            bool downRay = Physics.Raycast(transform.position + Vector3.up * 0.1f, transform.forward, 0.5f);
+            bool middleRay = Physics.Raycast(transform.position + Vector3.up * 0.2f, transform.forward, 0.5f);
             bool upRay = Physics.Raycast(transform.position + Vector3.up * 0.3f, transform.forward, 0.5f);
 
             if (downRay && middleRay && !upRay)
