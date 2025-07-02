@@ -2,8 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Animations.Rigging;
-using UnityEngine.Events;
 
 public class PlayerAttack : MonoBehaviour
 {
@@ -49,6 +47,8 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] public WeaponBase LeftCurrentWeapon;
     [SerializeField] public WeaponBase RightCurrentWeapon;
 
+    private Rifle _rifle;//캐싱
+
     [Header("공격 애니메이션 클립")]
     [SerializeField] private AnimationClip _melee;
 
@@ -64,37 +64,37 @@ public class PlayerAttack : MonoBehaviour
 
     private void Awake()
     {
+        //이벤트 구독 - 오른쪽 무기가 바뀔 때마다 알림받기
+        PlayerWeaponManager.OnRightWeaponChanged += OnRightWeaponChanged;
+
         LeftCurrentWeapon = PlayerWeaponManager.Instance.LeftCurrentWeapon;
         RightCurrentWeapon = PlayerWeaponManager.Instance.RightCurrentWeapon;
         _playerProperty = GetComponent<PlayerProperty>();
     }
 
-    /*public void UpdateWeapon()
+    //오른쪽 무기가 변경될 때 호출되는 콜백 함수
+    private void OnRightWeaponChanged(WeaponBase newWeapon)
     {
-        _currentWeapon = _right_Hand_target.GetComponentInChildren<WeaponBase>();
-
-        if(_currentWeapon != null && _currentWeapon.ItemType == ItemType.Gun)
+        // 라이플 참조 업데이트
+        if (newWeapon != null && newWeapon.ItemType == ItemType.Gun)
         {
-            _animator.SetTrigger("IsGun");
+            _rifle = newWeapon.GetComponent<Rifle>();
         }
-    }*/
+        else
+        {
+            _rifle = null;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        //메모리 누수 방지를 위해 이벤트 구독 해제
+        PlayerWeaponManager.OnRightWeaponChanged -= OnRightWeaponChanged;
+    }
 
     void Update()
     {
         RightCurrentWeapon = PlayerWeaponManager.Instance.RightCurrentWeapon;
-        //테스트 코드
-        /*if(Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            Instantiate(_testWeapon[0], new Vector3(0,0,0), Quaternion.identity, _right_Hand_target.transform);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            Instantiate(_testWeapon[1], new Vector3(0, 0, 0), Quaternion.identity, _right_Hand_target.transform);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            Instantiate(_testWeapon[2], new Vector3(0, 0, 0), Quaternion.identity, _right_Hand_target.transform);
-        }*/
         if (Input.GetMouseButtonDown(0))
         {
             TryAttack();
@@ -139,13 +139,6 @@ public class PlayerAttack : MonoBehaviour
 
     private void TryAttack()
     {
-        // 공격 불가능한 상태면 리턴
-        if (IsAttacking)
-        {
-            Debug.Log("공격 불가능한 상태입니다.");
-            return;
-        }
-
         if (RightCurrentWeapon == null)
         {
             Debug.Log("현재 손에 공격무기가 없습니다");
@@ -188,7 +181,6 @@ public class PlayerAttack : MonoBehaviour
         }
 
         _currentAttackCoroutine = StartCoroutine(MeleeAttackSequence());
-        MeleeAttackSequence();
     }
 
     //원거리 공격 실행

@@ -40,7 +40,7 @@ public abstract class GunWeaponBase : WeaponBase
     [SerializeField] protected Transform _firePoint;    //총알 발사 지점
 
     //궤적 설정 관련 변수
-    protected LineRenderer _lineRenderer;
+    public LineRenderer _lineRenderer;
     [SerializeField] protected bool showTrajectory = true;
 
     protected bool _isReload = false;

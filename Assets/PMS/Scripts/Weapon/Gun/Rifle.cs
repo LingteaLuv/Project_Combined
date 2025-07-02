@@ -19,16 +19,10 @@ public class Rifle : GunWeaponBase
     {
         if (_animator.GetBool("IsAim") == true)
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                Attack();
-                InventoryManager.Instance.DecreaseWeaponDurability();
-            }
             // 마우스 우클릭을 누르는 순간 (조준 시작)
             if (Input.GetMouseButtonDown(1))
             {
                 // 총알 궤적 미리보기를 위한 로직 (옵션)
-
                 _lineRenderer.enabled = true; // 라인 렌더러 활성화
                 GameObject bulletObj = _gunBulletObjectPool.GetInactive(); // 궤적 미리보기를 위해 임시 객체 가져오기 (실제 발사 아님)
                 UpdateTrajectory(bulletObj, bulletObj.GetComponent<BulletBase>()._speed); // 궤적 업데이트
@@ -44,7 +38,6 @@ public class Rifle : GunWeaponBase
                 }
                 if (Input.GetMouseButtonUp(0))
                 {
-                    InventoryManager.Instance.DecreaseWeaponDurability();
                     Attack();
                 }
             }
@@ -84,14 +77,6 @@ public class Rifle : GunWeaponBase
         }
     }
 
-
-    //총알 딜레이 설정
-    private IEnumerator ShotDelay()
-    {
-        _canAttack = false;
-        yield return new WaitForSeconds(_fireDelay);
-        _canAttack = true;
-    }
     private IEnumerator ReloadCorutine()
     {
         _isReload = true;
@@ -119,7 +104,7 @@ public class Rifle : GunWeaponBase
         if (bulletObj != null && _item.CurrentAmmoCount > 0)  //만약 들고 왔다면 
         {
             // 발사 딜레이 시작 (총알이 실제로 발사될 때만)
-            StartCoroutine(ShotDelay());
+            //StartCoroutine(ShotDelay());
             //총알 위치 설정
             bulletObj.transform.position = _firePoint.transform.position;
 
