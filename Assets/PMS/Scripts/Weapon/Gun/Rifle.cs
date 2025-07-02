@@ -84,25 +84,13 @@ public class Rifle : GunWeaponBase
         }
     }
 
-    protected override void OnAttackStarted()
-    {
-        base.OnAttackStarted();
-        // 총기 공격 시작 시 특별한 로직이 있다면 여기에
-    }
-
-    protected override void OnAttackEnded()
-    {
-        base.OnAttackEnded();
-        // 총기 공격 종료 시 특별한 로직이 있다면 여기에
-    }
-
 
     //총알 딜레이 설정
     private IEnumerator ShotDelay()
     {
-        playerAttack.IsAttacking = false;
+        _canAttack = false;
         yield return new WaitForSeconds(_fireDelay);
-        playerAttack.IsAttacking = true;
+        _canAttack = true;
     }
     private IEnumerator ReloadCorutine()
     {
@@ -113,6 +101,12 @@ public class Rifle : GunWeaponBase
 
     protected override void ExecuteAttack()
     {
+        if (_item == null)
+        {
+            Debug.Log("_item의 객체가 Null 입니다.");
+            return;
+        }
+
         if (_item.CurrentAmmoCount == 0)
         {
             Debug.Log("R키를 눌러 장전하세요");
@@ -143,11 +137,6 @@ public class Rifle : GunWeaponBase
         {
             Debug.Log("총알이 준비되어 있지 않습니다");
         }
-    }
-
-    private void OnDestroy()
-    {
-        PlayerAttack.OnAttackStateChanged -= OnAttackStateChanged;
     }
 
     /*

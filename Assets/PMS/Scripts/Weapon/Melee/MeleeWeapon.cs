@@ -35,14 +35,14 @@ public class MeleeWeapon : WeaponBase
 
     public override void Init()
     {
-        PlayerAttack.OnAttackStateChanged += OnAttackStateChanged;
         gameObject.transform.localPosition = _weaponSpawnPos.transform.localPosition;
         gameObject.transform.localRotation = _weaponSpawnPos.transform.localRotation;
     }
 
     public override void Attack()
     {
-        base.Attack();
+        //공격을 조정 할 필요가없음 PlayerAttack에서 조정
+        ExecuteAttack();
     }
 
     // ========== 이벤트 시스템 오버라이드 ==========
@@ -83,7 +83,6 @@ public class MeleeWeapon : WeaponBase
 
         // 무기에 달려있는 _attack를 중심으로 범위를 설정하고 타겟레이어와 충돌검사
         Collider[] colliders = Physics.OverlapSphere(_attackPointPos.position, _attackRange, _targetLayer);
-        Debug.Log($"▶ 감지된 Collider 수: {colliders.Length}");
         // 가장 가까운 타겟을 찾기 위한 변수 초기화
         //IDamageable closestDamageable = null;
         GameObject closeGameObject = null;
@@ -95,7 +94,6 @@ public class MeleeWeapon : WeaponBase
         // 9. 충돌체를 저장한 배열을 순회하며 가장 가까운 적 찾기
         foreach (Collider targetCollider in colliders)
         {
-            Debug.Log($"▶ 검사 대상: {targetCollider.name}");
             IDamageable damageable = targetCollider.GetComponent<IDamageable>();
             if (damageable != null)
             {
@@ -110,7 +108,6 @@ public class MeleeWeapon : WeaponBase
                 {
                     // 현재 공격 지점과 타겟 간의 거리 계산
                     float distance = Vector3.Distance(_attackPointPos.position, targetCollider.transform.position);
-                    Debug.Log($"▶ {targetCollider.name}: angle={angle}, limit={_attackAngle / 2}");
                     // 만약 현재 타겟이 이전에 찾은 타겟보다 더 가깝다면
                     if (distance < minDistance)
                     {
@@ -119,21 +116,12 @@ public class MeleeWeapon : WeaponBase
                         closeGameObject = targetCollider.gameObject;
                     }
                 }
-                else
-                {
-                    Debug.Log($"▶ {targetCollider.name} 은 각도 조건을 통과 못함.");
-                }
-            }
-            else
-            {
-                Debug.Log($"▶ {targetCollider.name} 은 IDamageable 이 없음");
             }
         }
 
         // 가장 가까운 적이 있다면 데미지 부여 로직 실행
         if (closeGameObject != null)//(closestDamageable != null)
         {
-            Debug.Log($"▶ 공격 성공: {closeGameObject.name}");
             closeGameObject.GetComponent<IDamageable>().Damaged(_meleeData.AtkDamage);
             //TODO - 시각적 디버깅용 코드 추후 제거 예정
             StartCoroutine(DamageRoutine(closeGameObject.gameObject));

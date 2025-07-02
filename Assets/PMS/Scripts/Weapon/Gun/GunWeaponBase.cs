@@ -18,11 +18,9 @@ public abstract class GunWeaponBase : WeaponBase
         public string ReloadSoundResource;
         public float NoiseLevel;
     */
-    [SerializeField] protected PlayerAttack playerAttack;
     //불릿 프리팹
     //추후 프리팹 매니저 관리
     [SerializeField] protected GameObject _bulletPrefab;
-
     //총 본체 관련 변수
     [SerializeField] protected int _damage => _gunData.AtkDamage;     // 총의 데미지
     [SerializeField] protected float _range => _gunData.Range;        // 총의 유효 사거리

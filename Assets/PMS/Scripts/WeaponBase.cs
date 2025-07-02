@@ -38,23 +38,26 @@ public abstract class WeaponBase : MonoBehaviour
         OnAttackStarted();
     }
 
+    //공격 상태 변경 시점
     // 하위 클래스에서 오버라이드할 수 있는 가상 메서드들
     protected virtual void OnAttackStateChanged(bool canAttack)
     {
         // 필요한 경우 하위 클래스에서 구현
-        Debug.Log($"{gameObject.name}: 공격 가능 상태 변경 - {canAttack}");
+        //Debug.Log($"{gameObject.name}: 공격 가능 상태 변경 - {canAttack}");
     }
 
+    //공격 시작 했을 때
     protected virtual void OnAttackStarted()
     {
         // 필요한 경우 하위 클래스에서 구현
-        Debug.Log($"{gameObject.name}: 공격 시작됨");
+        //Debug.Log($"{gameObject.name}: 공격 시작됨");
     }
 
+    //공격 끝났을 때
     protected virtual void OnAttackEnded()
     {
         // 필요한 경우 하위 클래스에서 구현
-        Debug.Log($"{gameObject.name}: 공격 종료됨");
+        //Debug.Log($"{gameObject.name}: 공격 종료됨");
     }
 
     // 공격 종료 이벤트 핸들러
@@ -62,7 +65,6 @@ public abstract class WeaponBase : MonoBehaviour
     {
         OnAttackEnded();
     }
-
 
     //아이템 클래스를 가져온다 -> 나중에 인벤토리에 있는 데이터를 읽고 쓰기 위해서
     private PlayerAttack _playerAttack;

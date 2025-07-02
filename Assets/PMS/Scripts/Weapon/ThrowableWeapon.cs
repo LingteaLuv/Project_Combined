@@ -38,7 +38,6 @@ public class ThrowableWeapon : WeaponBase
 
     public override void Init()
     {
-        PlayerAttack.OnAttackStateChanged += OnAttackStateChanged;
         if (_weaponSpawnPos == null) {
             Debug.Log("무기의 스폰포인트가 지정되어 있지 않습니다.");
             return;
@@ -51,6 +50,11 @@ public class ThrowableWeapon : WeaponBase
 
     public override void Attack()
     {
+        if (!_canAttack)
+        {
+            Debug.Log("투척할 수 없는 상태입니다.");
+            return;
+        }
         ExecuteAttack();
     }
 
@@ -77,7 +81,7 @@ public class ThrowableWeapon : WeaponBase
 
         rb.velocity = targetRot;
 
-        rb.maxAngularVelocity = 100;
+        rb.maxAngularVelocity = 50;
 
         rb.angularVelocity = transform.right * 100;
 
@@ -158,7 +162,7 @@ public class ThrowableWeapon : WeaponBase
         //카메라 -> 에임시스템? -> 어려울것같다
         //방향 * 힘 ?
 
-        targetRot = transform.forward * _moveSpeed + transform.up * 1f;
+        targetRot = transform.forward * _moveSpeed;
         //targetRot = ((transform.forward * 1f) + (transform.up * 0.05f)).normalized;
 
         rb.velocity = targetRot;
@@ -174,10 +178,5 @@ public class ThrowableWeapon : WeaponBase
         //Invoke(nameof(ResetThrow), throwCooldown); //이런 식으로 간단한 쿨타임 구현이 가능
         //해당 오브젝트 파괴 시점을 고려해봐야 할것 같다.
         //Destroy(gameObject,10.0f);
-    }
-
-    private void OnDestroy()
-    {
-        PlayerAttack.OnAttackStateChanged -= OnAttackStateChanged;
     }
 }
