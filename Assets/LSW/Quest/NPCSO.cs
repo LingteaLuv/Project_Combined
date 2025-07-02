@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "NPC")]
 public class NPCSO : ScriptableObject
 {
-    public int NPCID;
+    public string NPCID;
 
     public string Name;
     // 등장조건 

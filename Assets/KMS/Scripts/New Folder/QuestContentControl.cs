@@ -7,7 +7,7 @@ public class QuestContentControl : MonoBehaviour
 {
     [SerializeField] private GameObject _questNode;
 
-    public Dictionary<int, QuestNode> NodeDict;
+    public Dictionary<string, QuestNode> NodeDict;
     void Start()
     {
         //퀘스트 목록을 순회한다. 목록을 순회하면서 게임오브젝트를 생성하면서 그 게임오브젝트와 아이디를 nodedict에 처넣는다.

@@ -8,8 +8,8 @@ public class NPCDialogue : MonoBehaviour
     [SerializeField] private NPCSO _data;
 
     private Dictionary<int, int> _dialogueFlow;
-    private List<int> _startQuest;
-    private List<int> _endQuest;
+    private List<string> _startQuest;
+    private List<string> _endQuest;
     
     private int _currentFlow;
 
@@ -17,8 +17,8 @@ public class NPCDialogue : MonoBehaviour
 
     private void Awake()
     {
-        _startQuest = new List<int>();
-        _endQuest = new List<int>();
+        _startQuest = new List<string>();
+        _endQuest = new List<string>();
         Init();
     }
 
@@ -31,7 +31,7 @@ public class NPCDialogue : MonoBehaviour
     }
     
     // 퀘스트 매니저 => 퀘스트를 관리하는 Dictionary
-    public void CheckQuest(Dictionary<int,QuestData> playerQuest)
+    public void CheckQuest(Dictionary<string,QuestData> playerQuest)
     {
         for (int i = 0; i < _endQuest.Count; i++)
         {

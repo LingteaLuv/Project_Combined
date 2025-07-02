@@ -8,7 +8,7 @@ public class DialogueSO : ScriptableObject
     // 각 대사 ID
     public int DialogueID;
     // 대사 출력 NPC, Player일 경우 주인공 독백 처리 => 공백
-    public int NPCID;
+    public string NPCID;
     // 대사 내용
     public string DialogueText;
     // 선택지 묶음 ID
