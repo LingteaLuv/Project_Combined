@@ -30,12 +30,17 @@ public class ShiedWeapon : WeaponBase, IDefendable
 
     public override void Attack()
     {
-        throw new System.NotImplementedException("Shield cannot attack");
+        throw new System.NotImplementedException("Shield can not attack");
     }
 
     // IDefendable 인터페이스 구현
     public int GetDefenseAmount()
     {
         return _shiedData.DefenseAmount;
+    }
+
+    protected override void ExecuteAttack()
+    {
+        throw new System.NotImplementedException("Shield can not attack");
     }
 }

@@ -75,6 +75,21 @@ public class Monster_Chase : MonsterState_temp
         if (_agent == null || !_agent.isOnNavMesh || monster.TargetPosition == null || monster._isDead)
             return;
 
+        // 대상이 파괴되거나 소실되는 경우 해당 위치를 tempPoint로 설정 - 자연스럽게 아이들로 들어가서 다시 템프 중심의 패트롤
+        if (monster.TargetPosition == null)
+        {
+            if (monster.TempPoint == Vector3.zero)
+            {
+               monster.TempPoint = monster.transform.position;
+            }
+
+            monster.TargetPosition = null;
+            monster.IsDetecting = false;
+
+            monster._monsterMerchine.ChangeState(monster._monsterMerchine.StateDic[Estate.Idle]);
+          
+        }
+
         Vector3 targetPos = monster.TargetPosition.position;
         float distance = Vector3.Distance(monster.transform.position, targetPos);
 
@@ -117,6 +132,11 @@ public class Monster_Chase : MonsterState_temp
 
     public override void Exit()
     {
+        if (monster.TargetPosition == null)
+        {
+            monster.IsSightDetecting = false;
+        }
+
         if (_agent != null && _agent.isOnNavMesh)
         {
             _agent.ResetPath();

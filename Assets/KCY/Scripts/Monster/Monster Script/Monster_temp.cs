@@ -1,3 +1,4 @@
+using System.Threading;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -6,7 +7,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
     [Header("Elements")]
     [SerializeField] public NavMeshAgent MonsterAgent; // 몬수터 어젠트 ,  추적용
     [SerializeField] public Transform TargetPosition; // 플레이어 확인을 위한 포지션인데 굳이 퍼블릭으로 안해도 될 것 같다. 혹시 모르니까
-    [SerializeField] public LayerMask PlayerLayerMask; 
+    [SerializeField] public LayerMask PlayerLayerMask;
     [SerializeField] public LayerMask SoundLayerMask;
     [SerializeField] public LayerMask BuildingLayerMask;
     [SerializeField] public float MoveSpeed; //  기본속도 : WalkSpeed
@@ -15,10 +16,11 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
 
     [SerializeField] public Collider SoundCol;  //  사운드 디텍트용
     [SerializeField] public SphereCollider SightCol; // 시야 디텍트용
-    [SerializeField] public Transform SpawnPoint; // 수정 필요
-    public Transform TempPoint;
-    public Transform BasePoint;
-    
+    [SerializeField] public Transform SpawnPointLink; // 수정 필요 >> 스폰포인트를 다 벡터로 받았는데 연결이 트랜스폼이다. 바꿔
+    public Vector3 SpawnPoint;
+    public Vector3 TempPoint;
+    public Vector3 BasePoint;
+
     // 필요한 레이어는 3개(현재) : 플레이어, 사운드 아이템, 건물 
 
     [Header("status")]
@@ -33,13 +35,21 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
     public MonsterHandDetector HandDetector; //  손 감지기 연결용
 
     public float SightRange; // 시야 거리
-    public float SightAngle = 60f;// 시야각
-    
+    public float SightAngle = 75f;// 시야각
+    public bool IsSightDetecting = false;
+
+    // 감지 우선순위 시간
+    private float sightDetectTime = 0f;
+    private float sightDetectDur = 1f;
+
+
     public BaseState_temp PrevState { get; private set; }
     public bool IsDetecting = false;
+    public bool IsEventActive = true;
+
 
     private Vector3 _buildingSite = Vector3.positiveInfinity;
-    private float _retryDis = 1.5f;
+    private float _retryDis = 0.5f;
 
     // 벽 탈출을 위한 탐지 off 쿨타임
     // 해당 불값이 디텍트 정지시키고, dur값에 다다를 때까지 지속
@@ -50,14 +60,17 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
     private int _wallLimitedCount = 5;
 
 
-
-
     private void Awake()
     {
         PlayerLayerMask = LayerMask.GetMask("Player");
         Ani = GetComponentInChildren<Animator>();
         HandDetector = GetComponentInChildren<MonsterHandDetector>();
-        
+        _canDetect = true;
+        if (SpawnPointLink != null)
+        {
+            SpawnPoint = SpawnPointLink.position;
+        }
+
         // target = this as IAttackable; 피격 실험용으로 사용한 코드입니다 나중에 사용할 때 활성화 시켜주면 됩니다.
     }
 
@@ -72,24 +85,43 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
         }
         else
         {
-            Debug.LogError("🟥 SightCol이 할당되지 않았습니다. Monster_temp에 연결하세요!");
+            Debug.LogError(" SightCol이 할당되지 않았습니다. Monster_temp에 연결하세요!");
         }
 
     }
 
     private void Update()
     {
+        Debug.Log($" Update /// 객체 이름: {this.name}, _canDetect = {_canDetect}, 쿨타임 = {_detectCoolTime}");
+
+        Debug.Log($"[Patrol] 시야 감지 여부: {IsSightDetecting}");
+        if (IsSightDetecting)
+        {
+            sightDetectTime += Time.deltaTime;
+
+            if (sightDetectTime > sightDetectDur)
+            {
+                IsSightDetecting = false;
+                sightDetectTime = 0f;
+            }
+        }
+
+
+
         // 상태머신 업데이트
         _monsterMerchine?.Update();
 
+        Debug.Log($"Update_canDetect = {_canDetect}, 쿨타임 = {_detectCoolTime}");
         // 벽에 맞았을 때 토글시켜 탐지를 방어하고, 시간초를 업데이트에서 누적시켜 자동 토글로 디텍트를 다시 온으로 만든다/ 오프로 만드는 스위치는 벽에 닿는 것 
         if (!_canDetect)
         {
+            Debug.Log($"쿨타임 진행 중 {_detectCoolTime:F2} / {_detectDur}");
             _detectCoolTime += Time.deltaTime;
             if (_detectCoolTime >= _detectDur)
             {
                 _canDetect = true;
                 _detectCoolTime = 0f;
+                Debug.Log(" 쿨타임 종료  _canDetect true로 변경됨");
             }
         }
     }
@@ -105,6 +137,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
         _monsterMerchine.StateDic.Add(Estate.Hit, new Monster_Hit(this));
         _monsterMerchine.StateDic.Add(Estate.Dead, new Monster_Dead(this));
         _monsterMerchine.StateDic.Add(Estate.ReturnToSpawn, new Monster_ReturnToSpawn(this));
+        _monsterMerchine.StateDic.Add(Estate.GoToEvent, new Monster_GoToEvent(this));
 
         // 처음 시작은 아이들 모드로 시작
         _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.Idle]);
@@ -134,9 +167,17 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
 
     public void SightDetectPlayer(Collider other)
     {
-        // 레이어를 통한 플레이어 확인 방어 코드 , 플레이어 캐릭터가 아니면 리턴
-        if (((1 << other.gameObject.layer) & PlayerLayerMask) == 0) return; // 플레이어가 아님
+        Debug.Log($"[SightDetectPlayer 진입] 객체 이름: {this.name}");
+        Debug.Log(" SightDetectPlayer 함수 진입함");
 
+        // 레이어를 통한 플레이어 확인 방어 코드 , 플레이어 캐릭터가 아니면 리턴  >>> 건물을 포함하지 않으면 건물을 캐치할 수 없어요
+        if (((1 << other.gameObject.layer) & (PlayerLayerMask | BuildingLayerMask)) == 0)
+        {
+            Debug.Log($"레이어 무시// 감지된 오브젝트: {other.name}, 레이어: {other.gameObject.layer}");
+            return;
+        }
+
+        IsSightDetecting = true;
 
         // 빌딩에서 탈출하기 위한 패트롤용
         if (!_canDetect)
@@ -145,6 +186,9 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
             return;
         }
 
+        Debug.Log("1. State 체크 시작");
+        Debug.Log($"State 현재 상태: {_monsterMerchine.CurState}, 필요 상태: {_monsterMerchine.StateDic[Estate.Patrol]}");
+
 
         // 레어어가 현 상태가 패트롤이 아닌경우 감지 무시 (패트롤의 경우만 감지하고, 공격상태일땐 거리로 측정함, 아이들 모드 역시 무시중)
         if (_monsterMerchine.CurState != _monsterMerchine.StateDic[Estate.Patrol])
@@ -152,11 +196,11 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
             Debug.Log("Patrol 상태가 아니라 감지 무시");
             return;
         }
-
+        Debug.Log("3. 벽 회피 체크 시작");
         // 빌딩에 때문에 막혔을 때 ->  해당 지역에 대한 감지 실패 지역을 기억하고 다시 감지하는 것을 무시하는 것//
         // 벽에의한 무한루프 방지? - 추적 중 탈출을 위한 준비
         // 위치 비교를 위한 값을 설정해 비교하고, 사이의 거리값이 비교 값보다 작으면 감지 종료
- 
+
         if (_buildingSite != Vector3.positiveInfinity)
         {
             float distance = Vector3.Distance(transform.position, _buildingSite);
@@ -172,26 +216,38 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
 
         // 몬스터 정면을 중심으로  플레이어어 위치까지의 각도 대해 
         float angle = Vector3.Angle(transform.forward, dirToPlayer);
-
+        Debug.Log("5. 시야각 체크 시작");
         if (angle > SightAngle)
         {
             Debug.Log("좀비 시야에서 벗어났으니까 추격하지 않습니다.");
             return;
         }
 
+        Debug.Log("레이ㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣ");
+
+
         // 좀비 머리 위에서 좀비와 플레이어를 가리키는 방향으로 레이를 쏴서 맞춘 레이어가 빌딩이면 아이들 모드로 가고 - 자연스럽게 패트롤 모드로 갈 수 있도록 유도
-        Ray ray = new Ray(transform.position + Vector3.up * 1f, dirToPlayer);
 
-        Debug.DrawRay(ray.origin, ray.direction * 2f, Color.red, 0.1f);
+        Vector3 CapsuleStart = transform.position + Vector3.up * 0.5f;
+        Vector3 CapsuleEnd = transform.position + Vector3.up * 1.5f;
+        float capsuleRadius = 0.5f;
+        float capDis = 5f;
+        Vector3 forward = transform.forward;
 
-        if (Physics.Raycast(ray, out RaycastHit hit, 2f))
+        if (Physics.CapsuleCast(CapsuleStart, CapsuleEnd, capsuleRadius, forward, out RaycastHit hit, capDis))
         {
+            Debug.Log("맞음"); //  이 로그가 찍혀야 레이가 맞은 것
+            Debug.Log($"Raycast 충돌 오브젝트: {hit.collider.name}, 레이어: {hit.collider.gameObject.layer}");
+
             if (((1 << hit.collider.gameObject.layer) & BuildingLayerMask) != 0)
             {
-
+                Debug.Log($"Raycast 충돌한 오브젝트: {hit.collider.gameObject.name}, 레이어: {hit.collider.gameObject.layer}");
                 // 벽에 부딫힌 횟수 감지
                 // 벽에 5번 부딫히면 그냥 집으로 와라
                 _wallHitCount++;
+                Debug.Log($"벽 충돌 {_wallHitCount}회 / 제한 {_wallLimitedCount}회 (충돌 오브젝트: {hit.collider.name})");
+
+
 
                 if (_wallHitCount >= _wallLimitedCount)
                 {
@@ -204,7 +260,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
 
                 // 시작 시의 감지를 통한 확인
                 Debug.Log("건물이랑 붙었다 다시 탐지 하면 안되요");
-               
+
                 // 해당 위치를 저장한다.
                 _buildingSite = transform.position;
                 TargetPosition = null;
@@ -227,19 +283,30 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
         _buildingSite = Vector3.positiveInfinity;
 
         // 플레이어 위치 찾고, 감지 하고 
-        TargetPosition = other.transform;
-        IsDetecting = true;
 
-        Vector3 LookDir = (TargetPosition.position - transform.position);
-        // LookDir.y = 0; -> 이거 위에 못본다 
-        if (LookDir != Vector3.zero)
+        if (((1 << other.gameObject.layer) & PlayerLayerMask) != 0)
         {
-            // 감지하면 돌린다.
-            transform.rotation = Quaternion.LookRotation(LookDir);
+            TargetPosition = other.transform;
+            IsDetecting = true;
+
+            //// 돌리는 것 같은데 .////  일단 이거 확인  >>>> 그냥 사운드에 걸리는 거였음...... 시야는 잘 되고 있었다.///
+            Vector3 LookDir = (TargetPosition.position - transform.position);
+            // LookDir.y = 0; -> 이거 위에 못본다 
+            if (LookDir != Vector3.zero)
+            {
+                // 감지하면 돌린다.
+                transform.rotation = Quaternion.LookRotation(LookDir);
+            }
+
+            Debug.Log($" 플레이어 감지됨 ({other.name}) Chase 상태로 전이");
+            _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.Chase]);
+
+        }
+        else
+        {
+            Debug.Log($"플레이어가 아님 → 감지만 하고 무시: {other.name}, 레이어 = {LayerMask.LayerToName(other.gameObject.layer)}");
         }
 
-        Debug.Log($" 플레이어 감지됨 ({other.name}) Chase 상태로 전이");
-        _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.Chase]);
 
     }
 
@@ -261,6 +328,14 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
             return;
         }
 
+
+        if (IsSightDetecting)
+        {
+            Debug.Log("시야 감지 중 사운드 감지 중단");
+            return;
+        }
+
+
         // 소리로 소리 아이템을 확인한 경우
         if (((1 << other.gameObject.layer) & SoundLayerMask) != 0)
         {
@@ -272,18 +347,16 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
 
             Debug.Log("해당 위치에서 소리를 확인하여 돌아봅니다");
 
-            TempPoint = other.transform;
-            BasePoint = TempPoint;
-            _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.Patrol]);
+            TempPoint = other.transform.position;
+            Debug.Log($"TempPoint 설정됨 새 위치: {TempPoint}");
+            _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.GoToEvent]);
         }
 
     }
 
-
-
     public void AttackEvent()
     {
-        Debug.Log("<color=lime>[Monster_temp] AttackEvent 호출됨 </color>");
+        Debug.Log("[Monster_temp] AttackEvent 호출됨");
         if (_monsterMerchine.CurState is Monster_Attack attackState)
         {
             attackState.AttackEvent();

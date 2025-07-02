@@ -23,11 +23,6 @@ public class MeleeWeapon : WeaponBase
      * Corutine을 활용한 애니메이션 Event 함수 호출도 고려 할만한 상황
      */
 
-    private void Reset()
-    {
-        //InventoryManager.Instance.DecreaseWeaponDurability(); 내구도 하락 함수
-    }
-
     public void Awake()
     {
         Init();
@@ -39,11 +34,17 @@ public class MeleeWeapon : WeaponBase
         gameObject.transform.localRotation = _weaponSpawnPos.transform.localRotation;
     }
 
+    public override void Attack()
+    {
+        //공격을 조정 할 필요가없음 PlayerAttack에서 조정
+        ExecuteAttack();
+    }
+
     /// <summary>
     /// Physics.OverlapSphere + 범위 + 애니메이션 Event를 통한 특정 프레임 이벤트 호출, 각도 체크X - 무기기준 
     /// 추후 콜라이더 변경으로 각도가 해결되지 않을 경우에 플레이어 기준으로 각도체크 하는 부분 추가하면 될 것 같다.
     /// </summary>
-    public override void Attack()
+    protected override void ExecuteAttack() 
     {
         //무기에 달려있는 _attack를 중심으로 범위를 설정하고 타겟레이어와 충돌검사
         /*Collider[] _colliders = Physics.OverlapSphere(_attackPointPos.position, _attackRange, _targetLayer);
@@ -60,11 +61,10 @@ public class MeleeWeapon : WeaponBase
             }
         }*/
         //현재 무기 내구도 감소
-        InventoryManager.Instance.DecreaseWeaponDurability();
+        //InventoryManager.Instance.DecreaseWeaponDurability();
 
         // 무기에 달려있는 _attack를 중심으로 범위를 설정하고 타겟레이어와 충돌검사
         Collider[] colliders = Physics.OverlapSphere(_attackPointPos.position, _attackRange, _targetLayer);
-
         // 가장 가까운 타겟을 찾기 위한 변수 초기화
         //IDamageable closestDamageable = null;
         GameObject closeGameObject = null;
