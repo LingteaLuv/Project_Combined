@@ -79,6 +79,7 @@ public class PlayerNPCInteractor : MonoBehaviour
     public void TryInteract()
     {
         if (_interactable == null) return;
+        //DialogueManager.Instance.SetDialogue();
 
     }
 }
