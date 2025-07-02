@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,7 +16,7 @@ public class DialogueManager : Singleton<DialogueManager>
     [SerializeField] public Button Button2;
     [SerializeField] public Button Button3;
 
-    //  해당 대사를 쳤는가?
+    //  버튼 입력 전까지 대기상태
     private int _selectedNextId = -1;
     [SerializeField] private List<NPCSO> _npc;
     [SerializeField] private TextMeshProUGUI _npcName;
@@ -127,30 +128,29 @@ public class DialogueManager : Singleton<DialogueManager>
     /// <summary>
     /// 대사와 선택지를 출력하고 분기 처리용 오버로드 함수
     /// </summary>
-    /// <param name="dialogueId">출력할 대사의 ID</param>
+    /// <param name="startId">출력할 대사의 ID</param>
     private IEnumerator PrintOut(int dialogueId)
     {
         DialogueSO dialogue = DialogueDic[dialogueId];
         yield return ScriptSetting.WriteWords(_scriptScreen, dialogue.DialogueText, new WaitForSeconds(0.05f), () => SkipRequested());
 
-        if (!String.IsNullOrEmpty(dialogue.DialogueChoiceID))
-        {
-            DialogueChoiceSO choice = ChoiceDic[dialogue.DialogueChoiceID];
-            ShowChoiceButtons(choice);
+            if (!String.IsNullOrEmpty(dialogue.DialogueChoiceID))
+            {
+                DialogueChoiceSO choice = ChoiceDic[dialogue.DialogueChoiceID];
+                ShowChoiceButtons(choice);
 
-            _selectedNextId = -1;
-            
-            yield return new WaitUntil(() => _selectedNextId != -1);
+                _selectedNextId = -1;
 
-            yield return StartCoroutine(PrintOut(_selectedNextId));
-            yield break;
-        }
+                yield return new WaitUntil(() => _selectedNextId != -1);
+
+                yield return StartCoroutine(PrintOut(_selectedNextId));
+                yield break;
+            }
 
         if (dialogue.EndCheck)
         {
             yield return StartCoroutine(PrintOut(dialogueId + 1));
         }
-        // else: 대화 종료
     }
 
     /// <summary>
@@ -193,9 +193,8 @@ public class DialogueManager : Singleton<DialogueManager>
             });
         }
         else
-        {
             btn.gameObject.SetActive(false);
-        }
+
     }
 
     public void StartDialogueFromId(int dialogueId)
