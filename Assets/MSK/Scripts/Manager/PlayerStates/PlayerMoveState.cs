@@ -21,7 +21,7 @@ public class PlayerMoveState : PlayerState
     public override void Exit() { }
     public override void Tick()
     {
-        if (_movement.IsRunning)
+        if (_movement.IsRunning && _movement.CanRun)
             _movement.Controller._animator.SetBool("IsRunning", true);
         else
             _movement.Controller._animator.SetBool("IsRunning", false);
