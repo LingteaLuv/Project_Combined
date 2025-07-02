@@ -66,7 +66,6 @@ public class PlayerAttack : MonoBehaviour
     {
         //이벤트 구독 - 오른쪽 무기가 바뀔 때마다 알림받기
         PlayerWeaponManager.OnRightWeaponChanged += OnRightWeaponChanged;
-
         LeftCurrentWeapon = PlayerWeaponManager.Instance.LeftCurrentWeapon;
         RightCurrentWeapon = PlayerWeaponManager.Instance.RightCurrentWeapon;
         _playerProperty = GetComponent<PlayerProperty>();
@@ -84,12 +83,6 @@ public class PlayerAttack : MonoBehaviour
         {
             _rifle = null;
         }
-    }
-
-    private void OnDestroy()
-    {
-        //메모리 누수 방지를 위해 이벤트 구독 해제
-        PlayerWeaponManager.OnRightWeaponChanged -= OnRightWeaponChanged;
     }
 
     void Update()
@@ -139,6 +132,8 @@ public class PlayerAttack : MonoBehaviour
 
     private void TryAttack()
     {
+        if (IsAttacking) return; 
+
         if (RightCurrentWeapon == null)
         {
             Debug.Log("현재 손에 공격무기가 없습니다");
@@ -235,5 +230,26 @@ public class PlayerAttack : MonoBehaviour
     private IEnumerator WaifForInput()
     {
         yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+    }
+
+    public void StartAim()
+    {
+        if (_rifle == null) return;
+        
+        _rifle.StartAim();
+    }
+
+    public void UpdateAim()
+    {
+        if (_rifle == null) return;
+
+        _rifle.UpdateAim();
+    }
+
+    public void EndAim()
+    {
+        if(_rifle == null) return;
+
+        _rifle.EndAim();
     }
 }

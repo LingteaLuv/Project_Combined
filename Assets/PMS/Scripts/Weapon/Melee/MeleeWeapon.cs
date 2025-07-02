@@ -23,11 +23,6 @@ public class MeleeWeapon : WeaponBase
      * Corutine을 활용한 애니메이션 Event 함수 호출도 고려 할만한 상황
      */
 
-    private void Reset()
-    {
-        //InventoryManager.Instance.DecreaseWeaponDurability(); 내구도 하락 함수
-    }
-
     public void Awake()
     {
         Init();
@@ -45,25 +40,12 @@ public class MeleeWeapon : WeaponBase
         ExecuteAttack();
     }
 
-    // ========== 이벤트 시스템 오버라이드 ==========
-    protected override void OnAttackStateChanged(bool canAttack)
-    {
-        base.OnAttackStateChanged(canAttack);
-
-        // 근접 무기 특화 로직이 있다면 여기에
-        if (!canAttack)
-        {
-            // 예: 공격 불가능할 때 특별한 이펙트 중단 등
-        }
-    }
-
     /// <summary>
     /// Physics.OverlapSphere + 범위 + 애니메이션 Event를 통한 특정 프레임 이벤트 호출, 각도 체크X - 무기기준 
     /// 추후 콜라이더 변경으로 각도가 해결되지 않을 경우에 플레이어 기준으로 각도체크 하는 부분 추가하면 될 것 같다.
     /// </summary>
     protected override void ExecuteAttack() 
     {
-        Debug.Log("▶ ExecuteAttack() 시작");
         //무기에 달려있는 _attack를 중심으로 범위를 설정하고 타겟레이어와 충돌검사
         /*Collider[] _colliders = Physics.OverlapSphere(_attackPointPos.position, _attackRange, _targetLayer);
 
@@ -130,11 +112,6 @@ public class MeleeWeapon : WeaponBase
         {
             Debug.Log("공격 범위 내에 적이 없습니다.");
         }
-    }
-
-    private void OnDestroy()
-    {
-        PlayerAttack.OnAttackStateChanged -= OnAttackStateChanged;
     }
 
     /// <summary>

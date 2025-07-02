@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class Rifle : GunWeaponBase 
 {   
-    [SerializeField] private Animator _animator;
+    [SerializeField] public Animator _animator;
+    private float currentWeaponAmmo = 10;
+    public bool isAiming = false;
     private void Awake()
     {
         Init();     //나중에 플레이어 해당 사용할려고 할 때
@@ -17,42 +19,6 @@ public class Rifle : GunWeaponBase
 
     private void Update()
     {
-        if (_animator.GetBool("IsAim") == true)
-        {
-            // 마우스 우클릭을 누르는 순간 (조준 시작)
-            if (Input.GetMouseButtonDown(1))
-            {
-                // 총알 궤적 미리보기를 위한 로직 (옵션)
-                _lineRenderer.enabled = true; // 라인 렌더러 활성화
-                GameObject bulletObj = _gunBulletObjectPool.GetInactive(); // 궤적 미리보기를 위해 임시 객체 가져오기 (실제 발사 아님)
-                UpdateTrajectory(bulletObj, bulletObj.GetComponent<BulletBase>()._speed); // 궤적 업데이트
-            }
-            // 마우스 우클릭이 눌려 있는 동안 (조준 유지)
-            if (Input.GetMouseButton(1))
-            {
-                // 여기서는 궤적 미리보기를 계속 업데이트
-                if (_lineRenderer != null && showTrajectory) // showTrajectory 변수를 활용하여 궤적 표시 여부 제어
-                {
-                    _lineRenderer.enabled = true; // 라인 렌더러 활성화
-                    UpdateTrajectory(null, _bulletPrefab.GetComponent<BulletBase>()._speed); // 궤적 미리보기 업데이트
-                }
-                if (Input.GetMouseButtonUp(0))
-                {
-                    Attack();
-                }
-            }
-            // 마우스 우클릭을 떼는 순간 (조준 해제)
-            if (Input.GetMouseButtonUp(1))
-            {
-                if (_lineRenderer != null)
-                {
-                    _lineRenderer.enabled = false; // 라인 렌더러 비활성화
-                    _lineRenderer.positionCount = 0; // 혹시 모를 잔상을 위해 정점 개수를 0으로 설정
-                }
-                _animator.SetBool("IsAim", false);
-            }
-        }
-
         if (Input.GetKeyDown(KeyCode.R) && !_isReload)
         {
             //이미 탄창이 max탄창이거나 && 총알이 없을 없을 때 false return
@@ -64,19 +30,6 @@ public class Rifle : GunWeaponBase
         ExecuteAttack();
     }
 
-    // ========== 이벤트 시스템 오버라이드 ==========
-    protected override void OnAttackStateChanged(bool canAttack)
-    {
-        base.OnAttackStateChanged(canAttack);
-
-        // 총기 특화 로직 (예: 조준 상태 해제)
-        if (!canAttack && _animator != null)
-        {
-            // 공격 불가능할 때 조준 해제
-            //_animator.SetBool("IsAim", false);
-        }
-    }
-
     private IEnumerator ReloadCorutine()
     {
         _isReload = true;
@@ -86,7 +39,7 @@ public class Rifle : GunWeaponBase
 
     protected override void ExecuteAttack()
     {
-        if (_item == null)
+        /*if (_item == null)
         {
             Debug.Log("_item의 객체가 Null 입니다.");
             return;
@@ -96,12 +49,13 @@ public class Rifle : GunWeaponBase
         {
             Debug.Log("R키를 눌러 장전하세요");
             return;
-        }
+        }*/
+        //_item.CurrentAmmoCount = 10;
 
         //발사 할 수 있는 총알이 있는지 총알풀 검사
         GameObject bulletObj = _gunBulletObjectPool.GetInactive();
 
-        if (bulletObj != null && _item.CurrentAmmoCount > 0)  //만약 들고 왔다면 
+        if (bulletObj != null )//&& _item.CurrentAmmoCount > 0)  //만약 들고 왔다면 
         {
             // 발사 딜레이 시작 (총알이 실제로 발사될 때만)
             //StartCoroutine(ShotDelay());
@@ -122,6 +76,30 @@ public class Rifle : GunWeaponBase
         {
             Debug.Log("총알이 준비되어 있지 않습니다");
         }
+    }
+
+    public void StartAim()
+    {
+        isAiming = true;
+        _lineRenderer.enabled = true;
+        UpdateTrajectory(null, _bulletPrefab.GetComponent<BulletBase>()._speed);
+        _animator.SetBool("IsAim", true);
+    }
+
+    public void UpdateAim()
+    {
+        if (_lineRenderer != null && showTrajectory)
+        {
+            UpdateTrajectory(null, _bulletPrefab.GetComponent<BulletBase>()._speed);
+        }
+    }
+
+    public void EndAim()
+    {
+        isAiming = false;
+        _lineRenderer.enabled = false;
+        _lineRenderer.positionCount = 0;
+        _animator.SetBool("IsAim", false);
     }
 
     /*

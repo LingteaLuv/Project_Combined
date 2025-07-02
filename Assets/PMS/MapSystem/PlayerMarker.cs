@@ -13,7 +13,6 @@ public class PlayerMarker : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("ㅇ");
         collision.gameObject.SetActive(false);
     }
 }
