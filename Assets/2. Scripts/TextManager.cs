@@ -30,10 +30,6 @@ public class TextManager : Singleton<TextManager>
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha0))
-        {
-            MemoPopUpText("1006");
-        }
         if(Input.GetKeyDown(KeyCode.Escape))
         {
             HideText();
