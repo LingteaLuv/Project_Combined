@@ -37,7 +37,7 @@ public class DialogueManager : Singleton<DialogueManager>
     public Dictionary<int, DialogueSO> DialogueDic { get; private set; }
     public Dictionary<string, DialogueChoiceSO> ChoiceDic { get; private set; }
 
-    public Dictionary<string, bool> TriggerDic { get; private set; }
+    public Dictionary<string, Property<bool>> TriggerDic { get; private set; }
     public Dictionary<string, NPCSO> NPCDic { get; private set; }
     
     private void Awake()
@@ -45,11 +45,12 @@ public class DialogueManager : Singleton<DialogueManager>
         Init();
     }
     
+    
     private void Init()
     {
         DialogueDic = new Dictionary<int, DialogueSO>();
         NPCDic = new Dictionary<string, NPCSO>();
-        TriggerDic = new Dictionary<string, bool>();
+        TriggerDic = new Dictionary<string, Property<bool>>();
         for (int i = 0; i < _dialogues.Count; i++)
         {
             DialogueDic.Add(_dialogues[i].DialogueID, _dialogues[i]);
@@ -63,7 +64,8 @@ public class DialogueManager : Singleton<DialogueManager>
         {
             if (!TriggerDic.ContainsKey(_dialogues[i].TriggerID))
             {
-                TriggerDic.Add(_dialogues[i].TriggerID,false);
+                Property<bool> temp = new Property<bool>(false);
+                TriggerDic.Add(_dialogues[i].TriggerID, temp);
             }
         }
         
@@ -97,7 +99,6 @@ public class DialogueManager : Singleton<DialogueManager>
         {
             _dialogueCoroutine = StartCoroutine(PrintOut());
         }
-        
     }
 
     public Dictionary<int, int> GetDialogueFlow(string id)
@@ -130,6 +131,8 @@ public class DialogueManager : Singleton<DialogueManager>
             
             // Dialogue 한글자씩 출력, F를 누르면 대사 한 번에 보이도록(스킵) 구현
             yield return ScriptSetting.WriteWords(_scriptScreen, DialogueDic[startId].DialogueText, _delay, () => SkipRequested());
+
+            //QuestManager.Instance.QuestType(DialogueDic[startId].TriggerID);
             
             // 다음 대사 ID 변경
             if (!String.IsNullOrEmpty(DialogueDic[startId].DialogueChoiceID))

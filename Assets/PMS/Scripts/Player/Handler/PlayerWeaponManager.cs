@@ -8,15 +8,44 @@ public class PlayerWeaponManager : Singleton<PlayerWeaponManager>
 
     private WeaponBase _rightCurrentWeapon;
     private WeaponBase _leftCurrentWeapon;
-    //외부에서 참조할 현재 플레이어가 들고 있어야할 웨폰
-    public WeaponBase RightCurrentWeapon { get { return _rightCurrentWeapon; } }
-    public WeaponBase LeftCurrentWeapon { get { return _leftCurrentWeapon; } }
+    
 
     //소환되는 Transform 계층
     [SerializeField] public GameObject _left_Hand_target;
     [SerializeField] public GameObject _right_Hand_target;
 
+    // 이벤트 추가
+    public static event System.Action<WeaponBase> OnRightWeaponChanged;
+    public static event System.Action<WeaponBase> OnLeftWeaponChanged;
 
+
+    //외부에서 참조할 현재 플레이어가 들고 있어야할 웨폰을 받아서
+    //다시 한번 내 구독자들 한테 뿌림
+    public WeaponBase LeftCurrentWeapon
+    {
+        get => _leftCurrentWeapon;
+        set
+        {
+            if (_leftCurrentWeapon != value)
+            {
+                _leftCurrentWeapon = value;
+                OnLeftWeaponChanged?.Invoke(_leftCurrentWeapon); // 이벤트 발생
+            }
+        }
+    }
+
+    public WeaponBase RightCurrentWeapon
+    {
+        get => _rightCurrentWeapon;
+        set
+        {
+            if (_rightCurrentWeapon != value)
+            {
+                _rightCurrentWeapon = value;
+                OnRightWeaponChanged?.Invoke(_rightCurrentWeapon); // 이벤트 발생
+            }
+        }
+    }
     private void Update()
     {
         //테스트코드

@@ -94,7 +94,7 @@ public class CreateQuestSO : EditorWindow
             string[] parts = line.Split(',');
             
             QuestData quest = ScriptableObject.CreateInstance<QuestData>();
-            quest.Status = QuestStatus.Locked;
+            quest.Status = QuestStatus.Available;
             
             string questId = parts[0];
             quest.QuestID = questId;
@@ -122,7 +122,9 @@ public class CreateQuestSO : EditorWindow
             quest.RewardItemID = parts[9];
             quest.RewardItemQuantity = int.Parse(parts[10]);
             quest.NextQuestID = parts[11];
-            quest.EndDescription = parts[12];// => 0으로 요청
+            quest.EndDescription = parts[12];
+            quest.TriggerID1 = parts[13];
+            quest.TriggerID2 = parts[14];
             
             string assetPath = $"{folderPath}/Quest_{questId}.Asset";
             AssetDatabase.CreateAsset(quest, assetPath);

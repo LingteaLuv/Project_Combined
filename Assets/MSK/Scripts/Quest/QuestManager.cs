@@ -21,6 +21,10 @@ public class QuestManager : Singleton<QuestManager>
     public Dictionary<string, QuestData> QuestDictionary { get; private set; } = new Dictionary<string, QuestData>(){};
 
     /// <summary>
+    /// 전체 트리거와 매칭되는 퀘스트ID를 저장하는 딕셔너리입니다.
+    /// </summary>
+    public Dictionary<string, string> TriggerDictionary { get; private set; }
+    /// <summary>
     /// 플레이어의 현재 챕터(비트 플래그)
     /// </summary>
     public Chapter CurrentChapter { get; set; } = Chapter.Chapter1;
@@ -30,26 +34,76 @@ public class QuestManager : Singleton<QuestManager>
     public event Action<QuestData, QuestProgress> OnQuestAccepted;
     /// <summary>퀘스트 완료 시 알림 이벤트</summary>
     public event Action<QuestData, QuestProgress> OnQuestCompleted;
+    /// <summary>퀘스트 종료 시 알림 이벤트</summary>
+    public event Action<QuestData, QuestProgress> OnQuestClosed;
     /// <summary>퀘스트 보상 수령 시 알림 이벤트</summary>
     public event Action<QuestData, QuestProgress> OnQuestRewardClaimed;
     #endregion
 
 
+
+    protected override void Awake()
+    {
+        base.Awake();
+        Init();
+    }
+
+    private void Init()
+    {
+        TriggerDictionary = new Dictionary<string, string>();
+        for (int i = 0; i < AllQuests.Count; i++)
+        {
+            TriggerDictionary.Add(AllQuests[i].TriggerID1, AllQuests[i].QuestID);
+            TriggerDictionary.Add(AllQuests[i].TriggerID2, AllQuests[i].QuestID);
+        }
+        AllQuests = Resources.LoadAll<QuestData>("Quests").ToList();
+        SetQuestDictionary();
+    }
+    
     /// <summary>
     /// Npc에게 조건에 부합하는 퀘스트를 Npc 리스트로 전달 => key를 전달하도록 수정
     /// </summary>
     public List<string> GetStartNPC(string npcId)
     {
         return QuestDictionary.Keys.Where(q => QuestDictionary[q].StartNPCID == npcId).ToList();
-        // 기존 : return QuestDictionary.Values.Where(q => q.StartNPCID == npcId).ToList();
     }
     public List<string> GetEndNPC(string npcId)
     {
         return QuestDictionary.Keys.Where(q => QuestDictionary[q].EndNPCID == npcId).ToList();
-        // 기존 : return QuestDictionary.Values.Where(q => q.EndNPCID == npcId).ToList();
     }
+    public void QuestType(string triggerId)
+    {
+        //  트리거명으로 QuestID를 찾기
+        if (!TriggerDictionary.TryGetValue(triggerId, out var questId))
+            return;
 
+        //  QuestID로 QuestDictionary에서 QuestData를 찾기
+        if (!QuestDictionary.TryGetValue(questId, out var meta))
+            return;
 
+        switch (meta.Status)
+        {
+            case QuestStatus.Locked:
+                break;
+            case QuestStatus.Available:
+                // 수락 가능한 퀘스트
+                AcceptQuest(meta.QuestID);
+                break;
+            case QuestStatus.Active:
+                // 진행 중인 퀘스트
+                CompleteQuest(meta.QuestID);
+                break;
+            case QuestStatus.Completed:
+                // 완료된 퀘스트
+                CloseQuest(meta.QuestID);
+                break;
+            case QuestStatus.Closed:
+                break;
+            default:
+                break;
+        }
+    }
+    
     /// <summary>
     /// 연계 퀘스트가 있다면, 상태를 Locked로 초기화합니다.
     /// (NextQuestID가 존재하는 모든 퀘스트에 대해 후속 퀘스트를 잠금 처리)
@@ -70,7 +124,7 @@ public class QuestManager : Singleton<QuestManager>
             }
         }
     }
-
+    
     /// <summary>
     /// 전체 퀘스트의 데이터 리스트를 등록/초기화합니다.
     /// </summary>
@@ -112,7 +166,9 @@ public class QuestManager : Singleton<QuestManager>
 
         meta.Status = QuestStatus.Completed;
         OnQuestCompleted?.Invoke(meta, null);
+
         // TODO: 보상 지급
+        
         return true;
     }
 
@@ -136,7 +192,7 @@ public class QuestManager : Singleton<QuestManager>
         {
             UpdateQuestStates(nextQuest);
         }
-
+        OnQuestClosed?.Invoke(meta, null);
         return true;
     }
 
@@ -184,5 +240,57 @@ public class QuestManager : Singleton<QuestManager>
         if (meta.Status != QuestStatus.Active)
             return;
         CompleteQuest(questId);
+    }
+
+    /// <summary>
+    /// NPC의 ID로 해당 NPC가 표시해야 할 퀘스트 상태를 반환합니다.
+    /// 완료 NPC(EndNPCID)가 우선이며, 그 후 수주 NPC(StartNPCID)를 검사합니다.
+    /// </summary>
+    public QuestStatus? GetNpcQuestStatus(string npcId)
+    {
+        var quests = QuestDictionary.Values;
+
+        //  EndNPCID
+        var endQuest = quests.FirstOrDefault(q => q.EndNPCID == npcId);
+        if (endQuest != null)
+        {
+            switch (endQuest.Status)
+            {
+                case QuestStatus.Completed:  // 완료 가능
+                    return QuestStatus.Completed;
+                case QuestStatus.Active:     // 진행 중
+                    return QuestStatus.Active;
+                default:
+                    break;
+            }
+        }
+
+        // StartNPCID
+        var startQuest = quests.FirstOrDefault(q => q.StartNPCID == npcId);
+        if (startQuest != null)
+        {
+            switch (startQuest.Status)
+            {
+                case QuestStatus.Available:  // 수주 가능
+                    return QuestStatus.Available;
+                case QuestStatus.Active:     // 진행 중
+                    return QuestStatus.Active;
+                default:
+                    return null;
+            }
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// 모든 퀘스트 리스트를 가져옵니다.
+    /// </summary>
+    private void SetQuestDictionary()
+    {
+        QuestDictionary = new Dictionary<string, QuestData>();
+        foreach (var quest in AllQuests)
+        {
+            QuestDictionary[quest.QuestID] = quest;
+        }
     }
 }
