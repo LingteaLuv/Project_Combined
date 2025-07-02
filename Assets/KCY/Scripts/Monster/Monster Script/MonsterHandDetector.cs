@@ -49,7 +49,7 @@ public class MonsterHandDetector : MonoBehaviour
 
         if (_monster._monsterMerchine == null || _monster._monsterMerchine.CurState == null)
         {
-            Debug.LogWarning("🔴 상태머신 초기화 전 → 감지 중단");
+            Debug.LogWarning("상태머신 초기화 전 > 감지 중단");
             return;
         }
 
