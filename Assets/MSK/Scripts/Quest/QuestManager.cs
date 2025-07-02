@@ -184,7 +184,7 @@ public class QuestManager : Singleton<QuestManager>
         {
             UpdateQuestStates(nextQuest);
         }
-
+        OnQuestClosed?.Invoke(meta, null);
         return true;
     }
 
