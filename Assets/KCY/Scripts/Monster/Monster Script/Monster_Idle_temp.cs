@@ -24,6 +24,7 @@ public class Monster_Idle : MonsterState_temp
 
     public override void Enter()
     {
+        monster.MonsterAgent.autoBraking = true;
         _ani.ResetTrigger("Attack");
         _idleTimer = 0f;
 
@@ -66,6 +67,7 @@ public class Monster_Idle : MonsterState_temp
             _navMeshAgent.isStopped = false;
             _navMeshAgent.ResetPath();
             Debug.Log("idle 나감");
+            monster.Ani.SetBool("isPatrol", true);
         }
         else
         {
