@@ -145,7 +145,7 @@ public class UIManager : SingletonT<UIManager>
             if (Current == ModalUI.inventory) return;
             _playerLoot.TryLoot();
         }
-        if (Input.GetKeyDown(KeyCode.Insert))
+        if (Input.GetKeyDown(KeyCode.Q))
         {
             ToggleUI(ModalUI.quest);
         }
@@ -171,7 +171,7 @@ public class UIManager : SingletonT<UIManager>
         else if (Current == ModalUI.quest)
         {
             QuestLogUI.SetActive(true);
-            SetUIPos(_invRect, 300, 400);
+            SetUIPos(_questRect, 600, 150);
         }
 
         if (_coroutine != null)
@@ -228,6 +228,7 @@ public class UIManager : SingletonT<UIManager>
         LootUI.SetActive(false);
         InvUI.SetActive(false);
         CraftUI.SetActive(false);
+        QuestLogUI.SetActive(false);
         ModalBase.SetActive(false);
         IsUIOpened.Value = false;
         Current = ModalUI.nothing;

@@ -164,8 +164,10 @@ public class LootManager : SingletonT<LootManager>
             Lootable temp = _lootable;
             if (temp.After != null) //다음에 전환할 것이 있음
             {
-                Vector3 posOffset = temp.transform.root.position + Vector3.up * 0.23f;
-                GameObject g = Instantiate(temp.After, posOffset, temp.transform.root.rotation);
+                Vector3 pos = temp.transform.root.position;
+                Vector3 scale = temp.transform.root.localScale;
+                GameObject g = Instantiate(temp.After, pos, temp.transform.root.rotation);
+                g.transform.localScale = scale;
                 g.SetActive(true);
             }
             Destroy(temp.transform.root.gameObject);
