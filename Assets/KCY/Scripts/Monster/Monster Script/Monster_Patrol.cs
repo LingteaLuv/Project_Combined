@@ -143,6 +143,12 @@ public class Monster_Patrol : MonsterState_temp
         if (_agent != null)
         {
             _agent.speed = monster.MoveSpeed;
+            _agent.angularSpeed = 80f;
+
+            float moveSpeed = _agent.velocity.magnitude;
+            monster.Ani.SetFloat("Speed", moveSpeed);
+            Debug.Log($" 벨로시티값 확인 : {_agent.velocity.magnitude}");
+            Debug.Log($" 애니메이션 블랜딩 패트롤 속도 확인 : {moveSpeed}");
         }
 
         if (_agent != null && _agent.isOnNavMesh)
@@ -156,27 +162,33 @@ public class Monster_Patrol : MonsterState_temp
 
     public override void Update()
     {
+
+        // 애니 미끄러지는 거
+        float currentSpeed = _agent.velocity.magnitude;
+        float smoothSpeed = Mathf.Lerp(monster.Ani.GetFloat("Speed"), currentSpeed, Time.deltaTime * 5f);
+        monster.Ani.SetFloat("Speed", smoothSpeed);
+
+        Debug.Log($" 업데이트에서 애니메이션 블랜딩 패트롤 속도를 확인합니다 : {_agent.velocity.magnitude}");
+
         Debug.Log($" 디버그 IsSightDetecting 상태: {monster.IsSightDetecting}");
         SearchTime += Time.deltaTime; // 회귀 시간 누적
         StayTimer += Time.deltaTime; // 머무는 시간 누적
 
         // 고장방지 유효성 검사
         // 에이전트 있는지, 내비매쉬 위에 있는지 확인하기 -> 현 상태에선 둘 중 하나 없으면 멈춤
-        /*if (_agent == null || !_agent.isOnNavMesh)
+        if (_agent == null || !_agent.isOnNavMesh)
         {
             Debug.Log("패트롤 상태 오류 : 어젠트가 없거나 내비 위 존재 안함 -> 리셋 상태로 이동");
             monster._monsterMerchine.ChangeState(monster._monsterMerchine.StateDic[Estate.Reset]);
             return;
-        }*/
-
+        }
         Debug.Log("경로 1111111111111111111111111111111111111111");
         // 경로가 아직 생성되지 않았을 경우 리턴한다.
-        /*if (_agent.pathPending)
+        if (_agent.pathPending)
         {
             Debug.Log("경로 문제문제문젬누제문제문제문제ㅐ문제문제ㅜ멪문제ㅐ1111111111111111111111111111111111111111");
             return;
-        }*/
-
+        }
         Debug.Log("여기 되나요`1111111111111111111111111111111111111111");
         // 시야 우선순위로 인한 감지 불가 회귀 >> 시야와 청각이 겹치는 경우에는 레이로 쏴서 플레이어가 사라진 뒤에 남겨진 사운드 오브젝트를 따라간다.
         if (!monster.IsSightDetecting)
@@ -258,7 +270,6 @@ public class Monster_Patrol : MonsterState_temp
                 monster.Ani.SetTrigger("Turn");
                 Debug.Log("돌아");
                 monster.StartCoroutine(SmoothTurn(1f));
-                monster.transform.rotation = Quaternion.Euler(0, monster.transform.eulerAngles.y + 180f, 0);
                 Debug.Log("제발 돌라고 이 ");
                 monster.StartCoroutine(ResetHeadTurn());
                 isHeadRot = true;
