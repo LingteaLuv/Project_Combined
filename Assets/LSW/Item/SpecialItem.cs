@@ -8,5 +8,5 @@ public class SpecialItem : ItemBase
 {
     public int MaxDurability;
     public int DurabilitySec;
-    public string SoundResource;
+    public AudioClip SoundResource;
 }

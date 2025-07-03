@@ -6,18 +6,6 @@ using UnityEngine;
 public abstract class GunWeaponBase : WeaponBase
 {
     [SerializeField] protected GunItem _gunData; //건 데이터
-
-    /*
-        public int AtkDamage;
-        public int Rof;
-        public int BulletPerShot;
-        public float Range;
-        public int AmmoID;
-        public int AmmoCapacity;
-        public string ShotSoundResource;
-        public string ReloadSoundResource;
-        public float NoiseLevel;
-    */
     //불릿 프리팹
     //추후 프리팹 매니저 관리
     [SerializeField] protected GameObject _bulletPrefab;

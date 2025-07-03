@@ -42,8 +42,9 @@ public class DialogueManager : Singleton<DialogueManager>
     public Dictionary<string, bool> TriggerDic { get; private set; }
     public Dictionary<string, NPCSO> NPCDic { get; private set; }
     
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         Init();
     }
     
@@ -159,7 +160,7 @@ public class DialogueManager : Singleton<DialogueManager>
                 // 플레이어 입력까지 대기(F)
                 yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.F));
             }
-            // TriggerDic[DialogueDic[startId].TriggerID] = true;
+            //TriggerDic[DialogueDic[startId].TriggerID] = true;
         }
         yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.F));
         _dialogueCanvas.SetActive(false);
