@@ -48,7 +48,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5521787282042870094
 Transform:
   m_ObjectHideFlags: 0
@@ -82,17 +82,22 @@ MonoBehaviour:
   _itemType: 1
   _weaponSpawnPos: {fileID: 1532048868896556364, guid: daf06496e3e2f9f45b04aae11c73e474, type: 3}
   _gunData: {fileID: 11400000, guid: cf7ae9796dd2eab47a90cc1465e08f45, type: 2}
-  playerAttack: {fileID: 7079557454729922155, guid: b6f6362a58c6da943826ee4382c1fb8e, type: 3}
   _bulletPrefab: {fileID: 7623832579036224237, guid: 74850d8f180df244998dcb754d88b24a, type: 3}
   _currentAmmoCount: 30
   _reloadTime: 3
   _fireDelay: 1
   _firePoint: {fileID: 1973237914929117455}
+  _lineRenderer: {fileID: 0}
   showTrajectory: 1
   _bulletPoolSize: 10
   muzzleFlash: {fileID: 0}
   fire_Sound: {fileID: 0}
   _bulletcaseParticle: {fileID: 80505483142190725}
+  _cameraController: {fileID: 0}
+  _rotationRig: {fileID: 0}
+  _originalrotation: {x: 0, y: 0, z: 0}
+  _animator: {fileID: 0}
+  isAiming: 0
 --- !u!120 &8063609278202060913
 LineRenderer:
   serializedVersion: 2
