@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 /// <summary>
 /// 플레이어의 이동과 점프를 처리합니다.
@@ -14,7 +13,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] public CapsuleCollider CrouchCollider;
     [SerializeField] private SphereCollider _stateSphereCollider;
 
-    public PlayerClimb PlayerClimbHandler { get; private set; } 
+    public PlayerClimb PlayerClimbHandler { get; private set; }
     public PlayerController Controller { get; private set; }
     public Rigidbody Rigidbody { get; private set; }
     public bool IsOnLadder { get; private set; }
@@ -69,7 +68,7 @@ public class PlayerMovement : MonoBehaviour
         {
             StartCoroutine(StaminaConsumePerSecond(5f));
         }
-        if(_property.Stamina.Value < 5f)
+        if (_property.Stamina.Value < 5f)
             CanRun = false;
         else
             CanRun = true;
@@ -85,7 +84,7 @@ public class PlayerMovement : MonoBehaviour
         }
         IsConsumingStamina = false;
     }
-    
+
     private void FixedUpdate()
     {
         if (!IsOnLadder)
@@ -101,7 +100,6 @@ public class PlayerMovement : MonoBehaviour
         if (!CanMove)   //  CanMove가 False면 이동 제한
             return;
         if (cam == null) return;
-
         // 카메라 기준 이동 벡터
         Vector3 moveDir = cam.transform.forward * inputDir.z + cam.transform.right * inputDir.x;
         moveDir.y = 0f;
@@ -155,11 +153,26 @@ public class PlayerMovement : MonoBehaviour
             }
         }
     }
-
     private void HandleGravity()
     {
         if (!IsGrounded && Rigidbody.velocity.y < 0.1f)
         {
+            float wallCheckDistance = 0.5f;
+            Vector3 origin = transform.position + Vector3.up * 0.5f;
+            Vector3[] directions = {
+            transform.forward, -transform.forward,
+            transform.right, -transform.right
+        };
+
+            foreach (var dir in directions)
+            {
+                if (Physics.Raycast(origin, dir, out RaycastHit hit, wallCheckDistance, LayerMask.GetMask("Default")))
+                {
+                    float pushStrength = 4f;
+                    Rigidbody.velocity = new Vector3(0f, Rigidbody.velocity.y, 0f) + hit.normal * pushStrength;
+                    return;
+                }
+            }
             Rigidbody.velocity += Vector3.up * Physics.gravity.y * (_fallMultiplier - 1f) * Time.fixedDeltaTime;
         }
     }
@@ -223,5 +236,5 @@ public class PlayerMovement : MonoBehaviour
     public void MoveLock()
     {
         CanMove = !CanMove;
-    } 
+    }
 }
