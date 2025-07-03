@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.ConstrainedExecution;
+using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -56,8 +57,8 @@ public class UIManager : SingletonT<UIManager>
         Current = ModalUI.nothing;
         UIGroup.alpha = 0;
         _wait = new WaitForEndOfFrame();
-    }
 
+    }
     public void OffQuickslot()
     {
         if (_quickslot.activeSelf)
@@ -93,7 +94,39 @@ public class UIManager : SingletonT<UIManager>
         IsUIOpened.OnChanged += SetCameraLock;
         IsUIOpened.OnChanged += SetMoveLock;
         IsUIOpened.OnChanged += SetAttackLock;
+       
+
+        _playerNPCInt.OnInteract2 += _pcc.PauseCamera;
+        _playerNPCInt.OnInteract2 += _pm.MoveLock;
+        _playerNPCInt.OnInteract2 += LockUIUpdate;
+        _playerNPCInt.OnInteract2 += CursorLock;
+        _playerNPCInt.OnInteract2 += LockAttacking;
+
+        DialogueManager.Instance.OffDialogue += _pcc.PauseCamera;
+        DialogueManager.Instance.OffDialogue += _pm.MoveLock;
+        DialogueManager.Instance.OffDialogue += UnlockUIUpdate;
+        DialogueManager.Instance.OffDialogue += CursorLock;
+        DialogueManager.Instance.OffDialogue += UnlockAttacking;
+
         SetCursorLock(IsUIOpened.Value);
+
+
+
+
+    }
+
+    private void CursorLock()
+    {
+        if (Cursor.lockState == CursorLockMode.None)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+        else if (Cursor.lockState == CursorLockMode.Locked)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
     }
     private void SetMoveLock(bool b)
     {
@@ -108,6 +141,14 @@ public class UIManager : SingletonT<UIManager>
         {
             _pcc.PauseCamera();
         }
+    }
+    private void LockAttacking()
+    {
+        UISceneLoader.Instance.Playerattack.IsAttacking = true;
+    }
+    private void UnlockAttacking()
+    {
+        UISceneLoader.Instance.Playerattack.IsAttacking = false;
     }
 
     private void SetAttackLock(bool isUIOpened)
