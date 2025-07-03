@@ -7,6 +7,7 @@ public abstract class WeaponBase : MonoBehaviour
 {
     // ========== 이벤트 시스템 관련 ==========
     protected bool _canAttack = true; // 공격 가능 상태 저장
+    [SerializeField] protected bool _fixedWeapon = false;
 
     // 컴포넌트가 활성화될 때 이벤트 구독
     protected virtual void OnEnable()
@@ -67,16 +68,32 @@ public abstract class WeaponBase : MonoBehaviour
     }
 
     //아이템 클래스를 가져온다 -> 나중에 인벤토리에 있는 데이터를 읽고 쓰기 위해서
-    private PlayerAttack _playerAttack;
-    //private bool IsAttacking;
     public Item _item;      
 
     [SerializeField] protected ItemType _itemType;
     [SerializeField] protected GameObject _weaponSpawnPos;    //플레이어 손위치에 소환도되야하는 위치 local위치를 변경해야 할 것 같음
 
     public ItemType ItemType { get { return _itemType; } protected set {_itemType = value; } }
-    public virtual void Defense() { }
-    public virtual void Init() { Debug.Log(_canAttack); } //플레이어 공격 조정 함수
+    public virtual void Defense() { }   //쉴드방어
+
+    //각 무기에서 초기화 시 더필요한 부분 override하고 base.Init()
+    public virtual void Init()
+    {
+        //fixedWeapon이 false가 아니면 고정된 오브젝트 X
+        if (!_fixedWeapon)
+        {
+            if (_weaponSpawnPos == null)
+            {
+                Debug.Log("무기의 스폰포인트가 지정되어 있지 않습니다.");
+                return;
+            }
+            else
+            {
+                gameObject.transform.localPosition = _weaponSpawnPos.transform.localPosition;
+                gameObject.transform.localRotation = _weaponSpawnPos.transform.localRotation;
+            }
+        }
+    } //무기 초기화 함수
 
     // Attack 메서드 수정 - 공격 가능 상태 체크 추가
     public virtual void Attack()

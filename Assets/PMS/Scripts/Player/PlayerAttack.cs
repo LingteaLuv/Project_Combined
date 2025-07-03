@@ -87,36 +87,10 @@ public class PlayerAttack : MonoBehaviour
 
     void Update()
     {
-        //테스트 코드
-        /*RightCurrentWeapon = PlayerWeaponManager.Instance.RightCurrentWeapon;
-        _rifle = RightCurrentWeapon.GetComponent<Rifle>();*/
-
-        /*if(_rifle == null)
-        {
-            Debug.Log("참조가 안됨");
-        }
-        // 좌클릭 : 무조건 발사
-        if (Input.GetMouseButtonDown(0))
+        if(Input.GetMouseButtonDown(0))
         {
             TryAttack();
         }
-
-        // 우클릭 : 조준 모드 토글
-        if (Input.GetMouseButtonDown(1) && RightCurrentWeapon.ItemType == ItemType.Gun)
-        {
-            Debug.Log("why");
-            ToggleAimMode();
-        }
-
-        // 조준 모드면 궤적 계속 갱신
-        if (_rifle != null && _rifle.isAiming)
-        {
-            _rifle.UpdateAim();
-            if(Input.GetMouseButtonDown(1))
-            {
-                RightCurrentWeapon.Attack();
-            }
-        }*/
     }
 
     public void ToggleAimMode()

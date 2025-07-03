@@ -172,20 +172,16 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
         //게임 매니저 게임 오버 처리 함수
         GameManager.Instance.GameOver();
-
-        Debug.Log("플레이어 사망");
     }
 
     //잠깐 디버깅 용으로 Debug.Log썼습니다.
     private IEnumerator InvincibilityCoroutine()
     {
         _isInvincible = true;
-        Debug.Log("무적 시간 시작");
 
         yield return new WaitForSeconds(_invincibilityTime);
 
         _isInvincible = false;
-        Debug.Log("무적 시간 종료");
     }
     /*
     private IEnumerator DotDamage(int damage, float tick, float duration)

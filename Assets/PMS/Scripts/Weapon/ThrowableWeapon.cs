@@ -36,16 +36,9 @@ public class ThrowableWeapon : WeaponBase
         }
     }*/
 
-    public override void Init()
+    private void Awake()
     {
-        if (_weaponSpawnPos == null) {
-            Debug.Log("무기의 스폰포인트가 지정되어 있지 않습니다.");
-            return;
-        }
-        else { 
-            gameObject.transform.localPosition = _weaponSpawnPos.transform.localPosition;
-            gameObject.transform.localRotation = _weaponSpawnPos.transform.localRotation;
-        }
+        base.Init();
     }
 
     public override void Attack()
@@ -80,10 +73,10 @@ public class ThrowableWeapon : WeaponBase
         //targetRot = ((transform.forward * 1f) + (transform.up * 0.05f)).normalized;
 
         rb.velocity = targetRot;
+        
+        //rb.maxAngularVelocity = 50;
 
-        rb.maxAngularVelocity = 50;
-
-        rb.angularVelocity = transform.right * 100;
+        rb.angularVelocity = transform.right * 10;
 
         //rb.AddTorque(transform.right * 100);
         //rb.AddForce(cam.forward * 1/*_throwData.Rof*/, ForceMode.VelocityChange);

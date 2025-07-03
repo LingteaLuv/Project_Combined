@@ -4,9 +4,13 @@ using UnityEngine;
 
 public class Rifle : GunWeaponBase 
 {   
+    public PlayerCameraController _cameraController;
+
+    [SerializeField][Range(-360, 360)] public float _correction;
     [SerializeField] public Animator _animator;
     public bool isAiming = false;
     private GameObject bulletObj;
+
     private void Awake()
     {
         Init();     //나중에 플레이어 해당 사용할려고 할 때
@@ -19,10 +23,15 @@ public class Rifle : GunWeaponBase
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.R) && !_isReload)
+        if (!_fixedWeapon)
         {
-            //이미 탄창이 max탄창이거나 && 총알이 없을 없을 때 false return
-            InventoryManager.Instance.Consume.Reload();
+            transform.localRotation = Quaternion.Euler(0f, _correction - _cameraController.OffsetY, -85f);
+
+            if (Input.GetKeyDown(KeyCode.R) && !_isReload)
+            {
+                //이미 탄창이 max탄창이거나 && 총알이 없을 없을 때 false return
+                InventoryManager.Instance.Consume.Reload();
+            }
         }
     }
     public override void Attack()
