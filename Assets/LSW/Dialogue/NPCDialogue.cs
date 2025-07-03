@@ -84,6 +84,7 @@ public class NPCDialogue : MonoBehaviour
         {
             if (playerQuest[_endQuest[i]].Status == QuestStatus.Completed)
             {
+                Debug.Log("진입");
                 CurrentDialogueID = playerQuest[_endQuest[i]].EndDialogueID;
                 return;
                 // todo : 여기서 처리하면 안되고, 실제로 플레이어가 보상을 받고 대화가 끝날 때 호출해야할듯 
@@ -95,6 +96,7 @@ public class NPCDialogue : MonoBehaviour
         {
             if (playerQuest[_startQuest[i]].Status == QuestStatus.Available)
             {
+                Debug.Log("진입");
                 CurrentDialogueID = playerQuest[_startQuest[i]].StartDialogueID;
                 return;
             }
@@ -103,15 +105,15 @@ public class NPCDialogue : MonoBehaviour
 
     private void CheckTrigger()
     {
-        if (_data.Trigger1 != null && DialogueManager.Instance.TriggerDic[_data.Trigger1].Value)
+        if (_data.Trigger1 != null && DialogueManager.Instance.TriggerDic[_data.Trigger1])
         {
             _currentFlow = _data.Trigger1DialogueID;
         }
-        if (_data.Trigger2 != null && DialogueManager.Instance.TriggerDic[_data.Trigger2].Value)
+        if (_data.Trigger2 != null && DialogueManager.Instance.TriggerDic[_data.Trigger2])
         {
             _currentFlow = _data.Trigger2DialogueID;
         }
-        if (_data.Trigger3 != null && DialogueManager.Instance.TriggerDic[_data.Trigger3].Value)
+        if (_data.Trigger3 != null && DialogueManager.Instance.TriggerDic[_data.Trigger3])
         {
             _currentFlow = _data.Trigger3DialogueID;
         }

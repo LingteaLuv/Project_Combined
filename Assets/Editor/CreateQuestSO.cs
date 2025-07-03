@@ -314,22 +314,6 @@ public class CreateQuestSO : EditorWindow
             {
                 npc.StartQuestID = 0;
             }
-            if (int.TryParse(parts[10], out int questId))
-            {
-                npc.TriggerQuestID = questId;
-            }
-            else
-            {
-                npc.TriggerQuestID = 0;
-            }
-            if (int.TryParse(parts[11], out int triggerId))
-            {
-                npc.QuestTriggerID = triggerId;
-            }
-            else
-            {
-                npc.QuestTriggerID = 0;
-            }
             
             string assetPath = $"{folderPath}/Choice_{npcID}.Asset";
             AssetDatabase.CreateAsset(npc, assetPath);
