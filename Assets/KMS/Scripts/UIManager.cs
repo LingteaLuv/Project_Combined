@@ -92,6 +92,7 @@ public class UIManager : SingletonT<UIManager>
         IsUIOpened.OnChanged += SetCursorLock;
         IsUIOpened.OnChanged += SetCameraLock;
         IsUIOpened.OnChanged += SetMoveLock;
+        IsUIOpened.OnChanged += SetAttackLock;
         SetCursorLock(IsUIOpened.Value);
     }
     private void SetMoveLock(bool b)
@@ -106,6 +107,18 @@ public class UIManager : SingletonT<UIManager>
         else
         {
             _pcc.PauseCamera();
+        }
+    }
+
+    private void SetAttackLock(bool isUIOpened)
+    {
+        if (!isUIOpened)
+        {
+            UISceneLoader.Instance.Playerattack.IsAttacking = false;
+        }
+        else
+        {
+            UISceneLoader.Instance.Playerattack.IsAttacking = true;
         }
     }
     
@@ -158,6 +171,7 @@ public class UIManager : SingletonT<UIManager>
     public void OpenUI(ModalUI cur)
     {
         if (IsUIOpened.Value) return; //다른게 열려있음
+        if (UISceneLoader.Instance.Playerattack.IsAttacking) return; // 공격 중에 불가
         IsUIOpened.Value = true;
         ModalBase.SetActive(true);
         Current = cur;

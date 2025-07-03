@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,8 @@ public class PlayerNPCInteractor : MonoBehaviour
     private Collider _lootableColl = null;
 
     private NPCInteractable _interactable = null;
+
+    public Action<Transform, Transform> OnInteract;
     private void OnTriggerEnter(Collider other) //레이어 6 콜라이더랑 만났을 경우 리스트에 추가
     {
         if (other.gameObject.layer == 8)
@@ -79,8 +82,11 @@ public class PlayerNPCInteractor : MonoBehaviour
     public bool TryInteract()
     {
         if (_interactable == null) return false;
+        OnInteract?.Invoke(gameObject.transform.root, _interactable.transform.root);
         DialogueManager.Instance.SetDialogue(_interactable.Dialogue);
         return true;
-
     }
+
+
+
 }

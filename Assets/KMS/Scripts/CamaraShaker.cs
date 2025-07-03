@@ -37,11 +37,6 @@ public class CamaraShaker : MonoBehaviour
     {
         SetDefault();
     }
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.PageUp)) GunShootShake();
-        if (Input.GetKeyDown(KeyCode.PageDown)) DamageShake();
-    }
     public void SetDefault()
     {
         _cmp.m_NoiseProfile = _default;

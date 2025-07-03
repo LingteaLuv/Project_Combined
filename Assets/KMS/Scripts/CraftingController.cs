@@ -10,7 +10,7 @@ public class CraftingController : MonoBehaviour
     public Dictionary<int, int> CountByID { get; set; } //id를 통해 현재 가진 아이템의 개수를 가져오기 위함
     
     // ScriptableObject - New Item Dictionary 드래그해서 가져오기
-    [SerializeField] private ItemDictionary _itemDictionary;
+    [SerializeField] public ItemDictionary _itemDictionary;
 
     private InventoryController _control;
     private InventoryRenderer _renderer;
@@ -79,7 +79,7 @@ public class CraftingController : MonoBehaviour
         return false;
     }
 
-    private int GetMaxDur(int id)
+    public int GetMaxDur(int id)
     {
         ItemBase item = _itemDictionary.ItemDic[id];
         if (item.Type == ItemType.Melee)
@@ -139,7 +139,7 @@ public class CraftingController : MonoBehaviour
         RemoveItemByID(recipe.MaterialItemId3, recipe.MaterialItemQuantity3);
         RemoveItemByID(recipe.MaterialItemId4, recipe.MaterialItemQuantity4);
 
-        AddItemByID(recipe.ResultItemId, recipe.ResultQuantity, GetMaxDur(recipe.ResultItemId));
+        InventoryManager.Instance.AddItemByID(recipe.ResultItemId, recipe.ResultQuantity);
         UpdateCurrent();
         StartCoroutine(_rs.DelayedUIUpdate());
         _renderer.RenderInventory();

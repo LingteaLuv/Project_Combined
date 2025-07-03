@@ -18,7 +18,32 @@ public class ItemConsumeManage : MonoBehaviour
         _model = GetComponent<InventoryModel>();
         _consume = UISceneLoader.Instance.Playerattack.GetComponent<IConsumeHandler>();
     }
-    public void Consume()
+
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(1))
+        {
+            Consume();
+        }
+        if (Input.GetKeyDown(KeyCode.Insert))
+        {
+            Debug.Log(_model.InvItems[_control.EquippedSlotIndex[0]].CurrentAmmoCount);
+            Debug.Log((_model.InvItems[_control.EquippedSlotIndex[0]].Data as GunItem).AmmoCapacity);
+        }
+        if (Input.GetKeyDown(KeyCode.Delete))
+        {
+            Reload();
+        }
+        if (Input.GetKeyDown(KeyCode.End))
+        {
+            _control.ReduceEquippedItem(0, 1);
+        }
+        if (Input.GetKeyDown(KeyCode.ScrollLock))
+        {
+            _model.InvItems[_control.EquippedSlotIndex[0]].CurrentAmmoCount -= 1;
+        }
+    }
+    public void Consume() // 착용한 소모품을 아예 지워버림
     {
         //현재 오른손 아이템 확인해서 소모템이면 지우고, 착용템 사라졌을때 처리, 효과 적용
         if (_control.EquippedSlotIndex[0] == -1) return; //오른손 할당없음
@@ -35,7 +60,7 @@ public class ItemConsumeManage : MonoBehaviour
         int CurCount = _model.InvItems[_control.EquippedSlotIndex[0]].CurrentAmmoCount;
         int need = MaxCount - CurCount;
         if (need == 0) return false;
-        if (_craft.RemoveItemByID(3001, need))
+        if (_craft.RemoveItemByID(9001, need))
         {
             _model.InvItems[_control.EquippedSlotIndex[0]].SetAmmoCount(MaxCount);
             return true;

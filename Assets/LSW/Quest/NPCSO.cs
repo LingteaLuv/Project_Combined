@@ -19,6 +19,4 @@ public class NPCSO : ScriptableObject
     public int Trigger3DialogueID;
 
     public int StartQuestID;
-    public int TriggerQuestID;
-    public int QuestTriggerID;
 }

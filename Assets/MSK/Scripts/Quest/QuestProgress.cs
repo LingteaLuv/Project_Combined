@@ -3,12 +3,12 @@ using System;
 [Serializable]
 public class QuestProgress
 {
-    public int QuestID;
+    public string QuestID;
     public QuestStatus Status;
     public int GoalCount;
     public bool IsRewardClaimed;
 
-    public QuestProgress(int questID)
+    public QuestProgress(string questID)
     {
         QuestID = questID;
         Status = QuestStatus.Locked;
