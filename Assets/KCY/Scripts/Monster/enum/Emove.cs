@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Emove
+public enum Emonster
 {
-    Crawl, Walking,  Running
+    MonsterA, MonsterB,  MonsterC, MonsterD 
 }

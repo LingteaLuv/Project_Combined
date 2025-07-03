@@ -80,40 +80,38 @@ public class NPCDialogue : MonoBehaviour
     }
     private void CheckQuest(Dictionary<string,QuestData> playerQuest)
     {
-        for (int i = 0; i < _endQuest.Count; i++)
-        {
-            if (playerQuest[_endQuest[i]].Status == QuestStatus.Completed)
-            {
-                Debug.Log("진입");
-                CurrentDialogueID = playerQuest[_endQuest[i]].EndDialogueID;
-                return;
-                // todo : 여기서 처리하면 안되고, 실제로 플레이어가 보상을 받고 대화가 끝날 때 호출해야할듯 
-                // playerQuest[playerQuest[_startQuest[i]].NextQuestID].Status = QuestStatus.Available;
-            }
-        }
-        
         for (int i = 0; i < _startQuest.Count; i++)
         {
             if (playerQuest[_startQuest[i]].Status == QuestStatus.Available)
             {
-                Debug.Log("진입");
-                CurrentDialogueID = playerQuest[_startQuest[i]].StartDialogueID;
+                _currentFlow = playerQuest[_startQuest[i]].StartDialogueID;
                 return;
+            }
+        }
+        
+        for (int i = 0; i < _endQuest.Count; i++)
+        {
+            if (playerQuest[_endQuest[i]].Status == QuestStatus.Completed)
+            {
+                _currentFlow = playerQuest[_endQuest[i]].EndDialogueID;
+                return;
+                // todo : 여기서 처리하면 안되고, 실제로 플레이어가 보상을 받고 대화가 끝날 때 호출해야할듯 
+                // playerQuest[playerQuest[_startQuest[i]].NextQuestID].Status = QuestStatus.Available;
             }
         }
     }
 
     private void CheckTrigger()
     {
-        if (_data.Trigger1 != null && DialogueManager.Instance.TriggerDic[_data.Trigger1])
+        if (!String.IsNullOrEmpty(_data.Trigger1) && DialogueManager.Instance.TriggerDic[_data.Trigger1])
         {
             _currentFlow = _data.Trigger1DialogueID;
         }
-        if (_data.Trigger2 != null && DialogueManager.Instance.TriggerDic[_data.Trigger2])
+        if (!String.IsNullOrEmpty(_data.Trigger2) && DialogueManager.Instance.TriggerDic[_data.Trigger2])
         {
             _currentFlow = _data.Trigger2DialogueID;
         }
-        if (_data.Trigger3 != null && DialogueManager.Instance.TriggerDic[_data.Trigger3])
+        if (!String.IsNullOrEmpty(_data.Trigger3) && DialogueManager.Instance.TriggerDic[_data.Trigger3])
         {
             _currentFlow = _data.Trigger3DialogueID;
         }
@@ -130,16 +128,5 @@ public class NPCDialogue : MonoBehaviour
     private void Init()
     {
         CurrentDialogueID = _currentFlow;
-    }
-
-
-    //TODO : 테스트 코드 
-    private void OnMouseDown()
-    {
-        if (DialogueManager.Instance != null)
-        {
-            DialogueManager.Instance.SetDialogue(this);
-            Debug.Log(_data.NPCID);
-        }
     }
 }
