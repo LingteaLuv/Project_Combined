@@ -2053,8 +2053,8 @@ GameObject:
   - component: {fileID: 899016396}
   - component: {fileID: 899016395}
   - component: {fileID: 899016394}
-  - component: {fileID: 899016397}
   - component: {fileID: 899016398}
+  - component: {fileID: 899016399}
   m_Layer: 0
   m_Name: Marker
   m_TagString: Untagged
@@ -2070,12 +2070,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 899016392}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 250, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -3.2, y: 250, z: -265.3}
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1091039431}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!135 &899016394
 SphereCollider:
@@ -2148,18 +2148,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 899016392}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &899016397
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 899016392}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5436e967eac64164ea4c330110dff981, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!54 &899016398
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2187,6 +2175,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!114 &899016399
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 899016392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5436e967eac64164ea4c330110dff981, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 1091039431}
 --- !u!1 &1005333011
 GameObject:
   m_ObjectHideFlags: 0
@@ -2428,8 +2429,7 @@ Transform:
   m_LocalPosition: {x: -3.2, y: 0, z: -265.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 899016393}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1099927996
@@ -4967,6 +4967,7 @@ SceneRoots:
   m_Roots:
   - {fileID: 652537837}
   - {fileID: 1186541743}
+  - {fileID: 899016393}
   - {fileID: 1091039431}
   - {fileID: 1052015207}
   - {fileID: 6502769851198383401}

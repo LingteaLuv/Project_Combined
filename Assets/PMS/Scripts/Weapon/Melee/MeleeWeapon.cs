@@ -7,7 +7,6 @@ public class MeleeWeapon : WeaponBase
     [Tooltip("받아올 MeleeItem 스크립트 데이터")]
     [SerializeField] private MeleeItem _meleeData;
 
-    private ItemType _iTemType = ItemType.Melee;
     [SerializeField] private Transform _playerPos;      //플레이어의 위치
     [SerializeField] private Transform _attackPointPos; //공격의 충돌을 감지할 Pivot Transform
     [SerializeField] private LayerMask _targetLayer;
@@ -16,24 +15,15 @@ public class MeleeWeapon : WeaponBase
     [Header("직접 셋팅해야 하는 값")]
     [SerializeField] private float _attackRange;        //근거리 무기의 유효 범위
     [SerializeField] private float _attackAngle;        //근거리 무기 유효 각도
-    /* 
-     * 기획팀에서 어떤부분을 요구할지 몰라 여러가지 공격 로직을 구현했습니다.
-     * TODO - 공격속도에 대한 코드 부분이 존재하지 않네요,추가해야 할 것 같습니다.
-     * 현재 몬스터가 다중 공격이 가능함, 감지된 몬스터 한마리만 데미지 줄 수 있도록 변경필요
-     * Corutine을 활용한 애니메이션 Event 함수 호출도 고려 할만한 상황
-     */
 
-    [SerializeField] private bool _isOnField;
+    private void Reset()
+    {
+        ItemType = ItemType.Melee;
+    }
 
     public void Awake()
     {
         base.Init();
-    }
-
-    public override void Init()
-    {
-        gameObject.transform.localPosition = _weaponSpawnPos.transform.localPosition;
-        gameObject.transform.localRotation = _weaponSpawnPos.transform.localRotation;
     }
 
     public override void Attack()
@@ -44,24 +34,10 @@ public class MeleeWeapon : WeaponBase
 
     /// <summary>
     /// Physics.OverlapSphere + 범위 + 애니메이션 Event를 통한 특정 프레임 이벤트 호출, 각도 체크O - 플레이어기준 
-    /// 추후 콜라이더 변경으로 각도가 해결되지 않을 경우에 플레이어 기준으로 각도체크 하는 부분 추가하면 될 것 같다.
+    /// // TODO - Physics.OverlapSphere 콜라이더 범위 - y축 신경 X
     /// </summary>
     protected override void ExecuteAttack() 
     {
-        //무기에 달려있는 _attack를 중심으로 범위를 설정하고 타겟레이어와 충돌검사
-        /*Collider[] _colliders = Physics.OverlapSphere(_attackPointPos.position, _attackRange, _targetLayer);
-
-        // 9. 충돌체를 저장한 배열을 순회하며 데미지 부여 로직 실행
-        foreach (Collider target in _colliders)
-        {
-            //타겟의 IDamageable 인터페이스를 받아와서 데미지 부여
-            IDamageable damageable = target.GetComponent<IDamageable>();
-            if (damageable != null)
-            {
-                damageable.Damaged(_attackDamage); //TakeDamage함수명이 더좋을듯
-                StartCoroutine(DamageRoutine(target.gameObject));
-            }
-        }*/
         //현재 무기 내구도 감소
         //InventoryManager.Instance.DecreaseWeaponDurability();
 
@@ -115,7 +91,8 @@ public class MeleeWeapon : WeaponBase
             Debug.Log("공격 범위 내에 적이 없습니다.");
         }
     }
-
+    #region 근접 무기 공격 로직 - Physics.OverlapSphere + 범위 + 각도 체크 - 플레이어기준
+    //문제점: 다수의 몹을 공격하면 안된다는 기획이 나왔다.
     /// <summary>
     /// Physics.OverlapSphere + 범위 + 각도 체크 - 플레이어기준
     /// </summary>
@@ -155,11 +132,9 @@ public class MeleeWeapon : WeaponBase
         }
 
     }*/
+    #endregion
 
-    //2번
-    /// <summary>
-    /// Physics.OverlapSphere + 범위 + 각도 체크 - 플레이어기준
-    /// </summary>
+    #region 근접 무기 공격 로직 - 무기에 콜라이더 달고 때리기
     //문제점:무기에 그냥 콜라이더 추가해버리면 공격하지 않아도 닿으면 몹들이 맞은걸로 인식하게 된다. 
     /*private void OnTirrigerEnter(Collision collision)
     {
@@ -168,8 +143,9 @@ public class MeleeWeapon : WeaponBase
             collision.gameObject.GetComponent<IDamageable>().Damaged(_attackDamage);
         }
     }*/
+    #endregion
 
-    //3번
+    #region 근접 무기 공격 로직 - 애니메이션 Event를 활용하여 특정 프레임에서 충돌감지
     //2번+ 애니메이션 Event를 활용하여 특정 프레임에서 충돌감지
     //문제점:플레이어 공격 범위가 제한적이게 된다. 
     /*public void Attack3()
@@ -186,6 +162,7 @@ public class MeleeWeapon : WeaponBase
         // 4. 공격 처리 후, 콜라이더 컴포넌트를 비활성화하거나 제거하여
         //    불필요한 충돌 처리를 방지한다.
     }*/
+    #endregion
 
     #region 기즈모 출력 - 플레이어 기준
     /*private void OnDrawGizmos()
