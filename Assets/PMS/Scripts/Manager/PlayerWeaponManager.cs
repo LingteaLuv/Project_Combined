@@ -47,19 +47,14 @@ public class PlayerWeaponManager : Singleton<PlayerWeaponManager>
             }
         }
     }
-    private void Update()
-    {
-        //테스트코드
-        UpdateCurrentWeapon();
-    }
 
     /// <summary>
     /// 플레이어 양손이 바뀐것을 업데이트 / 기본
     /// </summary>
     public void UpdateCurrentWeapon()
     {
-        _leftCurrentWeapon = _left_Hand_target.GetComponentInChildren<WeaponBase>();
-        _rightCurrentWeapon = _right_Hand_target.GetComponentInChildren<WeaponBase>();
+        LeftCurrentWeapon = _left_Hand_target.GetComponentInChildren<WeaponBase>();
+        RightCurrentWeapon = _right_Hand_target.GetComponentInChildren<WeaponBase>();
     }
 
     /// <summary>
@@ -67,7 +62,7 @@ public class PlayerWeaponManager : Singleton<PlayerWeaponManager>
     /// </summary>
     public void UpdateRightCurrentWeapon()
     {
-        _rightCurrentWeapon = _right_Hand_target.GetComponentInChildren<WeaponBase>();
+        RightCurrentWeapon = _right_Hand_target.GetComponentInChildren<WeaponBase>();
     }
 
     /// <summary>
@@ -75,6 +70,6 @@ public class PlayerWeaponManager : Singleton<PlayerWeaponManager>
     /// </summary>
     public void UpdateLeftCurrentWeapon()
     {
-        _leftCurrentWeapon = _left_Hand_target.GetComponentInChildren<WeaponBase>();
+        LeftCurrentWeapon = _left_Hand_target.GetComponentInChildren<WeaponBase>();
     }
 }
