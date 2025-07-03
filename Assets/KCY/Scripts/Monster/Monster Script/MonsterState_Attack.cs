@@ -10,16 +10,17 @@ public class Monster_Attack : MonsterState_temp, IAttackable
         _rb = monster.Rigid;
         _agent = monster.MonsterAgent;
         stateMachine = monster._monsterMerchine;
+        _info = monster.Info;
     }
-
-    private int _attackDamage = 1;
+    public MonsterInfo _info;
+    public int AtkDamage => _info.AtkDamage;
     private Rigidbody _rb;
     private Animator _ani;
     private NavMeshAgent _agent;
     private IDamageable _curTarget;
 
     private float _lastAttackTime = -999f;
-    private float _attackCoolTime = 5f;
+    public float AtkCoolDown => _info.AtkCoolDown;
 
     private Coroutine _attackCoroutine;
     protected MonsterStateMachine_temp stateMachine;
@@ -64,7 +65,7 @@ public class Monster_Attack : MonsterState_temp, IAttackable
 
     public bool IsAttackAvailable()
     {
-        return (Time.time - _lastAttackTime >= _attackCoolTime);
+        return (Time.time - _lastAttackTime >= AtkCoolDown);
     }
 
     public void AttackEvent()
@@ -82,7 +83,7 @@ public class Monster_Attack : MonsterState_temp, IAttackable
             {
                 try
                 {
-                    damageTarget.Damaged(_attackDamage);
+                    damageTarget.Damaged(AtkDamage);
                     Debug.Log("실제 타격 감지 및 데미지 적용");
                 }
                 catch (System.Exception e)
@@ -160,7 +161,7 @@ public class Monster_Attack : MonsterState_temp, IAttackable
     {
         yield return new WaitUntil(() => _curTarget != null);
 
-        if (Time.time - _lastAttackTime < _attackCoolTime)
+        if (Time.time - _lastAttackTime < AtkCoolDown)
         {
             Debug.Log("공격 쿨타임 끝, 상태 전환");
             stateMachine.ChangeState(stateMachine.StateDic[Estate.Chase]);

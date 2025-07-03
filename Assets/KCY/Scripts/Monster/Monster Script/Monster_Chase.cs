@@ -7,8 +7,9 @@ public class Monster_Chase : MonsterState_temp
     {
         _agent = monster.MonsterAgent;
         stateMachine = monster._monsterMerchine;
+        _info = monster.Info;
     }
-
+    private MonsterInfo _info;
     private Transform _targetPos;
     private NavMeshAgent _agent;
     private float _missingTime = 0f;
@@ -47,6 +48,9 @@ public class Monster_Chase : MonsterState_temp
 
     public override void Enter()
     {
+
+        monster.SightCol.radius = _info.SightRange * 2f;
+
         Debug.Log("체이싱 상태 진입");
         _missingTime = 0f;
 
@@ -132,6 +136,10 @@ public class Monster_Chase : MonsterState_temp
 
     public override void Exit()
     {
+
+        monster.SightCol.radius = _info.SightRange;
+        
+
         if (monster.TargetPosition == null)
         {
             monster.IsSightDetecting = false;
