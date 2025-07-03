@@ -25,13 +25,7 @@ public class MeleeWeapon : WeaponBase
 
     public void Awake()
     {
-        Init();
-    }
-
-    public override void Init()
-    {
-        gameObject.transform.localPosition = _weaponSpawnPos.transform.localPosition;
-        gameObject.transform.localRotation = _weaponSpawnPos.transform.localRotation;
+        base.Init();
     }
 
     public override void Attack()

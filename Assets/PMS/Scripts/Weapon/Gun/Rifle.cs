@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Rifle : GunWeaponBase 
 {   
+    public PlayerCameraController _cameraController;
+
+    [SerializeField][Range(-360, 360)] public float _correction;
     [SerializeField] public Animator _animator;
     public bool isAiming = false;
     private GameObject bulletObj;
@@ -19,6 +22,15 @@ public class Rifle : GunWeaponBase
 
     private void Update()
     {
+
+        //_rotationRig.transform.Rotate(Vector3.right, _cameraController.OffsetY,Space.World);
+
+        //transform.localEulerAngles = new Vector3(_cameraController.OffsetY, 0, 0) + _originalrotation;
+
+        transform.localRotation = Quaternion.Euler(0f,_correction - _cameraController.OffsetY, -85f);
+
+        //_rotationRig.transform.rotation = Quaternion.Euler(_cameraController.OffsetY, _rotationRig.transform.rotation.y, _rotationRig.transform.rotation.z);
+
         if (Input.GetKeyDown(KeyCode.R) && !_isReload)
         {
             //이미 탄창이 max탄창이거나 && 총알이 없을 없을 때 false return

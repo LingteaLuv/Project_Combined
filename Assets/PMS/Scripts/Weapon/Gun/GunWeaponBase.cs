@@ -63,18 +63,13 @@ public abstract class GunWeaponBase : WeaponBase
     {
         _itemType = ItemType.Gun; 
     }
-    //무기마다 Init() 불릿 풀 사이즈가 다를 것이고,불릿 프리팹이 다르다. 총 아래에 Bullet 오브젝트가 생성
+
+    //무기마다 Init()해줘야 되는 사항.
+    //불릿 풀 사이즈가 다를 것이고,불릿 프리팹이 다르다. 총 아래에 Bullet 오브젝트가 생성
     public override void Init()
     {
+        base.Init();
         PlayerAttack.OnAttackStateChanged += OnAttackStateChanged;
-        // localPosition에는 local 좌표를 사용
-        gameObject.transform.localPosition = _weaponSpawnPos.transform.localPosition;
-        gameObject.transform.localRotation = _weaponSpawnPos.transform.localRotation;
-
-        // 또는 world 좌표를 사용하려면
-        //gameObject.transform.position = _weaponSpawnPos.position;
-        //gameObject.transform.rotation = _weaponSpawnPos.rotation;
-
         _lineRenderer = GetComponent<LineRenderer>();
         _gunBulletObjectPool = new ObjectPool(_bulletPoolSize, _bulletPrefab, gameObject);
     }
