@@ -100,6 +100,13 @@ public class Monster_Attack : MonsterState_temp, IAttackable
     {
         Debug.Log("Attack 상태 들어옴");
 
+        if (_agent != null && _agent.isOnNavMesh)
+        {
+            _agent.isStopped = true;
+            _agent.velocity = Vector3.zero;
+            _agent.ResetPath();
+        }
+
         if (_ani != null)
         {
             AnimatorStateInfo currentState = _ani.GetCurrentAnimatorStateInfo(0);
@@ -129,13 +136,7 @@ public class Monster_Attack : MonsterState_temp, IAttackable
             }
         }
 
-        if (_agent != null && _agent.isOnNavMesh)
-        {
-            _agent.isStopped = true;
-            _agent.velocity = Vector3.zero;
-            _agent.ResetPath();
-        }
-
+      
         if (_attackCoroutine != null)
         {
             monster.StopCoroutine(_attackCoroutine);
