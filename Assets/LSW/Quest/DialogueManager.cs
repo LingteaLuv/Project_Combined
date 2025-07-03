@@ -136,7 +136,7 @@ public class DialogueManager : Singleton<DialogueManager>
             if (DialogueDic[startId].TriggerID != null)
                 QuestManager.Instance.SetQuestType(DialogueDic[startId].TriggerID);
             
-            // 다음 대사 ID 변경
+            // 다음 대사 ID 변경s
             if (!String.IsNullOrEmpty(DialogueDic[startId].DialogueChoiceID))
             {
                 DialogueChoiceSO choice = ChoiceDic[DialogueDic[startId].DialogueChoiceID];
