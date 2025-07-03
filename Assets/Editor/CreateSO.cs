@@ -59,8 +59,60 @@ public class CreateSO : EditorWindow
                 Debug.LogWarning("레시피 CSV 파일이 지정되지 않았습니다.");
             }
         }
+        
+        if (GUILayout.Button("Generate ETCItem"))
+        {
+            if (_etcCsvFile != null)
+            {
+                CreateEtcItemFromCSV();
+            }
+            else
+            {
+                Debug.LogWarning("ETCItem CSV 파일이 지정되지 않았습니다.");
+            }
+        }
     }
 
+    private void CreateEtcItemFromCSV()
+    {
+        if (_etcCsvFile == null) return;
+        string[] lines = _baseCsvFile.text.Split('\n');
+
+        string folderPath = "Assets/ScriptableObjects/Items";
+        if (!AssetDatabase.IsValidFolder(folderPath))
+        {
+            AssetDatabase.CreateFolder("Assets/ScriptableObjects","Items");
+        }
+
+        for (int i = 1; i < lines.Length; i++)
+        {
+            // 문장의 앞,뒤 공백 제거
+            string line = lines[i].Trim();
+
+            // 공백을 제거했을 때 아무 것도 없는 경우 스킵
+            if (string.IsNullOrEmpty(line)) continue;
+            
+            EtcItem etcItem = ScriptableObject.CreateInstance<EtcItem>();
+
+            // 문장을 ,(쉼표)로 구분
+            string[] parts = line.Split(',');
+            string itemId = parts[0];
+            etcItem.ItemID = int.Parse(itemId);
+            string name = parts[1];
+            etcItem.Name = name;
+            etcItem.EtcType = parts[2];
+            etcItem.MaxStackSize = int.Parse(parts[3]);
+            etcItem.SoundResource = FileFinder.FindSFXByName(parts[4]);
+            etcItem.StrParam = parts[5];
+            etcItem.IntParam = int.Parse(parts[6]);
+            
+            string assetPath = $"{folderPath}/Item_{itemId}_{name}.Asset";
+            AssetDatabase.CreateAsset(etcItem, assetPath);
+        }
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+    }
+    
      private void CreateSOFromCSV()
     {
         if (_baseCsvFile == null) return;
@@ -175,7 +227,7 @@ public class CreateSO : EditorWindow
             item.Name = name;
             item.Description = description;
             item.Type = (ItemType)Enum.Parse(typeof(ItemType),itemType);
-            item.Sprite = SpriteFinder.FindSpriteByName(icon);
+            item.Sprite = FileFinder.FindSpriteByName(icon);
             
             string assetPath = $"{folderPath}/Item_{itemId}_{name}.Asset";
             AssetDatabase.CreateAsset(item, assetPath);
@@ -255,6 +307,7 @@ public class CreateSO : EditorWindow
             meleeItem.MaxDurability = int.Parse(weaponParts[2]);
             meleeItem.AtkDamage = int.Parse(weaponParts[3]);
             meleeItem.AtkSpeed = int.Parse(weaponParts[4]);
+            meleeItem.AtkSoundResources = FileFinder.FindSFXByName(weaponParts[5]);
         }
         
         return meleeItem;
@@ -274,8 +327,8 @@ public class CreateSO : EditorWindow
             gunItem.Range = float.Parse(gunDataParts[5]);
             gunItem.AmmoID = int.Parse(gunDataParts[6]);
             gunItem.AmmoCapacity = int.Parse(gunDataParts[7]);
-            gunItem.ShotSoundResource = gunDataParts[8];
-            gunItem.ReloadSoundResource = gunDataParts[9];
+            gunItem.ShotSoundResource = FileFinder.FindSFXByName(gunDataParts[8]);
+            gunItem.ReloadSoundResource = FileFinder.FindSFXByName(gunDataParts[9]);
             if (float.TryParse(gunDataParts[10], out float noiseLevel))
             {
                 gunItem.NoiseLevel = noiseLevel;
@@ -307,7 +360,7 @@ public class CreateSO : EditorWindow
             string[] specialDataParts = specialData[int.Parse(itemId)];
             specialItem.MaxDurability = int.Parse(specialDataParts[2]);
             specialItem.DurabilitySec = int.Parse(specialDataParts[3]);
-            specialItem.SoundResource = specialDataParts[4];
+            specialItem.SoundResource = FileFinder.FindSFXByName(specialDataParts[4]);
         }
         
         return specialItem;
@@ -337,7 +390,7 @@ public class CreateSO : EditorWindow
             string[] etcDataParts = etcData[int.Parse(itemId)];
             etcItem.EtcType = etcDataParts[2];
             etcItem.MaxStackSize = int.Parse(etcDataParts[3]);
-            etcItem.SoundResource = etcDataParts[4];
+            etcItem.SoundResource = FileFinder.FindSFXByName(etcDataParts[4]);
             etcItem.StrParam = etcDataParts[5];
             etcItem.IntParam = int.Parse(etcDataParts[6]);
         }

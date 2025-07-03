@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-public static class SpriteFinder
+public static class FileFinder
 {
     /// <summary>
     /// 지정한 이름의 Sprite를 Resources가 아닌 AssetDatabase를 통해 찾아 반환합니다.
@@ -22,6 +22,24 @@ public static class SpriteFinder
         }
 
         Debug.LogWarning($"Sprite with name \"{name}\" not found.");
+        return null;
+    }
+    public static AudioClip FindSFXByName(string name)
+    {
+        if (name == "") return null;
+        string[] guids = AssetDatabase.FindAssets("t:AudioClip", new[] { "Assets/Imports/SFX" }); 
+        foreach (string guid in guids)
+        {
+            string path = AssetDatabase.GUIDToAssetPath(guid);
+            AudioClip audioClip = AssetDatabase.LoadAssetAtPath<AudioClip>(path);
+
+            if (audioClip != null && audioClip.name == name)
+            {
+                return audioClip;
+            }
+        }
+
+        Debug.LogWarning($"AudioClip with name \"{name}\" not found.");
         return null;
     }
 }
