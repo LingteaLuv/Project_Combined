@@ -9,11 +9,11 @@ public class MonsterInfo : ScriptableObject
     public float MaxHP;
     public string AtkType;
     public int AtkDamage;
-    public float CastTime;
-    public float RecoveryFrame;
     public float AtkCoolDown;
     public float AtkSpeed;
     public float AtkRange;
+    public float CastTime;
+    public float RecoveryFrame;
     public float MoveSpeed;
     public float ChaseMoveSpeed;
     public float NightMoveSpeed;
@@ -25,7 +25,6 @@ public class MonsterInfo : ScriptableObject
     public float DeactivateHearing;
     public float PatrolRadius;
     public float SearchTime;
-    public float LootChance;
     public string EnemyLootID;
     public string EnemyLootGridChanceID;
 }

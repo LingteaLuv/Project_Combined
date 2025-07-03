@@ -1,9 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-public class MonsterInfoSetting : EditorWindow
+public class CharacterSetting : EditorWindow
 {
     private TextAsset _monsterFile;
     private TextAsset _playerFile;
@@ -11,7 +12,7 @@ public class MonsterInfoSetting : EditorWindow
     [MenuItem("Tools/CSV to Character")]
     public static void ShowWindow()
     {
-        GetWindow<MonsterInfoSetting>("CSV to Character");
+        GetWindow<CharacterSetting>("CSV to Character");
     }
 
     private void OnGUI()
@@ -75,11 +76,11 @@ public class MonsterInfoSetting : EditorWindow
             monster.MaxHP = float.Parse(parts[2]);
             monster.AtkType = parts[3];
             monster.AtkDamage = int.Parse(parts[4]);
-            monster.CastTime = float.Parse(parts[5]);
-            monster.RecoveryFrame = float.Parse(parts[6]);
-            monster.AtkCoolDown = float.Parse(parts[7]);
-            monster.AtkSpeed = float.Parse(parts[8]);
-            monster.AtkRange= float.Parse(parts[9]);
+            monster.AtkCoolDown = float.Parse(parts[5]);
+            monster.AtkSpeed = float.Parse(parts[6]);
+            monster.AtkRange= float.Parse(parts[7]);
+            monster.CastTime = float.Parse(parts[8]);
+            monster.RecoveryFrame = float.Parse(parts[9]);
             monster.MoveSpeed = float.Parse(parts[10]);
             monster.ChaseMoveSpeed = float.Parse(parts[11]);
             monster.NightMoveSpeed = float.Parse(parts[12]);
@@ -91,11 +92,10 @@ public class MonsterInfoSetting : EditorWindow
             monster.DeactivateHearing = float.Parse(parts[18]);
             monster.PatrolRadius = float.Parse(parts[19]);
             monster.SearchTime = float.Parse(parts[20]);
-            monster.LootChance = float.Parse(parts[21]);
-            monster.EnemyLootID = parts[22];
-            monster.EnemyLootGridChanceID = parts[23];
+            monster.EnemyLootID = parts[21];
+            monster.EnemyLootGridChanceID = parts[22];
             
-            string assetPath = $"{folderPath}/Quest_{monsterID}.Asset";
+            string assetPath = $"{folderPath}/Monster_{monsterID}.Asset";
             AssetDatabase.CreateAsset(monster, assetPath);
         }
         AssetDatabase.SaveAssets();
@@ -123,36 +123,50 @@ public class MonsterInfoSetting : EditorWindow
             // 문장을 ,(쉼표)로 구분
             string[] parts = line.Split(',');
             
-            MonsterInfo monster = ScriptableObject.CreateInstance<MonsterInfo>();
+            PlayerInfo player = ScriptableObject.CreateInstance<PlayerInfo>();
 
-            string monsterID = parts[0];
-            monster.EnemyID = int.Parse(parts[0]);
-            monster.Name = parts[1];
-            monster.MaxHP = float.Parse(parts[2]);
-            monster.AtkType = parts[3];
-            monster.AtkDamage = int.Parse(parts[4]);
-            monster.CastTime = float.Parse(parts[5]);
-            monster.RecoveryFrame = float.Parse(parts[6]);
-            monster.AtkCoolDown = float.Parse(parts[7]);
-            monster.AtkSpeed = float.Parse(parts[8]);
-            monster.AtkRange= float.Parse(parts[9]);
-            monster.MoveSpeed = float.Parse(parts[10]);
-            monster.ChaseMoveSpeed = float.Parse(parts[11]);
-            monster.NightMoveSpeed = float.Parse(parts[12]);
-            monster.SightRange = float.Parse(parts[13]);
-            monster.SightAngle = float.Parse(parts[14]);
-            monster.HearingRange = float.Parse(parts[15]);
-            monster.PatrolSight = float.Parse(parts[16]);
-            monster.ChaseSight = float.Parse(parts[17]);
-            monster.DeactivateHearing = float.Parse(parts[18]);
-            monster.PatrolRadius = float.Parse(parts[19]);
-            monster.SearchTime = float.Parse(parts[20]);
-            monster.LootChance = float.Parse(parts[21]);
-            monster.EnemyLootID = parts[22];
-            monster.EnemyLootGridChanceID = parts[23];
+            string playerID = parts[0];
+            player.PlayerID = int.Parse(parts[0]);
+            player.MaxHP = float.Parse(parts[1]);
+            player.MaxStamaina = float.Parse(parts[2]);
+            player.MaxMoisture = parts[3];
+            player.StaminaRegen = int.Parse(parts[4]);
+            player.StaminaCostRun = float.Parse(parts[5]);
+            player.StaminaCostJump = float.Parse(parts[6]);
+            player.SafeFallDistance = float.Parse(parts[7]);
+            player.DeadFallDistance = float.Parse(parts[8]);
+            player.FallDamage = float.Parse(parts[9]);
+            player.StaminaCostMelee = float.Parse(parts[10]);
+            player.HengerDecrease = float.Parse(parts[11]);
+            player.MoistureDecrease = float.Parse(parts[12]);
+            player.HPRegen = float.Parse(parts[13]);
+            player.HungerAndMoisture = float.Parse(parts[14]);
+            player.MoveSpeed = float.Parse(parts[15]);
+            player.MoveNoise = float.Parse(parts[16]);
+            player.RunSpeed = float.Parse(parts[17]);
+            player.RunNoise = float.Parse(parts[18]);
+            player.CrouchSpeed = float.Parse(parts[19]);
+            player.CrouchNoise = float.Parse(parts[20]);
+            player.MoistureBuffThreshold = int.Parse(parts[21]);
+            player.MoistureBuffMoveSpeed = float.Parse(parts[22]);
+            player.MoistureDebuffThreshold = int.Parse(parts[23]);
+            player.MoistureDebuffMoveSpeed = float.Parse(parts[24]);
+            player.HungerBuffThreshold = int.Parse(parts[25]);
+            player.HungerBuffAtkSpeed = float.Parse(parts[26]);
+            player.HungerDebuffThreshold = int.Parse(parts[27]);
+            player.HungerDebuffAtkSpeed = float.Parse(parts[28]);
+            player.DepletionHp = float.Parse(parts[29]);
+            player.RunSFX = FileFinder.FindSFXByName(parts[30]);
+            player.StaminaDepletionSFX = FileFinder.FindSFXByName(parts[31]);
+            player.AtkSFX = FileFinder.FindSFXByName(parts[32]);
+            player.AtkSFXCooldown = int.Parse(parts[33]);
+            player.JumpSFX = FileFinder.FindSFXByName(parts[34]);
+            player.HitSFX = FileFinder.FindSFXByName(parts[35]);
+            player.HitSFXCooldown = int.Parse(parts[36]);
+            player.DestroyEquipmentSFX = FileFinder.FindSFXByName(parts[37]);
             
-            string assetPath = $"{folderPath}/Quest_{monsterID}.Asset";
-            AssetDatabase.CreateAsset(monster, assetPath);
+            string assetPath = $"{folderPath}/Player_{playerID}.Asset";
+            AssetDatabase.CreateAsset(player, assetPath);
         }
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();

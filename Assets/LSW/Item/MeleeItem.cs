@@ -9,5 +9,5 @@ public class MeleeItem : ItemBase
     public int MaxDurability;
     public int AtkDamage;
     public int AtkSpeed;
-    public string AtkSoundResources;
+    public AudioClip AtkSoundResources;
 }
