@@ -139,7 +139,7 @@ public class CraftingController : MonoBehaviour
         RemoveItemByID(recipe.MaterialItemId3, recipe.MaterialItemQuantity3);
         RemoveItemByID(recipe.MaterialItemId4, recipe.MaterialItemQuantity4);
 
-        AddItemByID(recipe.ResultItemId, recipe.ResultQuantity, GetMaxDur(recipe.ResultItemId));
+        InventoryManager.Instance.AddItemByID(recipe.ResultItemId, recipe.ResultQuantity);
         UpdateCurrent();
         StartCoroutine(_rs.DelayedUIUpdate());
         _renderer.RenderInventory();
