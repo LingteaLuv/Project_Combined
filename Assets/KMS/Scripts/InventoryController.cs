@@ -16,6 +16,8 @@ public class InventoryController : MonoBehaviour
 
     private PlayerHandItemController _hand;
 
+    private IUseETC _useEtc;
+
     public bool IsHolding;
     public int HoldingIndex;
     public int NextIndex;
@@ -33,6 +35,7 @@ public class InventoryController : MonoBehaviour
         _renderer = GetComponent<InventoryRenderer>();
         _crafting = GetComponent<CraftingController>();
         _hand = GetComponent<PlayerHandItemController>();
+        _useEtc = new UseETC();
         IsHolding = false;
         HoldingIndex = -1;
         NextIndex = -1;
@@ -97,7 +100,7 @@ public class InventoryController : MonoBehaviour
     {
         Item exist = _model.InvItems[index];
         if (exist.Data.Type != ItemType.ETC) return; // 이후 장비아이템에 대한 equipbutton실행될듯
-        TextManager.Instance.MemoPopUpText($"{exist.Data.ItemID}");
+        _useEtc.UseETCItem(_model.InvItems[index].Data.ItemID);
     }
     
     public void EquipButton(int index) //해당 인벤토리 칸 아이템(선택된)을 장착시도
