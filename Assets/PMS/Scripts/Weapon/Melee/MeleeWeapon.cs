@@ -23,9 +23,17 @@ public class MeleeWeapon : WeaponBase
      * Corutine을 활용한 애니메이션 Event 함수 호출도 고려 할만한 상황
      */
 
+    [SerializeField] private bool _isOnField;
+
     public void Awake()
     {
         base.Init();
+    }
+
+    public override void Init()
+    {
+        gameObject.transform.localPosition = _weaponSpawnPos.transform.localPosition;
+        gameObject.transform.localRotation = _weaponSpawnPos.transform.localRotation;
     }
 
     public override void Attack()

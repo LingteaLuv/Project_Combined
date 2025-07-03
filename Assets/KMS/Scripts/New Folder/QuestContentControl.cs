@@ -12,7 +12,7 @@ public class QuestContentControl : MonoBehaviour
     {
         //퀘스트 목록을 순회한다. 목록을 순회하면서 게임오브젝트를 생성하면서 그 게임오브젝트와 아이디를 nodedict에 처넣는다.
         //생성 후 디스크립션 바로 적용, 이후 비활성화
-        
+        NodeDict = new Dictionary<string, QuestNode>();
         foreach (KeyValuePair<string, QuestData> q in QuestManager.Instance.QuestDictionary)
         {
             GameObject go = Instantiate(_questNode, gameObject.transform);
