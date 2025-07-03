@@ -25,6 +25,23 @@ public class ItemConsumeManage : MonoBehaviour
         {
             Consume();
         }
+        if (Input.GetKeyDown(KeyCode.Insert))
+        {
+            Debug.Log(_model.InvItems[_control.EquippedSlotIndex[0]].CurrentAmmoCount);
+            Debug.Log((_model.InvItems[_control.EquippedSlotIndex[0]].Data as GunItem).AmmoCapacity);
+        }
+        if (Input.GetKeyDown(KeyCode.Delete))
+        {
+            Reload();
+        }
+        if (Input.GetKeyDown(KeyCode.End))
+        {
+            _control.ReduceEquippedItem(0, 1);
+        }
+        if (Input.GetKeyDown(KeyCode.ScrollLock))
+        {
+            _model.InvItems[_control.EquippedSlotIndex[0]].CurrentAmmoCount -= 1;
+        }
     }
     public void Consume() // 착용한 소모품을 아예 지워버림
     {
@@ -43,7 +60,7 @@ public class ItemConsumeManage : MonoBehaviour
         int CurCount = _model.InvItems[_control.EquippedSlotIndex[0]].CurrentAmmoCount;
         int need = MaxCount - CurCount;
         if (need == 0) return false;
-        if (_craft.RemoveItemByID(3001, need))
+        if (_craft.RemoveItemByID(9001, need))
         {
             _model.InvItems[_control.EquippedSlotIndex[0]].SetAmmoCount(MaxCount);
             return true;
