@@ -221,7 +221,8 @@ public class QuestManager : Singleton<QuestManager>
             return false;
 
         meta.Status = QuestStatus.Closed;
-
+        int.TryParse(meta.RequiredItemID, out int req);
+        InventoryManager.Instance.RemoveItemByID(req, meta.RequiredItemQuantity);
         int.TryParse(meta.RewardItemID, out int rew); // 추가 작성된 부분
         InventoryManager.Instance.AddItemByID(rew, meta.RewardItemQuantity); // 추가 작성된 부분
 
