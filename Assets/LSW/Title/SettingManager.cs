@@ -6,7 +6,8 @@ public class SettingManager : Singleton<SettingManager>
 {
     public Property<float> Brightness;
     public Property<float> FOV;
-    public Property<float> Sound;
+    public Property<float> BGMSound;
+    public Property<float> SFXSound;
     public Property<float> MouseXSpeed;
     public Property<float> MouseYSpeed;
 
@@ -30,9 +31,14 @@ public class SettingManager : Singleton<SettingManager>
         FOV.Value = input;
     }
 
-    public void SetSound(float input)
+    public void SetBGMSound(float input)
     {
-        Sound.Value = input;
+        BGMSound.Value = input;
+    }
+    
+    public void SetSFXSound(float input)
+    {
+        SFXSound.Value = input;
     }
 
     public void SetMouseXSpeed(float input)
@@ -48,7 +54,8 @@ public class SettingManager : Singleton<SettingManager>
     {
         Brightness = new Property<float>(0.5f);
         FOV = new Property<float>(0.5f);
-        Sound = new Property<float>(0.5f);
+        BGMSound = new Property<float>(0.5f);
+        SFXSound = new Property<float>(0.5f);
         MouseXSpeed = new Property<float>(0.5f);
         MouseYSpeed = new Property<float>(0.5f);
     }
