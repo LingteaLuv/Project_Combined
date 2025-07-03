@@ -33,7 +33,7 @@ public class PauseUIControl : MonoBehaviour
     void Update()
     {
         if (UIManager.Instance.IsUIOpened.Value) return;
-        if (Input.GetKeyDown(KeyCode.Pause))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             Toggle();
         }
