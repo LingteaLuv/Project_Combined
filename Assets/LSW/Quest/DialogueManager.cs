@@ -26,6 +26,8 @@ public class DialogueManager : Singleton<DialogueManager>
     private TMP_Text Button2Text;
     private TMP_Text Button3Text;
 
+    public event Action OffDialogue;
+
     //  버튼 입력 전까지 대기상태
     private int _selectedNextId = -1;
     [SerializeField] private TextMeshProUGUI _npcName;
@@ -132,7 +134,7 @@ public class DialogueManager : Singleton<DialogueManager>
             yield return ScriptSetting.WriteWords(_scriptScreen, DialogueDic[startId].DialogueText, _delay, () => SkipRequested());
             
             if (DialogueDic[startId].TriggerID != null)
-                QuestManager.Instance.QuestType(DialogueDic[startId].TriggerID);
+                QuestManager.Instance.SetQuestType(DialogueDic[startId].TriggerID);
             
             // 다음 대사 ID 변경
             if (!String.IsNullOrEmpty(DialogueDic[startId].DialogueChoiceID))
@@ -162,6 +164,7 @@ public class DialogueManager : Singleton<DialogueManager>
         yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.F));
         _dialogueCanvas.SetActive(false);
         _dialogueCoroutine = null;
+        OffDialogue?.Invoke();
     }
 
     private bool SkipRequested()
