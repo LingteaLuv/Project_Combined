@@ -100,7 +100,6 @@ public static class AnimatorUtil
     }
 
     //특정 애니메이션이 끝날 때 까지 대기 하는 코루틴 함수
-
     public static bool CheckFinishAnimation(Animator animator, int layerIndex, string animationName)
     {
         Debug.Log($"레이어 {layerIndex}의 {animationName} 완료 대기 시작");

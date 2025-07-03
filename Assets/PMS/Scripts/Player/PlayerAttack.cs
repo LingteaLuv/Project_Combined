@@ -66,6 +66,7 @@ public class PlayerAttack : MonoBehaviour
     {
         //이벤트 구독 - 오른쪽 무기가 바뀔 때마다 알림받기
         PlayerWeaponManager.OnRightWeaponChanged += OnRightWeaponChanged;
+        PlayerWeaponManager.OnLeftWeaponChanged += OnLeftWeaponChanged;
         LeftCurrentWeapon = PlayerWeaponManager.Instance.LeftCurrentWeapon;
         RightCurrentWeapon = PlayerWeaponManager.Instance.RightCurrentWeapon;
         _playerProperty = GetComponent<PlayerProperty>();
@@ -75,14 +76,21 @@ public class PlayerAttack : MonoBehaviour
     private void OnRightWeaponChanged(WeaponBase newWeapon)
     {
         // 라이플 참조 업데이트
-        if (newWeapon != null && newWeapon.ItemType == ItemType.Gun)
+        if (newWeapon.ItemType == ItemType.Gun)
         {
+            RightCurrentWeapon = newWeapon;
             _rifle = newWeapon.GetComponent<Rifle>();
         }
         else
         {
+            RightCurrentWeapon = newWeapon;
             _rifle = null;
         }
+    }
+
+    private void OnLeftWeaponChanged(WeaponBase newWeapon)
+    {
+        LeftCurrentWeapon = newWeapon;
     }
 
     void Update()

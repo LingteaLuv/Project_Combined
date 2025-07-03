@@ -2,27 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
+//다음에 혼자 총이라는 클래스를 여러개 구현해보자
+//다양한 방법으로 총을 구현해보고, 다양한 종류의 총(ex)샷건,저격총)을 구현해보자.
+//다양한 총관련 시스템, 1인칭 Zoom 공격
 public abstract class GunWeaponBase : WeaponBase
 {
     [SerializeField] protected GunItem _gunData; //건 데이터
-    //불릿 프리팹
+    //사용 할 불릿 프리팹
     //추후 프리팹 매니저 관리
     [SerializeField] protected GameObject _bulletPrefab;
     //총 본체 관련 변수
     [SerializeField] protected int _damage => _gunData.AtkDamage;     // 총의 데미지
     [SerializeField] protected float _range => _gunData.Range;        // 총의 유효 사거리
-    //[SerializeField] protected float _accuracy;     // 총의 정확도
 
     //총알 제어 관련 변수
     [SerializeField] protected int _maxAmmoCount => _gunData.AmmoCapacity;       //최대 탄약수
-
-
-    //제쪽에서 관리되는 데이터 테이블 -> 나중에 문성님이 Item필드에 추가해주셔야 제가 값을 건들이면 해당 값이 저장되는 형태
-    //이후 _GunData.CurrentAmmoCount-- 를 통해 현재 탄약이 감소하고 
-    [SerializeField] protected int _currentAmmoCount;   //현재 탄약수
-
-
     [SerializeField] protected float _reloadTime;       // 재장전 속도. 총의 종류마다 다름.
     [SerializeField] protected float _fireDelay = 1.5f; //총 발사 딜레이
     [SerializeField] protected Transform _firePoint;    //총알 발사 지점
@@ -47,9 +41,10 @@ public abstract class GunWeaponBase : WeaponBase
 
     protected AudioSource audioSource; //공격 사운드
 
+
     private void Reset()
     {
-        _itemType = ItemType.Gun; 
+        ItemType = ItemType.Gun; 
     }
 
     //무기마다 Init()해줘야 되는 사항.
@@ -64,7 +59,7 @@ public abstract class GunWeaponBase : WeaponBase
 
     #region 총알 궤적을 보여주는 함수
     /// <summary>
-    /// 총알 궤적을 보여주는 함수
+    /// 총알 궤적을 보여주는 함수 30개 정점으로 구현
     /// </summary>
     /// <param name="bullet"> bullet 객체 </param>
     /// <param name="bulletSpeed">bullet 객체의 스피드 </param>
@@ -101,6 +96,7 @@ public abstract class GunWeaponBase : WeaponBase
     }
     #endregion
 
+    //한줄만 나가는 라인구현하기
     public void UpdateTrajectory()
     {
         Vector3 startPos = _firePoint.transform.position;
