@@ -9,22 +9,31 @@ public class Monster_Idle : MonsterState_temp
 {
     public Monster_Idle(Monster_temp _monster) : base(_monster)
     {
-        _soundSight = monster.SoundCol.radius;
+        //HearingRange = monster.SoundCol.radius;
         _navMeshAgent = monster.MonsterAgent;
         stateMachine = monster._monsterMerchine;
         _ani = monster.Ani;
+        _info = monster.Info;
     }
 
+    private MonsterInfo _info;
     private Animator _ani;
     private float _idleTimer;
     private float _idleDuration = 1.5f;
 
-    private float _soundSight;
+    private float DeactivateHearing;
     private NavMeshAgent _navMeshAgent;
     protected MonsterStateMachine_temp stateMachine;
 
+    private float _originalHearingRadius;
+
     public override void Enter()
     {
+        DeactivateHearing = _info.HearingRange * 1.5f;
+        monster.SoundCol.radius = DeactivateHearing;
+
+
+
         monster.MonsterAgent.autoBraking = true;
         _ani.ResetTrigger("Attack");
         _idleTimer = 0f;
@@ -46,8 +55,7 @@ public class Monster_Idle : MonsterState_temp
         {
             Debug.LogWarning("[Idle] NavMeshAgent가 NavMesh 위에 없거나 null입니다!");
         }
-
-        monster.SoundCol.radius = 1.5f * _soundSight;    
+        
     }
 
 
@@ -71,12 +79,13 @@ public class Monster_Idle : MonsterState_temp
             _navMeshAgent.ResetPath();
             Debug.Log("idle 나감");
             monster.Ani.SetBool("isPatrol", true);
+            monster.Ani.SetBool("isPatrol", true);
         }
         else
         {
             Debug.Log("idle 나갈때 뭔가 잘못됬다 확인해라");
         }
 
-        monster.SoundCol.radius = _soundSight;
+        monster.SoundCol.radius = _info.HearingRange;
     }
 }

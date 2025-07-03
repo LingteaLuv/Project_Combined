@@ -8,10 +8,11 @@ public class Monster_Patrol : MonsterState_temp
     {
         _agent = monster.MonsterAgent;
         SpawnPoint = monster.SpawnPoint;
+        _info = monster.Info;
 
     }
 
-
+    private MonsterInfo _info;
     public Vector3 SpawnPoint; // 제일 먼저 스폰하는 곳에서의 장소(해당 장소는 불변)
     // public Vector3 TempPoint; // 이벤트 발생 - 해당 지역으로 가서 해당 장소에 그 이벤트를 발견해 처음 멈춰선 곳의, 상태 전환전에 현재의 포지션 값
     public Vector3 BasePoint; // 스폰과 템프의 중계역할을 할 예정, 처음은 스폰으로, 추적 후에는 템프로, 다시 돌아와서는 스폰으로
@@ -20,17 +21,17 @@ public class Monster_Patrol : MonsterState_temp
     public float LimitTryCount = 10f;
 
     // 60초 후엔 스폰 자리로 돌아가야 한다.
-    public float SearchTime = 0f; // SpawnPoint로의 회귀 시간
-    public float SearchDuration = 60f;//PatrolRadiu
+    public float StartSearchTime = 0f; // SpawnPoint로의 회귀 시간
+    public float SearchTime => _info.SearchTime;   //    60f;//PatrolRadiu
 
     // 15초 간 머물러야 한다.
     public float StayTimer = 0f;
     public float StayDuration = 15f;
     private bool isHeadRot = false;
-
+    public float PatrolSight => _info.PatrolSight; 
     private NavMeshAgent _agent;
     private float _compareDis = 1.0f;
-
+    private float stopDetectTimer = 0f;
 
 
     public void Init()
@@ -124,8 +125,11 @@ public class Monster_Patrol : MonsterState_temp
     public override void Enter()
     {
         Debug.Log(" 패트롤 상태 진입");
-       
-        SearchTime = 0f;
+
+        //PatrolSight = monster.SightRange * 2f;
+        //monster.SightRange = PatrolSight;
+
+        StartSearchTime = 0f;
         StayTimer = 0f;
         monster.IsDetecting = false;
         monster.TargetPosition = null;
@@ -171,7 +175,7 @@ public class Monster_Patrol : MonsterState_temp
         Debug.Log($" 업데이트에서 애니메이션 블랜딩 패트롤 속도를 확인합니다 : {_agent.velocity.magnitude}");
 
         Debug.Log($" 디버그 IsSightDetecting 상태: {monster.IsSightDetecting}");
-        SearchTime += Time.deltaTime; // 회귀 시간 누적
+        StartSearchTime += Time.deltaTime; // 회귀 시간 누적
         StayTimer += Time.deltaTime; // 머무는 시간 누적
 
         // 고장방지 유효성 검사
@@ -209,7 +213,7 @@ public class Monster_Patrol : MonsterState_temp
                     break;
                 }
             }
-            float stopDetectTimer = 0f;
+
 
             if (!_agent.pathPending && _agent.velocity.magnitude < 0.01f)
             {
@@ -217,7 +221,7 @@ public class Monster_Patrol : MonsterState_temp
 
                 if (stopDetectTimer > 2f)  // 2초 이상 멈춰 있을 때만 강제 리셋
                 {
-                    Debug.Log("Agent 장시간 정지 감지 → 강제 리셋");
+                    Debug.Log("Agent 장시간 정지 감지 > 강제 리셋");
 
                     _agent.ResetPath();
                     _agent.isStopped = false;
@@ -246,7 +250,7 @@ public class Monster_Patrol : MonsterState_temp
 
         // 1분 순찰 종료
         // 이게 우선순위 이게 먼저 실행되야 더 안돈다 (<< 버그 확인)
-        if (SearchTime >= SearchDuration)
+        if (StartSearchTime >= SearchTime)
         {
             Debug.Log("순찰시간이 초과되었으니 리스폰 지역으로 복귀합니다.");
             monster.TempPoint = Vector3.zero;
