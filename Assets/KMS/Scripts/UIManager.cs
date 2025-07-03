@@ -11,15 +11,17 @@ public enum ModalUI
     nothing,
     inventory,
     lootTable,
-    quest
+    quest,
+    map
 }
-public class UIManager : SingletonT<UIManager>
+public class UIManager : Singleton<UIManager>
 {
     [SerializeField] public GameObject ModalBase;
     [SerializeField] public GameObject LootUI;
     [SerializeField] public GameObject InvUI;
     [SerializeField] public GameObject CraftUI;
     [SerializeField] public GameObject QuestLogUI;
+    [SerializeField] public GameObject MapUI;
 
     [SerializeField] public CanvasGroup UIGroup;
 
@@ -32,6 +34,7 @@ public class UIManager : SingletonT<UIManager>
     private RectTransform _lootRect;
     private RectTransform _invRect;
     private RectTransform _questRect;
+    private RectTransform _mapRect;
 
     private Coroutine _coroutine;
     private WaitForEndOfFrame _wait;
@@ -43,16 +46,20 @@ public class UIManager : SingletonT<UIManager>
 
     private bool _UILock;
     public ModalUI Current { get; set; }
-    private void Awake()
+
+    protected override bool ShouldDontDestroy => false;
+    protected override void Awake()
     {
+
+        base.Awake();
         _lootRect = LootUI.GetComponent<RectTransform>();
         _invRect = InvUI.GetComponent<RectTransform>();
         _questRect = QuestLogUI.GetComponent<RectTransform>();
+        _mapRect = MapUI.GetComponent<RectTransform>();
         _playerLoot = UISceneLoader.Instance.Playerattack.gameObject.GetComponentInChildren<PlayerLooting>();
         _playerNPCInt = UISceneLoader.Instance.Playerattack.gameObject.GetComponentInChildren<PlayerNPCInteractor>();
         _pcc = UISceneLoader.Instance.Playerattack.GetComponent<PlayerCameraController>();
         _pm = UISceneLoader.Instance.Playerattack.GetComponent<PlayerMovement>();
-        SetInstance();
         IsUIOpened = new Property<bool>(false);
         Current = ModalUI.nothing;
         UIGroup.alpha = 0;
@@ -89,6 +96,7 @@ public class UIManager : SingletonT<UIManager>
         InvUI.SetActive(false);
         CraftUI.SetActive(false);
         QuestLogUI.SetActive(false);
+        MapUI.SetActive(false);
         
         IsUIOpened.OnChanged += SetCursorLock;
         IsUIOpened.OnChanged += SetCameraLock;
@@ -208,6 +216,10 @@ public class UIManager : SingletonT<UIManager>
         {
             ToggleUI(ModalUI.quest);
         }
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            ToggleUI(ModalUI.map);
+        }
     }
     public void OpenUI(ModalUI cur)
     {
@@ -232,6 +244,11 @@ public class UIManager : SingletonT<UIManager>
         {
             QuestLogUI.SetActive(true);
             SetUIPos(_questRect, 600, 150);
+        }
+        else if (Current == ModalUI.map)
+        {
+            MapUI.SetActive(true);
+            SetUIPos(_mapRect, 600, 150);
         }
 
         if (_coroutine != null)
@@ -290,6 +307,7 @@ public class UIManager : SingletonT<UIManager>
         CraftUI.SetActive(false);
         QuestLogUI.SetActive(false);
         ModalBase.SetActive(false);
+        MapUI.SetActive(false);
         IsUIOpened.Value = false;
         Current = ModalUI.nothing;
     }

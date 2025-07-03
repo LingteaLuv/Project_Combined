@@ -80,7 +80,7 @@ public class InventoryRenderer : MonoBehaviour
         }
         if (current != -1 && _model.InvItems[current].Data.Type != ItemType.Quest)
         {
-            _model.InvSlotPanelImages[current].color = new Color(1f, 0f, 0f);
+            _model.InvSlotPanelImages[current].color = new Color(1f, 1f, 1f);
             _model.TrashButton.SetActive(true);
         }
         else
@@ -134,7 +134,7 @@ public class InventoryRenderer : MonoBehaviour
         {
             if (i == indices[0] || i == indices[1])
             {
-                _model.InvSlotPanelImages[i].color = new Color(0f, 1f, 0f);
+                _model.InvSlotPanelImages[i].color = new Color(1f, 1f, 1f);
             }
             else
             {
