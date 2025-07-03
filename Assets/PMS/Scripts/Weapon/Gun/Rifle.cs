@@ -10,6 +10,7 @@ public class Rifle : GunWeaponBase
     [SerializeField] public Animator _animator;
     public bool isAiming = false;
     private GameObject bulletObj;
+
     private void Awake()
     {
         Init();     //나중에 플레이어 해당 사용할려고 할 때
@@ -22,19 +23,15 @@ public class Rifle : GunWeaponBase
 
     private void Update()
     {
-
-        //_rotationRig.transform.Rotate(Vector3.right, _cameraController.OffsetY,Space.World);
-
-        //transform.localEulerAngles = new Vector3(_cameraController.OffsetY, 0, 0) + _originalrotation;
-
-        transform.localRotation = Quaternion.Euler(0f,_correction - _cameraController.OffsetY, -85f);
-
-        //_rotationRig.transform.rotation = Quaternion.Euler(_cameraController.OffsetY, _rotationRig.transform.rotation.y, _rotationRig.transform.rotation.z);
-
-        if (Input.GetKeyDown(KeyCode.R) && !_isReload)
+        if (!_fixedWeapon)
         {
-            //이미 탄창이 max탄창이거나 && 총알이 없을 없을 때 false return
-            InventoryManager.Instance.Consume.Reload();
+            transform.localRotation = Quaternion.Euler(0f, _correction - _cameraController.OffsetY, -85f);
+
+            if (Input.GetKeyDown(KeyCode.R) && !_isReload)
+            {
+                //이미 탄창이 max탄창이거나 && 총알이 없을 없을 때 false return
+                InventoryManager.Instance.Consume.Reload();
+            }
         }
     }
     public override void Attack()

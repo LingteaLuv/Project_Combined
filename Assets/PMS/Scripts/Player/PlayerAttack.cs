@@ -87,9 +87,6 @@ public class PlayerAttack : MonoBehaviour
 
     void Update()
     {
-        //테스트 코드
-        RightCurrentWeapon = PlayerWeaponManager.Instance.RightCurrentWeapon;
-        _rifle = RightCurrentWeapon.GetComponent<Rifle>();
         if(Input.GetMouseButtonDown(0))
         {
             TryAttack();

@@ -112,4 +112,9 @@ public abstract class GunWeaponBase : WeaponBase
         return startPos + startVel * time;
     }
     #endregion
+
+    public void UpdateTrajectory()
+    {
+        Vector3 startPos = _firePoint.transform.position;
+    }
 }

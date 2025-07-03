@@ -7,7 +7,7 @@ public abstract class WeaponBase : MonoBehaviour
 {
     // ========== 이벤트 시스템 관련 ==========
     protected bool _canAttack = true; // 공격 가능 상태 저장
-    [SerializeField] private bool _fixedWeapon = false;
+    [SerializeField] protected bool _fixedWeapon = false;
 
     // 컴포넌트가 활성화될 때 이벤트 구독
     protected virtual void OnEnable()
@@ -79,6 +79,7 @@ public abstract class WeaponBase : MonoBehaviour
     //각 무기에서 초기화 시 더필요한 부분 override하고 base.Init()
     public virtual void Init()
     {
+        //fixedWeapon이 false가 아니면 고정된 오브젝트 X
         if (!_fixedWeapon)
         {
             if (_weaponSpawnPos == null)
