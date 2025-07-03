@@ -11,7 +11,7 @@ public class Item
 
     public int CurrentAmmoCount { get; set; }
 
-    public bool IsStackable => Data.Type == ItemType.ETC || Data.Type == ItemType.Throw;
+    public bool IsStackable => Data.Type == ItemType.Etc || Data.Type == ItemType.Throw;
 
     //public HandType handType
     //{
@@ -36,7 +36,7 @@ public class Item
     {
         switch (Data.Type)
         {
-            case ItemType.ETC:
+            case ItemType.Etc:
                 MaxStackSize = (Data as EtcItem).MaxStackSize;
                 break;
             case ItemType.Melee:
