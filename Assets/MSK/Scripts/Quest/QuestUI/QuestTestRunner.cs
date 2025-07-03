@@ -14,7 +14,7 @@ public class QuestTestRunner : MonoBehaviour
 
         // 테스트: 원하는 triggerId로 QuestType 호출
         Debug.Log("테스트 시작! triggerId: " + testTriggerId);
-        QuestManager.Instance.QuestType(testTriggerId);
+        QuestManager.Instance.SetQuestType(testTriggerId);
 
         // 상태 확인 (디버그용)
         foreach (var quest in QuestManager.Instance.QuestDictionary.Values)
