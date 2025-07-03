@@ -14,6 +14,7 @@ public class PlayerNPCInteractor : MonoBehaviour
     private NPCInteractable _interactable = null;
 
     public Action<Transform, Transform> OnInteract;
+    public Action OnInteract2;
     private void OnTriggerEnter(Collider other) //레이어 6 콜라이더랑 만났을 경우 리스트에 추가
     {
         if (other.gameObject.layer == 8)
@@ -83,6 +84,7 @@ public class PlayerNPCInteractor : MonoBehaviour
     {
         if (_interactable == null) return false;
         OnInteract?.Invoke(gameObject.transform.root, _interactable.transform.root);
+        OnInteract2?.Invoke();
         DialogueManager.Instance.SetDialogue(_interactable.Dialogue);
         return true;
     }

@@ -112,15 +112,17 @@ public class InventoryManager : SingletonT<InventoryManager>
     public IEnumerator CheckQuestItem()
     {
         yield return new WaitForEndOfFrame();
+        QuestData completed = null;
         foreach (QuestData q in QuestManager.Instance.AcceptedItemQuestList)
         {
             int.TryParse(q.RequiredItemID, out int reqID);
             if (_craft.CountByID[reqID] >= q.RequiredItemQuantity) //충분히 가지고 있음
             {
                 QuestManager.Instance.CompleteQuest(q.QuestID);
-                QuestManager.Instance.AcceptedItemQuestList.Remove(q);
+                //  QuestManager.Instance.AcceptedItemQuestList.Remove(q);
             }
         }
+        if (completed != null) QuestManager.Instance.AcceptedItemQuestList.Remove(completed);
     }
     public bool RemoveItemByID(int id, int count)
     {

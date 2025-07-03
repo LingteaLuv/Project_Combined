@@ -25,7 +25,8 @@ public class QuestContentControl : MonoBehaviour
         LayoutRebuilder.ForceRebuildLayoutImmediate(transform as RectTransform);
         QuestManager.Instance.OnQuestAccepted += ActiveNode;
         //QuestManager.Instance.OnQuestCompleted += CheckNode;
-        
+        QuestManager.Instance.OnQuestCompleted += CheckNode;
+
     }
     public void ActiveNode(QuestData q, QuestProgress qp)
     {

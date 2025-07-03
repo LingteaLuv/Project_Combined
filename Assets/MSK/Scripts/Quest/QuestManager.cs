@@ -205,7 +205,6 @@ public class QuestManager : Singleton<QuestManager>
         
         return true;
     }
-
     /// <summary>
     /// 퀘스트를 종료(Closed) 상태로 변경하고, 연계 퀘스트가 있다면 해금합니다.
     /// </summary>
@@ -217,17 +216,13 @@ public class QuestManager : Singleton<QuestManager>
             return false;
         if (meta.Status != QuestStatus.Completed)
             return false;
-        if (meta.RewardItemQuantity > InventoryManager.Instance.GetNullSpaceCount()) //추가 작성된 부분
-            return false;
-
+        if (meta.RewardItemQuantity > InventoryManager.Instance.GetNullSpaceCount())
+           return false;
         meta.Status = QuestStatus.Closed;
-
-        int.TryParse(meta.RewardItemID, out int rew); // 추가 작성된 부분
-        InventoryManager.Instance.AddItemByID(rew, meta.RewardItemQuantity); // 추가 작성된 부분
-
-        // NextQuestID가 null/빈문자열이 아니면 다음 퀘스트 해금 시도
-        if (!String.IsNullOrEmpty(meta.NextQuestID) &&
-                                  QuestDictionary.TryGetValue(meta.NextQuestID, out var nextQuest))
+        int.TryParse(meta.RewardItemID, out int rew);
+        InventoryManager.Instance.AddItemByID(rew, meta.RewardItemQuantity);
+        if (!string.IsNullOrEmpty(meta.NextQuestID) &&
+            QuestDictionary.TryGetValue(meta.NextQuestID, out var nextQuest))
         {
             UpdateQuestStates(nextQuest);
         }

@@ -84,7 +84,7 @@ public class NPCDialogue : MonoBehaviour
         {
             if (playerQuest[_endQuest[i]].Status == QuestStatus.Completed)
             {
-                Debug.Log("진입");
+                Debug.Log("완료 진입");
                 CurrentDialogueID = playerQuest[_endQuest[i]].EndDialogueID;
                 return;
                 // todo : 여기서 처리하면 안되고, 실제로 플레이어가 보상을 받고 대화가 끝날 때 호출해야할듯 
@@ -96,7 +96,7 @@ public class NPCDialogue : MonoBehaviour
         {
             if (playerQuest[_startQuest[i]].Status == QuestStatus.Available)
             {
-                Debug.Log("진입");
+                Debug.Log("수주 진입");
                 CurrentDialogueID = playerQuest[_startQuest[i]].StartDialogueID;
                 return;
             }
