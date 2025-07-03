@@ -57,8 +57,8 @@ public class UIManager : SingletonT<UIManager>
         Current = ModalUI.nothing;
         UIGroup.alpha = 0;
         _wait = new WaitForEndOfFrame();
-    }
 
+    }
     public void OffQuickslot()
     {
         if (_quickslot.activeSelf)
@@ -94,9 +94,7 @@ public class UIManager : SingletonT<UIManager>
         IsUIOpened.OnChanged += SetCameraLock;
         IsUIOpened.OnChanged += SetMoveLock;
         IsUIOpened.OnChanged += SetAttackLock;
-        SetCursorLock(IsUIOpened.Value);
-
-
+       
 
         _playerNPCInt.OnInteract2 += _pcc.PauseCamera;
         _playerNPCInt.OnInteract2 += _pm.MoveLock;
@@ -108,7 +106,12 @@ public class UIManager : SingletonT<UIManager>
         DialogueManager.Instance.OffDialogue += _pm.MoveLock;
         DialogueManager.Instance.OffDialogue += UnlockUIUpdate;
         DialogueManager.Instance.OffDialogue += CursorLock;
-        DialogueManager.Instance.OffDialogue += UnlockAttacking;    
+        DialogueManager.Instance.OffDialogue += UnlockAttacking;
+
+        SetCursorLock(IsUIOpened.Value);
+
+
+
     }
 
     private void CursorLock()

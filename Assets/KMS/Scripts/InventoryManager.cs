@@ -119,7 +119,7 @@ public class InventoryManager : SingletonT<InventoryManager>
             if (_craft.CountByID[reqID] >= q.RequiredItemQuantity) //충분히 가지고 있음
             {
                 QuestManager.Instance.CompleteQuest(q.QuestID);
-                //  QuestManager.Instance.AcceptedItemQuestList.Remove(q);
+                //QuestManager.Instance.AcceptedItemQuestList.Remove(q);
             }
         }
         if (completed != null) QuestManager.Instance.AcceptedItemQuestList.Remove(completed);
