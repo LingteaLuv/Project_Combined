@@ -25,7 +25,7 @@ public class SettingUI : MonoBehaviour
     {
         _lightSlider.onValueChanged.AddListener((value) => SettingManager.Instance.SetBrightness(value));
         _fovSlider.onValueChanged.AddListener((value) => SettingManager.Instance.SetFOV(value));
-        _soundSlider.onValueChanged.AddListener((value) => SettingManager.Instance.SetSound(value));
+        //_soundSlider.onValueChanged.AddListener((value) => SettingManager.Instance.SetSound(value));
         _mouseXSlider.onValueChanged.AddListener((value) => SettingManager.Instance.SetMouseXSpeed(value));
         _mouseYSlider.onValueChanged.AddListener((value) => SettingManager.Instance.SetMouseYSpeed(value));
 
@@ -45,7 +45,7 @@ public class SettingUI : MonoBehaviour
     {
         _cacheBrightness = SettingManager.Instance.Brightness.Value;
         _cacheFOV = SettingManager.Instance.FOV.Value;
-        _cacheSound = SettingManager.Instance.Sound.Value;
+        _cacheSound = SettingManager.Instance.BGMSound.Value;
         _cacheMouseXSpeed = SettingManager.Instance.MouseXSpeed.Value;
         _cacheMouseYSpeed = SettingManager.Instance.MouseYSpeed.Value;
     }
@@ -54,7 +54,7 @@ public class SettingUI : MonoBehaviour
     {
         SettingManager.Instance.SetBrightness(_cacheBrightness);
         SettingManager.Instance.SetFOV(_cacheFOV);
-        SettingManager.Instance.SetSound(_cacheSound);
+        //SettingManager.Instance.SetSound(_cacheSound);
         SettingManager.Instance.SetMouseXSpeed(_cacheMouseXSpeed);
         SettingManager.Instance.SetMouseYSpeed(_cacheMouseYSpeed);
 
