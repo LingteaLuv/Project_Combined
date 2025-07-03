@@ -23,8 +23,11 @@ public class MeleeWeapon : WeaponBase
      * Corutine을 활용한 애니메이션 Event 함수 호출도 고려 할만한 상황
      */
 
+    [SerializeField] private bool _isOnField;
+
     public void Awake()
     {
+        if (_isOnField) return;
         Init();
     }
 
