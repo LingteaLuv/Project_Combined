@@ -123,6 +123,8 @@ public class DialogueManager : Singleton<DialogueManager>
         _curNPC.CheckDialogue(QuestManager.Instance.QuestDictionary);
         // 시작 대사 ID를 현재 대사로 설정 
         int startId = _curNPC.CurrentDialogueID;
+
+        List<int> idCache = new List<int>();
         
         // startID를 DialogueDic가 가지는지 확인하고, 해당 Dialogue가 마지막일 때까지
         while (DialogueDic.ContainsKey(startId))
@@ -130,7 +132,7 @@ public class DialogueManager : Singleton<DialogueManager>
             //yield return new WaitWhile(() => Input.GetKey(KeyCode.F));
             
             _npcName.text = NPCDic[DialogueDic[startId].NPCID].Name;
-            
+            idCache.Add(startId);
             // Dialogue 한글자씩 출력, F를 누르면 대사 한 번에 보이도록(스킵) 구현
             yield return ScriptSetting.WriteWords(_scriptScreen, DialogueDic[startId].DialogueText, _delay, () => SkipRequested());
             
@@ -160,9 +162,16 @@ public class DialogueManager : Singleton<DialogueManager>
                 // 플레이어 입력까지 대기(F)
                 yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.F));
             }
-            //TriggerDic[DialogueDic[startId].TriggerID] = true;
+            
         }
         yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.F));
+        foreach (int id in idCache)
+        {
+            if (!String.IsNullOrEmpty(DialogueDic[id].TriggerID))
+            {
+                TriggerDic[DialogueDic[id].TriggerID] = true;
+            }
+        }
         _dialogueCanvas.SetActive(false);
         _dialogueCoroutine = null;
         OffDialogue?.Invoke();
@@ -250,5 +259,4 @@ public class DialogueManager : Singleton<DialogueManager>
     {
         StartCoroutine(PrintOut(dialogueId));
     }
-
 }
