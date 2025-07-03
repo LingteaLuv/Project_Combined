@@ -76,7 +76,7 @@ public class CreateSO : EditorWindow
     private void CreateEtcItemFromCSV()
     {
         if (_etcCsvFile == null) return;
-        string[] lines = _baseCsvFile.text.Split('\n');
+        string[] lines = _etcCsvFile.text.Split('\n');
 
         string folderPath = "Assets/ScriptableObjects/Items";
         if (!AssetDatabase.IsValidFolder(folderPath))
@@ -104,7 +104,10 @@ public class CreateSO : EditorWindow
             etcItem.MaxStackSize = int.Parse(parts[3]);
             etcItem.SoundResource = FileFinder.FindSFXByName(parts[4]);
             etcItem.StrParam = parts[5];
-            etcItem.IntParam = int.Parse(parts[6]);
+            if(int.TryParse(parts[6], out int param))
+            {
+                etcItem.IntParam = param;
+            }
             
             string assetPath = $"{folderPath}/Item_{itemId}_{name}.Asset";
             AssetDatabase.CreateAsset(etcItem, assetPath);
