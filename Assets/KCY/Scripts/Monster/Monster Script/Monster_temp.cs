@@ -14,7 +14,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
     [SerializeField] public float ChaseMoveSpeed; // 달리는 속도 : RunningSpeed
     //[SerializeField] public float NightMoveSpeed;
 
-    [SerializeField] public Collider SoundCol;  //  사운드 디텍트용
+    [SerializeField] public SphereCollider SoundCol;  //  사운드 디텍트용
     [SerializeField] public SphereCollider SightCol; // 시야 디텍트용
     [SerializeField] public Transform SpawnPointLink; // 수정 필요 >> 스폰포인트를 다 벡터로 받았는데 연결이 트랜스폼이다. 바꿔
     public Vector3 SpawnPoint;

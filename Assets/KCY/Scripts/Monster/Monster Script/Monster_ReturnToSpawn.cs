@@ -66,7 +66,7 @@ public class Monster_ReturnToSpawn : MonsterState_temp
             Debug.Log("집이다 집이야");
             Debug.Log($"[도착체크] 거리: {_agent.remainingDistance}, 속도: {_agent.velocity.sqrMagnitude}");
             monster.TempPoint = Vector3.zero; // 초기화 시켜주기
-            monster._monsterMerchine.ChangeState(monster._monsterMerchine.StateDic[Estate.Patrol]);
+            monster._monsterMerchine.ChangeState(monster._monsterMerchine.StateDic[Estate.Idle]);
         }
     }
 
