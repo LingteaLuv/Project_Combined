@@ -15,7 +15,8 @@ public class NPCCamera : MonoBehaviour
 
     private void Start()
     {
-        _pi.OnInteract += CalculatePos;   
+        _pi.OnInteract += CalculatePos;
+        DialogueManager.Instance.OffDialogue += disableCamera;
     }
 
     private void disableCamera()
