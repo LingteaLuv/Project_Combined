@@ -5,18 +5,20 @@ using UnityEngine.AI;
 public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
 {
     [Header("Elements")]
-    [SerializeField] public NavMeshAgent MonsterAgent; // 몬수터 어젠트 ,  추적용
-    [SerializeField] public Transform TargetPosition; // 플레이어 확인을 위한 포지션인데 굳이 퍼블릭으로 안해도 될 것 같다. 혹시 모르니까
-    [SerializeField] public LayerMask PlayerLayerMask;
-    [SerializeField] public LayerMask SoundLayerMask;
-    [SerializeField] public LayerMask BuildingLayerMask;
-    [SerializeField] public float MoveSpeed; //  기본속도 : WalkSpeed
-    [SerializeField] public float ChaseMoveSpeed; // 달리는 속도 : RunningSpeed
+     [SerializeField] private MonsterInfo _info;
+    public MonsterInfo Info => _info;
+    public NavMeshAgent MonsterAgent; // 몬수터 어젠트 ,  추적용
+     public Transform TargetPosition; // 플레이어 확인을 위한 포지션인데 굳이 퍼블릭으로 안해도 될 것 같다. 혹시 모르니까
+     public LayerMask PlayerLayerMask;
+     public LayerMask SoundLayerMask;
+     public LayerMask BuildingLayerMask;
+    public float MoveSpeed => _info.MoveSpeed; //  기본속도 : WalkSpeed
+     public float ChaseMoveSpeed => _info.ChaseMoveSpeed; // 달리는 속도 : RunningSpeed
     //[SerializeField] public float NightMoveSpeed;
 
-    [SerializeField] public SphereCollider SoundCol;  //  사운드 디텍트용
-    [SerializeField] public SphereCollider SightCol; // 시야 디텍트용
-    [SerializeField] public Transform SpawnPointLink; // 수정 필요 >> 스폰포인트를 다 벡터로 받았는데 연결이 트랜스폼이다. 바꿔
+    public SphereCollider SoundCol;  //  사운드 디텍트용
+    public SphereCollider SightCol; // 시야 디텍트용
+    public Transform SpawnPointLink; // 수정 필요 >> 스폰포인트를 다 벡터로 받았는데 연결이 트랜스폼이다. 바꿔
     public Vector3 SpawnPoint;
     public Vector3 TempPoint;
     public Vector3 BasePoint;
@@ -24,8 +26,8 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
     // 필요한 레이어는 3개(현재) : 플레이어, 사운드 아이템, 건물 
 
     [Header("status")]
-    [SerializeField] public int MaxHp = 10;
-    [SerializeField] public float AtkRange = 1.5f;
+    public float MaxHp = 10f;
+    public float AtkRange => _info.AtkRange;
     public bool _isDead = false;
     public IAttackable target;  // 몬스터, 캐릭터 (데미지 계산 위함)
     public Animator Ani;
@@ -34,9 +36,11 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
     public GameObject MonObject;
     public MonsterHandDetector HandDetector; //  손 감지기 연결용
 
-    public float SightRange; // 시야 거리
-    public float SightAngle = 75f;// 시야각
+    public float SightRange => _info.SightRange; // 시야 거리
+    public float SightAngle => _info.SightAngle;// 시야각
     public bool IsSightDetecting = false;
+
+    public float HearingRange => _info.HearingRange;
 
     // 감지 우선순위 시간
     private float sightDetectTime = 0f;
@@ -58,6 +62,23 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
     private float _detectDur = 3f;
     private int _wallHitCount = 0;
     private int _wallLimitedCount = 5;
+
+    // 임시
+    /*
+     * public int EnemyID => _info.EnemyID;
+     * public string Name => _info.Name;
+     * public string AtkType => _info.AtkType;
+     * public float AtkSpeed => _info.AtkSpeed;
+     * public float CastTime => _info.CastTime;
+     * public float RecoveryFrame => _info.RecoveryFrame;
+     * public float NightMoveSpeed => _info.NIghtMoveSpeed;
+     * public string EnemyLootId => _info.EnemyLootId;
+     * public string EnemyLootGridChanceID => _info.EnemyLootGridChanceID;
+     * 
+     *
+     * deactovatearing <<<< 안쓰게 될 것 같습니다
+     * 
+     */
 
 
     private void Awake()
@@ -81,7 +102,23 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
 
         if (SightCol != null)
         {
-            SightRange = SightCol.radius;
+            // 주석처리 되었지만 해당 부분은 활성화가 필요합니다. >> 몬스터 감지 시스템//
+            //*******************************************************************
+            //*******************************************************************
+            //*******************************************************************
+            //*******************************************************************
+            //*******************************************************************
+
+            //SightRange = SightCol.radius;
+            //HearingRange = HearingCol.radius;
+
+            //*******************************************************************
+            //*******************************************************************
+            //*******************************************************************
+            //*******************************************************************
+            //*******************************************************************
+            //*******************************************************************
+
         }
         else
         {
