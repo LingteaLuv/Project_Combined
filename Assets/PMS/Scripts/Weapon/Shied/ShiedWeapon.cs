@@ -15,7 +15,7 @@ public class ShiedWeapon : WeaponBase, IDefendable
 
     private void Reset()
     {
-        _itemType = ItemType.Shield;
+        ItemType = ItemType.Shield;
     }
     public void Awake()
     {

@@ -6,7 +6,7 @@ using UnityEngine;
 public abstract class GunWeaponBase : WeaponBase
 {
     [SerializeField] protected GunItem _gunData; //건 데이터
-    //불릿 프리팹
+    //사용 할 불릿 프리팹
     //추후 프리팹 매니저 관리
     [SerializeField] protected GameObject _bulletPrefab;
     //총 본체 관련 변수
@@ -49,7 +49,7 @@ public abstract class GunWeaponBase : WeaponBase
 
     private void Reset()
     {
-        _itemType = ItemType.Gun; 
+        ItemType = ItemType.Gun; 
     }
 
     //무기마다 Init()해줘야 되는 사항.
