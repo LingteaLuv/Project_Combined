@@ -62,7 +62,7 @@ public class InventoryRenderer : MonoBehaviour
     {
         _model.HoldSlotItemImage.enabled = true;
         _model.HoldSlotItemImage.sprite = _model.InvSlotItemImages[index].sprite;
-        if (_model.InvItems[index].Data.Type == ItemType.ETC)
+        if (_model.InvItems[index].Data.Type == ItemType.Etc)
         {
             _model.HoldSlotItemAmountText.enabled = true;
             _model.HoldSlotItemAmountText.text = _model.InvItems[index].StackCount.ToString();

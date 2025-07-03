@@ -53,7 +53,7 @@ public class InventoryController : MonoBehaviour
     {
         bool[] flags = new bool[18]; //false 인 경우에만 들어갈 수 있음
 
-        if (item.Type == ItemType.ETC || item.Type == ItemType.Material || item.Type == ItemType.Quest)
+        if (item.Type == ItemType.Etc || item.Type == ItemType.Material || item.Type == ItemType.Quest)
         {
             flags[0] = true;
             flags[1] = true;
@@ -99,14 +99,14 @@ public class InventoryController : MonoBehaviour
     public void UseETCItemButton(int index)
     {
         Item exist = _model.InvItems[index];
-        if (exist.Data.Type != ItemType.ETC) return; // 이후 장비아이템에 대한 equipbutton실행될듯
+        if (exist.Data.Type != ItemType.Etc) return; // 이후 장비아이템에 대한 equipbutton실행될듯
         _useEtc.UseETCItem(_model.InvItems[index].Data.ItemID);
     }
     
     public void EquipButton(int index) //해당 인벤토리 칸 아이템(선택된)을 장착시도
     {
         Item exist = _model.InvItems[index];
-        if (exist.Data.Type == ItemType.ETC || exist.Data.Type == ItemType.Material) return;
+        if (exist.Data.Type == ItemType.Etc || exist.Data.Type == ItemType.Material) return;
         if (EquippedSlotIndex[0] == -1 && EquippedSlotIndex[1] == -1) // 선택된게 아예없다면 (이 상황은 없음)
         {
             for (int i= 0; i < 6; i++) // 빈 칸 추척
