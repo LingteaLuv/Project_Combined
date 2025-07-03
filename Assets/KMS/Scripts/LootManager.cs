@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LootManager : SingletonT<LootManager>
+public class LootManager : Singleton<LootManager>
 {
 
     [SerializeField] private GameObject _f;
@@ -25,10 +25,12 @@ public class LootManager : SingletonT<LootManager>
     private Slider[] _itemDurSliders;
 
     private Lootable _lootable = null;
-    private void Awake()
+
+    protected override bool ShouldDontDestroy => false;
+    protected override void Awake()
     {
-        SetInstance();
-        
+        base.Awake();
+
         Init();
 
     }

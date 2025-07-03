@@ -8,7 +8,7 @@ public class EtcItem : ItemBase
 {
     public string EtcType;
     public int MaxStackSize;
-    public string SoundResource;
+    public AudioClip SoundResource;
     public string StrParam;
     public int IntParam;
 }
