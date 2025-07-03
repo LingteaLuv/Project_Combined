@@ -109,7 +109,7 @@ public class InventoryManager : SingletonT<InventoryManager>
         return false;
     }
 
-    private IEnumerator CheckQuestItem()
+    public IEnumerator CheckQuestItem()
     {
         yield return new WaitForEndOfFrame();
         foreach (QuestData q in QuestManager.Instance.AcceptedItemQuestList)
@@ -163,18 +163,10 @@ public class InventoryManager : SingletonT<InventoryManager>
         foreach (int q in _craft._itemDictionary.ItemDic.Keys)
         {
             _itemlist.Add(q);
-            Debug.Log(q);
         }
     }
     private void Update()
     {
-
-        if (Input.GetKeyDown(KeyCode.Z)) AddItemByID(1101, 1);
-        if (Input.GetKeyDown(KeyCode.X)) AddItemByID(1102, 1);
-        if (Input.GetKeyDown(KeyCode.C)) AddItemByID(1201, 1);
-        if (Input.GetKeyDown(KeyCode.V)) AddItemByID(1301, 1);
-        if (Input.GetKeyDown(KeyCode.B)) AddItemByID(1401, 1);
-        if (Input.GetKeyDown(KeyCode.N)) AddItemByID(1402, 1);
         if (!UISceneLoader.Instance.Playerattack.IsAttacking)
         {
             if (Input.GetKeyDown(KeyCode.Alpha1)) Controller.Equip(0);
@@ -189,11 +181,21 @@ public class InventoryManager : SingletonT<InventoryManager>
         if (Input.GetKeyDown(KeyCode.O)) DecreaseShieldDurability();
         HoldSlot.transform.position = Input.mousePosition;
 
-        if (Input.GetKeyDown(KeyCode.Delete))
+        if (Input.GetKeyDown(KeyCode.PageUp))
         {
-            AddItemByID(_itemlist[num], 1);
             num++;
             if (num == _itemlist.Count) num = 0;
+            Debug.Log(_itemlist[num]);
+        }
+        if (Input.GetKeyDown(KeyCode.PageDown))
+        {
+            num--;
+            if (num == -1) num = _itemlist.Count - 1;
+            Debug.Log(_itemlist[num]);
+        }
+        if (Input.GetKeyDown(KeyCode.Home))
+        {
+            AddItemByID(_itemlist[num], 1);
         }
     }
     /// <summary>

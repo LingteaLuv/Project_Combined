@@ -152,6 +152,7 @@ public class LootManager : SingletonT<LootManager>
             {
                 AfterLooting();
             }
+            StartCoroutine(InventoryManager.Instance.CheckQuestItem());
         }
     }
 

@@ -26,6 +26,8 @@ public class DialogueManager : Singleton<DialogueManager>
     private TMP_Text Button2Text;
     private TMP_Text Button3Text;
 
+    public event Action OffDialogue;
+
     //  버튼 입력 전까지 대기상태
     private int _selectedNextId = -1;
     [SerializeField] private TextMeshProUGUI _npcName;
@@ -37,7 +39,7 @@ public class DialogueManager : Singleton<DialogueManager>
     public Dictionary<int, DialogueSO> DialogueDic { get; private set; }
     public Dictionary<string, DialogueChoiceSO> ChoiceDic { get; private set; }
 
-    public Dictionary<string, Property<bool>> TriggerDic { get; private set; }
+    public Dictionary<string, bool> TriggerDic { get; private set; }
     public Dictionary<string, NPCSO> NPCDic { get; private set; }
     
     private void Awake()
@@ -50,7 +52,7 @@ public class DialogueManager : Singleton<DialogueManager>
     {
         DialogueDic = new Dictionary<int, DialogueSO>();
         NPCDic = new Dictionary<string, NPCSO>();
-        TriggerDic = new Dictionary<string, Property<bool>>();
+        TriggerDic = new Dictionary<string, bool>();
         for (int i = 0; i < _dialogues.Count; i++)
         {
             DialogueDic.Add(_dialogues[i].DialogueID, _dialogues[i]);
@@ -64,8 +66,7 @@ public class DialogueManager : Singleton<DialogueManager>
         {
             if (!TriggerDic.ContainsKey(_dialogues[i].TriggerID))
             {
-                Property<bool> temp = new Property<bool>(false);
-                TriggerDic.Add(_dialogues[i].TriggerID, temp);
+                TriggerDic.Add(_dialogues[i].TriggerID, false);
             }
         }
         
@@ -129,10 +130,9 @@ public class DialogueManager : Singleton<DialogueManager>
             
             _npcName.text = NPCDic[DialogueDic[startId].NPCID].Name;
             
-            TriggerDic[DialogueDic[startId].TriggerID].Value = true;
             // Dialogue 한글자씩 출력, F를 누르면 대사 한 번에 보이도록(스킵) 구현
             yield return ScriptSetting.WriteWords(_scriptScreen, DialogueDic[startId].DialogueText, _delay, () => SkipRequested());
-           
+            
             if (DialogueDic[startId].TriggerID != null)
                 QuestManager.Instance.SetQuestType(DialogueDic[startId].TriggerID);
             
@@ -159,10 +159,12 @@ public class DialogueManager : Singleton<DialogueManager>
                 // 플레이어 입력까지 대기(F)
                 yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.F));
             }
+            // TriggerDic[DialogueDic[startId].TriggerID] = true;
         }
         yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.F));
         _dialogueCanvas.SetActive(false);
         _dialogueCoroutine = null;
+        OffDialogue?.Invoke();
     }
 
     private bool SkipRequested()
