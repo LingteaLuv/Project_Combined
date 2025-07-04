@@ -208,7 +208,6 @@ public class QuestManager : Singleton<QuestManager>
         
         return true;
     }
-
     /// <summary>
     /// 퀘스트를 종료(Closed) 상태로 변경하고, 연계 퀘스트가 있다면 해금합니다.
     /// </summary>

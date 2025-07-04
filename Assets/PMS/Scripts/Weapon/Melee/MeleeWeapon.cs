@@ -38,9 +38,6 @@ public class MeleeWeapon : WeaponBase
     /// </summary>
     protected override void ExecuteAttack() 
     {
-        //현재 무기 내구도 감소
-        //InventoryManager.Instance.DecreaseWeaponDurability();
-
         // 무기에 달려있는 _attack를 중심으로 범위를 설정하고 타겟레이어와 충돌검사
         Collider[] colliders = Physics.OverlapSphere(_attackPointPos.position, _attackRange, _targetLayer);
         // 가장 가까운 타겟을 찾기 위한 변수 초기화

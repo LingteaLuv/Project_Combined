@@ -9,6 +9,5 @@ public enum DayTime
     Day = 1,        //  낮
     Night = 2,      //  밤
     MidNight = 3,   //  심야
-
 }
 
