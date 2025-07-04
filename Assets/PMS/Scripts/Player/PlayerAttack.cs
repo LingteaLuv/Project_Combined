@@ -257,8 +257,6 @@ public class PlayerAttack : MonoBehaviour
 
     public void StartAim()
     {
-        if (_rifle == null) Debug.Log("안녕하세요");
-
         if (_rifle == null) return;
         
         _rifle.StartAim();

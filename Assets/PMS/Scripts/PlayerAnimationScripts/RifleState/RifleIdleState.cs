@@ -23,7 +23,6 @@ public class RifleIdleState : StateMachineBehaviour
     {
         if (Input.GetMouseButtonDown(1) && flag)
         {
-            Debug.Log("안녕하세요 토글에임모드온");
             _playerAttack.ToggleAimMode();
             animator.SetBool("IsAim", true);
             _playerAttack.IsAttacking = true;
