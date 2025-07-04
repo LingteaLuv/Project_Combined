@@ -9,6 +9,11 @@ public class EquipAnimationBehaviour : StateMachineBehaviour
     {
         animator.SetLayerWeight(layerIndex, 1f);
         animator.SetLayerWeight(animator.GetLayerIndex("Upper Layer"), 0f);
+        animator.SetTrigger("IsWeaponChange");
+        if (animator.GetBool("IsGun"))
+        {
+            animator.SetBool("IsGun", false);
+        }
     }
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {

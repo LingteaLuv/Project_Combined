@@ -88,12 +88,13 @@ public class PlayerAttack : MonoBehaviour
     {
         if (weapon.ItemType == ItemType.Gun)
         {
+            _animator.SetTrigger("IsWeaponChange");
             _animator.SetBool("IsGun",true);
             _rifle = weapon.GetComponent<Rifle>();
         }
         else
         {
-            _animator.SetTrigger("IsNoGun");
+            _animator.SetTrigger("IsWeaponChange");
             _rifle = null;
         }
     }

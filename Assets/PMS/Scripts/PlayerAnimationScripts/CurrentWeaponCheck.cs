@@ -20,6 +20,7 @@ public class CurrentWeaponCheck : StateMachineBehaviour
         {
             if (_currentWeapon.ItemType == ItemType.Gun)
             {
+                animator.SetLayerWeight(1, 1.0f);
                 animator.SetBool("IsGun", true);
             }
         }

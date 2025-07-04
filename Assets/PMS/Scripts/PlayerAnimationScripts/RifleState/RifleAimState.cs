@@ -21,7 +21,7 @@ public class RifleAimState : StateMachineBehaviour
             m_SkinnedMeshRenderer = animator.gameObject.transform.GetComponentInChildren<SkinnedMeshRenderer>();
             _prevColor = m_SkinnedMeshRenderer.material.color;
         }
-        m_SkinnedMeshRenderer.material.color = new Color(_prevColor.r, _prevColor.g, _prevColor.b, _alpha);
+        //m_SkinnedMeshRenderer.material.color = new Color(_prevColor.r, _prevColor.g, _prevColor.b, _alpha);
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -49,6 +49,6 @@ public class RifleAimState : StateMachineBehaviour
         {
             _playerAttack._rifle.isAiming = false;
         }
-        m_SkinnedMeshRenderer.material.color = new Color(_prevColor.r, _prevColor.g, _prevColor.b, _prevColor.a);
+        //m_SkinnedMeshRenderer.material.color = new Color(_prevColor.r, _prevColor.g, _prevColor.b, _prevColor.a);
     }
 }

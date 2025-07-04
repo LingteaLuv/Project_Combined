@@ -11,7 +11,6 @@ public class RifleIdleState : StateMachineBehaviour
     //만약 playerAttack이 null이면 GetComponent로 들고오자.
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        animator.SetLayerWeight(layerIndex, 1f);
         if (_playerAttack == null)
         {
             _playerAttack = animator.gameObject.GetComponent<PlayerAttack>();
@@ -27,6 +26,7 @@ public class RifleIdleState : StateMachineBehaviour
             Debug.Log("안녕하세요 토글에임모드온");
             _playerAttack.ToggleAimMode();
             animator.SetBool("IsAim", true);
+            _playerAttack.IsAttacking = true;
             flag = false;
         }
     }
@@ -34,7 +34,6 @@ public class RifleIdleState : StateMachineBehaviour
     //조준상태 일때 부터는 IsAttacking이 true라서 다른 행동 제약을 줄 수 있음(ex)장비 장착 해제)
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        _playerAttack.IsAttacking = true;
         flag = true;
     }
 }
