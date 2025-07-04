@@ -5,7 +5,7 @@ using UnityEngine;
 public class Rifle : GunWeaponBase 
 {   
     public PlayerCameraController _cameraController;
-
+    
     [SerializeField][Range(-360, 360)] public float _correction;
     [SerializeField] public Animator _animator;
     public bool isAiming = false;
@@ -19,10 +19,15 @@ public class Rifle : GunWeaponBase
     public override void Init()
     {
        base.Init();
+       if(transform.root != this)
+        {
+            _cameraController = transform.root.GetComponent<PlayerCameraController>();
+        }
     }
 
     private void Update()
     {
+        transform.localRotation = Quaternion.Euler(0f, _correction - _cameraController.OffsetY, -85f);
         if (!_fixedWeapon)
         {
             transform.localRotation = Quaternion.Euler(0f, _correction - _cameraController.OffsetY, -85f);
