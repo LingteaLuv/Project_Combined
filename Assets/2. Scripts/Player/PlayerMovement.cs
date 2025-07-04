@@ -241,7 +241,9 @@ public class PlayerMovement : MonoBehaviour
     // 점프 애니메이션이 끝났는지 체크 
     public bool IsJumpAnimationPlaying()
     {
-        return Controller._animator.GetCurrentAnimatorStateInfo(0).IsName("Jump");
+        bool isPlaying = Controller._animator.GetCurrentAnimatorStateInfo(0).IsName("Jump");
+        Debug.Log($"[IsJumpAnimationPlaying] IsPlaying: {isPlaying}, Time: {Time.time}");
+        return isPlaying;
     }
 
     //  소음 콜라이더
