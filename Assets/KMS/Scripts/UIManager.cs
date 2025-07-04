@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Runtime.ConstrainedExecution;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public enum ModalUI
@@ -22,6 +23,9 @@ public class UIManager : Singleton<UIManager>
     [SerializeField] public GameObject CraftUI;
     [SerializeField] public GameObject QuestLogUI;
     [SerializeField] public GameObject MapUI;
+
+
+    [SerializeField] public GameObject QuestCont;
 
     [SerializeField] public CanvasGroup UIGroup;
 
@@ -243,6 +247,7 @@ public class UIManager : Singleton<UIManager>
         else if (Current == ModalUI.quest)
         {
             QuestLogUI.SetActive(true);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(QuestCont.transform as RectTransform);
             SetUIPos(_questRect, 600, 150);
         }
         else if (Current == ModalUI.map)
