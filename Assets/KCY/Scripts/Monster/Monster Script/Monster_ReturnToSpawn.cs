@@ -77,6 +77,11 @@ public class Monster_ReturnToSpawn : MonsterState_temp
         {
             _agent.ResetPath();
         }
+        if (monster.Ani != null)
+        {
+            monster.Ani.SetBool("isPatrol", false);
+        }
+
     }
 
 

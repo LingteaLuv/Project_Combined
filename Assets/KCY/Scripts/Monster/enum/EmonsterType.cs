@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Emonster
+public enum EmonsterType
 {
-    MonsterA, MonsterB,  MonsterC, MonsterD 
+    NormalZombie,
+    HeavyZombie,
+    RangeZombie
 }

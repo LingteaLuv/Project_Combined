@@ -145,15 +145,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8766442055171624130, guid: 91f38073269b1de4c8d608b2691b3bbb, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 22.25
+      value: 3.631
       objectReference: {fileID: 0}
     - target: {fileID: 8766442055171624130, guid: 91f38073269b1de4c8d608b2691b3bbb, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1
+      value: 0.777
       objectReference: {fileID: 0}
     - target: {fileID: 8766442055171624130, guid: 91f38073269b1de4c8d608b2691b3bbb, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -14.37
+      value: -17.462
       objectReference: {fileID: 0}
     - target: {fileID: 8766442055171624130, guid: 91f38073269b1de4c8d608b2691b3bbb, type: 3}
       propertyPath: m_LocalRotation.w
@@ -534,7 +534,7 @@ Transform:
   m_GameObject: {fileID: 423154714}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -30.66, y: 0.89, z: -2.38}
+  m_LocalPosition: {x: 2.07, y: 0.89, z: -18.58}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1333,7 +1333,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4507433646410060, guid: b87cb604b959698428935c5d56bd97c0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 1.47
       objectReference: {fileID: 0}
     - target: {fileID: 4507433646410060, guid: b87cb604b959698428935c5d56bd97c0, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1341,7 +1341,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4507433646410060, guid: b87cb604b959698428935c5d56bd97c0, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 6.74
       objectReference: {fileID: 0}
     - target: {fileID: 4507433646410060, guid: b87cb604b959698428935c5d56bd97c0, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1686,6 +1686,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec1cb0d0eb497d74295414c0bca81d1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _info: {fileID: 11400000, guid: 7efcb36bb75203f41905ac87787e3796, type: 2}
   MonsterAgent: {fileID: 7381180006612609440}
   TargetPosition: {fileID: 0}
   PlayerLayerMask:
@@ -1697,24 +1698,21 @@ MonoBehaviour:
   BuildingLayerMask:
     serializedVersion: 2
     m_Bits: 16777216
-  MoveSpeed: 0.6
-  ChaseMoveSpeed: 1.5
-  SoundCol: {fileID: 3422553416437094037}
+  HearingCol: {fileID: 3422553416437094037}
   SightCol: {fileID: 5919962289438962609}
   SpawnPointLink: {fileID: 513242446869013359}
   SpawnPoint: {x: 0, y: 0, z: 0}
   TempPoint: {x: 0, y: 0, z: 0}
   BasePoint: {x: 0, y: 0, z: 0}
   MaxHp: 10
-  AtkRange: 1.5
   _isDead: 0
   Ani: {fileID: 1654891538}
   Rigid: {fileID: 6135200296075508791}
   MonObject: {fileID: 1654891533}
   HandDetector: {fileID: 0}
   SightRange: 0
-  SightAngle: 75
   IsSightDetecting: 0
+  HearingRange: 0
   IsDetecting: 0
   IsEventActive: 1
 --- !u!1660057539 &9223372036854775807

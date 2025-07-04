@@ -1,23 +1,25 @@
-using System.Threading;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
 {
     [Header("Elements")]
-     [SerializeField] private MonsterInfo _info;
+    [SerializeField] private MonsterInfo _info;
     public MonsterInfo Info => _info;
     public NavMeshAgent MonsterAgent; // 몬수터 어젠트 ,  추적용
-     public Transform TargetPosition; // 플레이어 확인을 위한 포지션인데 굳이 퍼블릭으로 안해도 될 것 같다. 혹시 모르니까
-     public LayerMask PlayerLayerMask;
-     public LayerMask SoundLayerMask;
-     public LayerMask BuildingLayerMask;
+    public Transform TargetPosition; // 플레이어 확인을 위한 포지션인데 굳이 퍼블릭으로 안해도 될 것 같다. 혹시 모르니까
+    public LayerMask PlayerLayerMask;
+    public LayerMask SoundLayerMask;
+    public LayerMask BuildingLayerMask;
     public float MoveSpeed => _info.MoveSpeed; //  기본속도 : WalkSpeed
-     public float ChaseMoveSpeed => _info.ChaseMoveSpeed; // 달리는 속도 : RunningSpeed
+    public float ChaseMoveSpeed => _info.ChaseMoveSpeed; // 달리는 속도 : RunningSpeed
     //[SerializeField] public float NightMoveSpeed;
 
-    public SphereCollider SoundCol;  //  사운드 디텍트용
+    public SphereCollider HearingCol;  //  사운드 디텍트용
     public SphereCollider SightCol; // 시야 디텍트용
+
+   
+
     public Transform SpawnPointLink; // 수정 필요 >> 스폰포인트를 다 벡터로 받았는데 연결이 트랜스폼이다. 바꿔
     public Vector3 SpawnPoint;
     public Vector3 TempPoint;
@@ -26,21 +28,23 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
     // 필요한 레이어는 3개(현재) : 플레이어, 사운드 아이템, 건물 
 
     [Header("status")]
-    public float MaxHp = 10f;
+    public Animator Ani;
+    public float MaxHp => _info.MaxHP;
     public float AtkRange => _info.AtkRange;
     public bool _isDead = false;
     public IAttackable target;  // 몬스터, 캐릭터 (데미지 계산 위함)
-    public Animator Ani;
+   
     public Rigidbody Rigid;
     public MonsterStateMachine_temp _monsterMerchine;
     public GameObject MonObject;
     public MonsterHandDetector HandDetector; //  손 감지기 연결용
 
-    public float SightRange => _info.SightRange; // 시야 거리
+    public float SightRange => _info.SightRange; // 시야 거리 _ 이걸 콜라로이드로 제어하기 때문에 어떻게 할 수 없음
     public float SightAngle => _info.SightAngle;// 시야각
     public bool IsSightDetecting = false;
 
-    public float HearingRange => _info.HearingRange;
+    public float HearingRange => _info.HearingRange; // 청각 범위 _ 이걸 콜라로이드로 제어하기 때문에 어떻게 할 수 없음.
+
 
     // 감지 우선순위 시간
     private float sightDetectTime = 0f;
@@ -63,26 +67,52 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
     private int _wallHitCount = 0;
     private int _wallLimitedCount = 5;
 
-    // 임시
-    /*
-     * public int EnemyID => _info.EnemyID;
-     * public string Name => _info.Name;
-     * public string AtkType => _info.AtkType;
-     * public float AtkSpeed => _info.AtkSpeed;
-     * public float CastTime => _info.CastTime;
-     * public float RecoveryFrame => _info.RecoveryFrame;
-     * public float NightMoveSpeed => _info.NIghtMoveSpeed;
-     * public string EnemyLootId => _info.EnemyLootId;
-     * public string EnemyLootGridChanceID => _info.EnemyLootGridChanceID;
-     * 
-     *
-     * deactovatearing <<<< 안쓰게 될 것 같습니다
-     * 
-     */
+
+    public float NightChaseMoveSpeed => _info.NightChaseMoveSpeed;
+    public int EnemyID => _info.EnemyID;
+    public string Name => _info.Name;
+    public string AtkType => _info.AtkType;
+    public float AtkSpeed => _info.AtkSpeed;
+    public float NightMoveSpeed => _info.NightMoveSpeed;
+    public string EnemyLootId => _info.EnemyLootID;
+    public string EnemyLootGridChanceID => _info.EnemyLootGridChanceID;
+    public string IdleSfx1 => _info.IdleSfx1;
+    public string IdleSfx2 => _info.IdleSfx2;
+    public string IdleSfxRange => _info.IdleSfxRange; 
+    public string AtkSfx => _info.AtkSfx; 
+    public string HitSfx => _info.HitSfx; 
+    public string DieSfx => _info.DieSfx;
+    public string ChaseSfx1 => _info.ChaseSfx1;
+    public string ChaseSfx2 => _info.ChaseSfx2;
+
+
+
+
+
+    public float CoolDown;
+
+    public float AtkCoolDown => _info.AtkCoolDown;
+    public float NightAtkCoolDownRate => _info.NightAtkCoolDown;
+
+    private void OnTimeOfDayChanged(DayTime timeOfDay)
+    {
+
+        if (timeOfDay == DayTime.Night || timeOfDay == DayTime.MidNight)
+        {
+            CoolDown = AtkCoolDown / NightAtkCoolDownRate;
+            Debug.Log($"[쿨다운 변경] 시간대: {timeOfDay} → NightRate 적용됨, 최종 쿨다운: {CoolDown:F2}");
+        }
+        else
+        {
+            CoolDown = AtkCoolDown;
+            Debug.Log($"[쿨다운 변경] 시간대: {timeOfDay} → 기본 쿨다운 유지: {CoolDown:F2}");
+        }
+    }
 
 
     private void Awake()
     {
+
         PlayerLayerMask = LayerMask.GetMask("Player");
         Ani = GetComponentInChildren<Animator>();
         HandDetector = GetComponentInChildren<MonsterHandDetector>();
@@ -102,28 +132,17 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
 
         if (SightCol != null)
         {
-            // 주석처리 되었지만 해당 부분은 활성화가 필요합니다. >> 몬스터 감지 시스템//
-            //*******************************************************************
-            //*******************************************************************
-            //*******************************************************************
-            //*******************************************************************
-            //*******************************************************************
-
-            //SightRange = SightCol.radius;
-            //HearingRange = HearingCol.radius;
-
-            //*******************************************************************
-            //*******************************************************************
-            //*******************************************************************
-            //*******************************************************************
-            //*******************************************************************
-            //*******************************************************************
-
+            SightCol.radius = SightRange;
+            HearingCol.radius = HearingRange;
         }
         else
         {
             Debug.LogError(" SightCol이 할당되지 않았습니다. Monster_temp에 연결하세요!");
         }
+
+        TimeManager1.Instance.CurrentTimeOfDay.OnChanged += OnTimeOfDayChanged;
+        OnTimeOfDayChanged(TimeManager1.Instance.CurrentTimeOfDay.Value);
+
 
     }
 
@@ -132,6 +151,8 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
         Debug.Log($" Update /// 객체 이름: {this.name}, _canDetect = {_canDetect}, 쿨타임 = {_detectCoolTime}");
 
         Debug.Log($"[Patrol] 시야 감지 여부: {IsSightDetecting}");
+   
+
         if (IsSightDetecting)
         {
             sightDetectTime += Time.deltaTime;
@@ -285,6 +306,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
                 Debug.Log($"벽 충돌 {_wallHitCount}회 / 제한 {_wallLimitedCount}회 (충돌 오브젝트: {hit.collider.name})");
 
 
+                Debug.Log($"좀 나와라 ㅇㅁㄴ어롬ㄴ아ㅓ로미ㅏㄴ어로마ㅣㄴ어로미나어로머ㅏㅣㄴㅇ로{_wallHitCount}");
 
                 if (_wallHitCount >= _wallLimitedCount)
                 {

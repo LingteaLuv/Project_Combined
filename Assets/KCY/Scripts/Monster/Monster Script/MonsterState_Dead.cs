@@ -28,7 +28,10 @@ public class Monster_Dead : MonsterState_temp
         // 죽으면 멈춰서 애니 실행
         _agent.velocity = Vector3.zero;
         _agent.isStopped = true;
-        _ani.SetTrigger("Dead"); 
+        _ani.SetTrigger("Dead");
+        monster.SightCol.enabled = false;
+        monster.HearingCol.enabled = false;
+        _agent.enabled = false;
 
         //Object.Destroy(_obj,15f);      몬스터 소멸을 원하시는 경우에만 쓰고 아니면 해당 코드는 지우기
     }
