@@ -37,7 +37,6 @@ public class PlayerFallState : PlayerState
             _currentY = _movement.transform.position.y;
             float fallDistance = _lastYPos - _currentY;
             _movement.Property.ApplyFallDamage(fallDistance);
-            _fsm.ChangeState(_movement.Controller.HitState);
         }
 
         // 상태 전이 ,Hit 중이면 전이 막기
