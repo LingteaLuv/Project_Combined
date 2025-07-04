@@ -11,7 +11,7 @@ public class GunItem : ItemBase
     public float Range;
     public int AmmoID;
     public int AmmoCapacity;
-    public string ShotSoundResource;
-    public string ReloadSoundResource;
+    public AudioClip ShotSoundResource;
+    public AudioClip ReloadSoundResource;
     public float NoiseLevel;
 }

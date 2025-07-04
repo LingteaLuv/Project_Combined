@@ -4,19 +4,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class UISceneLoader : SingletonT<UISceneLoader>
+public class UISceneLoader : Singleton<UISceneLoader>
 {
     [SerializeField] public PlayerAttack Playerattack;
-    private void Awake()
+
+    protected override bool ShouldDontDestroy => false;
+    protected override void Awake()
     {
+        base.Awake();
         SceneManager.LoadScene("Demo_City_Universal_RenderPipeline", LoadSceneMode.Additive);
-        SetInstance();
+        
         SceneManager.LoadSceneAsync("UIScene", LoadSceneMode.Additive);
         //StartCoroutine(DStart());
-    }
-    private void Start()
-    {
-        
     }
     IEnumerator DStart()
     {

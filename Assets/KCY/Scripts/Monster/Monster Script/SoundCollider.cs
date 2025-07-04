@@ -24,6 +24,7 @@ public class SoundCollider : MonoBehaviour
         if (((1 << other.gameObject.layer) & _monster.PlayerLayerMask) != 0 ||
             ((1 << other.gameObject.layer) & _monster.SoundLayerMask) != 0)
         {
+            _monster.SoundDetectPlayer(other);
             _monster.IsEventActive = true;
         }
     }

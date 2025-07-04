@@ -1,13 +1,10 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.ShaderGraph;
 using UnityEngine;
-using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 
-public class InventoryManager : SingletonT<InventoryManager>
+public class InventoryManager : Singleton<InventoryManager>
 {
     [SerializeField] private GameObject _inventory;
     public GameObject Inventory { get { return _inventory; }}
@@ -38,9 +35,12 @@ public class InventoryManager : SingletonT<InventoryManager>
 
     public bool IsinventoryOpened => Inventory.activeSelf;
 
+    protected override bool ShouldDontDestroy => false;
 
-    private void Awake()
+
+    protected override void Awake()
     {
+        base.Awake();
         Init();
     }
     private void Init()
@@ -51,7 +51,6 @@ public class InventoryManager : SingletonT<InventoryManager>
         _craft = GetComponent<CraftingController>();
         _hand = GetComponent<PlayerHandItemController>();
         _consume = GetComponent<ItemConsumeManage>();
-        SetInstance();
         _model.Init();
     }
 
@@ -181,7 +180,7 @@ public class InventoryManager : SingletonT<InventoryManager>
 
         if (Input.GetKeyDown(KeyCode.P)) DecreaseWeaponDurability();
         if (Input.GetKeyDown(KeyCode.O)) DecreaseShieldDurability();
-        HoldSlot.transform.position = Input.mousePosition;
+        
 
         if (Input.GetKeyDown(KeyCode.PageUp))
         {

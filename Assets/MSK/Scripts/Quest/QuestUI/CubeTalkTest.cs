@@ -9,7 +9,7 @@ public class CubeTalkTest : MonoBehaviour
     {
         if (DialogueManager.Instance != null)
         {
-            DialogueManager.Instance.StartDialogueFromId(dialogueStartId);
+            //DialogueManager.Instance.StartDialogueFromId(dialogueStartId);
             Debug.LogWarning("DialogueManager Instance");
         }
         else

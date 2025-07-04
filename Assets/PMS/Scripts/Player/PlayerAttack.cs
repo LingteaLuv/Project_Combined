@@ -62,22 +62,33 @@ public class PlayerAttack : MonoBehaviour
     //TODO - 나중에 어디서인가 그 현재 무기가 뭔지 있어야하는 부분이 있지 않을까? Action 연결
     // 플레이어의 왼쪽 오른쪽 들고있는 템이 뭔지 바뀌는 이벤트가 존재 할 때 나도 업데이트해서 사용할 수 있지 않을까?
 
-    private void Awake()
+    private void OnEnable()
     {
         //이벤트 구독 - 오른쪽 무기가 바뀔 때마다 알림받기
         PlayerWeaponManager.OnRightWeaponChanged += OnRightWeaponChanged;
-        LeftCurrentWeapon = PlayerWeaponManager.Instance.LeftCurrentWeapon;
-        RightCurrentWeapon = PlayerWeaponManager.Instance.RightCurrentWeapon;
+        PlayerWeaponManager.OnLeftWeaponChanged += OnLeftWeaponChanged;
+        //LeftCurrentWeapon = PlayerWeaponManager.Instance.LeftCurrentWeapon;
+        //RightCurrentWeapon = PlayerWeaponManager.Instance.RightCurrentWeapon;
         _playerProperty = GetComponent<PlayerProperty>();
     }
 
     //오른쪽 무기가 변경될 때 호출되는 콜백 함수
     private void OnRightWeaponChanged(WeaponBase newWeapon)
     {
-        // 라이플 참조 업데이트
-        if (newWeapon != null && newWeapon.ItemType == ItemType.Gun)
+        RightCurrentWeapon = newWeapon;
+        UpdateRifleReference(newWeapon);
+    }
+
+    private void OnLeftWeaponChanged(WeaponBase newWeapon)
+    {
+        LeftCurrentWeapon = newWeapon;
+    }
+
+    private void UpdateRifleReference(WeaponBase weapon)
+    {
+        if (weapon != null && weapon.ItemType == ItemType.Gun)
         {
-            _rifle = newWeapon.GetComponent<Rifle>();
+            _rifle = weapon.GetComponent<Rifle>();
         }
         else
         {
@@ -87,7 +98,7 @@ public class PlayerAttack : MonoBehaviour
 
     void Update()
     {
-        if(Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0))
         {
             TryAttack();
         }
@@ -258,5 +269,11 @@ public class PlayerAttack : MonoBehaviour
         if(_rifle == null) return;
 
         _rifle.EndAim();
+    }
+
+    private void OnDestroy()
+    {
+        PlayerWeaponManager.OnRightWeaponChanged -= OnRightWeaponChanged;
+        PlayerWeaponManager.OnLeftWeaponChanged -= OnLeftWeaponChanged;
     }
 }

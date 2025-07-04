@@ -62,7 +62,7 @@ public class InventoryRenderer : MonoBehaviour
     {
         _model.HoldSlotItemImage.enabled = true;
         _model.HoldSlotItemImage.sprite = _model.InvSlotItemImages[index].sprite;
-        if (_model.InvItems[index].Data.Type == ItemType.ETC)
+        if (_model.InvItems[index].Data.Type == ItemType.Etc)
         {
             _model.HoldSlotItemAmountText.enabled = true;
             _model.HoldSlotItemAmountText.text = _model.InvItems[index].StackCount.ToString();
@@ -80,7 +80,7 @@ public class InventoryRenderer : MonoBehaviour
         }
         if (current != -1 && _model.InvItems[current].Data.Type != ItemType.Quest)
         {
-            _model.InvSlotPanelImages[current].color = new Color(1f, 0f, 0f);
+            _model.InvSlotPanelImages[current].color = new Color(1f, 1f, 1f);
             _model.TrashButton.SetActive(true);
         }
         else
@@ -134,7 +134,7 @@ public class InventoryRenderer : MonoBehaviour
         {
             if (i == indices[0] || i == indices[1])
             {
-                _model.InvSlotPanelImages[i].color = new Color(0f, 1f, 0f);
+                _model.InvSlotPanelImages[i].color = new Color(1f, 1f, 1f);
             }
             else
             {
