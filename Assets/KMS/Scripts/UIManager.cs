@@ -124,7 +124,6 @@ public class UIManager : Singleton<UIManager>
 
 
 
-
     }
 
     private void CursorLock()
@@ -162,7 +161,6 @@ public class UIManager : Singleton<UIManager>
     {
         UISceneLoader.Instance.Playerattack.IsAttacking = false;
     }
-
     private void SetAttackLock(bool isUIOpened)
     {
         if (!isUIOpened)
@@ -253,7 +251,7 @@ public class UIManager : Singleton<UIManager>
         else if (Current == ModalUI.map)
         {
             MapUI.SetActive(true);
-            SetUIPos(_mapRect, 600, 150);
+            SetUIPos(_mapRect, 960, 540);
         }
 
         if (_coroutine != null)
