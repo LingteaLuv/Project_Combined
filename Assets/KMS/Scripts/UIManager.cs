@@ -253,7 +253,7 @@ public class UIManager : Singleton<UIManager>
         else if (Current == ModalUI.map)
         {
             MapUI.SetActive(true);
-            SetUIPos(_mapRect, 600, 150);
+            SetUIPos(_mapRect, 960, 540);
         }
 
         if (_coroutine != null)

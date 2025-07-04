@@ -145,10 +145,10 @@ public class PlayerAttack : MonoBehaviour
         Debug.Log($"애니메이션 기본시간 {currentTime}");
         Debug.Log($"애니메이션 실제재생시간 {(currentTime) / playerAttackSpeed}");
         Debug.Log($"실제 재생시간 + 공격 속도에 따른 쿨타임 {(currentTime) / playerAttackSpeed + coolTime}");
-        yield return new WaitForSeconds((currentTime) / playerAttackSpeed + coolTime);
 
-        Debug.Log("대기 끝");
-
+        yield return new WaitForSeconds((currentTime) / playerAttackSpeed * 0.8f);
+        InventoryManager.Instance.DecreaseWeaponDurability();
+        yield return new WaitForSeconds((currentTime) / playerAttackSpeed * 0.2f + coolTime);
 
         IsAttacking = false;
         _currentAttackCoroutine = null;
