@@ -24,6 +24,8 @@ public class UIManager : Singleton<UIManager>
     [SerializeField] public GameObject QuestLogUI;
     [SerializeField] public GameObject MapUI;
 
+    [SerializeField] public GameObject MemoUI;
+
 
     [SerializeField] public GameObject QuestCont;
 
@@ -265,6 +267,7 @@ public class UIManager : Singleton<UIManager>
     public void CloseUI()
     {
         if (!IsUIOpened.Value) return; //열린게 없음
+        if (MemoUI.activeSelf) return;
         if (_coroutine != null)
         {
             StopCoroutine(_coroutine);
