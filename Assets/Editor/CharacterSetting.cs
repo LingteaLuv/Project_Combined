@@ -129,7 +129,7 @@ public class CharacterSetting : EditorWindow
             player.PlayerID = int.Parse(parts[0]);
             player.MaxHP = float.Parse(parts[1]);
             player.MaxStamaina = float.Parse(parts[2]);
-            player.MaxMoisture = parts[3];
+            player.MaxMoisture = float.Parse(parts[3]);
             player.StaminaRegen = int.Parse(parts[4]);
             player.StaminaCostRun = float.Parse(parts[5]);
             player.StaminaCostJump = float.Parse(parts[6]);
@@ -137,7 +137,7 @@ public class CharacterSetting : EditorWindow
             player.SafeFallDistance = float.Parse(parts[8]);
             player.DeadFallDistance = float.Parse(parts[9]);
             player.FallDamage = float.Parse(parts[10]);
-            player.HengerDecrease = float.Parse(parts[11]);
+            player.HungerDecrease = float.Parse(parts[11]);
             player.HungerBuffThreshold = int.Parse(parts[12]);
             player.HungerBuffAtkSpeed = float.Parse(parts[13]);
             player.HungerDebuffThreshold = int.Parse(parts[14]);

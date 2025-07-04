@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class PlayerInfo : ScriptableObject
 {
     public int PlayerID;
     public float MaxHP;
     public float MaxStamaina;
-    public string MaxMoisture;
+    public float MaxMoisture;
     public int StaminaRegen;
     public float StaminaCostRun;
     public float StaminaCostJump;
@@ -15,7 +16,7 @@ public class PlayerInfo : ScriptableObject
     public float SafeFallDistance;
     public float DeadFallDistance;
     public float FallDamage;
-    public float HengerDecrease;
+    public float HungerDecrease;
     public int HungerBuffThreshold;
     public float HungerBuffAtkSpeed;
     public int HungerDebuffThreshold;
