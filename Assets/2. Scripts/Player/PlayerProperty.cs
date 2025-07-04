@@ -90,14 +90,14 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
     private float _atkSFXCooldown;
     private float _hitSFXCooldown;
 
-    /*
-    private ???   _runSFX
-    private ???   _staminaDepletionSFX
-    private ???   _atkSFX
-    private ???   _jumpSFX
-    private ???   _hitSFX
-    private ???   _destroyEquipmentSFX
-    */
+
+    private AudioClip _atkSFX;
+    private AudioClip _jumpSFX;
+    private AudioClip _hitSFX;
+    private AudioClip _runSFX;
+    private AudioClip _staminaDepletionSFX;
+    private AudioClip _destroyEquipmentSFX;
+    
     private void Awake()
     {
         Init();
@@ -331,14 +331,14 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
         _atkSFXCooldown = playerInfoSO.AtkSFXCooldown;
         _hitSFXCooldown = playerInfoSO.HitSFXCooldown;
 
-        /*
+        
         _runSFX = playerInfoSO.RunSFX;
-        _atkSFX = playerInfoSO.ATKSFX;
+        _atkSFX = playerInfoSO.AtkSFX;
         _jumpSFX = playerInfoSO.JumpSFX;
         _hitSFX = playerInfoSO.HitSFX;
         _staminaDepletionSFX = playerInfoSO.StaminaDepletionSFX;
         _destroyEquipmentSFX = playerInfoSO.DestroyEquipmentSFX;
-        */
+        
 
     }
 
