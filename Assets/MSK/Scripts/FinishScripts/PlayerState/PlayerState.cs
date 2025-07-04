@@ -40,12 +40,11 @@ public abstract class PlayerState
     }
     protected bool EnterFallState(float delay = 0.3f)
     {
-        if (!_movement.IsGrounded && !_movement.IsJumpAnimationPlaying())
+        if (!_movement.IsGrounded)
         {
             _fallTimer += Time.deltaTime;
             return _fallTimer >= delay;
         }
-
         _fallTimer = 0f;
         return false;
     }

@@ -36,15 +36,21 @@ public class PlayerJumpState : PlayerState
     /// </summary>
     public override void Tick()
     {
-        _fsm.ChangeState(_movement.MoveInput == Vector3.zero
-            ? _movement.Controller.IdleState
-            : _movement.Controller.MoveState);
-
         if (EnterFallState())
         {
             _fsm.ChangeState(_movement.Controller.FallState);
             return;
         }
+
+        // 2. 착지하면 Idle/Move
+        if (_movement.IsGrounded)
+        {
+            _fsm.ChangeState(_movement.MoveInput == Vector3.zero
+                ? _movement.Controller.IdleState
+                : _movement.Controller.MoveState);
+            return;
+        }
+
     }
 }
 
