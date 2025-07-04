@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class PauseUIControl : MonoBehaviour
 {
     [SerializeField] GameObject PauseUI;
+    [SerializeField] GameObject SettingUI;
     [SerializeField] public CanvasGroup UIGroup;
 
     public Property<bool> IsPaused;
@@ -54,6 +55,7 @@ public class PauseUIControl : MonoBehaviour
     {
         IsPaused.Value = true;
         PauseUI.SetActive(true);
+        SettingUI.SetActive(true);
         _pcc.PauseCamera();
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -72,6 +74,8 @@ public class PauseUIControl : MonoBehaviour
         {
             StopCoroutine(_co);
         }
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         _co = StartCoroutine(FadeOut());
     }
     public void Toggle()
@@ -103,11 +107,9 @@ public class PauseUIControl : MonoBehaviour
             yield return _wait;
         }
         UIGroup.alpha = 0f;
-
         IsPaused.Value = false;
+        SettingUI.SetActive(false);
         PauseUI.SetActive(false);
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
         UIManager.Instance.UnlockUIUpdate();
         _pcc.PauseCamera();
         Time.timeScale = 1f;
