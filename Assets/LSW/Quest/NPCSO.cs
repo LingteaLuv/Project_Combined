@@ -8,6 +8,7 @@ public class NPCSO : ScriptableObject
     public string NPCID;
 
     public string Name;
+    
     // 등장조건 
     public int BasicDialogueID;
 
@@ -17,6 +18,5 @@ public class NPCSO : ScriptableObject
     public int Trigger2DialogueID;
     public string Trigger3;
     public int Trigger3DialogueID;
-
     public int StartQuestID;
 }
