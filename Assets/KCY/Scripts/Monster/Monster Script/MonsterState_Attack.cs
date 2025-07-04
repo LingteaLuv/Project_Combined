@@ -29,7 +29,7 @@ public class Monster_Attack : MonsterState_temp, IAttackable
     {
         if (!IsAttackAvailable())
         {
-            Debug.Log("⏳ 공격 쿨타임 중");
+            Debug.Log(" 공격 쿨타임 중");
             return;
         }
 
@@ -224,6 +224,7 @@ public class Monster_Attack : MonsterState_temp, IAttackable
                 dir.y = 0f;
                 float angle = Vector3.Angle(monster.transform.forward, dir);
 
+                // 공격 각은 10으로 시야각보다 작게하여 부드럽게 하기
                 if (angle > 10f)
                 {
                     // 회전 먼저 수행, 공격은 보류
@@ -232,7 +233,7 @@ public class Monster_Attack : MonsterState_temp, IAttackable
                         Quaternion.LookRotation(dir),
                         10f * Time.deltaTime
                     );
-                    Debug.Log($"공격 전 회전 중... (angle={angle:F1})");
+         
                     return;
                 }
 
@@ -268,6 +269,10 @@ public class Monster_Attack : MonsterState_temp, IAttackable
             monster.CancelInvoke(nameof(monster.HandDetector.DetectPlayer));
         }
 
+        _ani.ResetTrigger("Attack");
+        _ani.ResetTrigger("Attack");
+        _ani.ResetTrigger("Attack");
+        _ani.ResetTrigger("Attack");
         _ani.ResetTrigger("Attack");
 
         if (_attackCoroutine != null)

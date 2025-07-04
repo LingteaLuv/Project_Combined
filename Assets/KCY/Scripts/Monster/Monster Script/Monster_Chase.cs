@@ -49,7 +49,7 @@ public class Monster_Chase : MonsterState_temp
     public override void Enter()
     {
 
-        monster.SightCol.radius = _info.SightRange * 2f;
+        //monster.SightCol.radius = monster.SightRange * 2f;
 
         Debug.Log("체이싱 상태 진입");
         _missingTime = 0f;
@@ -137,7 +137,7 @@ public class Monster_Chase : MonsterState_temp
     public override void Exit()
     {
 
-        monster.SightCol.radius = _info.SightRange;
+       // monster.SightCol.radius = monster.SightRange;
         
 
         if (monster.TargetPosition == null)
