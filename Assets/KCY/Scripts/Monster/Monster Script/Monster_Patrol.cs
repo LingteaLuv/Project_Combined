@@ -25,7 +25,7 @@ public class Monster_Patrol : MonsterState_temp
     private bool isHeadRot = false;
     private NavMeshAgent _agent;
     private float _compareDis = 1.0f;
-    private float PatrolSight;
+    private float PatrolSight => _info.PatrolSight;
 
     public void Init()
     {
@@ -102,9 +102,25 @@ public class Monster_Patrol : MonsterState_temp
     public override void Enter()
     {
         Debug.Log(" 패트롤 상태 진입");
+        Debug.Log($"몬스터에서 참조 중인 TimeManager1 인스턴스: {TimeManager1.Instance.GetInstanceID()}");
 
-        //float PatrolSight = monster.SightRange;
-        //monster.SightRange = PatrolSight * 2f;
+        // 몬스터 시야 반지름 길이는 몬스터 시야 거리 *  패트롤 사이트 배율
+        monster.SightCol.radius = monster.SightRange * PatrolSight;
+
+
+        if (TimeManager1.Instance.CurrentTimeOfDay.Value == DayTime.Night ||
+      TimeManager1.Instance.CurrentTimeOfDay.Value == DayTime.MidNight)
+        {
+            _agent.speed = monster.Info.NightMoveSpeed;
+            Debug.Log("여기 나와주세요 요요요요요요요요요요요요요요요요ㅛ요요요요요 룰룰");
+            Debug.Log(" 밤 >>  적용");
+        }
+        else
+        {
+            _agent.speed = monster.Info.ChaseMoveSpeed;
+            Debug.Log(" 낮, 아침 >> 일반 속도");
+        }
+
 
         StartSearchTime = 0f;
         StayTimer = 0f;
@@ -118,10 +134,10 @@ public class Monster_Patrol : MonsterState_temp
             monster.Ani.SetBool("isChasing", false);
         }
         // 감지 딜레이 초기화
-        if (_agent != null)
+       /* if (_agent != null)
         {
             _agent.speed = monster.MoveSpeed;
-        }
+        }*/
         if (_agent != null && _agent.isOnNavMesh)
         {
             _agent.isStopped = false;
@@ -267,7 +283,7 @@ public class Monster_Patrol : MonsterState_temp
     }
     public override void Exit()
     {
-        //monster.SightRange = PatrolSight;
+        monster.SightCol.radius = monster.SightRange;
 
         if (_agent != null && _agent.isOnNavMesh)
         {

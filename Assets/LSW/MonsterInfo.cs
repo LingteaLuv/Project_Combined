@@ -27,4 +27,11 @@ public class MonsterInfo : ScriptableObject
     public float SearchTime;
     public string EnemyLootID;
     public string EnemyLootGridChanceID;
+    public string IdleSfx; // idle모드 사운드
+    public string IdleSfxRange; // idle모드 사운드 범위
+    public string AtkSfx; // 1회 공격 사운드
+    public string HitSfx; // 1회 피격 사운드
+    public string DieSfx; // 사망 사운드
+    public float NightAtkCoolDown; // 밤 일때의 공격 쿨타임  
+    public float NightChaseMoveSpeed; // 밤동안의 추격 속도
 }

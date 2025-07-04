@@ -68,6 +68,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
     private int _wallLimitedCount = 5;
 
 
+    public float NightChaseMoveSpeed => _info.NightChaseMoveSpeed;
     public int EnemyID => _info.EnemyID;
     public string Name => _info.Name;
     public string AtkType => _info.AtkType;
@@ -77,6 +78,31 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
     public float NightMoveSpeed => _info.NightMoveSpeed;
     public string EnemyLootId => _info.EnemyLootID;
     public string EnemyLootGridChanceID => _info.EnemyLootGridChanceID;
+
+    public string IdleSfx => _info.IdleSfx; 
+    public string IdleSfxRange => _info.IdleSfxRange; 
+    public string AtkSfx => _info.AtkSfx; 
+    public string HitSfx => _info.HitSfx; 
+    public string DieSfx => _info.DieSfx;
+    public float CoolDown;
+
+    public float AtkCoolDown => _info.AtkCoolDown;
+    public float NightAtkCoolDownRate => _info.NightAtkCoolDown;
+
+    private void OnTimeOfDayChanged(DayTime timeOfDay)
+    {
+
+        if (timeOfDay == DayTime.Night || timeOfDay == DayTime.MidNight)
+        {
+            CoolDown = AtkCoolDown / NightAtkCoolDownRate;
+            Debug.Log($"[쿨다운 변경] 시간대: {timeOfDay} → NightRate 적용됨, 최종 쿨다운: {CoolDown:F2}");
+        }
+        else
+        {
+            CoolDown = AtkCoolDown;
+            Debug.Log($"[쿨다운 변경] 시간대: {timeOfDay} → 기본 쿨다운 유지: {CoolDown:F2}");
+        }
+    }
 
 
     private void Awake()
@@ -101,8 +127,6 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
 
         if (SightCol != null)
         {
-        
-
             SightCol.radius = SightRange;
             HearingCol.radius = HearingRange;
         }
@@ -111,6 +135,10 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
             Debug.LogError(" SightCol이 할당되지 않았습니다. Monster_temp에 연결하세요!");
         }
 
+        TimeManager1.Instance.CurrentTimeOfDay.OnChanged += OnTimeOfDayChanged;
+        OnTimeOfDayChanged(TimeManager1.Instance.CurrentTimeOfDay.Value);
+
+
     }
 
     private void Update()
@@ -118,6 +146,8 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
         Debug.Log($" Update /// 객체 이름: {this.name}, _canDetect = {_canDetect}, 쿨타임 = {_detectCoolTime}");
 
         Debug.Log($"[Patrol] 시야 감지 여부: {IsSightDetecting}");
+   
+
         if (IsSightDetecting)
         {
             sightDetectTime += Time.deltaTime;

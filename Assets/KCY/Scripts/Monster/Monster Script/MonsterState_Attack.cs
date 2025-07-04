@@ -20,7 +20,6 @@ public class Monster_Attack : MonsterState_temp, IAttackable
     private IDamageable _curTarget;
 
     private float _lastAttackTime = -999f;
-    public float AtkCoolDown => _info.AtkCoolDown;
 
     private Coroutine _attackCoroutine;
     protected MonsterStateMachine_temp stateMachine;
@@ -65,7 +64,7 @@ public class Monster_Attack : MonsterState_temp, IAttackable
 
     public bool IsAttackAvailable()
     {
-        return (Time.time - _lastAttackTime >= AtkCoolDown);
+        return (Time.time - _lastAttackTime >= monster.CoolDown);
     }
 
     public void AttackEvent()
@@ -161,7 +160,7 @@ public class Monster_Attack : MonsterState_temp, IAttackable
     {
         yield return new WaitUntil(() => _curTarget != null);
 
-        if (Time.time - _lastAttackTime < AtkCoolDown)
+        if (Time.time - _lastAttackTime < monster.CoolDown)
         {
             Debug.Log("공격 쿨타임 끝, 상태 전환");
             stateMachine.ChangeState(stateMachine.StateDic[Estate.Chase]);

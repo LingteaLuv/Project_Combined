@@ -18,6 +18,8 @@ public class Monster_GoToEvent : MonsterState_temp
 
     public override void Enter()
     {
+
+        var currentTime = TimeManager1.Instance.CurrentTimeOfDay.Value;
         _hasArrive = false;
         Debug.Log($"[GoToEvent] Enter 직전 TempPoint: {monster.TempPoint}");
         Debug.Log("사운드 감지 :  해당 지역으로 이동합니다.");
@@ -31,8 +33,19 @@ public class Monster_GoToEvent : MonsterState_temp
         {
             _agent.autoBraking = true;
             _agent.isStopped = false;
-            _agent.speed = monster.ChaseMoveSpeed;
-
+            if (TimeManager1.Instance.CurrentTimeOfDay.Value == DayTime.Night || TimeManager1.Instance.CurrentTimeOfDay.Value == DayTime.MidNight)
+            {
+                _agent.speed = monster.Info.NightChaseMoveSpeed;
+                Debug.Log(" 밤 >> 추격 시간 적용");
+                Debug.Log($"[GoToEvent] 시간대: {currentTime} → NightChase 속도 적용: {_agent.speed:F2}");
+            }
+            else
+            {
+                _agent.speed = monster.Info.ChaseMoveSpeed;
+                Debug.Log(" 낮, 아침 >> 일반 추적 속도");
+                Debug.Log($"[GoToEvent] 시간대: {currentTime} → 기본 속도 적용: {_agent.speed:F2}");
+            }
+            Debug.Log($"[GoToEvent] 목적지: {monster.TempPoint} / 이동 시작");
             bool result = _agent.SetDestination(_eventPos);
             if (!result)
             {
