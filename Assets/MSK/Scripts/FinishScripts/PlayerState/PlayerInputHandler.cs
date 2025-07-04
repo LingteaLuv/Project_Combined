@@ -27,11 +27,6 @@ public class PlayerInputHandler : MonoBehaviour
 
         InteractPressed = Input.GetKeyDown(KeyCode.F);
 
-
-        // TODO : Test Key 지워야함
-        TestKey = Input.GetKey(KeyCode.P);
-
-
         if (crouch && run)
         {
             CrouchHeld = true;

@@ -76,7 +76,7 @@ public class PlayerCameraController : MonoBehaviour
         if (!CameraMove)
             return;
         OffsetX += Input.GetAxis("Mouse X") * MouseXSensitivity.Value;
-        OffsetY += Input.GetAxis("Mouse Y") * MouseYSensitivity.Value;
+        OffsetY -= Input.GetAxis("Mouse Y") * MouseYSensitivity.Value;
         OffsetY = Mathf.Clamp(OffsetY, _minPitch, _maxPitch); 
         _cameraRig.localEulerAngles = new Vector3(OffsetY, 0f, 0f);
     }
