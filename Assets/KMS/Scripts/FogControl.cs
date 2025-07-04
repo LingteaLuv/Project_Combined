@@ -21,7 +21,10 @@ public class FogControl : MonoBehaviour
 
     public void SetFogTrigger()
     {
-        _anim.SetTrigger("FogToggle");
+        if (_anim != null)
+        {
+            _anim.SetTrigger("FogToggle");
+        }
     }
     private IEnumerator Delay()
     {

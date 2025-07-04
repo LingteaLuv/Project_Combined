@@ -94,12 +94,12 @@ public class TextManager : Singleton<TextManager>
     private void HideText()
     {
         // 문구 초기화 및 UI 비활성화
-        if (_popUpUI.gameObject.activeSelf)
+        if (_popUpUI != null && _popUpUI.gameObject.activeSelf)
         {
             _popUpUI.ResetText();
             _popUpUI.gameObject.SetActive(false);
         }
-        if (_memoPopUpUI.gameObject.activeSelf)
+        if (_memoPopUpUI != null && _memoPopUpUI.gameObject.activeSelf)
         {
             _memoPopUpUI.ResetText();
             _memoPopUpUI.gameObject.SetActive(false);
