@@ -20,10 +20,12 @@ public class PlayerMoveState : PlayerState
     public override void Exit() { }
     public override void Tick()
     {
-        if (_movement.IsRunning && _movement.CanRun) {
-            _movement.SetStateColliderRadius(_movement.Property.RunNoise);
+        if (_movement.IsRunning && _movement.CanRun)
+        {
             _movement.Controller._animator.SetBool("IsRunning", true);
-    }        else
+            _movement.SetStateColliderRadius(_movement.Property.RunNoise);
+        }
+        else
         {
             _movement.Controller._animator.SetBool("IsRunning", false);
             _movement.SetStateColliderRadius(_movement.Property.MoveNoise);
