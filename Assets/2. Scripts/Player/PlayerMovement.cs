@@ -12,10 +12,15 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private PlayerProperty _property;
     [SerializeField] public CapsuleCollider CrouchCollider;
     [SerializeField] private SphereCollider _stateSphereCollider;
+    [Header("Settings")]
+    [SerializeField] private float _jumpForce = 10f;
+    [SerializeField] private float _groundCheckDistance = 0.05f;
 
     public PlayerClimb PlayerClimbHandler { get; private set; }
     public PlayerController Controller { get; private set; }
     public Rigidbody Rigidbody { get; private set; }
+
+    #region Public
     public bool IsOnLadder { get; private set; }
     public bool IsGrounded { get; private set; }
     public bool IsWater { get; private set; }
@@ -23,28 +28,24 @@ public class PlayerMovement : MonoBehaviour
     public bool CanMove { get; private set; }
     public bool CanRun { get; private set; }
     public bool IsConsumingStamina { get; private set; }
+    public Vector3 MoveInput => _inputHandler.MoveInput;
+    public bool JumpPressed => _inputHandler.JumpPressed;
+    public bool CrouchHeld => _inputHandler.CrouchHeld;
+    public bool InteractPressed => _inputHandler.InteractPressed;
+
+    public SphereCollider StateSphereCollider => _stateSphereCollider;
+    #endregion
 
     private bool _jumpConsumedThisFrame;
     private bool _isCrouching;
     private WaitForSeconds _delay;
     private Vector3 _currentRotation;
 
-    [Header("Settings")]
-    [SerializeField] private float _jumpForce = 10f;
-    [SerializeField] private float _groundCheckDistance = 0.05f;
-    [SerializeField] private float _crouchSpeedMultiplier = 0.3f;
-    [SerializeField] private float _waterSpeedMultiplier = 0.6f;
-    [SerializeField] private float _fallMultiplier = 5f;
-    [SerializeField] private float _runMultiplier = 1.5f;
-    public Vector3 MoveInput => _inputHandler.MoveInput;
-    public bool JumpPressed => _inputHandler.JumpPressed;
-    public bool CrouchHeld => _inputHandler.CrouchHeld;
-    public bool InteractPressed => _inputHandler.InteractPressed;
+    private float _crouchSpeedMultiplier = 0.3f;
+    private float _waterSpeedMultiplier = 0.6f;
+    private float _fallMultiplier = 5f;
+    private float _runMultiplier = 1.5f;
 
-    //  TODO : Test Key 지우기
-    public bool TestKey => _inputHandler.TestKey;
-
-    public SphereCollider StateSphereCollider => _stateSphereCollider;
     private void Awake() => Init();
 
     private void Init()
@@ -73,6 +74,9 @@ public class PlayerMovement : MonoBehaviour
         else
             CanRun = true;
     }
+
+    //  TODO : _staminaCostRun 참조 필요
+    //  TODO : IsRunning 탈출 조건 조정
     private IEnumerator StaminaConsumePerSecond(float amount)
     {
         IsConsumingStamina = true;
@@ -115,8 +119,8 @@ public class PlayerMovement : MonoBehaviour
         {
             // 경사면 보정 이동
             moveDir = GetSlopeAdjustedMoveDirection(moveDir);
-
-            //  속도 계산 공식
+  
+            //  속도 계산 공식    TODO : 속도 Property 참조
             float speed = _property.MoveSpeed.Value
                 * (_isCrouching ? _crouchSpeedMultiplier : 1f)
                 * (IsWater ? _waterSpeedMultiplier : 1f)
@@ -153,6 +157,8 @@ public class PlayerMovement : MonoBehaviour
             }
         }
     }
+
+    //  중력 관련 
     private void HandleGravity()
     {
         if (!IsGrounded && Rigidbody.velocity.y < 0.1f)
@@ -177,6 +183,8 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+
+    //  경사면 미끄러짐 방지
     private Vector3 GetSlopeAdjustedMoveDirection(Vector3 moveDir)
     {
         if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, _groundCheckDistance + 0.3f))
@@ -190,49 +198,58 @@ public class PlayerMovement : MonoBehaviour
         return moveDir;
     }
 
+
+    //  점프 가능 여부 반환
     public bool CanJump()
     {
         return CanMove && !_jumpConsumedThisFrame && JumpPressed && IsGrounded && !IsJumpAnimationPlaying();
     }
 
+    //  점프 
     public void Jump()
     {
         _jumpConsumedThisFrame = true;
+        //  TODO : 점프 스테미나 소모 적용
+        // _property.StaminaConsume(_staminaCostJump);
         Rigidbody.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
     }
 
+    // 웅크렸는지 체크
     public void SetCrouch(bool crouch)
     {
         _isCrouching = crouch;
     }
 
+    //  물에 들어갔는제 체크
     public void SetWater(bool water)
     {
         IsWater = water;
-        /*
-        if (IsWater)
-            Controller.PlayerHealth.ApplyDotDamage(10, 1, 120);
-        else
-            Controller.PlayerHealth.StopDotDamage();
-        */
     }
+
+    //  방향 설정
     public void SetRotation(float offset)
     {
         transform.rotation = Quaternion.Euler(0f, offset, 0f);
     }
+
+    // 점프 애니메이션이 끝났는지 체크 
     public bool IsJumpAnimationPlaying()
     {
         return Controller._animator.GetCurrentAnimatorStateInfo(0).IsName("Jump");
     }
+
+    //  소음 콜라이더
     public void SetStateColliderRadius(float radius)
     {
         if (StateSphereCollider != null)
             StateSphereCollider.radius = radius;
     }
+    //  중력 ON/OFF
     public void SetGravity(bool enabled)
     {
         Rigidbody.useGravity = enabled;
     }
+    //  움직임 On/Off
     public void MoveLock()
     {
         CanMove = !CanMove;

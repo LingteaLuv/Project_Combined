@@ -1,20 +1,21 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
 {
+    [SerializeField] public PlayerInfo playerInfoSO;
+
     public Hp Hp;
     public Hunger Hunger;
     public Thirsty Thirsty;
     public Stamina Stamina;
-    
+
     public Property<float> MoveSpeed;
     public Property<float> AtkSpeed;
     public Property<float> AtkDamage;
-    
+
     private List<StatModifier> _statMods;
 
     private float _moveSpeed;
@@ -24,7 +25,7 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
     [SerializeField] private float _baseMoveSpeed;
     [SerializeField] private float _baseAtkSpeed;
     [SerializeField] private float _baseAtkDamage;
-    
+
     [SerializeField] private float _moveSpeedOffset;
     [SerializeField] private float _atkSpeedOffset;
     [SerializeField] private float _atkDamageOffset;
@@ -39,7 +40,7 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
     private const float MaxEatTimer = 60f;
     private const float MaxDrinkTimer = 60f;
     private const float MaxStaminaTimer = 5f;
-    
+
     private WaitForSeconds _delay;
     private Coroutine _hitInWaterCoroutine;
 
@@ -48,10 +49,42 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
     private bool _isOnCorStamina;
     private bool _isOnCorRecoverHp;
     private bool _isOnCorDecreaseHp;
-    
+
     private bool _isOnLack;
     private bool _isOnDepletion;
-    
+
+    // SO 연동 추가 부분
+    private float _staminaRegen;
+    private float _hPRegen;
+    private float _hungerDecrease;
+    private float _moistureDecrease;
+    private float _depletionHp;
+
+    //  Movement참조 필요
+    private float _crouchSpeed;
+    private float _runSpeed;
+    private float _staminaCostRun;
+    private float _staminaCostJump;
+
+    private float _staminaCostMelee;
+
+    // StateMachine 참조 필요
+    private float _runNoise;
+    private float _crouchNoise;
+    private float _moveNoise;
+    private float _safeFallDistance;
+    private float _deadFallDistance;
+    private float _fallDamage;
+
+    private float _moistureBuffThreshold;
+    private float _moistureBuffMoveSpeed;
+    private float _moistureDebuffThreshold;
+    private float _moistureDebuffMoveSpeed;
+    private float _hungerBuffThreshold;
+    private float _hungerBuffAtkSpeed;
+    private float _hungerDebuffThreshold;
+    private float _hungerDebuffAtkSpeed;
+
     private void Awake()
     {
         Init();
@@ -86,39 +119,39 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
         Hp.Act(ref _atkDamage, _baseAtkDamage, _atkDamageOffset);
         AtkDamage.Value = _atkDamage;
         Hunger.Act(ref _atkSpeed, _baseAtkSpeed, _atkSpeedOffset);
-        if(AtkSpeed.Value != _atkSpeed)
+        if (AtkSpeed.Value != _atkSpeed)
         {
             AtkSpeed.Value = _atkSpeed;
         }
-        
+
         Thirsty.Act(ref _moveSpeed, _baseMoveSpeed, _moveSpeedOffset);
         MoveSpeed.Value = _moveSpeed;
         Stamina.Act();
         IsOnStaminaPenalty = Stamina.IsOnPenalty;
     }
-    
+
     private void FieldUpdate()
     {
-        _isOnLack = (Hunger.State == ParamState.Lack) || 
+        _isOnLack = (Hunger.State == ParamState.Lack) ||
                     (Thirsty.State == ParamState.Lack) ||
                     (Stamina.State == ParamState.Lack);
-        
-        _isOnDepletion =  (Hunger.State == ParamState.Depletion) || 
+
+        _isOnDepletion = (Hunger.State == ParamState.Depletion) ||
                           (Thirsty.State == ParamState.Depletion);
-        
-        
+
+
         if (_eatTimer > 0) _eatTimer -= Time.deltaTime;
         if (_drinkTimer > 0) _drinkTimer -= Time.deltaTime;
         if (_staminaTimer > 0) _staminaTimer -= Time.deltaTime;
     }
-    
+
     private void ParameterUpdate()
     {
         if (_eatTimer <= 0 && !_isOnCorHunger)
         {
             StartCoroutine(DecreaseHunger());
         }
-        
+
         if (_drinkTimer <= 0 && !_isOnCorThirsty)
         {
             StartCoroutine(DecreaseThirsty());
@@ -133,7 +166,7 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
         {
             StartCoroutine(DecreaseHp());
         }
-        
+
         if (_staminaTimer <= 0 && !_isOnCorStamina)
         {
             StartCoroutine(RecoverStamina());
@@ -146,60 +179,60 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
         while (true)
         {
             if (_isOnLack || _isOnDepletion) break;
-            Hp.Recover(1f);
+            Hp.Recover(_hPRegen);
             yield return _delay;
         }
         _isOnCorRecoverHp = false;
     }
-    
+
     private IEnumerator DecreaseHp()
     {
         _isOnCorDecreaseHp = true;
         while (true)
         {
             if (!_isOnDepletion) break;
-            Hp.Decrease(1f);
+            Hp.Decrease(_depletionHp);
             yield return _delay;
         }
         _isOnCorDecreaseHp = false;
     }
-    
+
     private IEnumerator DecreaseHunger()
     {
         _isOnCorHunger = true;
         while (true)
         {
             if (_eatTimer > 0) break;
-            Hunger.Decrease(1f);
+            Hunger.Decrease(_hungerDecrease);
             yield return _delay;
         }
         _isOnCorHunger = false;
     }
-    
+
     private IEnumerator DecreaseThirsty()
     {
         _isOnCorThirsty = true;
         while (true)
         {
             if (_drinkTimer > 0) break;
-            Thirsty.Decrease(1f);
+            Thirsty.Decrease(_moistureDecrease);
             yield return _delay;
         }
         _isOnCorThirsty = false;
     }
-    
+
     private IEnumerator RecoverStamina()
     {
         _isOnCorStamina = true;
         while (true)
         {
             if (_staminaTimer > 0) break;
-            Stamina.Recover(7f);
+            Stamina.Recover(_staminaRegen);
             yield return _delay;
         }
         _isOnCorStamina = false;
     }
-    
+
     // 외부에서 음식을 먹을 경우 호출하는 메서드
     /*public void Eat(Item item)
     {
@@ -223,24 +256,61 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
         Stamina.Decrease(amount);
         _staminaTimer = 2f;
     }
-    
-    
+
+
     private void Init()
     {
-        Hp = new Hp(100);
-        Hunger = new Hunger(100);
-        Thirsty = new Thirsty(100);
-        Stamina = new Stamina(100);
+        Hp = new Hp(playerInfoSO.MaxHP);
+        Stamina = new Stamina(playerInfoSO.MaxStamaina);
+        MoveSpeed = new Property<float>(playerInfoSO.MoveSpeed);
+
+        //  Max Hunger 없음
+        Hunger = new Hunger(playerInfoSO.HungerAndMoisture);
+        //  String타입으로 선언됨
+        //  Thirsty = new Thirsty(playerInfoSO.MaxMoisture);
+        Thirsty = new Thirsty(playerInfoSO.HungerAndMoisture);
 
         _delay = new WaitForSeconds(1f);
-
         _eatTimer = MaxEatTimer;
         _drinkTimer = MaxDrinkTimer;
         _staminaTimer = 0f;
 
         AtkSpeed = new Property<float>(_baseAtkSpeed);
-        MoveSpeed = new Property<float>(_baseMoveSpeed);
         AtkDamage = new Property<float>(_baseAtkDamage);
+
+
+
+        // hp 관련
+        _depletionHp = playerInfoSO.DepletionHp;
+        _hungerDecrease = playerInfoSO.HengerDecrease;
+        _hPRegen = playerInfoSO.HPRegen;
+        // stamina 관련
+        _staminaRegen = playerInfoSO.StaminaRegen;
+        _staminaCostMelee = playerInfoSO.StaminaCostMelee;
+        _staminaCostRun = playerInfoSO.StaminaCostRun;
+        _staminaCostJump = playerInfoSO.StaminaCostJump;
+        // 낙하 관련
+        _safeFallDistance = playerInfoSO.SafeFallDistance;
+        _deadFallDistance = playerInfoSO.DeadFallDistance;
+        _fallDamage = playerInfoSO.FallDamage;
+        //  이동관련
+        _runSpeed = playerInfoSO.RunSpeed;
+        _runNoise = playerInfoSO.RunNoise;
+        _crouchSpeed = playerInfoSO.CrouchSpeed;
+        _crouchNoise = playerInfoSO.CrouchNoise;
+        _moveNoise = playerInfoSO.MoveNoise;
+
+        // 수분, 만복 관련
+        _moistureDecrease = playerInfoSO.MoistureDecrease;
+
+        _moistureBuffThreshold = playerInfoSO.MoistureBuffThreshold;
+        _moistureBuffMoveSpeed = playerInfoSO.MoistureBuffMoveSpeed;
+        _moistureDebuffThreshold = playerInfoSO.MoistureDebuffThreshold;
+        _moistureDebuffMoveSpeed = playerInfoSO.MoistureDebuffMoveSpeed;
+        _hungerBuffThreshold = playerInfoSO.HungerBuffThreshold;
+        _hungerBuffAtkSpeed = playerInfoSO.HungerBuffAtkSpeed;
+        _hungerDebuffThreshold = playerInfoSO.HungerDebuffThreshold;
+        _hungerDebuffAtkSpeed = playerInfoSO.HungerDebuffAtkSpeed;
     }
 
     public void ApplyModifier(StatModifier modifier)
@@ -254,7 +324,7 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
         _statMods.Remove(modifier);
         StatModify();
     }
-    
+
     private void StatModify()
     {
         foreach (var mod in _statMods)
@@ -268,7 +338,7 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
     //ItemConsumeManage 클래스에서 사용될 것 같습니다.  - 김문성
     public void Consume(ItemBase item)
     {
-        ConsumableItem consumableItem =  item as ConsumableItem;
+        ConsumableItem consumableItem = item as ConsumableItem;
         Hp.Recover(consumableItem.HpAmount);
         if (consumableItem.HungerAmount != 0)
         {
@@ -281,10 +351,10 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
             Thirsty.Recover(consumableItem.MoistureAmount);
             _drinkTimer = MaxDrinkTimer;
         }
-        
+
         Stamina.Recover(consumableItem.StaminaAmount);
     }
-    
+
     private IEnumerator HitInWater(float damage)
     {
         while (true)
