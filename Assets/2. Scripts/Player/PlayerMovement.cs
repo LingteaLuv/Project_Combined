@@ -89,9 +89,12 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!IsOnLadder || IsGrounded)
+        if (!IsOnLadder && IsGrounded)
         {
-            HandleMovement(MoveInput); // 이동 처리
+            HandleMovement(MoveInput);
+        }
+        if (!IsOnLadder)
+        {
             HandleGravity();
         }
     }
