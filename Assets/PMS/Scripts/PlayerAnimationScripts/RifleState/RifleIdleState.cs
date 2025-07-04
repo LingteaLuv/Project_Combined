@@ -5,6 +5,7 @@ using UnityEngine;
 public class RifleIdleState : StateMachineBehaviour
 {
     [SerializeField] private PlayerAttack _playerAttack;
+    private bool flag = true;
 
     //총을 들고 있으므로 Gun Idle상태가 되어야한다.
     //만약 playerAttack이 null이면 GetComponent로 들고오자.
@@ -21,9 +22,12 @@ public class RifleIdleState : StateMachineBehaviour
     //마우스 우클릭을 통해 조준상태 돌입
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (Input.GetMouseButtonDown(1) && _playerAttack.RightCurrentWeapon.ItemType == ItemType.Gun)
+        if (Input.GetMouseButtonDown(1) && flag)
         {
+            Debug.Log("안녕하세요 토글에임모드온");
             _playerAttack.ToggleAimMode();
+            animator.SetBool("IsAim", true);
+            flag = false;
         }
     }
 
@@ -31,5 +35,6 @@ public class RifleIdleState : StateMachineBehaviour
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         _playerAttack.IsAttacking = true;
+        flag = true;
     }
 }

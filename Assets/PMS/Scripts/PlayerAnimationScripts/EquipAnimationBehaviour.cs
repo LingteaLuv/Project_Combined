@@ -22,7 +22,6 @@ public class EquipAnimationBehaviour : StateMachineBehaviour
         {
             if (_playerAttack.CurrentWeapon.ItemType == ItemType.Gun)
             {
-                animator.SetBool("IsGun", false);
                 animator.SetLayerWeight(animator.GetLayerIndex("Upper Layer"), 1f);
             }
         }

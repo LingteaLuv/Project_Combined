@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class RifleAimState : StateMachineBehaviour
 {
+    private SkinnedMeshRenderer m_SkinnedMeshRenderer;
     [SerializeField] private PlayerAttack _playerAttack;
+    private Color _prevColor;
+    private float _alpha = 100.0f;
     private bool flag = true;                               //한번만 사용할 flag
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -13,6 +16,12 @@ public class RifleAimState : StateMachineBehaviour
         {
             _playerAttack = animator.gameObject.GetComponent<PlayerAttack>();
         }
+        if (_playerAttack == null)
+        {
+            m_SkinnedMeshRenderer = animator.gameObject.transform.GetComponentInChildren<SkinnedMeshRenderer>();
+            _prevColor = m_SkinnedMeshRenderer.material.color;
+        }
+        m_SkinnedMeshRenderer.material.color = new Color(_prevColor.r, _prevColor.g, _prevColor.b, _alpha);
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -40,5 +49,6 @@ public class RifleAimState : StateMachineBehaviour
         {
             _playerAttack._rifle.isAiming = false;
         }
+        m_SkinnedMeshRenderer.material.color = new Color(_prevColor.r, _prevColor.g, _prevColor.b, _prevColor.a);
     }
 }
