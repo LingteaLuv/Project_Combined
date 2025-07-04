@@ -11,7 +11,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private PlayerInputHandler _inputHandler;
     [SerializeField] public CapsuleCollider CrouchCollider;
     [SerializeField] private SphereCollider _stateSphereCollider;
-    [SerializeField] public PlayerProperty Property { get; private set; }
+
     [Header("Settings")]
     [SerializeField] private float _jumpForce = 10f;
     [SerializeField] private float _groundCheckDistance = 0.05f;
@@ -19,7 +19,7 @@ public class PlayerMovement : MonoBehaviour
     public PlayerClimb PlayerClimbHandler { get; private set; }
     public PlayerController Controller { get; private set; }
     public Rigidbody Rigidbody { get; private set; }
-
+    public PlayerProperty Property { get; private set; }
     #region Public
     public bool IsOnLadder { get; private set; }
     public bool IsGrounded { get; private set; }
@@ -51,6 +51,8 @@ public class PlayerMovement : MonoBehaviour
         Rigidbody = GetComponent<Rigidbody>();
         PlayerClimbHandler = GetComponent<PlayerClimb>();
         Controller = GetComponent<PlayerController>();
+        Property = GetComponent<PlayerProperty>();
+
         CanMove = true;
         _delay = new WaitForSeconds(1f);
     }
@@ -64,12 +66,12 @@ public class PlayerMovement : MonoBehaviour
         IsOnLadder = _inputHandler.IsOnLadder;
         IsRunning = _inputHandler.RunPressed;
 
-        if (_property.Stamina.Value < 5f)
+        if (Property.Stamina.Value < 5f)
             CanRun = false;
         else
             CanRun = true;
 
-        if (IsRunning && !IsConsumingStamina && (_property.Stamina.Value > 5f))
+        if (IsRunning && !IsConsumingStamina && (Property.Stamina.Value > 5f))
             StartCoroutine(StaminaConsumePerSecond());
     }
 
@@ -79,7 +81,7 @@ public class PlayerMovement : MonoBehaviour
         while (true)
         {
             if (!IsRunning) break;
-            _property.StaminaConsume(_property.StaminaCostRun);
+            Property.StaminaConsume(Property.StaminaCostRun);
             yield return _delay;
         }
         IsConsumingStamina = false;
@@ -117,10 +119,10 @@ public class PlayerMovement : MonoBehaviour
             moveDir = GetSlopeAdjustedMoveDirection(moveDir);
   
             //  속도 계산 공식 
-            float speed = _property.MoveSpeed.Value
-                * (_isCrouching ? _property.CrouchSpeed : 1f)
+            float speed = Property.MoveSpeed.Value
+                * (_isCrouching ? Property.CrouchSpeed : 1f)
                 * (IsWater ? _waterSpeedMultiplier : 1f)
-                * (IsRunning && (_property.Stamina.Value > 5f) ? _property.RunSpeed : 1f);
+                * (IsRunning && (Property.Stamina.Value > 5f) ? Property.RunSpeed : 1f);
 
             Vector3 targetVelocity = moveDir * speed;
             targetVelocity.y = Rigidbody.velocity.y; // 수직 속도 유지
@@ -198,7 +200,7 @@ public class PlayerMovement : MonoBehaviour
     //  점프 가능 여부 반환
     public bool CanJump()
     {
-        if (_property.Stamina.Value < 10f)
+        if (Property.Stamina.Value < 10f)
             return false;
         else
             return CanMove && !_jumpConsumedThisFrame && JumpPressed && IsGrounded && !IsJumpAnimationPlaying();
@@ -207,10 +209,10 @@ public class PlayerMovement : MonoBehaviour
     //  점프 
     public void Jump()
     {
-        if(_property.Stamina.Value < 10f)
+        if(Property.Stamina.Value < 10f)
             return;
         _jumpConsumedThisFrame = true;
-        _property.StaminaConsume(_property.StaminaCostJump);
+        Property.StaminaConsume(Property.StaminaCostJump);
         Rigidbody.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
     }
 
