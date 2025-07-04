@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
@@ -60,21 +61,20 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
     private float _moistureDecrease;
     private float _depletionHp;
 
-    //  Movement참조 필요
     public float CrouchSpeed { get; private set; }
     public float RunSpeed { get; private set; }
     public float StaminaCostRun { get; private set; }
     public float StaminaCostJump { get; private set; }
 
-    private float _staminaCostMelee;
-
-    // StateMachine 참조 필요
+    
     public float RunNoise { get; private set; }
     public float CrouchNoise { get; private set; }
     public float MoveNoise { get; private set; }
     public float SafeFallDistance { get; private set; }
     public float DeadFallDistance { get; private set; }
     public float FallDamage { get; private set; }
+
+    private float _staminaCostMelee;
 
     private float _moistureBuffThreshold;
     private float _moistureBuffMoveSpeed;
@@ -84,7 +84,20 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
     private float _hungerBuffAtkSpeed;
     private float _hungerDebuffThreshold;
     private float _hungerDebuffAtkSpeed;
+    
+    //사운드 관련
+    private float _hungerAndMoisture;
+    private float _atkSFXCooldown;
+    private float _hitSFXCooldown;
 
+    /*
+    private ???   _runSFX
+    private ???   _staminaDepletionSFX
+    private ???   _atkSFX
+    private ???   _jumpSFX
+    private ???   _hitSFX
+    private ???   _destroyEquipmentSFX
+    */
     private void Awake()
     {
         Init();
@@ -312,6 +325,21 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
         _hungerBuffAtkSpeed = playerInfoSO.HungerBuffAtkSpeed;
         _hungerDebuffThreshold = playerInfoSO.HungerDebuffThreshold;
         _hungerDebuffAtkSpeed = playerInfoSO.HungerDebuffAtkSpeed;
+
+        //사운드 관련
+        _hungerAndMoisture = playerInfoSO.HungerAndMoisture;
+        _atkSFXCooldown = playerInfoSO.AtkSFXCooldown;
+        _hitSFXCooldown = playerInfoSO.HitSFXCooldown;
+
+        /*
+        _runSFX = playerInfoSO.RunSFX;
+        _atkSFX = playerInfoSO.ATKSFX;
+        _jumpSFX = playerInfoSO.JumpSFX;
+        _hitSFX = playerInfoSO.HitSFX;
+        _staminaDepletionSFX = playerInfoSO.StaminaDepletionSFX;
+        _destroyEquipmentSFX = playerInfoSO.DestroyEquipmentSFX;
+        */
+
     }
 
     public void ApplyModifier(StatModifier modifier)
