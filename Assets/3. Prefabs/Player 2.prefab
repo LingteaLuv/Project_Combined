@@ -18,7 +18,6 @@ GameObject:
   - component: {fileID: 8042063570979225412}
   - component: {fileID: 5096445519031629696}
   - component: {fileID: 4440199981670147059}
-  - component: {fileID: 4087469126520133091}
   - component: {fileID: 8024384505808735122}
   - component: {fileID: 2121512835044330030}
   m_Layer: 0
@@ -87,6 +86,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03b52dbc2a16bd4479224b867b77c09e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerInfoSO: {fileID: 0}
   _baseMoveSpeed: 5
   _baseAtkSpeed: 0
   _baseAtkDamage: 0
@@ -118,15 +118,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _inputHandler: {fileID: 3875407077682782513}
-  _property: {fileID: 3224706813921965056}
   CrouchCollider: {fileID: 1518482213038554311}
   _stateSphereCollider: {fileID: 2077373162584824845}
   _jumpForce: 10
   _groundCheckDistance: 0.01
-  _crouchSpeedMultiplier: 0.5
-  _waterSpeedMultiplier: 0.6
-  _fallMultiplier: 5
-  _runMultiplier: 2
 --- !u!114 &6016054422927157864
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -207,37 +202,8 @@ MonoBehaviour:
   _currentWeapon: {fileID: 0}
   LeftCurrentWeapon: {fileID: 0}
   RightCurrentWeapon: {fileID: 0}
+  _rifle: {fileID: 0}
   _melee: {fileID: 7400000, guid: 2d75a69f6b0ac4a4f851e7d905928bc4, type: 2}
---- !u!114 &4087469126520133091
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 66350861615309650}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7248f5eddd06b5f40b05b1db563c710f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _animator: {fileID: 8383290325138109657}
-  _invincibilityTime: 0.5
-  _maxHp: 100
-  _currentHp: 0
-  _isDead: 0
-  _deathSequenceTime: 3
-  OnPlayerDeath:
-    m_PersistentCalls:
-      m_Calls: []
-  OnHealthChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  OnMaxHealthChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  OnDamageReceived:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &8024384505808735122
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -251,7 +217,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 0}
-  _isEquipmentChangeable: 0
   _gunAlwaysPos: {fileID: 2811386236368820674}
   _gunEquipPos: {fileID: 6792949816085468212}
   _rotationSpeed: 5
