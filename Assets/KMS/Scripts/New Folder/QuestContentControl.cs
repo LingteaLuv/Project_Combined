@@ -22,22 +22,26 @@ public class QuestContentControl : MonoBehaviour
             NodeDict[q.Key].EndDescription.enabled = false;
             go.SetActive(false);
         }
-        LayoutRebuilder.ForceRebuildLayoutImmediate(transform as RectTransform);
         QuestManager.Instance.OnQuestAccepted += ActiveNode;
-        QuestManager.Instance.OnQuestCompleted += CheckNode;
+        QuestManager.Instance.OnQuestClosed += CheckNode;
+        //StartCoroutine(DelayInit());
         
+    }
+
+    private IEnumerator DelayInit()
+    {
+        yield return new WaitForEndOfFrame();
+
     }
     public void ActiveNode(QuestData q, QuestProgress qp)
     {
         //아이디와 일치하는 노드 활성화
         NodeDict[q.QuestID].gameObject.SetActive(true);
-        LayoutRebuilder.ForceRebuildLayoutImmediate(transform as RectTransform);
     }
     public void CheckNode(QuestData q, QuestProgress qp)
     {
         //아이디와 일치하는 노드 활성화
         NodeDict[q.QuestID].Description.fontStyle = TMPro.FontStyles.Strikethrough | TMPro.FontStyles.Bold;
         NodeDict[q.QuestID].EndDescription.enabled = true;
-        LayoutRebuilder.ForceRebuildLayoutImmediate(transform as RectTransform);
     }
 }

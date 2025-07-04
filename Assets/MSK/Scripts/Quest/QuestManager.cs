@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 /// <summary>
 /// 게임 내 모든 퀘스트의 메타데이터와 진행 정보를 통합 관리하는 싱글톤 매니저 클래스입니다.
@@ -58,6 +57,7 @@ public class QuestManager : Singleton<QuestManager>
         TriggerDictionary = new Dictionary<string, string>();
         for (int i = 0; i < AllQuests.Count; i++)
         {
+            if (String.IsNullOrEmpty(AllQuests[i].TriggerID1)||String.IsNullOrEmpty(AllQuests[i].TriggerID2)) continue;
             TriggerDictionary.Add(AllQuests[i].TriggerID1, AllQuests[i].QuestID);
             TriggerDictionary.Add(AllQuests[i].TriggerID2, AllQuests[i].QuestID);
         }
@@ -162,8 +162,11 @@ public class QuestManager : Singleton<QuestManager>
             return false;
         if (meta.Status != QuestStatus.Available)
             return false;
-        if (meta.Type == QuestType.Delivery && meta.RequiredItemQuantity > InventoryManager.Instance.GetNullSpaceCount()) //추가 작성된 부분
+        if (meta.Type == QuestType.Delivery && meta.RequiredItemQuantity > InventoryManager.Instance.GetNullSpaceCount())
+        {
+            TextManager.Instance.PopupTextForSecond("2001", 3);
             return false;
+        }
         meta.Status = QuestStatus.Active;
 
         CheckItemQuest(meta); //추가 작성된 부분
@@ -205,7 +208,6 @@ public class QuestManager : Singleton<QuestManager>
         
         return true;
     }
-
     /// <summary>
     /// 퀘스트를 종료(Closed) 상태로 변경하고, 연계 퀘스트가 있다면 해금합니다.
     /// </summary>
@@ -217,8 +219,11 @@ public class QuestManager : Singleton<QuestManager>
             return false;
         if (meta.Status != QuestStatus.Completed)
             return false;
-        if (meta.RewardItemQuantity > InventoryManager.Instance.GetNullSpaceCount()) //추가 작성된 부분
+        if (meta.RewardItemQuantity > InventoryManager.Instance.GetNullSpaceCount())
+        {
+            TextManager.Instance.PopupTextForSecond("2002", 3);
             return false;
+        }
 
         meta.Status = QuestStatus.Closed;
         int.TryParse(meta.RequiredItemID, out int req);

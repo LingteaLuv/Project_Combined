@@ -21,7 +21,7 @@ public class ItemConsumeManage : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonDown(0))
         {
             Consume();
         }
@@ -46,6 +46,7 @@ public class ItemConsumeManage : MonoBehaviour
     public void Consume() // 착용한 소모품을 아예 지워버림
     {
         //현재 오른손 아이템 확인해서 소모템이면 지우고, 착용템 사라졌을때 처리, 효과 적용
+        if (UIManager.Instance.IsUIOpened.Value) return;
         if (_control.EquippedSlotIndex[0] == -1) return; //오른손 할당없음
         Item item = _model.InvItems[_control.EquippedSlotIndex[0]];
         if (item == null) return; //오른손 빈칸임
@@ -69,6 +70,17 @@ public class ItemConsumeManage : MonoBehaviour
         {
             return false;
         }
+    }
+
+    public bool UseEatButton(int index)
+    {
+        Item exist = _model.InvItems[index];
+        if (exist.Data.Type != ItemType.Consumable) return false; // 이후 장비아이템에 대한 equipbutton실행될듯
+        _control.RemoveSelectedItem();
+        _consume.Consume(exist.Data);
+        return true;
+
+
     }
 
 }

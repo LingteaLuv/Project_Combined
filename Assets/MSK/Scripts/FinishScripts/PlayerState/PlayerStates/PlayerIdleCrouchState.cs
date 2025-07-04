@@ -10,7 +10,7 @@ public class PlayerIdleCrouchState : PlayerState
 
     public override void Enter()
     {
-        _movement.SetStateColliderRadius(1.5f);
+        _movement.SetStateColliderRadius(_movement.Property.CrouchNoise);
         if (!_movement.Controller.IsCrouch)
         {
             _movement.Controller.IsCrouch = true;
@@ -43,8 +43,6 @@ public class PlayerIdleCrouchState : PlayerState
             _fsm.ChangeState(_movement.Controller.CrouchState);
             return;
         }
-
-        if (HandleJumpTransition()) return;
     }
 
     public override void FixedTick()

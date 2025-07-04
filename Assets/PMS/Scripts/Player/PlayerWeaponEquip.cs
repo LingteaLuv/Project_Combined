@@ -5,9 +5,13 @@ using UnityEngine;
 public class PlayerWeaponEquip : MonoBehaviour
 {
     [SerializeField] private Animator _animator;
+    [SerializeField] private Transform _gunAlwaysPos;
+    [SerializeField] private Transform _gunEquipPos;
 
-    [SerializeField] private bool _isEquipmentChangeable = false;
-    //장비 공격 Attack
+    [SerializeField] private float _rotationSpeed = 5.0f;
+    [SerializeField] private PlayerAttack _playerAttack;
+
+    private bool _isEquipmentChangeable = false;
 
     private void Update()
     {
@@ -28,12 +32,6 @@ public class PlayerWeaponEquip : MonoBehaviour
         */
     }
 
-    //빈손 일 때랑에서무기제네릭 메서드, 무기에서 빈손, 무기에서 -> 무기 
-    [SerializeField] private Transform _gunAlwaysPos;
-    [SerializeField] private Transform _gunEquipPos;
-    [SerializeField] private float _rotationSpeed = 5.0f;
-    [SerializeField] private PlayerAttack _playerAttack;
-
     /*private void WeaponSetActive()
     {
         if (_playerAttack.CurrentWeapon == null) return;
@@ -45,7 +43,6 @@ public class PlayerWeaponEquip : MonoBehaviour
         if (_playerAttack.CurrentWeapon == null) return;
         _playerAttack.CurrentWeapon.gameObject.SetActive(false);
     }*/
-
 
     //총이 한번에 확돌아가는 문제가 존재
     private void SetGunEquippPos()
@@ -73,9 +70,6 @@ public class PlayerWeaponEquip : MonoBehaviour
         yield return null;
         _currentWeapon.transform.rotation = _gunAlwaysPos.rotation;
     }*/
-
-    //무기에서 무기로 호출함수
-    //TODO - 애니메이션을 다꺼줘야한다.
 
     /*public void WeaponToWeapon()
     {

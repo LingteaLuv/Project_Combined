@@ -11,8 +11,7 @@ public class PlayerIdleState : PlayerState
 
     public override void Enter() 
     {
-        _movement.SetStateColliderRadius(8f);
-        _movement.SetStateColliderRadius(6f);
+        _movement.SetStateColliderRadius(2f);
         if (_movement.Controller.IsCrouch)
         {
             _movement.Controller.IsCrouch = false;
@@ -49,8 +48,6 @@ public class PlayerIdleState : PlayerState
             _fsm.ChangeState(_movement.Controller.FallState);
             return;
         }
-
-
         if (HandleJumpTransition()) return;
     }
 }

@@ -17,21 +17,26 @@ public class NPCInteractable : MonoBehaviour
     {
         _ballon.SetActive(false);
 
-
-        //시작했을 때, _startquests를 돌면서 Available한게 있으면 ? 로 한다.
-
-        foreach (string s in Dialogue._startQuest)
-        {
-            if(QuestManager.Instance.QuestDictionary[s].Status == QuestStatus.Available)
-            {
-                _ballonText.text = "?";
-                break;
-            } 
-        }
-
         QuestManager.Instance.OnQuestAccepted += SetAcceptedText;
         QuestManager.Instance.OnQuestCompleted += SetCompletedText;
         QuestManager.Instance.OnQuestClosed += SetClosedText;
+        //시작했을 때, _startquests를 돌면서 Available한게 있으면 ? 로 한다.
+
+        StartCoroutine(Delay());
+
+    }
+
+    private IEnumerator Delay()
+    {
+        yield return new WaitForEndOfFrame();
+        foreach (string s in Dialogue._startQuest)
+        {
+            if (QuestManager.Instance.QuestDictionary[s].Status == QuestStatus.Available)
+            {
+                _ballonText.text = "?";
+                break;
+            }
+        }
     }
 
 

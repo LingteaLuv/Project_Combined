@@ -6,10 +6,10 @@ using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.Rendering;
 
-public class CamaraShaker : MonoBehaviour
+public class CamaraShaker : Singleton<CamaraShaker>
 {
 
-    private CinemachineVirtualCamera _cmv;
+    [SerializeField] private CinemachineVirtualCamera _cmv;
     private CinemachineBasicMultiChannelPerlin _cmp;
 
     [SerializeField] private NoiseSettings _default;
@@ -25,9 +25,9 @@ public class CamaraShaker : MonoBehaviour
     [SerializeField] Volume _vol;
     private Vignette _vig;
 
-    private void Awake()
+    protected override void Awake()
     {
-        _cmv = GetComponentInParent<CinemachineVirtualCamera>();
+        base.Awake();
         _cmp = _cmv.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
         _damagewfs = new WaitForSeconds(0.2f);
         _shootwfs = new WaitForSeconds(0.2f);

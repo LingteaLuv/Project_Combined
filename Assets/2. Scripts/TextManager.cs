@@ -82,7 +82,8 @@ public class TextManager : Singleton<TextManager>
         // CSV 파일에 저장되어있는 데이터 불러오기
         string[] popupTexts = _popUpDic.GetPopUpText(id);
         //string popupHeadText = _dialogDic.GetPopupText(id);
-        
+        Debug.Log(_memoPopUpUI);
+        Debug.Log(popupTexts[0]);
         // PopUp UI 활성화 및 출력
         _memoPopUpUI.gameObject.SetActive(true);
         _memoPopUpUI.PupUpHeadText(popupTexts[0]);

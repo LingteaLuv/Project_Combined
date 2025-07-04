@@ -204,17 +204,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a140fc3af7f46954fa871d381a3a6ca6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _fixedWeapon: 0
   _itemType: 0
   _weaponSpawnPos: {fileID: 2434017105792808966, guid: ada5033a41d7ad5449625ea55f43ad9b, type: 3}
   _meleeData: {fileID: 11400000, guid: acfb0a086bb0ea145ba1e527632fa532, type: 2}
   _playerPos: {fileID: 6880766187605856789, guid: 3c1cb07b0cc83f54c81440039318206f, type: 3}
   _attackPointPos: {fileID: 5696907594832686584}
-  _parent: {fileID: 0}
-  _attackRange: 2
-  _attackAngle: 90
   _targetLayer:
     serializedVersion: 2
     m_Bits: 8192
+  _attackRange: 2
+  _attackAngle: 90
+  _isOnField: 0
 --- !u!1 &8134571669929379813
 GameObject:
   m_ObjectHideFlags: 0

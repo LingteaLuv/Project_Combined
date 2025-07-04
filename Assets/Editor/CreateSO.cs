@@ -197,7 +197,7 @@ public class CreateSO : EditorWindow
                         Debug.LogWarning("Consumable CSV파일이 등록되지 않았습니다.");
                     }
                     break;
-                case ItemType.ETC:
+                case ItemType.Etc:
                     if (_etcCsvFile != null)
                     {
                         item = CreateEtcItem(itemId);
@@ -395,7 +395,10 @@ public class CreateSO : EditorWindow
             etcItem.MaxStackSize = int.Parse(etcDataParts[3]);
             etcItem.SoundResource = FileFinder.FindSFXByName(etcDataParts[4]);
             etcItem.StrParam = etcDataParts[5];
-            etcItem.IntParam = int.Parse(etcDataParts[6]);
+            if (int.TryParse(etcDataParts[6], out int param))
+            {
+                etcItem.IntParam = param;
+            }
         }
         
         return etcItem;

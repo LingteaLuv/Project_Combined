@@ -98,11 +98,11 @@ public class PlayerHandItemController : MonoBehaviour
             }
             return; // 양손 다 텅 빈 상황
         }
-        HoldItem(HandType.right, _model.InvItems[rightIndex].Data.ItemID);
-        if (_model.InvItems[rightIndex].Data.Type == ItemType.Gun) //들린게 총이면
+        if (_model.InvItems[rightIndex].Data.Type == ItemType.Consumable)
         {
-            GunWeaponBase _gwb = CurrentRightItem.GetComponent<GunWeaponBase>();
+            return;
         }
+        HoldItem(HandType.right, _model.InvItems[rightIndex].Data.ItemID);
 
 
         // 왼손에 들린게 없거나 두손무기라면 스킵 방패라면 들어주고,
