@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 /// <summary>
 /// 게임 내 모든 퀘스트의 메타데이터와 진행 정보를 통합 관리하는 싱글톤 매니저 클래스입니다.
@@ -58,6 +57,7 @@ public class QuestManager : Singleton<QuestManager>
         TriggerDictionary = new Dictionary<string, string>();
         for (int i = 0; i < AllQuests.Count; i++)
         {
+            if (String.IsNullOrEmpty(AllQuests[i].TriggerID1)||String.IsNullOrEmpty(AllQuests[i].TriggerID2)) continue;
             TriggerDictionary.Add(AllQuests[i].TriggerID1, AllQuests[i].QuestID);
             TriggerDictionary.Add(AllQuests[i].TriggerID2, AllQuests[i].QuestID);
         }
