@@ -89,8 +89,10 @@ public class Rifle : GunWeaponBase
 
     public void StartAim()
     {
+        Debug.Log("StartAim");
+        //왜안댐?
+        //_animator.SetBool("IsAim", true);
         isAiming = true;
-        _animator.SetBool("IsAim", true);
     }
 
     public void UpdateAim()
@@ -105,6 +107,7 @@ public class Rifle : GunWeaponBase
 
     public void EndAim()
     {
+        Debug.Log("EndAim");
         isAiming = false;
         _lineRenderer.enabled = false;
         _lineRenderer.positionCount = 0;

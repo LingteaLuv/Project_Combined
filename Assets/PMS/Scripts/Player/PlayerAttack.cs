@@ -86,12 +86,15 @@ public class PlayerAttack : MonoBehaviour
 
     private void UpdateRifleReference(WeaponBase weapon)
     {
-        if (weapon != null && weapon.ItemType == ItemType.Gun)
+        if (weapon.ItemType == ItemType.Gun)
         {
+            _animator.SetTrigger("IsWeaponChange");
+            _animator.SetBool("IsGun",true);
             _rifle = weapon.GetComponent<Rifle>();
         }
         else
         {
+            _animator.SetTrigger("IsWeaponChange");
             _rifle = null;
         }
     }
@@ -106,6 +109,8 @@ public class PlayerAttack : MonoBehaviour
 
     public void ToggleAimMode()
     {
+        if (_rifle == null) Debug.Log("안녕하세요");
+
         if (_rifle == null) return;
 
         if (_rifle.isAiming)

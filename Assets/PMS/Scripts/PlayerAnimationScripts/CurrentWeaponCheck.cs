@@ -10,21 +10,20 @@ public class CurrentWeaponCheck : StateMachineBehaviour
     //그냥 매번 새로운 값을 받아오자.
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        _currentWeapon = PlayerWeaponManager.Instance.RightCurrentWeapon;
-
-        if (_currentWeapon != null)
-        {
-            if (_currentWeapon.ItemType == ItemType.Gun)
-            {
-                animator.SetBool("IsGun", true);
-            }
-        }
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-
+        _currentWeapon = PlayerWeaponManager.Instance.RightCurrentWeapon;
+        if (_currentWeapon != null)
+        {
+            if (_currentWeapon.ItemType == ItemType.Gun)
+            {
+                animator.SetLayerWeight(1, 1.0f);
+                animator.SetBool("IsGun", true);
+            }
+        }
     }
 
     //OnStateExit is called when a transition ends and the state machine finishes evaluating this state
