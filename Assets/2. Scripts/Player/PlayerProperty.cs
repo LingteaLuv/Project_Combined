@@ -74,7 +74,7 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
     public float DeadFallDistance { get; private set; }
     public float FallDamage { get; private set; }
 
-    private float _staminaCostMelee;
+    public float StaminaCostMelee { get; private set; }
 
     private float _moistureBuffThreshold;
     private float _moistureBuffMoveSpeed;
@@ -300,7 +300,7 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
         _hPRegen = playerInfoSO.HPRegen;
         // stamina 관련
         _staminaRegen = playerInfoSO.StaminaRegen;
-        _staminaCostMelee = playerInfoSO.StaminaCostMelee;
+        StaminaCostMelee = playerInfoSO.StaminaCostMelee;
         StaminaCostRun = playerInfoSO.StaminaCostRun;
         StaminaCostJump = playerInfoSO.StaminaCostJump;
         // 낙하 관련

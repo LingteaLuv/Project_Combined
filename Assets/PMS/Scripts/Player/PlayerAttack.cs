@@ -168,7 +168,7 @@ public class PlayerAttack : MonoBehaviour
         {
             case ItemType.Melee:
                 StartMeleeAttack();
-                _playerProperty.StaminaConsume(3f);
+                _playerProperty.StaminaConsume(_playerProperty.StaminaCostMelee);
                 break;
             case ItemType.Gun:
                 PlayerAttackStart(); //좌클릭시 바로 발사
