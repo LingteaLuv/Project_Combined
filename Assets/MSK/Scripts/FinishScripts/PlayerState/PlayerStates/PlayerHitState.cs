@@ -25,7 +25,7 @@ public class PlayerHitState : PlayerState
     public override void Enter()
     {
         var controller = _movement?.Controller;
-        var health = controller?.PlayerHealth;
+
         var animator = controller?._animator;
 
         _timer = _hitDuration;
@@ -45,15 +45,10 @@ public class PlayerHitState : PlayerState
     public override void Tick()
     {
         var controller = _movement?.Controller;
-        var health = controller?.PlayerHealth;
+        var health = _movement.Property.Hp;
 
         if (controller == null || health == null)
             return;
-
-        if (!_damageApplied)
-        {
-            health.Damaged(_damageAmount);
-        }
 
         _timer -= Time.deltaTime;
         if (_timer <= 0f)
