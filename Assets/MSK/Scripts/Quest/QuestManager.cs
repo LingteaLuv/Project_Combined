@@ -162,8 +162,11 @@ public class QuestManager : Singleton<QuestManager>
             return false;
         if (meta.Status != QuestStatus.Available)
             return false;
-        if (meta.Type == QuestType.Delivery && meta.RequiredItemQuantity > InventoryManager.Instance.GetNullSpaceCount()) //추가 작성된 부분
+        if (meta.Type == QuestType.Delivery && meta.RequiredItemQuantity > InventoryManager.Instance.GetNullSpaceCount())
+        {
+            TextManager.Instance.PopupTextForSecond("2001", 3);
             return false;
+        }
         meta.Status = QuestStatus.Active;
 
         CheckItemQuest(meta); //추가 작성된 부분
@@ -217,8 +220,11 @@ public class QuestManager : Singleton<QuestManager>
             return false;
         if (meta.Status != QuestStatus.Completed)
             return false;
-        if (meta.RewardItemQuantity > InventoryManager.Instance.GetNullSpaceCount()) //추가 작성된 부분
+        if (meta.RewardItemQuantity > InventoryManager.Instance.GetNullSpaceCount())
+        {
+            TextManager.Instance.PopupTextForSecond("2002", 3);
             return false;
+        }
 
         meta.Status = QuestStatus.Closed;
         int.TryParse(meta.RequiredItemID, out int req);

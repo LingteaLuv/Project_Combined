@@ -29,9 +29,19 @@ public class NPCCamera : MonoBehaviour
     {
         Vector3 between = player.position - npc.position;
         Vector3 middle = Vector3.Lerp(player.position, npc.position, 0.5f);
+        float dot = Vector3.Dot(player.right, between);
         Vector3 dir = Vector3.Cross(between, Vector3.up).normalized;
         
-        transform.position = middle + (dir * 2) + Vector3.up*1.5f;
+        if(dot >= 0)
+        {
+            transform.position = middle - (dir * 3) + Vector3.up * 1.7f;
+        }
+        else if (dot < 0)
+        {
+            transform.position = middle + (dir * 3) + Vector3.up * 1.7f;
+        }
+
+        
         transform.rotation = Quaternion.identity;
         transform.LookAt(middle);
         _vc.Priority = 20;
