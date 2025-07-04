@@ -11,7 +11,7 @@ public class PlayerCrouchState : PlayerState
 
     public override void Enter()
     {
-        _movement.SetStateColliderRadius(3f);
+        _movement.SetStateColliderRadius(_movement.Property.CrouchNoise);
         if (!_movement.Controller.IsCrouch)
         {
             _movement.Controller.IsCrouch = true;

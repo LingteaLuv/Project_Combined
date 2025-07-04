@@ -11,8 +11,7 @@ public class PlayerIdleState : PlayerState
 
     public override void Enter() 
     {
-        _movement.SetStateColliderRadius(8f);
-        _movement.SetStateColliderRadius(6f);
+        _movement.SetStateColliderRadius(2f);
         if (_movement.Controller.IsCrouch)
         {
             _movement.Controller.IsCrouch = false;

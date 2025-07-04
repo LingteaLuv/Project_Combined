@@ -10,7 +10,6 @@ public class PlayerMoveState : PlayerState
 
     public override void Enter()
     {
-        _movement.SetStateColliderRadius(12f);
         if (_movement.Controller.IsCrouch)
         {
             _movement.Controller.IsCrouch = false;
@@ -21,10 +20,14 @@ public class PlayerMoveState : PlayerState
     public override void Exit() { }
     public override void Tick()
     {
-        if (_movement.IsRunning && _movement.CanRun)
+        if (_movement.IsRunning && _movement.CanRun) {
+            _movement.SetStateColliderRadius(_movement.Property.RunNoise);
             _movement.Controller._animator.SetBool("IsRunning", true);
-        else
+    }        else
+        {
             _movement.Controller._animator.SetBool("IsRunning", false);
+            _movement.SetStateColliderRadius(_movement.Property.MoveNoise);
+        }
 
         if (_movement.MoveInput == Vector3.zero)
         {

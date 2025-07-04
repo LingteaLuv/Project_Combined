@@ -69,12 +69,12 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
     private float _staminaCostMelee;
 
     // StateMachine 참조 필요
-    public float _runNoise { get; private set; }
-    public float _crouchNoise { get; private set; }
-    public float _moveNoise { get; private set; }
-    public float _safeFallDistance { get; private set; }
-    public float _deadFallDistance { get; private set; }
-    public float _fallDamage { get; private set; }
+    public float RunNoise { get; private set; }
+    public float CrouchNoise { get; private set; }
+    public float MoveNoise { get; private set; }
+    public float SafeFallDistance { get; private set; }
+    public float DeadFallDistance { get; private set; }
+    public float FallDamage { get; private set; }
 
     private float _moistureBuffThreshold;
     private float _moistureBuffMoveSpeed;
@@ -291,15 +291,15 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
         StaminaCostRun = playerInfoSO.StaminaCostRun;
         StaminaCostJump = playerInfoSO.StaminaCostJump;
         // 낙하 관련
-        _safeFallDistance = playerInfoSO.SafeFallDistance;
-        _deadFallDistance = playerInfoSO.DeadFallDistance;
-        _fallDamage = playerInfoSO.FallDamage;
+        SafeFallDistance = playerInfoSO.SafeFallDistance;
+        DeadFallDistance = playerInfoSO.DeadFallDistance;
+        FallDamage = playerInfoSO.FallDamage;
         //  이동관련
         RunSpeed = playerInfoSO.RunSpeed;
-        _runNoise = playerInfoSO.RunNoise;
+        RunNoise = playerInfoSO.RunNoise;
         CrouchSpeed = playerInfoSO.CrouchSpeed;
-        _crouchNoise = playerInfoSO.CrouchNoise;
-        _moveNoise = playerInfoSO.MoveNoise;
+        CrouchNoise = playerInfoSO.CrouchNoise;
+        MoveNoise = playerInfoSO.MoveNoise;
 
         // 수분, 만복 관련
         _moistureDecrease = playerInfoSO.MoistureDecrease;
@@ -361,11 +361,11 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
         float damagePerMeter = 10.0f;
         int damage = 0;
 
-        if (distance > _deadFallDistance)
+        if (distance > DeadFallDistance)
             damage = 100;
-        else if (distance > _safeFallDistance)
+        else if (distance > SafeFallDistance)
         {
-            damage = Mathf.RoundToInt((distance - _safeFallDistance) * damagePerMeter);
+            damage = Mathf.RoundToInt((distance - SafeFallDistance) * damagePerMeter);
             if (damage < 30)
                 damage = 30;
         }
