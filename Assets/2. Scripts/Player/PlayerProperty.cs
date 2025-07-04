@@ -69,12 +69,12 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
     private float _staminaCostMelee;
 
     // StateMachine 참조 필요
-    private float _runNoise;
-    private float _crouchNoise;
-    private float _moveNoise;
-    private float _safeFallDistance;
-    private float _deadFallDistance;
-    private float _fallDamage;
+    public float _runNoise { get; private set; }
+    public float _crouchNoise { get; private set; }
+    public float _moveNoise { get; private set; }
+    public float _safeFallDistance { get; private set; }
+    public float _deadFallDistance { get; private set; }
+    public float _fallDamage { get; private set; }
 
     private float _moistureBuffThreshold;
     private float _moistureBuffMoveSpeed;
@@ -354,6 +354,25 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
         }
 
         Stamina.Recover(consumableItem.StaminaAmount);
+    }
+
+    public void ApplyFallDamage(float distance)
+    {
+        float damagePerMeter = 10.0f;
+        int damage = 0;
+
+        if (distance > _deadFallDistance)
+            damage = 100;
+        else if (distance > _safeFallDistance)
+        {
+            damage = Mathf.RoundToInt((distance - _safeFallDistance) * damagePerMeter);
+            if (damage < 30)
+                damage = 30;
+        }
+        if (damage > 0)
+        {
+            Hp.Decrease(damage);
+        }
     }
 
     private IEnumerator HitInWater(float damage)

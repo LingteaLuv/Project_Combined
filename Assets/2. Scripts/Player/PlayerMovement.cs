@@ -9,9 +9,9 @@ public class PlayerMovement : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private PlayerInputHandler _inputHandler;
-    [SerializeField] private PlayerProperty _property;
     [SerializeField] public CapsuleCollider CrouchCollider;
     [SerializeField] private SphereCollider _stateSphereCollider;
+    [SerializeField] public PlayerProperty Property { get; private set; }
     [Header("Settings")]
     [SerializeField] private float _jumpForce = 10f;
     [SerializeField] private float _groundCheckDistance = 0.05f;
@@ -63,14 +63,14 @@ public class PlayerMovement : MonoBehaviour
         IsGrounded = Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, _groundCheckDistance + 0.1f);
         IsOnLadder = _inputHandler.IsOnLadder;
         IsRunning = _inputHandler.RunPressed;
-        if (IsRunning && !IsConsumingStamina && (_property.Stamina.Value > 5f))
-        {
-            StartCoroutine(StaminaConsumePerSecond());
-        }
+
         if (_property.Stamina.Value < 5f)
             CanRun = false;
         else
             CanRun = true;
+
+        if (IsRunning && !IsConsumingStamina && (_property.Stamina.Value > 5f))
+            StartCoroutine(StaminaConsumePerSecond());
     }
 
     private IEnumerator StaminaConsumePerSecond()
@@ -87,7 +87,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!IsOnLadder)
+        if (!IsOnLadder || IsGrounded)
         {
             HandleMovement(MoveInput); // 이동 처리
             HandleGravity();
@@ -116,7 +116,7 @@ public class PlayerMovement : MonoBehaviour
             // 경사면 보정 이동
             moveDir = GetSlopeAdjustedMoveDirection(moveDir);
   
-            //  속도 계산 공식    TODO : 속도 Property 참조
+            //  속도 계산 공식 
             float speed = _property.MoveSpeed.Value
                 * (_isCrouching ? _property.CrouchSpeed : 1f)
                 * (IsWater ? _waterSpeedMultiplier : 1f)
@@ -198,7 +198,10 @@ public class PlayerMovement : MonoBehaviour
     //  점프 가능 여부 반환
     public bool CanJump()
     {
-        return CanMove && !_jumpConsumedThisFrame && JumpPressed && IsGrounded && !IsJumpAnimationPlaying();
+        if (_property.Stamina.Value < 10f)
+            return false;
+        else
+            return CanMove && !_jumpConsumedThisFrame && JumpPressed && IsGrounded && !IsJumpAnimationPlaying();
     }
 
     //  점프 

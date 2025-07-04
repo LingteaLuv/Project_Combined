@@ -43,8 +43,6 @@ public class PlayerIdleCrouchState : PlayerState
             _fsm.ChangeState(_movement.Controller.CrouchState);
             return;
         }
-
-        if (HandleJumpTransition()) return;
     }
 
     public override void FixedTick()

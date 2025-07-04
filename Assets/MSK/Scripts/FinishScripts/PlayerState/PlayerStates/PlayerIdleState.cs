@@ -49,8 +49,6 @@ public class PlayerIdleState : PlayerState
             _fsm.ChangeState(_movement.Controller.FallState);
             return;
         }
-
-
         if (HandleJumpTransition()) return;
     }
 }
