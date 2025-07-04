@@ -9,21 +9,21 @@ public class Thirsty : Parameter
         Init(value);
     }
     
-    public override void Act(ref float speed, float baseValue, float buffValue, float deBuffValue)
+    public override void Act(ref float speed, float baseValue, float buffOffset, float deBuffOffset)
     {
         switch (State)
         {
             case ParamState.Full:
-                ResetValue(ref speed, buffValue);
+                ResetValue(ref speed, baseValue);
                 break;
             case ParamState.Basic:
                 ResetValue(ref speed, baseValue);
                 break;
             case ParamState.Lack:
-                Penalty(ref speed, deBuffValue);
+                Penalty(ref speed, baseValue, deBuffOffset);
                 break;
             case ParamState.Depletion:
-                Penalty(ref speed, deBuffValue);
+                Penalty(ref speed, baseValue, deBuffOffset);
                 break;
         } 
     }
@@ -32,8 +32,8 @@ public class Thirsty : Parameter
         speed = baseValue;
     }
     
-    public override void Penalty(ref float speed, float deBuffValue)
+    public override void Penalty(ref float speed, float baseValue, float offset)
     {
-        speed = deBuffValue;
+        speed = baseValue*offset;
     }
 }

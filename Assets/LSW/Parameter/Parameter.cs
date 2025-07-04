@@ -63,11 +63,11 @@ public class Parameter
         Value = Value - value < 0 ? 0 : Value - value;
     }
 
-    public virtual void Penalty(ref float stat, float buffValue) { }
+    public virtual void Penalty(ref float stat, float baseValue, float buffValue) { }
     public virtual void Penalty() { }
     public virtual void ResetValue(ref float stat, float baseValue) { }
     public virtual void ResetValue() { }
-    public virtual void Advantage(ref float stat, float deBuffValue) { }
+    public virtual void Advantage(ref float stat, float baseValue, float deBuffValue) { }
     public virtual void Advantage() { }
 }
 

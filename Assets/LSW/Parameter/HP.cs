@@ -15,7 +15,7 @@ public class Hp : Parameter
         switch (State)
         {
             case ParamState.Full:
-                Advantage(ref atk, buffValue);
+                Advantage(ref atk, baseValue, buffValue);
                 break;
             case ParamState.Basic:
                 ResetValue(ref atk, baseValue);
@@ -28,9 +28,9 @@ public class Hp : Parameter
         } 
     }
     
-    public override void Advantage(ref float atk, float buffValue)
+    public override void Advantage(ref float atk, float baseValue, float buffValue)
     {
-        atk = buffValue;
+        atk = baseValue * buffValue;
     }
     
     public override void ResetValue(ref float atk, float baseValue)

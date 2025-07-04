@@ -1,8 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using Unity.VisualScripting;
 using UnityEngine;
+
 
 public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
 {
@@ -22,8 +21,7 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
     private float _moveSpeed;
     private float _atkSpeed;
     private float _atkDamage;
-
-    [SerializeField] private float _baseMoveSpeed;
+    
     [SerializeField] private float _baseAtkSpeed;
     [SerializeField] private float _baseAtkDamage;
 
@@ -132,8 +130,7 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
         {
             AtkSpeed.Value = _atkSpeed;
         }
-
-        Thirsty.Act(ref _moveSpeed, _baseMoveSpeed, playerInfoSO.MoistureBuffMoveSpeed,playerInfoSO.MoistureDebuffMoveSpeed);
+        Thirsty.Act(ref _moveSpeed,  playerInfoSO.MoveSpeed, playerInfoSO.MoistureBuffMoveSpeed,playerInfoSO.MoistureDebuffMoveSpeed);
         MoveSpeed.Value = _moveSpeed;
         Stamina.Act();
         IsOnStaminaPenalty = Stamina.IsOnPenalty;
