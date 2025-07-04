@@ -73,17 +73,22 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
     public string Name => _info.Name;
     public string AtkType => _info.AtkType;
     public float AtkSpeed => _info.AtkSpeed;
-    public float CastTime => _info.CastTime;
-    public float RecoveryFrame => _info.RecoveryFrame;
     public float NightMoveSpeed => _info.NightMoveSpeed;
     public string EnemyLootId => _info.EnemyLootID;
     public string EnemyLootGridChanceID => _info.EnemyLootGridChanceID;
-
-    public string IdleSfx => _info.IdleSfx; 
+    public string IdleSfx1 => _info.IdleSfx1;
+    public string IdleSfx2 => _info.IdleSfx2;
     public string IdleSfxRange => _info.IdleSfxRange; 
     public string AtkSfx => _info.AtkSfx; 
     public string HitSfx => _info.HitSfx; 
     public string DieSfx => _info.DieSfx;
+    public string ChaseSfx1 => _info.ChaseSfx1;
+    public string ChaseSfx2 => _info.ChaseSfx2;
+
+
+
+
+
     public float CoolDown;
 
     public float AtkCoolDown => _info.AtkCoolDown;
