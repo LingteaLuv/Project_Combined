@@ -5,7 +5,7 @@ using UnityEngine;
 public class Rifle : GunWeaponBase 
 {   
     public PlayerCameraController _cameraController;
-    
+
     [SerializeField][Range(-360, 360)] public float _correction;
     [SerializeField] public Animator _animator;
     public bool isAiming = false;
@@ -81,7 +81,7 @@ public class Rifle : GunWeaponBase
             bullet.SetDamage(_gunData.AtkDamage);
             if (bullet != null)
             {
-                bullet.SetDirection(_firePoint.forward);
+                bullet.SetDirection(_firePoint.forward,transform);
             }
             bulletObj.SetActive(true); //해당 총알을 활성화시킴
             _bulletcaseParticle.Play();
