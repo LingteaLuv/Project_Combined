@@ -5,7 +5,7 @@ using UnityEngine;
 public class BulletBase : MonoBehaviour
 {
     [SerializeField] private int _currentBulletDamage;
-    [SerializeField][Range(0.1f,10f)] public float _speed = 10f; //총알 스피드
+    [SerializeField][Range(0.1f,10f)] public float _speed; //총알 스피드
     [SerializeField] private float _distance = 50f; //총알 유효 사거리
 
     private Rigidbody _rb;
@@ -20,7 +20,7 @@ public class BulletBase : MonoBehaviour
     private void OnEnable() //Bullet 객체가 활성화 될 때
     {
         // 활성화될 때마다 시작 위치 저장 -> 거리를 알아서 일정거리 밖으로 나가면 비활성화 처리를 위하여
-        // 방향은 transform.forward 기준
+        // 방향은 transform.forward 기준        
         _startPosition = transform.position;   
         _rb.velocity = _fireDir * _speed;       
     }
@@ -34,10 +34,12 @@ public class BulletBase : MonoBehaviour
         }
     }
 
-    // 외부에서 방향을 설정하는 메서드 -> 의미가 없는거 아닌가?
-    public void SetDirection(Vector3 direction)
+    // 외부에서 방향을 설정하는 메서드 
+    // 총구의 회전값도 들고오기
+    public void SetDirection(Vector3 direction,Transform transform)
     {
         _fireDir = direction.normalized;
+        //transform.rotation = transform.localRotation;
     }
 
     // 외부에서 데미지를 받아온다
@@ -45,6 +47,7 @@ public class BulletBase : MonoBehaviour
     {
         _currentBulletDamage = damage;
     }
+
 
     // IDamageable 컴포넌트 확인
     private void OnCollisionEnter(Collision collision)

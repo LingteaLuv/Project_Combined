@@ -61,7 +61,7 @@ public class ItemConsumeManage : MonoBehaviour
         int CurCount = _model.InvItems[_control.EquippedSlotIndex[0]].CurrentAmmoCount;
         int need = MaxCount - CurCount;
         if (need == 0) return false;
-        if (_craft.RemoveItemByID(9001, need))
+        if (_craft.RemoveItemByID((_model.InvItems[_control.EquippedSlotIndex[0]].Data as GunItem).AmmoID, need))
         {
             _model.InvItems[_control.EquippedSlotIndex[0]].SetAmmoCount(MaxCount);
             return true;
