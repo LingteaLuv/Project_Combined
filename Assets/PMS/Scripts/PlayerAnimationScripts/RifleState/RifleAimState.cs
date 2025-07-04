@@ -4,10 +4,15 @@ using UnityEngine;
 
 public class RifleAimState : StateMachineBehaviour
 {
+    [SerializeField] private GameObject _backPack;
     private SkinnedMeshRenderer m_SkinnedMeshRenderer;
     [SerializeField] private PlayerAttack _playerAttack;
+    private Material _prevPlayerMt;
+    private Material _playerMt;
     private Color _prevColor;
-    private float _alpha = 100.0f;
+    private Color _Color;
+    private float _alpha = 0.5f;
+    private float _alpha1 = 1.0f;
     private bool flag = true;                               //한번만 사용할 flag
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -15,13 +20,14 @@ public class RifleAimState : StateMachineBehaviour
         if (_playerAttack == null)
         {
             _playerAttack = animator.gameObject.GetComponent<PlayerAttack>();
+            m_SkinnedMeshRenderer = animator.transform.GetComponentInChildren<SkinnedMeshRenderer>();
+            _playerMt = m_SkinnedMeshRenderer.material;
+            _prevPlayerMt = _playerMt;
+            _prevColor = _playerMt.color;
         }
-        if (_playerAttack == null)
-        {
-            m_SkinnedMeshRenderer = animator.gameObject.transform.GetComponentInChildren<SkinnedMeshRenderer>();
-            _prevColor = m_SkinnedMeshRenderer.material.color;
-        }
-        //m_SkinnedMeshRenderer.material.color = new Color(_prevColor.r, _prevColor.g, _prevColor.b, _alpha);
+        _Color= _playerMt.color;
+        _Color.a = _alpha;
+        _playerMt.color = _Color;
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -49,6 +55,8 @@ public class RifleAimState : StateMachineBehaviour
         {
             _playerAttack._rifle.isAiming = false;
         }
-        //m_SkinnedMeshRenderer.material.color = new Color(_prevColor.r, _prevColor.g, _prevColor.b, _prevColor.a);
+        _Color.a = _alpha1;
+        _Color = _prevColor;
+        _playerMt.color = _Color;
     }
 }

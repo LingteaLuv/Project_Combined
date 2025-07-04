@@ -19,10 +19,15 @@ public class Rifle : GunWeaponBase
     public override void Init()
     {
        base.Init();
+       if(transform.root != this)
+        {
+            _cameraController = transform.root.GetComponent<PlayerCameraController>();
+        }
     }
 
     private void Update()
     {
+        transform.localRotation = Quaternion.Euler(0f, _correction - _cameraController.OffsetY, -85f);
         if (!_fixedWeapon)
         {
             transform.localRotation = Quaternion.Euler(0f, _correction - _cameraController.OffsetY, -85f);
@@ -76,7 +81,7 @@ public class Rifle : GunWeaponBase
             bullet.SetDamage(_gunData.AtkDamage);
             if (bullet != null)
             {
-                bullet.SetDirection(_firePoint.forward);
+                bullet.SetDirection(_firePoint.forward,transform);
             }
             bulletObj.SetActive(true); //해당 총알을 활성화시킴
             _bulletcaseParticle.Play();

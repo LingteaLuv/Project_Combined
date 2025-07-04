@@ -52,7 +52,7 @@ public class MyGunAttackController : MonoBehaviour
             BulletBase bullet = bulletObj.GetComponent<BulletBase>();
             if (bullet != null)
             {
-                bullet.SetDirection(_myGun.GunData._firePoint.transform.forward);
+                bullet.SetDirection(_myGun.GunData._firePoint.transform.forward,transform);
             }
             bulletObj.SetActive(true); //해당 총알을 활성화시킴
         }
