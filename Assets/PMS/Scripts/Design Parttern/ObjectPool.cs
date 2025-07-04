@@ -5,14 +5,18 @@ using UnityEngine;
 public class ObjectPool : MonoBehaviour
 {
     private GameObject[] _pool;
-    
-    //»ı¼ºÀÚ¸¦ ÅëÇÑ ¿ÀºêÁ§Æ®Ç® Å©±â,»ı¼ºÇÒ ¿ÀºêÁ§Æ®(ÇÁ¸®ÆÕ),¾îµğ¿¡ »ı¼ºÇÒ °ÇÁö ºÎ¸ğ ¿ÀºêÁ§Æ® Á¤ÇÏ±â
-   public ObjectPool(int size, GameObject target, GameObject parent)
+
+    //ìƒì„±ìë¥¼ í†µí•œ ì˜¤ë¸Œì íŠ¸í’€ í¬ê¸°,ìƒì„±í•  ì˜¤ë¸Œì íŠ¸(í”„ë¦¬íŒ¹),ì–´ë””ì— ìƒì„±í•  ê±´ì§€ ë¶€ëª¨ ì˜¤ë¸Œì íŠ¸ ì •í•˜ê¸°
+    public ObjectPool(int size, GameObject target, GameObject parent)
     {
         CreatePool(size, target, parent);
     }
+    public ObjectPool(int size, GameObject target)
+    {
+        CreatePool(size, target);
+    }
 
-    //¿ÜºÎ¿¡¼­ »ç¿ëÇÒ Æ¯Á¤ ¿ÀºêÁ§Æ® Ç® »ı¼º ÇÔ¼ö
+    //ì™¸ë¶€ì—ì„œ ì‚¬ìš©í•  íŠ¹ì • ì˜¤ë¸Œì íŠ¸ í’€ ìƒì„± í•¨ìˆ˜
     public void CreatePool(int size, GameObject target, GameObject parent)
     {
         _pool = new GameObject[size];
@@ -25,7 +29,19 @@ public class ObjectPool : MonoBehaviour
         }
     }
 
-    //flag°ªÀ» ÅëÇÑ Ç®¿¡ Á¸ÀçÇÏ´Â ¸ğµç ¿ÀºêÁ§Æ® È°¼ºÈ­,ºñÈ°¼ºÈ­ ½ÃÅ°´Â ÇÔ¼ö
+    public void CreatePool(int size, GameObject target)
+    {
+        _pool = new GameObject[size];
+
+        for (int i = 0; i < size; i++)
+        {
+            GameObject obj = MonoBehaviour.Instantiate(target);
+            _pool[i] = obj;
+            _pool[i].SetActive(false);
+        }
+    }
+
+    //flagê°’ì„ í†µí•œ í’€ì— ì¡´ì¬í•˜ëŠ” ëª¨ë“  ì˜¤ë¸Œì íŠ¸ í™œì„±í™”,ë¹„í™œì„±í™” ì‹œí‚¤ëŠ” í•¨ìˆ˜
     public void Activate(bool flag)
     {
         for (int i = 0; i < _pool.Length; i++)
@@ -38,27 +54,27 @@ public class ObjectPool : MonoBehaviour
         }
     }
 
-    //ºñÈ°¼ºÈ­µÈ »ç¿ë °¡´ÉÇÑ °´Ã¼ Ã£±â
+    //ë¹„í™œì„±í™”ëœ ì‚¬ìš© ê°€ëŠ¥í•œ ê°ì²´ ì°¾ê¸°
     public GameObject GetInactive()
     {
         for (int i = 0; i < _pool.Length; i++)
         {
-            if (!_pool[i].activeSelf) // ºñÈ°¼ºÈ­µÈ °´Ã¼ Ã£±â
+            if (!_pool[i].activeSelf) // ë¹„í™œì„±í™”ëœ ê°ì²´ ì°¾ê¸°
             {
-                return _pool[i]; // Ã£À¸¸é ÇØ´ç °´Ã¼ ¹İÈ¯
+                return _pool[i]; // ì°¾ìœ¼ë©´ í•´ë‹¹ ê°ì²´ ë°˜í™˜
             }
         }
-        return null; // »ç¿ë °¡´ÉÇÑ °´Ã¼°¡ ¾øÀ¸¸é null ¹İÈ¯
+        return null; // ì‚¬ìš© ê°€ëŠ¥í•œ ê°ì²´ê°€ ì—†ìœ¼ë©´ null ë°˜í™˜
     }
 
-    //¹è¿­À» ¼øÈ¸ÇÏ¿© ÀüºÎ destroy½ÃÅ°´ÂÇÔ¼ö
+    //ë°°ì—´ì„ ìˆœíšŒí•˜ì—¬ ì „ë¶€ destroyì‹œí‚¤ëŠ”í•¨ìˆ˜
     public void DestroyAll()
     {
         for (int i = 0; i < _pool.Length; i++)
         {
             MonoBehaviour.Destroy(_pool[i]);
         }
-        _pool = null;   //¿ÀºêÁ§Æ® Ç® ÃÊ±âÈ­
+        _pool = null;   //ì˜¤ë¸Œì íŠ¸ í’€ ì´ˆê¸°í™”
     }
 
 

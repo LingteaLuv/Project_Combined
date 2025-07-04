@@ -34,12 +34,8 @@ public class SettingUI : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("FOV (Init): " + SettingManager.Instance.FOV.Value);
-        Debug.Log("FOV Slider Value (Before): " + _fovSlider.value);
-        
         _fovSlider.onValueChanged.AddListener((value) =>
         {
-            Debug.Log("FOV Changed To: " + value);
             _fovText.text = $"{(int)(value * 100)}";
             SettingManager.Instance.SetFOV(value);
         });

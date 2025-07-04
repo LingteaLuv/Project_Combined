@@ -85,6 +85,10 @@ public class RecipeSetting : MonoBehaviour
             {
                 _currentImage[0].color = Color.white;
             }
+            else
+            {
+                _currentImage[0].color = Color.black;
+            }
         }
 
         if (_hasMaterial2)
@@ -93,6 +97,10 @@ public class RecipeSetting : MonoBehaviour
             if(_countById[_recipe.MaterialItemId2] >= _recipe.MaterialItemQuantity2)
             {
                 _currentImage[1].color = Color.white;
+            }
+            else
+            {
+                _currentImage[1].color = Color.black;
             }
         }
 
@@ -103,6 +111,10 @@ public class RecipeSetting : MonoBehaviour
             {
                 _currentImage[2].color = Color.white;
             }
+            else
+            {
+                _currentImage[2].color = Color.black;
+            }
         }
 
         if (_hasMaterial4)
@@ -111,6 +123,10 @@ public class RecipeSetting : MonoBehaviour
             if(_countById[_recipe.MaterialItemId4] >= _recipe.MaterialItemQuantity4)
             {
                 _currentImage[3].color = Color.white;
+            }
+            else
+            {
+                _currentImage[3].color = Color.black;
             }
         }
     }

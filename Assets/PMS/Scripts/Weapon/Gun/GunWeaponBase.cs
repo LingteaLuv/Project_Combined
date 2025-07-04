@@ -49,7 +49,7 @@ public abstract class GunWeaponBase : WeaponBase
         ItemType = ItemType.Gun;
         PlayerAttack.OnAttackStateChanged += OnAttackStateChanged;
         _lineRenderer = GetComponent<LineRenderer>();
-        _gunBulletObjectPool = new ObjectPool(_bulletPoolSize, _bulletPrefab, gameObject);
+        _gunBulletObjectPool = new ObjectPool(_bulletPoolSize, _bulletPrefab);
     }
 
     #region 총알 궤적을 보여주는 함수
