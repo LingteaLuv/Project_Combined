@@ -59,8 +59,11 @@ public class DoubleClickManage : MonoBehaviour
     private IEnumerator Equip()
     {
         yield return new WaitForEndOfFrame();
-        InventoryManager.Instance.Controller.UseETCItemButton(InventoryManager.Instance.Controller.SelectedIndex);
-        InventoryManager.Instance.Controller.EquipButton(InventoryManager.Instance.Controller.SelectedIndex);
+        if (!InventoryManager.Instance.Consume.UseEatButton(InventoryManager.Instance.Controller.SelectedIndex))
+        {
+            InventoryManager.Instance.Controller.UseETCItemButton(InventoryManager.Instance.Controller.SelectedIndex);
+            InventoryManager.Instance.Controller.EquipButton(InventoryManager.Instance.Controller.SelectedIndex);
+        }
     }
     public void TryEquip()
     {
