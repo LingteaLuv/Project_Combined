@@ -36,7 +36,7 @@ public class PlayerFallState : PlayerState
         {
             _currentY = _movement.transform.position.y;
             float fallDistance = _lastYPos - _currentY;
-            ApplyFallDamage(fallDistance);
+            _movement.Property.ApplyFallDamage(fallDistance);
         }
 
         // 상태 전이 ,Hit 중이면 전이 막기
@@ -55,26 +55,4 @@ public class PlayerFallState : PlayerState
     {
         _movement.HandleMovement(_movement.MoveInput);
     }
-
-    private void ApplyFallDamage(float distance)
-    {
-        float safeHeight = 3.0f;
-        float dangerHeight = 8.0f;
-        float damagePerMeter = 10.0f;
-
-        int damage = 0;
-
-        if (distance > dangerHeight)
-            damage = 999;
-        else if (distance > safeHeight)
-            damage = Mathf.RoundToInt((distance - safeHeight) * damagePerMeter);
-
-        if (damage > 0)
-        {
-            Debug.Log($"낙하 데미지 발생: {damage}");
-            _movement.Controller.HitState.SetDamage(damage);
-            _fsm.ChangeState(_movement.Controller.HitState);
-        }
-    }
-
 }

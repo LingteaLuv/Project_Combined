@@ -124,7 +124,6 @@ public class UIManager : Singleton<UIManager>
 
 
 
-
     }
 
     private void CursorLock()
@@ -162,7 +161,6 @@ public class UIManager : Singleton<UIManager>
     {
         UISceneLoader.Instance.Playerattack.IsAttacking = false;
     }
-
     private void SetAttackLock(bool isUIOpened)
     {
         if (!isUIOpened)
