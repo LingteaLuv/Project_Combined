@@ -61,10 +61,10 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
     private float _depletionHp;
 
     //  Movement참조 필요
-    private float _crouchSpeed;
-    private float _runSpeed;
-    private float _staminaCostRun;
-    private float _staminaCostJump;
+    public float CrouchSpeed { get; private set; }
+    public float RunSpeed { get; private set; }
+    public float StaminaCostRun { get; private set; }
+    public float StaminaCostJump { get; private set; }
 
     private float _staminaCostMelee;
 
@@ -265,7 +265,8 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
         MoveSpeed = new Property<float>(playerInfoSO.MoveSpeed);
 
         //  Max Hunger 없음
-        Hunger = new Hunger(playerInfoSO.HungerAndMoisture);
+        Hunger = new Hunger(100);
+
         //  String타입으로 선언됨
         //  Thirsty = new Thirsty(playerInfoSO.MaxMoisture);
         Thirsty = new Thirsty(playerInfoSO.HungerAndMoisture);
@@ -287,16 +288,16 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
         // stamina 관련
         _staminaRegen = playerInfoSO.StaminaRegen;
         _staminaCostMelee = playerInfoSO.StaminaCostMelee;
-        _staminaCostRun = playerInfoSO.StaminaCostRun;
-        _staminaCostJump = playerInfoSO.StaminaCostJump;
+        StaminaCostRun = playerInfoSO.StaminaCostRun;
+        StaminaCostJump = playerInfoSO.StaminaCostJump;
         // 낙하 관련
         _safeFallDistance = playerInfoSO.SafeFallDistance;
         _deadFallDistance = playerInfoSO.DeadFallDistance;
         _fallDamage = playerInfoSO.FallDamage;
         //  이동관련
-        _runSpeed = playerInfoSO.RunSpeed;
+        RunSpeed = playerInfoSO.RunSpeed;
         _runNoise = playerInfoSO.RunNoise;
-        _crouchSpeed = playerInfoSO.CrouchSpeed;
+        CrouchSpeed = playerInfoSO.CrouchSpeed;
         _crouchNoise = playerInfoSO.CrouchNoise;
         _moveNoise = playerInfoSO.MoveNoise;
 

@@ -41,10 +41,8 @@ public class PlayerMovement : MonoBehaviour
     private WaitForSeconds _delay;
     private Vector3 _currentRotation;
 
-    private float _crouchSpeedMultiplier = 0.3f;
     private float _waterSpeedMultiplier = 0.6f;
     private float _fallMultiplier = 5f;
-    private float _runMultiplier = 1.5f;
 
     private void Awake() => Init();
 
@@ -67,7 +65,7 @@ public class PlayerMovement : MonoBehaviour
         IsRunning = _inputHandler.RunPressed;
         if (IsRunning && !IsConsumingStamina && (_property.Stamina.Value > 5f))
         {
-            StartCoroutine(StaminaConsumePerSecond(5f));
+            StartCoroutine(StaminaConsumePerSecond());
         }
         if (_property.Stamina.Value < 5f)
             CanRun = false;
@@ -75,15 +73,13 @@ public class PlayerMovement : MonoBehaviour
             CanRun = true;
     }
 
-    //  TODO : _staminaCostRun 참조 필요
-    //  TODO : IsRunning 탈출 조건 조정
-    private IEnumerator StaminaConsumePerSecond(float amount)
+    private IEnumerator StaminaConsumePerSecond()
     {
         IsConsumingStamina = true;
         while (true)
         {
             if (!IsRunning) break;
-            _property.StaminaConsume(amount);
+            _property.StaminaConsume(_property.StaminaCostRun);
             yield return _delay;
         }
         IsConsumingStamina = false;
@@ -122,9 +118,9 @@ public class PlayerMovement : MonoBehaviour
   
             //  속도 계산 공식    TODO : 속도 Property 참조
             float speed = _property.MoveSpeed.Value
-                * (_isCrouching ? _crouchSpeedMultiplier : 1f)
+                * (_isCrouching ? _property.CrouchSpeed : 1f)
                 * (IsWater ? _waterSpeedMultiplier : 1f)
-                * (IsRunning && (_property.Stamina.Value > 5f) ? _runMultiplier : 1f);
+                * (IsRunning && (_property.Stamina.Value > 5f) ? _property.RunSpeed : 1f);
 
             Vector3 targetVelocity = moveDir * speed;
             targetVelocity.y = Rigidbody.velocity.y; // 수직 속도 유지
@@ -208,9 +204,10 @@ public class PlayerMovement : MonoBehaviour
     //  점프 
     public void Jump()
     {
+        if(_property.Stamina.Value < 10f)
+            return;
         _jumpConsumedThisFrame = true;
-        //  TODO : 점프 스테미나 소모 적용
-        // _property.StaminaConsume(_staminaCostJump);
+        _property.StaminaConsume(_property.StaminaCostJump);
         Rigidbody.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
     }
 
