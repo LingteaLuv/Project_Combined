@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class SlotBlockerController : MonoBehaviour
 {
@@ -13,13 +14,26 @@ public class SlotBlockerController : MonoBehaviour
     {
         _animator.SetBool("IsPointerDown", false);
     }
-    public void PointerDown()
+
+
+    public void PointerDown(BaseEventData data)
     {
+        PointerEventData pointerData = (PointerEventData)data;
+        if (pointerData.button == PointerEventData.InputButton.Right) return;
         _coroutine = StartCoroutine(WaitAndPrint());
         _animator.SetBool("IsPointerDown", true);
         LootManager.Instance.CurrentBlockerIndex = GetSlotIndex();
     }
-    public void PointerUp()
+    public void PointerUp(BaseEventData data)
+    {
+        PointerEventData pointerData = (PointerEventData)data;
+        if (pointerData.button == PointerEventData.InputButton.Right) return;
+        StopCoroutine(_coroutine);
+        _animator.SetBool("IsPointerDown", false);
+        LootManager.Instance.CurrentBlockerIndex = -1;
+    }
+
+    public void Cancel()
     {
         StopCoroutine(_coroutine);
         _animator.SetBool("IsPointerDown", false);

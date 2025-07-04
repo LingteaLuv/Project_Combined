@@ -64,7 +64,7 @@ public class LootManager : Singleton<LootManager>
     {
         if (UIManager.Instance.Current != ModalUI.lootTable) return;
         if (CurrentBlockerIndex == -1) return;
-        _slotBlockers[CurrentBlockerIndex].PointerUp();
+        _slotBlockers[CurrentBlockerIndex].Cancel();
     }
 
     public void NewLootableChecked(Lootable _lootable)
