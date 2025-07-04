@@ -80,7 +80,8 @@ public class PlayerMovement : MonoBehaviour
         IsConsumingStamina = true;
         while (true)
         {
-            if (!IsRunning) break;
+            if (!IsRunning || Property.Stamina.Value < 5f)
+                break;
             Property.StaminaConsume(Property.StaminaCostRun);
             yield return _delay;
         }
