@@ -86,6 +86,9 @@ public class DialogueManager : Singleton<DialogueManager>
         Button3Text = _button3Obj.GetComponentInChildren<TMP_Text>(true);
         HideAllButtons();
         _dialogueCanvas.SetActive(false);
+
+        QuestManager.Instance.OnQuestAccepted += AcceptTrigger;
+        QuestManager.Instance.OnQuestClosed += ClearTrigger;
     }
 
     /// <summary>
@@ -165,18 +168,22 @@ public class DialogueManager : Singleton<DialogueManager>
             
         }
         yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.F));
-        foreach (int id in idCache)
-        {
-            if (!String.IsNullOrEmpty(DialogueDic[id].TriggerID))
-            {
-                TriggerDic[DialogueDic[id].TriggerID] = true;
-            }
-        }
+        
         _dialogueCanvas.SetActive(false);
         _dialogueCoroutine = null;
         OffDialogue?.Invoke();
     }
 
+    private void AcceptTrigger(QuestData quest, QuestProgress progress)
+    {
+        TriggerDic[quest.TriggerID1] = true;
+    }
+    
+    private void ClearTrigger(QuestData quest, QuestProgress progress)
+    {
+        TriggerDic[quest.TriggerID2] = true;
+    }
+    
     private bool SkipRequested()
     {
         return Input.GetKeyDown(KeyCode.Q);
