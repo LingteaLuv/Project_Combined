@@ -31,7 +31,7 @@ public class InventoryManager : Singleton<InventoryManager>
     public PlayerHandItemController Hand => _hand;
 
     private ItemConsumeManage _consume;
-    public ItemConsumeManage Consume => Consume;
+    public ItemConsumeManage Consume => _consume;
 
     public bool IsinventoryOpened => Inventory.activeSelf;
 

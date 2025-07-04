@@ -117,13 +117,17 @@ public class InventoryRenderer : MonoBehaviour
             return;
         }
         _model.UtilButton.SetActive(true);
-        if (type == ItemType.Gun || type == ItemType.Melee || type == ItemType.Special || type == ItemType.Shield || type == ItemType.Consumable)
+        if (type == ItemType.Gun || type == ItemType.Melee || type == ItemType.Special || type == ItemType.Shield)
         {
             _model.UtilButtonText.text = "Equip";
         }
-        else
+        else if (type == ItemType.Etc)
         {
-            _model.UtilButtonText.text = "Use (TODO)";
+            _model.UtilButtonText.text = "Use";
+        }
+        else if (type == ItemType.Consumable)
+        {
+            _model.UtilButtonText.text = "Eat";
         }
 
     }
