@@ -32,7 +32,7 @@ public class Parameter
 
     private void StateUpdate()
     {
-        if (_value > 99)
+        if (_value > 90)
         {
             State = ParamState.Full;
         }
@@ -52,7 +52,7 @@ public class Parameter
 
     public virtual void Act() { }
     
-    public virtual void Act(ref float stat, float baseValue, float offset) { }
+    public virtual void Act(ref float stat, float baseValue, float buffOffset, float deBuffOffset) { }
 
     public void Recover(float value)
     {
@@ -63,11 +63,11 @@ public class Parameter
         Value = Value - value < 0 ? 0 : Value - value;
     }
 
-    public virtual void Penalty(ref float stat, float baseValue, float offset) { }
+    public virtual void Penalty(ref float stat, float buffValue) { }
     public virtual void Penalty() { }
-    public virtual void ResetValue(ref float stat, float baseValue, float offset) { }
+    public virtual void ResetValue(ref float stat, float baseValue) { }
     public virtual void ResetValue() { }
-    public virtual void Advantage(ref float stat, float baseValue, float offset) { }
+    public virtual void Advantage(ref float stat, float deBuffValue) { }
     public virtual void Advantage() { }
 }
 

@@ -27,10 +27,6 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
     [SerializeField] private float _baseAtkSpeed;
     [SerializeField] private float _baseAtkDamage;
 
-    [SerializeField] private float _moveSpeedOffset;
-    [SerializeField] private float _atkSpeedOffset;
-    [SerializeField] private float _atkDamageOffset;
-
     // Todo : 외부(강한 행동 메서드)에서 호출하여 행동 제약 조건(PlayerController)에 대입
     public bool IsOnStaminaPenalty { get; private set; }
 
@@ -129,15 +125,15 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
 
     private void ParameterAct()
     {
-        Hp.Act(ref _atkDamage, _baseAtkDamage, _atkDamageOffset);
+        //Hp.Act(ref _atkDamage, _baseAtkDamage);
         AtkDamage.Value = _atkDamage;
-        Hunger.Act(ref _atkSpeed, _baseAtkSpeed, _atkSpeedOffset);
+        Hunger.Act(ref _atkSpeed, _baseAtkSpeed, playerInfoSO.HungerBuffAtkSpeed, playerInfoSO.HungerDebuffAtkSpeed);
         if (AtkSpeed.Value != _atkSpeed)
         {
             AtkSpeed.Value = _atkSpeed;
         }
 
-        Thirsty.Act(ref _moveSpeed, _baseMoveSpeed, _moveSpeedOffset);
+        Thirsty.Act(ref _moveSpeed, _baseMoveSpeed, playerInfoSO.MoistureBuffMoveSpeed,playerInfoSO.MoistureDebuffMoveSpeed);
         MoveSpeed.Value = _moveSpeed;
         Stamina.Act();
         IsOnStaminaPenalty = Stamina.IsOnPenalty;
@@ -275,28 +271,22 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
     {
         Hp = new Hp(playerInfoSO.MaxHP);
         Stamina = new Stamina(playerInfoSO.MaxStamaina);
-        MoveSpeed = new Property<float>(playerInfoSO.MoveSpeed);
-
         //  Max Hunger 없음
         Hunger = new Hunger(100);
-
-        //  String타입으로 선언됨
-        //  Thirsty = new Thirsty(playerInfoSO.MaxMoisture);
-        Thirsty = new Thirsty(playerInfoSO.HungerAndMoisture);
-
+        Thirsty = new Thirsty(playerInfoSO.MaxMoisture);
+        
         _delay = new WaitForSeconds(1f);
         _eatTimer = MaxEatTimer;
         _drinkTimer = MaxDrinkTimer;
         _staminaTimer = 0f;
 
+        MoveSpeed = new Property<float>(playerInfoSO.MoveSpeed);
         AtkSpeed = new Property<float>(_baseAtkSpeed);
         AtkDamage = new Property<float>(_baseAtkDamage);
-
-
-
+        
         // hp 관련
         _depletionHp = playerInfoSO.DepletionHp;
-        _hungerDecrease = playerInfoSO.HengerDecrease;
+        _hungerDecrease = playerInfoSO.HungerDecrease;
         _hPRegen = playerInfoSO.HPRegen;
         // stamina 관련
         _staminaRegen = playerInfoSO.StaminaRegen;

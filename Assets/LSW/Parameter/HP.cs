@@ -10,15 +10,15 @@ public class Hp : Parameter
         Init(value);
     }
     
-    public override void Act(ref float atk, float baseValue, float offset)
+    public override void Act(ref float atk, float baseValue, float buffValue, float deBuffValue)
     {
         switch (State)
         {
             case ParamState.Full:
-                Advantage(ref atk, baseValue, offset);
+                Advantage(ref atk, buffValue);
                 break;
             case ParamState.Basic:
-                ResetValue(ref atk, baseValue, offset);
+                ResetValue(ref atk, baseValue);
                 break;
             case ParamState.Lack:
                 break;
@@ -28,12 +28,12 @@ public class Hp : Parameter
         } 
     }
     
-    public override void Advantage(ref float atk, float baseValue, float offset)
+    public override void Advantage(ref float atk, float buffValue)
     {
-        atk = baseValue + offset;
+        atk = buffValue;
     }
     
-    public override void ResetValue(ref float atk, float baseValue, float offset)
+    public override void ResetValue(ref float atk, float baseValue)
     {
         atk = baseValue;
     }

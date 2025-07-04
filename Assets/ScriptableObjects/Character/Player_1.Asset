@@ -20,10 +20,10 @@ MonoBehaviour:
   StaminaCostRun: 10
   StaminaCostJump: 10
   StaminaCostMelee: 10
-  SafeFallDistance: 3
-  DeadFallDistance: 10
+  SafeFallDistance: 30
+  DeadFallDistance: 100
   FallDamage: 30
-  HengerDecrease: 0.2
+  HungerDecrease: 0.2
   HungerBuffThreshold: 90
   HungerBuffAtkSpeed: 1.5
   HungerDebuffThreshold: 40
@@ -38,9 +38,9 @@ MonoBehaviour:
   HungerAndMoisture: 80
   MoveSpeed: 10
   MoveNoise: 20
-  RunSpeed: 2
+  RunSpeed: 20
   RunNoise: 40
-  CrouchSpeed: 0.5
+  CrouchSpeed: 5
   CrouchNoise: 10
   RunSFX: {fileID: 8300000, guid: 89141c1a42d01d1409a9e172288e47c6, type: 3}
   StaminaDepletionSFX: {fileID: 0}

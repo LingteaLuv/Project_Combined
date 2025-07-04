@@ -9,37 +9,38 @@ public class Hunger : Parameter
         Init(value);
     }
     
-    public override void Act(ref float atkSpeed, float baseValue, float offset)
+    public override void Act(ref float atkSpeed, float baseValue, float buffValue, float deBuffValue)
     {
         switch (State)
         {
             case ParamState.Full:
-                Advantage(ref atkSpeed, baseValue, offset);
+                Advantage(ref atkSpeed, buffValue);
                 break;
             case ParamState.Basic:
-                ResetValue(ref atkSpeed, baseValue, offset);
+                ResetValue(ref atkSpeed, baseValue);
                 break;
             case ParamState.Lack:
-                Penalty(ref atkSpeed, baseValue, offset);
+                Penalty(ref atkSpeed,deBuffValue);
                 break;
             case ParamState.Depletion:
-                Penalty(ref atkSpeed, baseValue, offset);
+                Penalty(ref atkSpeed, deBuffValue);
                 break;
         } 
     }
     
-    public override void Advantage(ref float atkSpeed, float baseValue, float offset)
+    public override void Advantage(ref float atkSpeed, float buffValue)
     {
-        atkSpeed = baseValue + offset;
+        atkSpeed = buffValue;
+        
     }
     
-    public override void ResetValue(ref float atkSpeed, float baseValue, float offset)
+    public override void ResetValue(ref float atkSpeed, float baseValue)
     {
         atkSpeed = baseValue;
     }
     
-    public override void Penalty(ref float atkSpeed, float baseValue, float offset)
+    public override void Penalty(ref float atkSpeed, float deBuffValue)
     {
-        atkSpeed = baseValue - offset;
+        atkSpeed = deBuffValue;
     }
 }
