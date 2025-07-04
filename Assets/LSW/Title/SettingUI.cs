@@ -76,7 +76,7 @@ public class SettingUI : MonoBehaviour
 
         CacheInit();
         SettingUpdate();
-        gameObject.SetActive(true);
+        gameObject.SetActive(false);
     }
 
     private void CacheInit()
