@@ -41,17 +41,12 @@ public abstract class GunWeaponBase : WeaponBase
 
     protected AudioSource audioSource; //공격 사운드
 
-
-    private void Reset()
-    {
-        ItemType = ItemType.Gun; 
-    }
-
     //무기마다 Init()해줘야 되는 사항.
     //불릿 풀 사이즈가 다를 것이고,불릿 프리팹이 다르다. 총 아래에 Bullet 오브젝트가 생성
     public override void Init()
     {
         base.Init();
+        ItemType = ItemType.Gun;
         PlayerAttack.OnAttackStateChanged += OnAttackStateChanged;
         _lineRenderer = GetComponent<LineRenderer>();
         _gunBulletObjectPool = new ObjectPool(_bulletPoolSize, _bulletPrefab, gameObject);
