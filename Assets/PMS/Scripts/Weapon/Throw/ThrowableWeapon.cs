@@ -128,6 +128,7 @@ public class ThrowableWeapon : WeaponBase
         targetDir = transform.forward * finalSpeed;
         rb.velocity = targetDir;
 
+        // TODO - speed값에 따라 회전 값을 다르게 해줘야 할 것 같다.
         rb.maxAngularVelocity = 50;
 
         rb.angularVelocity = transform.right * 30;
