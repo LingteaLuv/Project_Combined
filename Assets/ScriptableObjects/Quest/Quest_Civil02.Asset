@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   QuestID: Civil02
   Type: 2
-  Status: 1
+  Status: 3
   Description: "\uC0AC\uAC70\uB9AC\uC758 \uC6B0\uCCB4\uD1B5\uC5D0 \uC120\uC7A5\uC758
     \uD3B8\uC9C0\uB97C \uB123\uC5B4 \uB450\uC5B4\uC57C \uD55C\uB2E4. ...\uAC00\uC838\uAC08
     \uC6B0\uCCB4\uBD80\uB294 \uC5C6\uC9C0\uB9CC."
@@ -29,5 +29,6 @@ MonoBehaviour:
   NextQuestID: 
   EndDescription: "\uC120\uC7A5\uC758 \uD3B8\uC9C0\uB97C \uC6B0\uCCB4\uD1B5\uC5D0
     \uB123\uACE0 \uC5F4\uC1E0\uB97C \uBC1B\uC558\uB2E4."
-  TriggerID1: "\uC6B0\uCCB4\uD1B5"
-  TriggerID2: Civil02Receive
+  DeliveryNpcID: "\uC6B0\uCCB4\uD1B5"
+  TriggerID1: Civil02Receive
+  TriggerID2: Civil02Clear

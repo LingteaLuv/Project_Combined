@@ -119,9 +119,11 @@ public class NPCDialogue : MonoBehaviour
     
     public void CheckLoop(int id)
     {
+        Debug.Log(id);
         if (_dialogueFlow.TryGetValue(id, out int nextDialogueID))
         {
             _currentFlow = nextDialogueID;
+            Debug.Log(nextDialogueID);
         }
     }
 

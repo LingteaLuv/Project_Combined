@@ -14,7 +14,7 @@ public class QuestManager : Singleton<QuestManager>
     /// <summary>
     /// 전체 퀘스트의 데이터 리스트입니다.
     /// </summary>
-    [SerializeField] private List<QuestData> allQuests = new List<QuestData>();
+    [SerializeField] private List<QuestData> allQuests;
     public List<QuestData> AllQuests => allQuests;
 
     /// <summary>
