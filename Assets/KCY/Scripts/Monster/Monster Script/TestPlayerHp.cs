@@ -4,7 +4,7 @@ using UnityEngine;
 public class PlayerDamageReceiver : MonoBehaviour, IDamageable
 {
     public int maxHp = 10;
-    private int currentHp;
+    private float currentHp;
 
     private void Start()
     {
@@ -12,7 +12,7 @@ public class PlayerDamageReceiver : MonoBehaviour, IDamageable
         Debug.Log($"플레이어 HP: {currentHp}");
     }
 
-    public void Damaged(int damage)
+    public void Damaged(float damage)
     {
         currentHp -= damage;
 

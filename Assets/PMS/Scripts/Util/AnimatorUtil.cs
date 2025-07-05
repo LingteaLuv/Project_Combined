@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// 애니메이터 관련 유틸리티 함수들을 제공하는 정적 클래스
 /// </summary>
-public static class AnimatorUtil 
+public static class AnimatorUtil
 {
     /// <summary>
     /// 특정 레이어의 가중치를 즉시 설정
@@ -113,4 +113,24 @@ public static class AnimatorUtil
         else
             return false;
     }
+
+    //BaseLayer를 제외하고 모든 애니메이터 레이어를 다 끄는 함수 
+    public static void DisableAllLayer(Animator animator, int BaseLayer = 0)
+    {
+        if (animator == null) return;
+        //0은 제외 BaseLayer
+        for (int i = 1; i < animator.layerCount; i++)
+        {
+            if (i == BaseLayer)
+            {
+                animator.SetLayerWeight(i, 1f); // 해당 레이어만 켜기
+            }
+            else
+            {
+                animator.SetLayerWeight(i, 0f); // 나머지 레이어 끄기
+            }
+        }
+        return;
+    }
+
 }

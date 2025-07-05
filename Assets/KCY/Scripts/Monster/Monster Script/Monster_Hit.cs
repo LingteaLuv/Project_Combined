@@ -12,7 +12,7 @@ public class Monster_Hit : MonsterState_temp, IDamageable
         stateMerchine = monster._monsterMerchine;
     }
 
-    private int _hp;
+    private float _hp;
     private NavMeshAgent _agent;
     private Animator _ani;
     private bool _isInvincible = false;
@@ -20,7 +20,7 @@ public class Monster_Hit : MonsterState_temp, IDamageable
     protected MonsterStateMachine_temp stateMerchine;
 
     // 피격 인터페이스 구성
-    public void Damaged(int PlayerAttackDamage)
+    public void Damaged(float PlayerAttackDamage)
     {
         // 죽어있거나 피격 쿨타임의 경우 안맞는다.
         if (monster._isDead || _isInvincible) return;
