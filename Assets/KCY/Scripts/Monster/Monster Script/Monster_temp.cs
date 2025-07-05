@@ -210,7 +210,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
             _monsterMerchine.ChangeState(attackState); // 상태 전이
         }
     }
-    public void Damaged(int damage)
+    public void Damaged(float damage)
     {
         if (_isDead) return;
 

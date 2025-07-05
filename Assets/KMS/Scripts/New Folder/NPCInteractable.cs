@@ -12,7 +12,14 @@ public class NPCInteractable : MonoBehaviour
     [SerializeField] private GameObject _ballon;
     [SerializeField] private TMP_Text _ballonText;
 
+    public bool IsInteractable;
+
     public string ID => Dialogue._data.NPCID;
+
+    private void Awake()
+    {
+        IsInteractable = true;
+    }
     private void Start()
     {
         _ballon.SetActive(false);
@@ -23,6 +30,11 @@ public class NPCInteractable : MonoBehaviour
         //시작했을 때, _startquests를 돌면서 Available한게 있으면 ? 로 한다.
 
         StartCoroutine(Delay());
+
+        if (Dialogue._data.BasicDialogueID == 0) //우체통 관련
+        {
+            IsInteractable = false;
+        }
 
     }
 

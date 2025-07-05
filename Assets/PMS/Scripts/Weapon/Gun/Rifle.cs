@@ -81,7 +81,12 @@ public class Rifle : GunWeaponBase
             bullet.SetDamage(_gunData.AtkDamage);
             if (bullet != null)
             {
-                bullet.SetDirection(_firePoint.forward,transform);
+                // 총구(firePoint)의 forward 방향으로 발사
+                Vector3 fireDirection = _firePoint.forward;
+                // 총구의 회전값을 총알에 적용
+                Quaternion fireRotation = _firePoint.rotation;
+
+                bullet.SetDirection(fireDirection,fireRotation);
             }
             bulletObj.SetActive(true); //해당 총알을 활성화시킴
             _bulletcaseParticle.Play();

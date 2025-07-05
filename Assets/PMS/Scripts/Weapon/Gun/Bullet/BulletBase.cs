@@ -36,10 +36,10 @@ public class BulletBase : MonoBehaviour
 
     // 외부에서 방향을 설정하는 메서드 
     // 총구의 회전값도 들고오기
-    public void SetDirection(Vector3 direction,Transform transform)
+    public void SetDirection(Vector3 direction,Quaternion rotation)
     {
         _fireDir = direction.normalized;
-        //transform.rotation = transform.localRotation;
+        transform.rotation = Quaternion.LookRotation(_fireDir) * Quaternion.Euler(-90, 0, 0); 
     }
 
     // 외부에서 데미지를 받아온다

@@ -10,8 +10,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     private bool _isInvincible = false; //무적 인지 아닌지
 
     [Header("Health Settings")]
-    [SerializeField] private int _maxHp = 100; // 최대 hp 
-    [SerializeField] private int _currentHp;   // 현재 hp
+    [SerializeField] private float _maxHp = 100; // 최대 hp 
+    [SerializeField] private float _currentHp;   // 현재 hp
 
     [Header("Death Settings")]
     [SerializeField] private bool _isDead = false;
@@ -20,25 +20,9 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     //외부에서 알려줄 이벤트들
     [Header("Events")]
     public UnityEvent OnPlayerDeath;    //플레이어가 주겅ㅆ는지
-    public UnityEvent<int> OnHealthChanged; // 체력이 바뀌었는지? -> UI에서 연동하면 좋을 것 같아요
-    public UnityEvent<int> OnMaxHealthChanged; // 최대 체력이 바뀌었는지?
-    public UnityEvent<int> OnDamageReceived; // 데미지를 얼마나 받았는지 
-
-  
-    // TODO : 임시 외부 참조용 (석규)
-    public int CurrentHp => _currentHp;
-    public bool IsDead => _isDead;
-    private Coroutine _dotCoroutine;
-    private bool _isDotActive;
-
-    //임시로 쓰는 Start()함수입니다. 
-    private void Start()
-    {
-        // 시작 시 체력을 최대체력으로 설정
-        _currentHp = _maxHp;
-        OnHealthChanged?.Invoke(_currentHp);
-        //_animator = gameObject.GetComponent<Animator>();
-    }
+    public UnityEvent<float> OnHealthChanged; // 체력이 바뀌었는지? -> UI에서 연동하면 좋을 것 같아요
+    public UnityEvent<float> OnMaxHealthChanged; // 최대 체력이 바뀌었는지?
+    public UnityEvent<float> OnDamageReceived; // 데미지를 얼마나 받았는지 
 
     private void Die()
     {
@@ -89,7 +73,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     /// IDamageable 구현함수
     /// </summary>
     /// <param name="hitDamage"> 입히고 싶은 데미지(정수) 입니다 </param>
-    public void Damaged(int hitDamage)
+    public void Damaged(float hitDamage)
     {
         // 이미 죽었다면 처리 할 필요가 없음
         if (_isDead || _isInvincible) return;
