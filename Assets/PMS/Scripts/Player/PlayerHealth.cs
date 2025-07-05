@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class PlayerHealth : MonoBehaviour, IDamageable
+public class PlayerHealth : MonoBehaviour
 {
     [SerializeField] private Animator _animator; //피격 애니메이션
     [SerializeField] private float _invincibilityTime = 0.5f;  //무적시간
@@ -23,22 +23,6 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     public UnityEvent<int> OnHealthChanged; // 체력이 바뀌었는지? -> UI에서 연동하면 좋을 것 같아요
     public UnityEvent<int> OnMaxHealthChanged; // 최대 체력이 바뀌었는지?
     public UnityEvent<int> OnDamageReceived; // 데미지를 얼마나 받았는지 
-
-  
-    // TODO : 임시 외부 참조용 (석규)
-    public int CurrentHp => _currentHp;
-    public bool IsDead => _isDead;
-    private Coroutine _dotCoroutine;
-    private bool _isDotActive;
-
-    //임시로 쓰는 Start()함수입니다. 
-    private void Start()
-    {
-        // 시작 시 체력을 최대체력으로 설정
-        _currentHp = _maxHp;
-        OnHealthChanged?.Invoke(_currentHp);
-        //_animator = gameObject.GetComponent<Animator>();
-    }
 
     private void Die()
     {
