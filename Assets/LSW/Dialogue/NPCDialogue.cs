@@ -74,8 +74,8 @@ public class NPCDialogue : MonoBehaviour
     // 퀘스트 매니저 => 퀘스트를 관리하는 Dictionary
     public void CheckDialogue(Dictionary<string,QuestData> playerQuest)
     {
+        //CheckTrigger();
         CheckQuest(playerQuest);
-        CheckTrigger();
         Init();
     }
     private void CheckQuest(Dictionary<string,QuestData> playerQuest)
@@ -95,10 +95,17 @@ public class NPCDialogue : MonoBehaviour
             {
                 _currentFlow = playerQuest[_endQuest[i]].EndDialogueID;
                 return;
-                // todo : 여기서 처리하면 안되고, 실제로 플레이어가 보상을 받고 대화가 끝날 때 호출해야할듯 
-                // playerQuest[playerQuest[_startQuest[i]].NextQuestID].Status = QuestStatus.Available;
             }
         }
+        
+        for (int i = 0; i < _endQuest.Count; i++)
+        {
+            if (playerQuest[_endQuest[i]].Status == QuestStatus.Closed)
+            {
+                return;
+            }
+        }
+        CheckTrigger();
     }
 
     private void CheckTrigger()
@@ -119,9 +126,11 @@ public class NPCDialogue : MonoBehaviour
     
     public void CheckLoop(int id)
     {
+        Debug.Log(id);
         if (_dialogueFlow.TryGetValue(id, out int nextDialogueID))
         {
             _currentFlow = nextDialogueID;
+            Debug.Log(nextDialogueID);
         }
     }
 
