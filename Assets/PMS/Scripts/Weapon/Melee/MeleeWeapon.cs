@@ -7,7 +7,7 @@ public class MeleeWeapon : WeaponBase
     [Tooltip("받아올 MeleeItem 스크립트 데이터")]
     [SerializeField] private MeleeItem _meleeData;
 
-    [SerializeField] private Transform _playerPos;      //플레이어의 위치
+    public Transform _playerPos;      //플레이어의 위치
     [SerializeField] private Transform _attackPointPos; //공격의 충돌을 감지할 Pivot Transform
     [SerializeField] private LayerMask _targetLayer;
 
@@ -24,6 +24,7 @@ public class MeleeWeapon : WeaponBase
     public void Awake()
     {
         base.Init();
+        _playerPos = transform.root;
     }
 
     public override void Attack()
@@ -40,6 +41,7 @@ public class MeleeWeapon : WeaponBase
     {
         // 무기에 달려있는 _attack를 중심으로 범위를 설정하고 타겟레이어와 충돌검사
         Collider[] colliders = Physics.OverlapSphere(_attackPointPos.position, _attackRange, _targetLayer);
+
         // 가장 가까운 타겟을 찾기 위한 변수 초기화
         //IDamageable closestDamageable = null;
         GameObject closeGameObject = null;
@@ -48,18 +50,19 @@ public class MeleeWeapon : WeaponBase
         // 플레이어의 앞쪽 방향 벡터
         Vector3 playerForward = _playerPos.transform.forward;
 
-        // 9. 충돌체를 저장한 배열을 순회하며 가장 가까운 적 찾기
+        // 충돌체를 저장한 배열을 순회하며 가장 가까운 적 찾기
         foreach (Collider targetCollider in colliders)
         {
             IDamageable damageable = targetCollider.GetComponent<IDamageable>();
             if (damageable != null)
             {
+                float y = _playerPos.transform.eulerAngles.y;
+                //Vector3 a = new Vector3(Mathf.Sin(y), 0, Mathf.Cos(y));
                 // 플레이어에서 타겟으로의 방향 벡터
                 Vector3 directionToTarget = (targetCollider.transform.position - _playerPos.transform.position).normalized;
-
                 // 플레이어의 앞쪽 방향과 타겟 방향 사이의 각도 계산
                 float angle = Vector3.Angle(playerForward, directionToTarget);
-
+                Debug.Log(angle);
                 // 각도 안에 존재하는지 확인
                 if (angle <= (_attackAngle / 2))
                 {
@@ -70,6 +73,7 @@ public class MeleeWeapon : WeaponBase
                     {
                         minDistance = distance;
                         //closestDamageable = damageable;
+                        Debug.Log("맞을 사람 모임 -> " + targetCollider.name);
                         closeGameObject = targetCollider.gameObject;
                     }
                 }
@@ -162,7 +166,7 @@ public class MeleeWeapon : WeaponBase
     #endregion
 
     #region 기즈모 출력 - 플레이어 기준
-    /*private void OnDrawGizmos()
+    private void OnDrawGizmos()
     {
         //왼쪽 라인 플레이어로 부터 
         Vector3 leftDir = Quaternion.Euler(0, -_attackAngle * 0.5f, 0) * _playerPos.transform.forward;
@@ -172,16 +176,16 @@ public class MeleeWeapon : WeaponBase
         Gizmos.DrawLine(_playerPos.transform.position, _playerPos.transform.position + rightDir * _attackRange);
 
         //오버랩 스피어 범위
-        Gizmos.DrawWireSphere(_playerPos.transform.transform.position, _attackRange);
-    }*/
+        Gizmos.DrawWireSphere(transform.transform.position, _attackRange);
+    }
     #endregion
 
     #region 기즈모 출력 - 무기 기준
-    private void OnDrawGizmos()
+    /*private void OnDrawGizmos()
     {
         //오버랩 스피어 범위
         Gizmos.DrawWireSphere(_attackPointPos.transform.transform.position, _attackRange);
-    }
+    }*/
     #endregion
 
     #region 피격 시 색깔 변화 코루틴 - 디버깅용
