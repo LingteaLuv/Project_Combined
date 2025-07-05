@@ -181,7 +181,14 @@ public class QuestManager : Singleton<QuestManager>
         {
             AcceptedItemQuestList.Add(meta);
             int.TryParse(meta.RequiredItemID, out int req);
-            InventoryManager.Instance.AddItemByID(req, meta.RequiredItemQuantity);
+            if (meta.RequiredItemQuantity == 0) // 배달 요구하는 아이템이 0개면, 아이템을 어딘가에 두고 와야 하는 퀘스트
+            {
+                InventoryManager.Instance.AddItemByID(req, meta.RequiredItemQuantity + 1);
+            }
+            else
+            {
+                InventoryManager.Instance.AddItemByID(req, meta.RequiredItemQuantity);
+            }
         }
         else if (meta.Type == QuestType.Collect)
         {

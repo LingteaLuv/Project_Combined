@@ -115,6 +115,14 @@ public class InventoryManager : Singleton<InventoryManager>
         foreach (QuestData q in QuestManager.Instance.AcceptedItemQuestList)
         {
             int.TryParse(q.RequiredItemID, out int reqID);
+            if (q.Type == QuestType.Delivery) // 배달 퀘스트에 한해 요구하는 수량과 동일하게 가지고 있어야 함
+            {
+                if (_craft.CountByID[reqID] == q.RequiredItemQuantity)
+                {
+                    QuestManager.Instance.CompleteQuest(q.QuestID);
+                }
+                continue;
+            }
             if (_craft.CountByID[reqID] >= q.RequiredItemQuantity) //충분히 가지고 있음
             {
                 QuestManager.Instance.CompleteQuest(q.QuestID);
@@ -125,7 +133,12 @@ public class InventoryManager : Singleton<InventoryManager>
     }
     public bool RemoveItemByID(int id, int count)
     {
-        return Craft.RemoveItemByID(id, count);
+        if (Craft.RemoveItemByID(id, count))
+        {
+            StartCoroutine(CheckQuestItem());
+            return true;
+        }
+        return false;
     }
     public void ReduceRightHandItem()
     {
@@ -178,7 +191,7 @@ public class InventoryManager : Singleton<InventoryManager>
             if (Input.GetKeyDown(KeyCode.Alpha6)) Controller.Equip(5);
         }
         
-
+        // 디버그용 코드
         if (Input.GetKeyDown(KeyCode.PageUp))
         {
             num++;
@@ -195,6 +208,11 @@ public class InventoryManager : Singleton<InventoryManager>
         {
             AddItemByID(_itemIDlist[num], 1);
             Debug.Log($"아이템 지급됨");
+        }
+        if (Input.GetKeyDown(KeyCode.End))
+        {
+            RemoveItemByID(_itemIDlist[num], 1);
+            Debug.Log($"아이템 지움");
         }
     }
     public ItemBase GetHandItem(int hand)
