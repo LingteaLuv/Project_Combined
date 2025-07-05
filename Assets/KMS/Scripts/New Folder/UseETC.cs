@@ -16,6 +16,7 @@ public class UseETC : IUseETC
     {
         if (id == 3002)
         {
+            AudioManager.Instance.PlaySFX(AudioManager.Instance._sfxDic["Book 03"], UISceneLoader.Instance.Player.position);
             TextManager.Instance.MemoPopUpText($"{id}");
         }
         else if (id == 0090)

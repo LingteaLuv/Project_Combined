@@ -107,6 +107,7 @@ public class CraftingController : MonoBehaviour
             if (CountByID[recipe.MaterialItemId1] < recipe.MaterialItemQuantity1) 
             {
                 Debug.Log("재료가 부족합니다");
+                AudioManager.Instance.PlaySFX(AudioManager.Instance._sfxDic["Blacksmith 07"], UISceneLoader.Instance.Player.position);
                 return false; //부족
             }
         }
@@ -115,6 +116,7 @@ public class CraftingController : MonoBehaviour
             if (CountByID[recipe.MaterialItemId2] < recipe.MaterialItemQuantity2) 
             {
                 Debug.Log("재료가 부족합니다");
+                AudioManager.Instance.PlaySFX(AudioManager.Instance._sfxDic["Blacksmith 07"], UISceneLoader.Instance.Player.position);
                 return false; 
             }
         }
@@ -123,6 +125,7 @@ public class CraftingController : MonoBehaviour
             if (CountByID[recipe.MaterialItemId3] < recipe.MaterialItemQuantity3)
             {
                 Debug.Log("재료가 부족합니다");
+                AudioManager.Instance.PlaySFX(AudioManager.Instance._sfxDic["Blacksmith 07"], UISceneLoader.Instance.Player.position);
                 return false; 
             }
         }
@@ -131,6 +134,7 @@ public class CraftingController : MonoBehaviour
             if (CountByID[recipe.MaterialItemId4] < recipe.MaterialItemQuantity4)
             {
                 Debug.Log("재료가 부족합니다");
+                AudioManager.Instance.PlaySFX(AudioManager.Instance._sfxDic["Blacksmith 07"], UISceneLoader.Instance.Player.position);
                 return false; 
             }
         }
@@ -143,6 +147,7 @@ public class CraftingController : MonoBehaviour
         UpdateCurrent();
         StartCoroutine(_rs.DelayedUIUpdate());
         _renderer.RenderInventory();
+        AudioManager.Instance.PlaySFX(AudioManager.Instance._sfxDic["Blacksmith 04"], UISceneLoader.Instance.Player.position);
         return true;
     }
 }
