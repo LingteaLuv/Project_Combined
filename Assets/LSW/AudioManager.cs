@@ -10,8 +10,10 @@ public class AudioManager : Singleton<AudioManager>
     [SerializeField] private GameObject _sfxPrefab;
     [SerializeField] private GameObject _uiSfxPrefab;
     [SerializeField] private AudioSource _bgmSource;
-
+    [SerializeField] private List<AudioClip> _sfxList;
+    
     private Dictionary<string, AudioClip> _bgmDic;
+    public Dictionary<string, AudioClip> _sfxDic;
     
     private Queue<AudioSource> _sfxPool;
     private Queue<AudioSource> _uiSfxPool;
@@ -85,6 +87,19 @@ public class AudioManager : Singleton<AudioManager>
             audioSource.spatialBlend = 1f;
             audioSource.PlayOneShot(audioClip);
             StartCoroutine(WaitSFX(audioClip.length, audioSource));
+        }
+    }
+    
+    public void PlaySFX(string clipName, Vector3 position)
+    {
+        if(_sfxDic.ContainsKey(clipName))
+        {
+            AudioSource audioSource = GetSfxSource();
+            audioSource.transform.position = position;
+            audioSource.volume = _curSFXVolume;
+            audioSource.spatialBlend = 1f;
+            audioSource.PlayOneShot(_sfxDic[clipName]);
+            StartCoroutine(WaitSFX(_sfxDic[clipName].length, audioSource));
         }
     }
     
@@ -174,6 +189,12 @@ public class AudioManager : Singleton<AudioManager>
             AudioSource uiSfx = Instantiate(_uiSfxPrefab).GetComponent<AudioSource>();
             _sfxPool.Enqueue(sfx);
             _uiSfxPool.Enqueue(uiSfx);
+        }
+
+        _sfxDic = new Dictionary<string, AudioClip>();
+        for (int i = 0; i < _sfxList.Count; i++)
+        {
+            _sfxDic.Add(_sfxList[i].name,_sfxList[i]);
         }
     }
 }

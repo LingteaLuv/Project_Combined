@@ -118,13 +118,19 @@ public class CreateQuestSO : EditorWindow
             quest.EndNPCID = parts[5];
             quest.EndDialogueID = int.Parse(parts[6]);
             quest.RequiredItemID = parts[7];
-            quest.RequiredItemQuantity = int.Parse(parts[8]);
+            if(int.TryParse(parts[8], out int requiredQuantity))
+            {
+                quest.RequiredItemQuantity = requiredQuantity;
+            }
             quest.RewardItemID = parts[9];
-            quest.RewardItemQuantity = int.Parse(parts[10]);
+            if(int.TryParse(parts[10], out int rewardQuantity))
+            {
+                quest.RewardItemQuantity = rewardQuantity;
+            }
             quest.NextQuestID = parts[11];
             quest.EndDescription = parts[12];
-            quest.TriggerID2 = parts[13];
-            quest.TriggerID1 = parts[14];
+            quest.TriggerID1 = parts[13];
+            quest.TriggerID2 = parts[14];
             
             string assetPath = $"{folderPath}/Quest_{questId}.Asset";
             AssetDatabase.CreateAsset(quest, assetPath);
@@ -232,7 +238,6 @@ public class CreateQuestSO : EditorWindow
             {
                 dialogue.LoopDialogueID = 0;
             }
-            Debug.Log(parts[5]);
             if (parts[5] == "TRUE")
             {
                 dialogue.EndCheck = true;

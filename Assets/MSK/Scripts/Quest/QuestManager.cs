@@ -90,6 +90,9 @@ public class QuestManager : Singleton<QuestManager>
             return;
         }
 
+        // 코드로 들어올 때 사용한 트리거를 딕셔너리에서 삭제
+        TriggerDictionary.Remove(triggerId);
+
         Debug.Log($"[QuestType] questId: {questId}, 현재 상태: {meta.Status}");
 
         switch (meta.Status)
@@ -181,7 +184,14 @@ public class QuestManager : Singleton<QuestManager>
         {
             AcceptedItemQuestList.Add(meta);
             int.TryParse(meta.RequiredItemID, out int req);
-            InventoryManager.Instance.AddItemByID(req, meta.RequiredItemQuantity);
+            if (meta.RequiredItemQuantity == 0) // 배달 요구하는 아이템이 0개면, 아이템을 어딘가에 두고 와야 하는 퀘스트
+            {
+                InventoryManager.Instance.AddItemByID(req, meta.RequiredItemQuantity + 1);
+            }
+            else
+            {
+                InventoryManager.Instance.AddItemByID(req, meta.RequiredItemQuantity);
+            }
         }
         else if (meta.Type == QuestType.Collect)
         {

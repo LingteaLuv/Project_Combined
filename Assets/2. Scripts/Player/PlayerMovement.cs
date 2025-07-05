@@ -59,12 +59,18 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        if (Property.IsDied == true)
+            return;
         _jumpConsumedThisFrame = false;
 
         // Raycast로 지면 체크
         IsGrounded = Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, _groundCheckDistance + 0.1f);
         IsOnLadder = _inputHandler.IsOnLadder;
-        IsRunning = _inputHandler.RunPressed;
+
+        if (_inputHandler.RunPressed && _inputHandler.MoveInput.z > 0.1f)
+            IsRunning = true;
+        else
+            IsRunning = false;
 
         if (Property.Stamina.Value < 5f)
             CanRun = false;
@@ -90,6 +96,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (Property.IsDied == true)
+            return;
         if (!IsOnLadder && IsGrounded)
         {
             HandleMovement(MoveInput);
@@ -121,7 +129,7 @@ public class PlayerMovement : MonoBehaviour
         {
             // 경사면 보정 이동
             moveDir = GetSlopeAdjustedMoveDirection(moveDir);
-  
+
             //  속도 계산 공식 
             float speed = Property.MoveSpeed.Value
                 * (_isCrouching ? Property.CrouchSpeed : 1f)
@@ -181,6 +189,16 @@ public class PlayerMovement : MonoBehaviour
                     return;
                 }
             }
+
+            foreach (var dir in directions)
+            {
+                if (Physics.Raycast(origin, dir, out RaycastHit hit, wallCheckDistance, LayerMask.GetMask("Default")))
+                {
+                    Vector3 gravityDownWall = Vector3.ProjectOnPlane(Vector3.down, hit.normal).normalized;
+                    Rigidbody.velocity += gravityDownWall * Physics.gravity.y * (_fallMultiplier - 1f) * Time.fixedDeltaTime;
+                    return;
+                }
+            }
             Rigidbody.velocity += Vector3.up * Physics.gravity.y * (_fallMultiplier - 1f) * Time.fixedDeltaTime;
         }
     }
@@ -213,7 +231,7 @@ public class PlayerMovement : MonoBehaviour
     //  점프 
     public void Jump()
     {
-        if(Property.Stamina.Value < 10f)
+        if (Property.Stamina.Value < 10f)
             return;
         _jumpConsumedThisFrame = true;
         Property.StaminaConsume(Property.StaminaCostJump);
@@ -242,7 +260,6 @@ public class PlayerMovement : MonoBehaviour
     public bool IsJumpAnimationPlaying()
     {
         bool isPlaying = Controller._animator.GetCurrentAnimatorStateInfo(0).IsName("Jump");
-        Debug.Log($"[IsJumpAnimationPlaying] IsPlaying: {isPlaying}, Time: {Time.time}");
         return isPlaying;
     }
 
