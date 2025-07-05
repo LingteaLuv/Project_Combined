@@ -12,7 +12,7 @@ public class FogControl : MonoBehaviour
 
     private void FogUpdate(DayTime time)
     {
-        Debug.Log(time);
+        //Debug.Log(time);
         if (time == DayTime.MidNight || time == DayTime.Morning)
         {
             SetFogTrigger();

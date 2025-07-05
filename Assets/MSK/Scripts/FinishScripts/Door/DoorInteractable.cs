@@ -15,12 +15,12 @@ public class DoorInteractable : MonoBehaviour, IInteractable
     {
         _door = GetComponent<HingeDoorOpen>();
         outlineTarget = _door._parentToRotate != null ? _door._parentToRotate.gameObject : null;
-
+   
         if (outlineTarget != null)
             _outlinable = outlineTarget.GetComponent<Outlinable>();
         else
             _outlinable = GetComponent<Outlinable>();
-
+      
         if (_outlinable != null)
             _outlinable.enabled = false;
     }
@@ -35,7 +35,7 @@ public class DoorInteractable : MonoBehaviour, IInteractable
     {
         if (_outlinable == null)
             return;
-
+      
         if (enable && _door != null && !_door.CanOpen())
         {
             SetOutline(true, Color.red);
