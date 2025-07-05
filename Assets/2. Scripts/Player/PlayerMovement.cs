@@ -196,8 +196,6 @@ public class PlayerMovement : MonoBehaviour
                 {
                     Vector3 gravityDownWall = Vector3.ProjectOnPlane(Vector3.down, hit.normal).normalized;
                     Rigidbody.velocity += gravityDownWall * Physics.gravity.y * (_fallMultiplier - 1f) * Time.fixedDeltaTime;
-                    Rigidbody.position += hit.normal * 0.01f;
-
                     return;
                 }
             }
