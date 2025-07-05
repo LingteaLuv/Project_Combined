@@ -386,6 +386,7 @@ public class InventoryController : MonoBehaviour
                 {
                     a -= _model.InvItems[i].StackCount;
                     if (i < 6) UnEquipAfterRemove(i); // 장비창의 아이템이 빠져나갈 경우 장착 해제
+                    UnselectSlot(i); // 선택된 슬롯일 경우 선택 해제
                     _model.InvItems[i] = null;
                 }
                 else if (_model.InvItems[i].StackCount > a)
@@ -542,6 +543,14 @@ public class InventoryController : MonoBehaviour
     public void UseSeletedItem()
     {
 
+    }
+
+    private void UnselectSlot(int index)
+    {
+        if (SelectedIndex != index) return;
+        _beforeSelectedIndex = SelectedIndex;
+        SelectedIndex = -1;
+        _renderer.SelectRender(_beforeSelectedIndex, SelectedIndex);
     }
 
     public void SelectSlot(int index)
