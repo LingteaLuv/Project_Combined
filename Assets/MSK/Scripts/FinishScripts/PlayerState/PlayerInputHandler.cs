@@ -1,4 +1,3 @@
-using Unity.Properties;
 using UnityEngine;
 using UnityEngine.InputSystem.EnhancedTouch;
 
@@ -13,8 +12,29 @@ public class PlayerInputHandler : MonoBehaviour
     public bool IsOnLadder { get; private set; }
     public bool InteractPressed { get; private set; }
     public bool RunPressed { get; private set; }
-    public bool TestKey {  get; private set; }
+    public bool TestKey { get; private set; }
 
+    private DoorInteractable _currentDoor;
+    private void DoorFind()
+    {
+        DoorInteractable door = null;
+        // Raycast로 문 감지
+        Ray ray = new Ray(transform.position + Vector3.up * 1.0f, transform.forward);
+        if (Physics.Raycast(ray, out RaycastHit doorHit, 1f))
+        {
+            door = doorHit.collider.GetComponentInParent<DoorInteractable>();
+        }
+
+        if (door != _currentDoor)
+        {
+            if (_currentDoor != null)
+                _currentDoor.Highlight(false);
+
+            if (door != null)
+                door.Highlight(true);
+            _currentDoor = door;
+        }
+    }
     private void Update()
     {
         float x = Input.GetAxis("Horizontal");
@@ -25,8 +45,9 @@ public class PlayerInputHandler : MonoBehaviour
         JumpPressed = Input.GetButtonDown("Jump");
         bool crouch = Input.GetKey(KeyCode.LeftControl);
         bool run = Input.GetKey(KeyCode.LeftShift);
-
         InteractPressed = Input.GetKeyDown(KeyCode.F);
+
+        DoorFind();
 
         if (crouch && run)
         {
@@ -48,16 +69,13 @@ public class PlayerInputHandler : MonoBehaviour
             CrouchHeld = false;
             RunPressed = false;
         }
-        if (Physics.Raycast(transform.position+Vector3.up * 0.1f, transform.forward, out RaycastHit hit, 0.3f))
+
+        if (Physics.Raycast(transform.position + Vector3.up * 0.1f, transform.forward, out RaycastHit ladderHit, 0.3f))
         {
-            if (hit.collider.CompareTag("Ladder"))
-            {
+            if (ladderHit.collider.CompareTag("Ladder"))
                 IsOnLadder = true;
-            }
             else
-            {
                 IsOnLadder = false;
-            }
         }
         else
         {
