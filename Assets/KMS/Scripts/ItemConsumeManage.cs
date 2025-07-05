@@ -36,10 +36,6 @@ public class ItemConsumeManage : MonoBehaviour
         {
             Reload();
         }
-        if (Input.GetKeyDown(KeyCode.End))
-        {
-            _control.ReduceEquippedItem(0, 1);
-        }
         if (Input.GetKeyDown(KeyCode.ScrollLock))
         {
             _model.InvItems[_control.EquippedSlotIndex[0]].CurrentAmmoCount -= 1;

@@ -49,7 +49,6 @@ public class DialogueManager : Singleton<DialogueManager>
         Init();
     }
     
-    
     private void Init()
     {
         DialogueDic = new Dictionary<int, DialogueSO>();
