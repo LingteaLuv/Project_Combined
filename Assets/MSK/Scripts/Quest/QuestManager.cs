@@ -236,10 +236,14 @@ public class QuestManager : Singleton<QuestManager>
         }
 
         meta.Status = QuestStatus.Closed;
-        int.TryParse(meta.RequiredItemID, out int req);
-        InventoryManager.Instance.RemoveItemByID(req, meta.RequiredItemQuantity);
-        int.TryParse(meta.RewardItemID, out int rew); // 추가 작성된 부분
-        InventoryManager.Instance.AddItemByID(rew, meta.RewardItemQuantity); // 추가 작성된 부분
+        if (int.TryParse(meta.RequiredItemID, out int req))
+        {
+            InventoryManager.Instance.RemoveItemByID(req, meta.RequiredItemQuantity);
+        }
+        if (int.TryParse(meta.RewardItemID, out int rew))
+        {
+            InventoryManager.Instance.AddItemByID(rew, meta.RewardItemQuantity);
+        }
 
         // NextQuestID가 null/빈문자열이 아니면 다음 퀘스트 해금 시도
         if (!String.IsNullOrEmpty(meta.NextQuestID) &&
