@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem.XR;
 
 /// <summary>
 /// 플레이어가 사망했을 때의 상태입니다.
@@ -15,13 +16,13 @@ public class PlayerDeadState : PlayerState
     public override void Enter()
     {
         _timer = _deathDelay;
-        var anim = _movement.Controller._animator;
-        anim.SetBool("IsDead", true);
+
+        _movement.Controller._animator.SetTrigger("IsDead");
 
         // 모든 추가 레이어 비활성화
-        for (int i = 1; i < anim.layerCount; i++)
-            anim.SetLayerWeight(i, 0f);
-        anim.SetLayerWeight(0, 1f); // Base Layer만 활성화
+        for (int i = 1; i < _movement.Controller._animator.layerCount; i++)
+            _movement.Controller._animator.SetLayerWeight(i, 0f);
+        _movement.Controller._animator.SetLayerWeight(0, 1f); // Base Layer만 활성화
 
         _movement.SetGravity(true);
         _movement.Rigidbody.velocity = Vector3.zero;
