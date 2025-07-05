@@ -15,6 +15,7 @@ public class TomatoTimeline : TimelineControl
     private void Start()
     {
         //_pni.OnInteract3 += StartTL;
+        DialogueManager.Instance.OnTimeline += StartTL;
     }
     private void StartTL(string id)
     {
