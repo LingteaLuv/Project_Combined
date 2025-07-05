@@ -48,7 +48,7 @@ public class LightingManager : MonoBehaviour
     private void UpdateLighting(float timePercent)
     {
         bool isDay = _timeManager.CurrentTimeOfDay.Value == DayTime.Morning
-                  || _timeManager.CurrentTimeOfDay.Value == DayTime.Day;
+                  || _timeManager.CurrentTimeOfDay.Value == DayTime.Day; 
 
         // 현재 시간대에 맞는 Preset 선택
         LightingPreset activePreset = isDay ? _dayPreset : _nightPreset;

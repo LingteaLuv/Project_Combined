@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        _movement.Property.OnDied += OnPlayerDied;
         _fsm.ChangeState(IdleState);
     }
 
@@ -111,11 +112,11 @@ public class PlayerController : MonoBehaviour
     private void OnPlayerDamaged(int damage)
     {
         _fsm.ChangeState(HitState);
-        HitState.SetDamage(damage);
     }
 
     private void OnPlayerDied()
     {
+        Debug.Log("사망");
         _fsm.ChangeState(DeadState);
     }
     #endregion

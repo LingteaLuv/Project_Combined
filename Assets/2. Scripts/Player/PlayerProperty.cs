@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,12 +22,13 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
     private float _moveSpeed;
     private float _atkSpeed;
     private float _atkDamage;
-    
+
     [SerializeField] private float _baseAtkSpeed;
     [SerializeField] private float _baseAtkDamage;
 
     // Todo : 외부(강한 행동 메서드)에서 호출하여 행동 제약 조건(PlayerController)에 대입
     public bool IsOnStaminaPenalty { get; private set; }
+    public bool IsDied { get; private set; }
 
     private float _eatTimer;
     private float _drinkTimer;
@@ -60,7 +62,7 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
     public float StaminaCostRun { get; private set; }
     public float StaminaCostJump { get; private set; }
 
-    
+
     public float RunNoise { get; private set; }
     public float CrouchNoise { get; private set; }
     public float MoveNoise { get; private set; }
@@ -78,7 +80,7 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
     private float _hungerBuffAtkSpeed;
     private float _hungerDebuffThreshold;
     private float _hungerDebuffAtkSpeed;
-    
+
     //사운드 관련
     private float _hungerAndMoisture;
     private float _atkSFXCooldown;
@@ -91,7 +93,10 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
     private AudioClip _runSFX;
     private AudioClip _staminaDepletionSFX;
     private AudioClip _destroyEquipmentSFX;
-    
+
+    // 사망 처리용 이벤트 추가
+    public event Action OnDied;
+
     private void Awake()
     {
         Init();
@@ -130,7 +135,7 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
         {
             AtkSpeed.Value = _atkSpeed;
         }
-        Thirsty.Act(ref _moveSpeed,  playerInfoSO.MoveSpeed, playerInfoSO.MoistureBuffMoveSpeed,playerInfoSO.MoistureDebuffMoveSpeed);
+        Thirsty.Act(ref _moveSpeed, playerInfoSO.MoveSpeed, playerInfoSO.MoistureBuffMoveSpeed, playerInfoSO.MoistureDebuffMoveSpeed);
         MoveSpeed.Value = _moveSpeed;
         Stamina.Act();
         IsOnStaminaPenalty = Stamina.IsOnPenalty;
@@ -198,6 +203,7 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
         {
             if (!_isOnDepletion) break;
             Hp.Decrease(_depletionHp);
+            IsPcDied();
             yield return _delay;
         }
         _isOnCorDecreaseHp = false;
@@ -271,7 +277,7 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
         //  Max Hunger 없음
         Hunger = new Hunger(100);
         Thirsty = new Thirsty(playerInfoSO.MaxMoisture);
-        
+
         _delay = new WaitForSeconds(1f);
         _eatTimer = MaxEatTimer;
         _drinkTimer = MaxDrinkTimer;
@@ -280,7 +286,7 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
         MoveSpeed = new Property<float>(playerInfoSO.MoveSpeed);
         AtkSpeed = new Property<float>(_baseAtkSpeed);
         AtkDamage = new Property<float>(_baseAtkDamage);
-        
+
         // hp 관련
         _depletionHp = playerInfoSO.DepletionHp;
         _hungerDecrease = playerInfoSO.HungerDecrease;
@@ -318,14 +324,14 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
         _atkSFXCooldown = playerInfoSO.AtkSFXCooldown;
         _hitSFXCooldown = playerInfoSO.HitSFXCooldown;
 
-        
+
         _runSFX = playerInfoSO.RunSFX;
         _atkSFX = playerInfoSO.AtkSFX;
         _jumpSFX = playerInfoSO.JumpSFX;
         _hitSFX = playerInfoSO.HitSFX;
         _staminaDepletionSFX = playerInfoSO.StaminaDepletionSFX;
         _destroyEquipmentSFX = playerInfoSO.DestroyEquipmentSFX;
-        
+
 
     }
 
@@ -387,15 +393,24 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
         if (damage > 0)
         {
             Hp.Decrease(damage);
+            IsPcDied();
         }
     }
-
     private IEnumerator HitInWater(float damage)
     {
         while (true)
         {
             yield return _delay;
             Hp.Decrease(damage);
+            IsPcDied();
+        }
+    }
+    private void IsPcDied()
+    {
+        if (Hp.Value <= 0)
+        {
+            IsDied = true;
+            OnDied?.Invoke();
         }
     }
 }
