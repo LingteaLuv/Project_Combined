@@ -27,8 +27,10 @@ public class ThrowableWeapon : WeaponBase
     [SerializeField] private AnimationCurve powerCurve = AnimationCurve.EaseInOut(0, 0, 1, 1); // 파워 증가 곡선 
 
     [Header("날아가면서 회전 횟수")]
-    private float throwRotationMaxValue;    //max회전값
+    private float throwRotationMaxValue = 50;    //max회전값
     private float throwRotationValue;       //돌아가는 회전값
+    private float MaxthrowRotationValue = 20;    //돌아가는 회전값의 최대
+    private float MinthrowRotationValue = 1;   //돌아가는 회전값의 최소
 
     //LineRender Value
     public float projectileSpeed = 10f;     //라인렌더러가 사용하는 speed값인데 변경필요
@@ -36,11 +38,13 @@ public class ThrowableWeapon : WeaponBase
     public float timeStep = 0.1f;           //0.1초마다 한번씩 찍기
     private LineRenderer lineRenderer;      //라인렌더러 변수
     private Vector3 gravity;                //중력값
+    private Rigidbody rb;                   //리지드바디
 
     // 차징 관련 변수
     private float chargeStartTime;
     private float currentChargeTime;
     private float currentPower;
+    private float currentRotationValue;
     private bool isCharging;
 
     private void Start() => readyToThrow = true;
@@ -50,11 +54,10 @@ public class ThrowableWeapon : WeaponBase
     {
         HandleInput();
         UpdateCharging();
-        DrawTrajectory();
     }
     private void HandleInput()
     {
-        if (Input.GetMouseButtonDown(0) && readyToThrow)  // (Input.GetMouseButton(0)) 
+        if (Input.GetMouseButtonDown(0))  // (Input.GetMouseButton(0)) 
         {
             StartCharging();
         }
@@ -69,6 +72,7 @@ public class ThrowableWeapon : WeaponBase
     {
         base.Init();
         lineRenderer = GetComponent<LineRenderer>();
+        rb = gameObject.GetComponent<Rigidbody>();
         gravity = Physics.gravity;
     }
 
@@ -91,6 +95,8 @@ public class ThrowableWeapon : WeaponBase
     {
         if (!isCharging) return;
 
+        DrawTrajectory();
+
         currentChargeTime = Time.time - chargeStartTime;
 
         // 최대 차징 시간을 넘지 않도록 제한
@@ -99,24 +105,25 @@ public class ThrowableWeapon : WeaponBase
         // 파워 계산 (0~1 사이의 값)
         float normalizedTime = currentChargeTime / maxChargeTime;
         currentPower = powerCurve.Evaluate(normalizedTime);
+        currentRotationValue = powerCurve.Evaluate(normalizedTime);
 
         // 현재 속도 계산
         float currentSpeed = Mathf.Lerp(minSpeed, maxSpeed, currentPower);
+        float rotationValue = Mathf.Lerp(MinthrowRotationValue, MaxthrowRotationValue, currentRotationValue);
 
         // 디버그 정보 출력 (옵션)
-        Debug.Log($"차징 시간: {currentChargeTime:F2}s, 파워: {currentPower:F2}, 속도: {currentSpeed:F2}");
+        Debug.Log($"차징 시간: {currentChargeTime:F2}s, 파워: {currentPower:F2}, 속도: {currentSpeed:F2}, 회전속도: {rotationValue:F2}");
     }
 
     private void StopCharging()
     {
         isCharging = false;
+        ClearTrajectory();
     }
 
 
     protected override void ExecuteAttack()
     {
-        Rigidbody rb = gameObject.GetComponent<Rigidbody>();
-
         transform.parent = null; // 손에서 분리
 
         rb.isKinematic = false;
@@ -124,14 +131,15 @@ public class ThrowableWeapon : WeaponBase
         rb.useGravity = true;
 
         float finalSpeed = Mathf.Lerp(minSpeed, maxSpeed, currentPower);
+        float rotationValue = Mathf.Lerp(MinthrowRotationValue, MaxthrowRotationValue, currentRotationValue);
 
         targetDir = transform.forward * finalSpeed;
-        rb.velocity = targetDir;
+        rb.velocity = targetDir;    
 
         // TODO - speed값에 따라 회전 값을 다르게 해줘야 할 것 같다.
-        rb.maxAngularVelocity = 50;
+        rb.maxAngularVelocity = throwRotationMaxValue;
 
-        rb.angularVelocity = transform.right * 30;
+        rb.angularVelocity = transform.right * rotationValue;
 
         Debug.Log($"투척 실행! 최종 속도: {finalSpeed:F2}");
 
@@ -210,6 +218,10 @@ public class ThrowableWeapon : WeaponBase
         lineRenderer.SetPositions(points);*/
     }
 
+    private void ClearTrajectory()
+    {
+        lineRenderer.positionCount = 0; // 정점을 0개로 만들어 화면에서 사라지게
+    }
 
     private void OnCollisionEnter(Collision collision)
     {
