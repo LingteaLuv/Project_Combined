@@ -129,7 +129,7 @@ public class PlayerMovement : MonoBehaviour
         {
             // 경사면 보정 이동
             moveDir = GetSlopeAdjustedMoveDirection(moveDir);
-  
+
             //  속도 계산 공식 
             float speed = Property.MoveSpeed.Value
                 * (_isCrouching ? Property.CrouchSpeed : 1f)
@@ -189,6 +189,16 @@ public class PlayerMovement : MonoBehaviour
                     return;
                 }
             }
+
+            foreach (var dir in directions)
+            {
+                if (Physics.Raycast(origin, dir, out RaycastHit hit, wallCheckDistance, LayerMask.GetMask("Default")))
+                {
+                    Vector3 gravityDownWall = Vector3.ProjectOnPlane(Vector3.down, hit.normal).normalized;
+                    Rigidbody.velocity += gravityDownWall * Physics.gravity.y * (_fallMultiplier - 1f) * Time.fixedDeltaTime;
+                    return;
+                }
+            }
             Rigidbody.velocity += Vector3.up * Physics.gravity.y * (_fallMultiplier - 1f) * Time.fixedDeltaTime;
         }
     }
@@ -221,7 +231,7 @@ public class PlayerMovement : MonoBehaviour
     //  점프 
     public void Jump()
     {
-        if(Property.Stamina.Value < 10f)
+        if (Property.Stamina.Value < 10f)
             return;
         _jumpConsumedThisFrame = true;
         Property.StaminaConsume(Property.StaminaCostJump);
