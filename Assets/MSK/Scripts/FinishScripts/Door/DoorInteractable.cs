@@ -1,6 +1,5 @@
 using EPOOutline;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(HingeDoorOpen))]
 public class DoorInteractable : MonoBehaviour, IInteractable
@@ -8,18 +7,13 @@ public class DoorInteractable : MonoBehaviour, IInteractable
     [Header("Test Door Init")]
     [SerializeField] private ItemBase testKeys;
 
-    [Header("Optional Outline")]
     private GameObject outlineTarget;
-    [SerializeField] private bool useOutline = true;
-    [SerializeField] private AudioClip interactionSound;
-
     private HingeDoorOpen _door;
     private Outlinable _outlinable;
 
     private void Awake()
     {
         _door = GetComponent<HingeDoorOpen>();
-
         outlineTarget = _door._parentToRotate != null ? _door._parentToRotate.gameObject : null;
 
         if (outlineTarget != null)
@@ -33,14 +27,13 @@ public class DoorInteractable : MonoBehaviour, IInteractable
 
     public void Interact()
     {
-        if (interactionSound != null)
-            AudioSource.PlayClipAtPoint(interactionSound, transform.position, 1.0f);
         _door.Toggle(testKeys);
         SetOutline(false);
     }
 
     public void Highlight(bool enable)
-    {   
+    {
+        // 열 수 없는 상태면 무조건 아웃라인 꺼짐
         if (enable && _door != null && !_door.CanOpen())
         {
             SetOutline(false);
@@ -51,7 +44,7 @@ public class DoorInteractable : MonoBehaviour, IInteractable
 
     private void SetOutline(bool enable)
     {
-        if (_outlinable != null && useOutline)
+        if (_outlinable != null)
             _outlinable.enabled = enable;
     }
 }
