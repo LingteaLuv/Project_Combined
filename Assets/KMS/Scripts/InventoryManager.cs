@@ -99,6 +99,7 @@ public class InventoryManager : Singleton<InventoryManager>
     }
     public bool AddItemByID(int id, int count)
     {
+        if (count == 0) return true;
         int d = Craft.GetMaxDur(id);
         if( Craft.AddItemByID(id, count, d))
         {
@@ -133,6 +134,7 @@ public class InventoryManager : Singleton<InventoryManager>
     }
     public bool RemoveItemByID(int id, int count)
     {
+        if (count == 0) return true;
         if (Craft.RemoveItemByID(id, count))
         {
             StartCoroutine(CheckQuestItem());
@@ -150,7 +152,7 @@ public class InventoryManager : Singleton<InventoryManager>
         {
             if (remove) // true(기본값) 이면 지움
             {
-                _controller.RemoveItem(_itemDictionary.ItemDic[id], 1);
+                RemoveItemByID(id, 1);
             }
             return true;
         }
