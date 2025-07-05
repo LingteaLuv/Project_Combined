@@ -14,13 +14,16 @@ public class PlayerDeadState : PlayerState
 
     public override void Enter()
     {
-        Debug.Log("사망");
         _timer = _deathDelay;
-        // 죽음 애니메이션 재생
-        _movement.Controller._animator.SetBool("IsDead", true);
-        // 중력 유지, 입력 비활성화 필요 시 여기에
+        var anim = _movement.Controller._animator;
+        anim.SetBool("IsDead", true);
+
+        // 모든 추가 레이어 비활성화
+        for (int i = 1; i < anim.layerCount; i++)
+            anim.SetLayerWeight(i, 0f);
+        anim.SetLayerWeight(0, 1f); // Base Layer만 활성화
+
         _movement.SetGravity(true);
-        // 움직임 멈춤
         _movement.Rigidbody.velocity = Vector3.zero;
 
         // TODO: 필요한 경우, InputHandler 비활성화 또는 UI 연출

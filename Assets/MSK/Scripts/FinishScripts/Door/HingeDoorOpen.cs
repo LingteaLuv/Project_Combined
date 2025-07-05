@@ -95,7 +95,10 @@ public class HingeDoorOpen : MonoBehaviour, IInteractable
     private void TryOpen(ItemBase playerKeys)
     {
         if (_key == null || InventoryManager.Instance.FindItemByID(_key.ItemID))
+        {
             StartCoroutine(RotateDoor(true));
+            _key = null;
+        }
         else
             Debug.Log("열쇠가 없습니다.");
     }

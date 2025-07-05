@@ -12,7 +12,7 @@ public class NPCInteractable : MonoBehaviour
     [SerializeField] private GameObject _ballon;
     [SerializeField] private TMP_Text _ballonText;
 
-    private string id => Dialogue._data.NPCID;
+    public string ID => Dialogue._data.NPCID;
     private void Start()
     {
         _ballon.SetActive(false);
@@ -42,28 +42,28 @@ public class NPCInteractable : MonoBehaviour
 
     private void SetAvailableText(QuestData qd, QuestProgress qp)
     {
-        if (qd.StartNPCID == id)
+        if (qd.StartNPCID == ID)
         {
             _ballonText.text = "?";
         }
     }
     private void SetAcceptedText(QuestData qd, QuestProgress qp)
     {
-        if (qd.StartNPCID == id)
+        if (qd.StartNPCID == ID)
         {
             _ballonText.text = "...";
         }
     }
     private void SetCompletedText(QuestData qd, QuestProgress qp)
     {
-        if (qd.EndNPCID == id)
+        if (qd.EndNPCID == ID)
         {
             _ballonText.text = "!";
         }
     }
     private void SetClosedText(QuestData qd, QuestProgress qp)
     {
-        if (qd.EndNPCID == id)
+        if (qd.EndNPCID == ID)
         {
             _ballonText.text = "...";
         }
