@@ -141,7 +141,7 @@ public class ThrowableWeapon : WeaponBase
 
         rb.angularVelocity = transform.right * rotationValue;
 
-        Debug.Log($"투척 실행! 최종 속도: {finalSpeed:F2}");
+        Debug.Log($"투척 실행! 최종 속도: {finalSpeed:F2}, 회전값 : {rotationValue:F2}");
 
 
         Invoke(nameof(ResetThrow), throwCooldown); 
@@ -230,6 +230,7 @@ public class ThrowableWeapon : WeaponBase
         {
             damageable.Damaged(1/*_throwData.AtkDamage*/);
         }
+        gameObject.SetActive(false);
     }
 
     /*private void Throw()
