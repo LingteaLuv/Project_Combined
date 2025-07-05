@@ -92,13 +92,21 @@ PlayableDirector:
     value: {fileID: 2759581365712556666}
   - key: {fileID: 6455569647118784238, guid: 73d841f1894f05546bf3372e00820168, type: 2}
     value: {fileID: 0}
+  - key: {fileID: -4749185170841040877, guid: 28899de045db10d4b992dfa3417b0042, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: -7965845103648179847, guid: 28899de045db10d4b992dfa3417b0042, type: 2}
+    value: {fileID: 2759581365712556666}
   m_ExposedReferences:
     m_References:
     - ad45ab31ccc8c244aa0d08ed6b1aa6e7: {fileID: 8645896163481539558}
     - 05dda3c5c75a97641a3ab6a1f63c1696: {fileID: 3549386032361390860}
+    - 7ff2b8886041bb046be22f7baff582b4: {fileID: 3549386032361390860}
     - cba8c6381d87a2149948067ba4145cb4: {fileID: 0}
     - 680d2d9c8a74c474f843a5b7a0a28e7c: {fileID: 8645896163481539558}
+    - 9ed835ea42738ee45a6580cf30f89204: {fileID: 8645896163481539558}
     - 0f7ea0ef0b16bfa46a714e0967c3d938: {fileID: 8645896163481539558}
+    - 7f465a84ab078494ab4c0a1a701f3ced: {fileID: 0}
+    - bfafca4fd848c38449510e4b3f9c839c: {fileID: 0}
     - f43ea4fdd6b27d648b072a2ff9f97601: {fileID: 0}
 --- !u!114 &6810861211733983739
 MonoBehaviour:
@@ -159,27 +167,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d37e5385efd7064cb1d54c94960acae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Resolution: 33
+  m_Resolution: 39
   m_Appearance:
     pathColor: {r: 0, g: 1, b: 0, a: 1}
     inactivePathColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    width: 0.2
+    width: 0.7
   m_Looped: 0
   m_Waypoints:
   - position: {x: 0, y: 0, z: -5}
     tangent: {x: 1, y: 0, z: 0}
     roll: 0
-  - position: {x: 0.827925, y: 9.773345, z: 4.2428656}
+  - position: {x: 1.6026249, y: 11.347051, z: 7.109468}
     tangent: {x: -0.008811653, y: 0.5770483, z: 4.846548}
     roll: 0
-  - position: {x: -1.1415185, y: 10.712927, z: 23.950336}
+  - position: {x: -1.141522, y: 11.1359215, z: 23.950335}
     tangent: {x: -0.8113569, y: -0.54347324, z: 4.4538803}
     roll: 0
-  - position: {x: -7.533144, y: 2.0690334, z: 52.07679}
+  - position: {x: -12.348887, y: 4.6498175, z: 44.95911}
     tangent: {x: -6.1796594, y: 0.064585686, z: 1.9343567}
-    roll: 0
-  - position: {x: -17.239206, y: 2.1350923, z: 57.129078}
-    tangent: {x: 0.3721962, y: 0.064582825, z: 6.1764946}
     roll: 0
 --- !u!1 &2807146720589344992
 GameObject:
@@ -380,7 +385,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5117602775942865399}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.37591058, y: 0.38935626, z: -0.1780982, w: 0.82181144}
+  m_LocalRotation: {x: -0.002945551, y: 0.54360414, z: 0.0019077236, w: 0.8393344}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.40000004, y: 0.41322315, z: 1}
   m_ConstrainProportionsScale: 0
@@ -404,9 +409,9 @@ MonoBehaviour:
   - m_Script
   m_LockStageInInspector: 
   m_StreamingVersion: 20170927
-  m_Priority: 0
+  m_Priority: 1
   m_StandbyUpdate: 2
-  m_LookAt: {fileID: 0}
+  m_LookAt: {fileID: 7834906732465922918}
   m_Follow: {fileID: 0}
   m_Lens:
     FieldOfView: 60.000004

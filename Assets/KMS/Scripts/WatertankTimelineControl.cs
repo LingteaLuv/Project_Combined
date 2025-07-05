@@ -8,9 +8,28 @@ public class WatertankTimelineControl : TimelineControl
     [SerializeField] Transform _start;
     [SerializeField] Transform _last;
 
+    [SerializeField] PlayerNPCInteractor _pni;
+
+    [SerializeField] private string _startNPCID;
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.F3))
+        {
+            _hasRun = true;
+            _pd.Play();
+            StartCoroutine(Position());
+            StartCoroutine(DisableControl());
+        }
+    }
+    private void Start()
+    {
+        _pni.OnInteract3 += StartTL;
+    }
+
+    private void StartTL(string id)
+    {
+        if (!_hasRun && id == _startNPCID)
         {
             _hasRun = true;
             _pd.Play();

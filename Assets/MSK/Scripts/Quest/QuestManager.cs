@@ -289,7 +289,7 @@ public class QuestManager : Singleton<QuestManager>
 
     /// <summary>
     /// NPC의 ID로 해당 NPC가 표시해야 할 퀘스트 상태를 반환합니다.
-    /// 완료 NPC(EndNPCID)가 우선이며, 그 후 수주 NPC(StartNPCID)를 검사합니다.
+    /// 완료 NPC(EndNPCID)가 우선이며, 그 후 수주 NPC(StartNPCID)를 검사합니다.s
     /// </summary>
     public QuestStatus? GetNpcQuestStatus(string npcId)
     {
