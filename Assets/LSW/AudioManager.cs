@@ -13,7 +13,7 @@ public class AudioManager : Singleton<AudioManager>
     [SerializeField] private List<AudioClip> _sfxList;
     
     private Dictionary<string, AudioClip> _bgmDic;
-    private Dictionary<string, AudioClip> _sfxDic;
+    public Dictionary<string, AudioClip> _sfxDic;
     
     private Queue<AudioSource> _sfxPool;
     private Queue<AudioSource> _uiSfxPool;

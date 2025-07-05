@@ -225,6 +225,7 @@ public class UIManager : Singleton<UIManager>
     {
         if (IsUIOpened.Value) return; //다른게 열려있음
         if (UISceneLoader.Instance.Playerattack.IsAttacking) return; // 공격 중에 불가
+        AudioManager.Instance.PlayUISFX(AudioManager.Instance._sfxDic["Bag 15"]);
         IsUIOpened.Value = true;
         ModalBase.SetActive(true);
         Current = cur;
