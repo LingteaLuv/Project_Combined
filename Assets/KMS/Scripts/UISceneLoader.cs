@@ -8,6 +8,8 @@ public class UISceneLoader : Singleton<UISceneLoader>
 {
     [SerializeField] public PlayerAttack Playerattack;
 
+    public Transform Player => Playerattack.gameObject.transform;
+
     protected override bool ShouldDontDestroy => false;
     protected override void Awake()
     {

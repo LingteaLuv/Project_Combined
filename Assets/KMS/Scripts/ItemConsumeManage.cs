@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class ItemConsumeManage : MonoBehaviour
 {
+
+    [SerializeField] ParticleSystem _ps;
     private InventoryController _control;
     private InventoryModel _model;
     private CraftingController _craft;
@@ -52,7 +54,21 @@ public class ItemConsumeManage : MonoBehaviour
         if (item == null) return; //오른손 빈칸임
         if (item.Data.Type != ItemType.Consumable) return; //소모품 아님
         _consume.Consume(item.Data);
+        SoundEffect(item.Data.ItemID);
         _control.RemoveEquippedItem(0); //오른손 아이템 지움
+        
+    }
+
+    private void SoundEffect(int id)
+    {
+        if (id == 1407 || id == 1408)
+        {
+            AudioManager.Instance.PlaySFX(AudioManager.Instance._sfxDic["Food Drink 02"], UISceneLoader.Instance.Player.position);
+        }
+        else
+        {
+            AudioManager.Instance.PlaySFX(AudioManager.Instance._sfxDic["Food Eat 05"], UISceneLoader.Instance.Player.position);
+        }
     }
 
     public bool Reload() //현재 오른손에 든 총의 리로드 개수 만큼 있으면 지우고 장전, 없으면 false
@@ -64,6 +80,7 @@ public class ItemConsumeManage : MonoBehaviour
         if (_craft.RemoveItemByID((_model.InvItems[_control.EquippedSlotIndex[0]].Data as GunItem).AmmoID, need))
         {
             _model.InvItems[_control.EquippedSlotIndex[0]].SetAmmoCount(MaxCount);
+            AudioManager.Instance.PlaySFX(AudioManager.Instance._sfxDic["Pump_Reload"], UISceneLoader.Instance.Player.position);
             return true;
         }
         else
@@ -76,6 +93,7 @@ public class ItemConsumeManage : MonoBehaviour
     {
         Item exist = _model.InvItems[index];
         if (exist.Data.Type != ItemType.Consumable) return false; // 이후 장비아이템에 대한 equipbutton실행될듯
+        SoundEffect(exist.Data.ItemID);
         _control.RemoveSelectedItem();
         _consume.Consume(exist.Data);
         return true;

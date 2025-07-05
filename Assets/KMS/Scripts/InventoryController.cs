@@ -74,6 +74,7 @@ public class InventoryController : MonoBehaviour
         if (target.Durability <= 0)
         {
             RemoveEquippedItem(index);
+            AudioManager.Instance.PlaySFX(AudioManager.Instance._sfxDic["Impact_08"], UISceneLoader.Instance.Player.position);
         }
         else
         {
