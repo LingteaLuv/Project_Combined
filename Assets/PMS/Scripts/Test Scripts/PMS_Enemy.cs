@@ -10,7 +10,7 @@ public class PMS_Enemy : MonoBehaviour, IDamageable
         hp = 50;
     }
 
-    public void Damaged(int aktDamage)
+    public void Damaged(float aktDamage)
     {
         hp -= aktDamage;
         Debug.Log($"[{gameObject.name}] Current HP: {hp}");

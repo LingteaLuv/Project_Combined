@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
+public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler, IDamageable
 {
     [SerializeField] public PlayerInfo playerInfoSO;
 
@@ -29,6 +29,7 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
     // Todo : 외부(강한 행동 메서드)에서 호출하여 행동 제약 조건(PlayerController)에 대입
     public bool IsOnStaminaPenalty { get; private set; }
     public bool IsDied { get; private set; }
+    public bool IsInvincible { get; private set; }
 
     private float _eatTimer;
     private float _drinkTimer;
@@ -96,6 +97,8 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
 
     // 사망 처리용 이벤트 추가
     public event Action OnDied;
+    // 피격 처리용 이벤트 추가
+    public event Action OnHited;
 
     private void Awake()
     {
@@ -412,5 +415,43 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler
             IsDied = true;
             OnDied?.Invoke();
         }
+    }
+    
+    public void Damaged(float hitDamage)
+    {
+        // 이미 죽었다면 처리 할 필요가 없음
+        if (IsDied || IsInvincible) return;
+
+        // 루팅중이라면 아이템 파밍 초기화
+        LootManager.Instance.CancelBlockHolding();
+
+        //패턴 일치
+        if (PlayerWeaponManager.Instance.LeftCurrentWeapon is IDefendable defendableWeapon)
+        {
+            //만약 방패가 있다면 해당 방패의 방어력 만큼 hitDamage감소
+            hitDamage -= defendableWeapon.GetDefenseAmount();
+            InventoryManager.Instance.DecreaseShieldDurability();
+        }
+
+        //방어력이 더크면 힐되므로 0보다 작으면 데미지 0처리
+        hitDamage = Mathf.Max(0, hitDamage);
+
+        // 데미지 적용
+        Hp.Value -= hitDamage;
+
+        StartCoroutine(InvincibilityCoroutine()); //무적시간 부여
+
+        OnHited?.Invoke();
+        IsPcDied();
+    }
+
+    //return Time -> 무적시간
+    private IEnumerator InvincibilityCoroutine()
+    {
+        IsInvincible = true;
+
+        yield return new WaitForSeconds(1.0f);
+
+        IsInvincible = false;
     }
 }
