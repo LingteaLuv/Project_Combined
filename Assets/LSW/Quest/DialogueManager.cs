@@ -27,6 +27,7 @@ public class DialogueManager : Singleton<DialogueManager>
     private TMP_Text Button3Text;
 
     public event Action OffDialogue;
+    public event Action<string> OnTimeline;
 
     //  버튼 입력 전까지 대기상태
     private int _selectedNextId = -1;
@@ -172,6 +173,7 @@ public class DialogueManager : Singleton<DialogueManager>
         _dialogueCanvas.SetActive(false);
         _dialogueCoroutine = null;
         OffDialogue?.Invoke();
+        OnTimeline?.Invoke(_curNPC._data.NPCID);
     }
 
     private void AcceptTrigger(QuestData quest, QuestProgress progress)

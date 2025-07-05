@@ -156,14 +156,14 @@ public class InventoryManager : Singleton<InventoryManager>
         }
     }
 
-    private List<int> _itemlist;
+    private List<int> _itemIDlist;
     int num = 0;
     private void Start()
     {
-        _itemlist = new();
+        _itemIDlist = new();
         foreach (int q in _craft._itemDictionary.ItemDic.Keys)
         {
-            _itemlist.Add(q);
+            _itemIDlist.Add(q);
         }
     }
     private void Update()
@@ -177,34 +177,26 @@ public class InventoryManager : Singleton<InventoryManager>
             if (Input.GetKeyDown(KeyCode.Alpha5)) Controller.Equip(4);
             if (Input.GetKeyDown(KeyCode.Alpha6)) Controller.Equip(5);
         }
-
-        if (Input.GetKeyDown(KeyCode.P)) DecreaseWeaponDurability();
-        if (Input.GetKeyDown(KeyCode.O)) DecreaseShieldDurability();
         
 
         if (Input.GetKeyDown(KeyCode.PageUp))
         {
             num++;
-            if (num == _itemlist.Count) num = 0;
-            Debug.Log(_itemlist[num]);
+            if (num == _itemIDlist.Count) num = 0;
+            Debug.Log($"{_itemIDlist[num]}  {_craft._itemDictionary.ItemDic[_itemIDlist[num]].Name}");
         }
         if (Input.GetKeyDown(KeyCode.PageDown))
         {
             num--;
-            if (num == -1) num = _itemlist.Count - 1;
-            Debug.Log(_itemlist[num]);
+            if (num == -1) num = _itemIDlist.Count - 1;
+            Debug.Log($"{_itemIDlist[num]}  {_craft._itemDictionary.ItemDic[_itemIDlist[num]].Name}");
         }
         if (Input.GetKeyDown(KeyCode.Home))
         {
-            AddItemByID(_itemlist[num], 1);
+            AddItemByID(_itemIDlist[num], 1);
+            Debug.Log($"아이템 지급됨");
         }
     }
-    /// <summary>
-    /// 0 <- 오른손 아이템, 1 <- 왼손 아이템
-    /// 양손을 사용하는 아이템일 경우 반환값이 같습니다
-    /// 해당 손에 아무것도 들려있지 않을 경우 null을 반환합니다.
-    /// </summary>
-    /// <param name="hand"></param>
     public ItemBase GetHandItem(int hand)
     {
        return _model.InvItems[_controller.EquippedSlotIndex[hand]].Data;
