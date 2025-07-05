@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class PlayerHealth : MonoBehaviour
+public class PlayerHealth : MonoBehaviour, IDamageable
 {
     [SerializeField] private Animator _animator; //피격 애니메이션
     [SerializeField] private float _invincibilityTime = 0.5f;  //무적시간
