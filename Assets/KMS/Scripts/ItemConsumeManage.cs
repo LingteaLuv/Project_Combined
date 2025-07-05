@@ -1,17 +1,21 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ItemConsumeManage : MonoBehaviour
 {
 
-    [SerializeField] ParticleSystem _ps;
+    [SerializeField] GameObject _ps;
     private InventoryController _control;
     private InventoryModel _model;
     private CraftingController _craft;
     private PlayerProperty _property;
     private IConsumeHandler _consume;
+
+    private Coroutine _effectCo;
+    private GameObject _par;
 
     private void Awake()
     {
@@ -44,6 +48,11 @@ public class ItemConsumeManage : MonoBehaviour
         {
             _model.InvItems[_control.EquippedSlotIndex[0]].CurrentAmmoCount -= 1;
         }
+
+        //if (_par != null)
+        //{
+        //    _par.transform.position = UISceneLoader.Instance.Player.position;
+        //}
     }
     public void Consume() // 착용한 소모품을 아예 지워버림
     {
@@ -55,8 +64,29 @@ public class ItemConsumeManage : MonoBehaviour
         if (item.Data.Type != ItemType.Consumable) return; //소모품 아님
         _consume.Consume(item.Data);
         SoundEffect(item.Data.ItemID);
+        Partic();
         _control.RemoveEquippedItem(0); //오른손 아이템 지움
         
+    }
+
+    private void Partic()
+    {
+        if (_effectCo != null)
+        {
+            StopCoroutine(_effectCo);
+            Destroy(_par);
+            _effectCo = null;
+        }
+        _effectCo = StartCoroutine(ParticleEffect());
+    }
+
+    private IEnumerator ParticleEffect()
+    {
+        _par = Instantiate(_ps, UISceneLoader.Instance.Player);
+        yield return new WaitForSeconds(1f);
+        Destroy(_par);
+
+
     }
 
     private void SoundEffect(int id)
@@ -97,8 +127,6 @@ public class ItemConsumeManage : MonoBehaviour
         _control.RemoveSelectedItem();
         _consume.Consume(exist.Data);
         return true;
-
-
     }
 
 }

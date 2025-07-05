@@ -99,6 +99,7 @@ public class InventoryManager : Singleton<InventoryManager>
     }
     public bool AddItemByID(int id, int count)
     {
+        if (count == 0) return true;
         int d = Craft.GetMaxDur(id);
         if( Craft.AddItemByID(id, count, d))
         {
@@ -133,6 +134,7 @@ public class InventoryManager : Singleton<InventoryManager>
     }
     public bool RemoveItemByID(int id, int count)
     {
+        if (count == 0) return true;
         if (Craft.RemoveItemByID(id, count))
         {
             StartCoroutine(CheckQuestItem());
