@@ -150,7 +150,7 @@ public class InventoryManager : Singleton<InventoryManager>
         {
             if (remove) // true(기본값) 이면 지움
             {
-                _controller.RemoveItem(_itemDictionary.ItemDic[id], 1);
+                RemoveItemByID(id, 1);
             }
             return true;
         }

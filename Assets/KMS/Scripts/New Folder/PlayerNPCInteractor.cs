@@ -38,6 +38,7 @@ public class PlayerNPCInteractor : MonoBehaviour
             {
                 continue;
             }
+            if (!_interactables[c].IsInteractable) continue;
             float temp = (transform.position - c.transform.position).magnitude;
             if (temp < distance)
             {
