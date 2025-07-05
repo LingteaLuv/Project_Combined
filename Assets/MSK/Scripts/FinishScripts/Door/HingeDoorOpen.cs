@@ -10,7 +10,7 @@ public class HingeDoorOpen : MonoBehaviour, IInteractable
     [SerializeField] private Transform _rightPos;
 
     [Header("회전할 오브젝트")]
-    [SerializeField] private Transform _parentToRotate;
+    [SerializeField] public Transform _parentToRotate;
 
 
 
@@ -131,6 +131,11 @@ public class HingeDoorOpen : MonoBehaviour, IInteractable
 
         _isOpen = open;
         _isRotating = false;
+    }
+    public bool CanOpen()
+    {
+        if (_key == null) return true;
+        return InventoryManager.Instance.FindItemByID(_key.ItemID, false);
     }
 }
 
