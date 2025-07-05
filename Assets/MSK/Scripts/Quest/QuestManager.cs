@@ -90,6 +90,9 @@ public class QuestManager : Singleton<QuestManager>
             return;
         }
 
+        // 코드로 들어올 때 사용한 트리거를 딕셔너리에서 삭제
+        TriggerDictionary.Remove(triggerId);
+
         Debug.Log($"[QuestType] questId: {questId}, 현재 상태: {meta.Status}");
 
         switch (meta.Status)
