@@ -33,18 +33,29 @@ public class DoorInteractable : MonoBehaviour, IInteractable
 
     public void Highlight(bool enable)
     {
-        // 열 수 없는 상태면 무조건 아웃라인 꺼짐
+        if (_outlinable == null)
+            return;
+
         if (enable && _door != null && !_door.CanOpen())
         {
-            SetOutline(false);
+            SetOutline(true, Color.red);
             return;
         }
-        SetOutline(enable);
+        SetOutline(enable, Color.yellow);
     }
 
-    private void SetOutline(bool enable)
+    private void SetOutline(bool enable, Color? color = null)
     {
         if (_outlinable != null)
+        {
             _outlinable.enabled = enable;
+            if (color.HasValue)
+            {
+                Debug.Log($"[Outline] 색 바꿈: {color.Value}");
+                _outlinable.FrontParameters.Color = color.Value;
+                _outlinable.BackParameters.Color = color.Value;
+            }
+        }
     }
+
 }
