@@ -1,6 +1,7 @@
 
 using UnityEngine;
 using EPOOutline;
+using System.Collections;
 
 public enum LootableType
 {
@@ -24,7 +25,6 @@ public class Lootable : MonoBehaviour
     [SerializeField] public LootableType Type;
     [SerializeField] public bool DestroyAfterLooting;
 
-
     private void Awake()
     {
         _lootItems = GetComponent<LootItems>();
@@ -35,9 +35,15 @@ public class Lootable : MonoBehaviour
     }
     private void Start()
     {
+        StartCoroutine(Init());
+    }
+
+    private IEnumerator Init()
+    {
+        yield return null;
         for (int i = 0; i < 6; i++)
         {
-            if (LootItems.Items[i] != null) return;
+            if (LootItems.Items[i] != null) yield break;
         }
         IsLootable = false;
         if (DestroyAfterLooting) // 루팅 완료 시 파괴
