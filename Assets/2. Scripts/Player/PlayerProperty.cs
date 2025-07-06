@@ -426,6 +426,7 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler,
         Hp.Value -= hitDamage;
 
         StartCoroutine(InvincibilityCoroutine()); //무적시간 부여
+        CamaraShaker.Instance.DamageShake();    // 피격시 카메라
 
         OnHited?.Invoke();
         IsPcDied();

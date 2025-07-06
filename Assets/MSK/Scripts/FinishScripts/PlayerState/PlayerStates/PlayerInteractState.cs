@@ -18,10 +18,7 @@ public class PlayerInteractState : PlayerState
             _fsm.ChangeState(_movement.Controller.IdleState);
         }
     }
-    public override void Exit()
-    {
-        Debug.Log("Exit Interact");
-    }
+    public override void Exit() { }
 
     public override void FixedTick() { }
 

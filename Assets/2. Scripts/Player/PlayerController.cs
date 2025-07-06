@@ -1,5 +1,6 @@
 using System;
 using System.Xml;
+using UnityEditor.VersionControl;
 using UnityEngine;
 
 /// <summary>
@@ -43,6 +44,7 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        _movement.Property.OnHited += OnPlayyerHided;
         _movement.Property.OnDied += OnPlayerDied;
         _fsm.ChangeState(IdleState);
     }
@@ -109,7 +111,7 @@ public class PlayerController : MonoBehaviour
         bool isGrounded = _movement.IsGrounded;
         _animator.SetBool("IsGround", isGrounded);
     }
-    private void OnPlayerDamaged(int damage)
+    private void OnPlayyerHided()
     {
         _fsm.ChangeState(HitState);
     }
@@ -127,6 +129,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     public void PlayJumpAnimation()
     {
+        AudioManager.Instance.PlaySFX("Whoosh 08", transform.position);
         _animator.SetTrigger("IsJump");
     }
     public void PlayClimbAnimation()
@@ -157,6 +160,11 @@ public class PlayerController : MonoBehaviour
     public void StopRunning()
     {
         _animator.SetBool("IsRunning", false);
+    }
+    public void PlayHited()
+    {
+        // AudioManager.Instance.PlaySFX("Hit 14", transform.position);
+        _animator.SetTrigger("IsHit");
     }
     #endregion
 }

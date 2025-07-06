@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -9,6 +8,7 @@ using UnityEngine;
 /// - 퀘스트 등록/조회/상태 변화/보상/저장/불러오기 등 처리
 /// - Singleton 패턴 적용(Instance)
 /// </summary>
+
 public class QuestManager : Singleton<QuestManager>
 {
     /// <summary>
@@ -20,7 +20,7 @@ public class QuestManager : Singleton<QuestManager>
     /// <summary>
     /// 전체 퀘스트의 플레이어별 진행 상태 딕셔너리입니다.
     /// </summary>
-    [SerializeField] public Dictionary<string, QuestData> QuestDictionary { get; private set; } = new Dictionary<string, QuestData>(){};
+    [SerializeField] public Dictionary<string, QuestData> QuestDictionary { get; private set; } = new Dictionary<string, QuestData>() { };
 
     /// <summary>
     /// 전체 트리거와 매칭되는 퀘스트ID를 저장하는 딕셔너리입니다.
@@ -28,8 +28,16 @@ public class QuestManager : Singleton<QuestManager>
     public Dictionary<string, string> TriggerDictionary { get; private set; }
     /// <summary>
     /// 플레이어의 현재 챕터(비트 플래그)
-    /// </summary>
+    /// </summary>  
     public Chapter CurrentChapter { get; set; } = Chapter.Chapter1;
+
+    #region Ending
+    public bool IsCEnd { get; private set; }
+    public bool IsVEnd { get; private set; }
+
+    public void SetCEnd() => IsCEnd = true;
+    public void SetVEnd() => IsVEnd = true;
+    #endregion
 
     #region 이벤트
     /// <summary>퀘스트 수락 시 알림 이벤트</summary>
@@ -57,12 +65,12 @@ public class QuestManager : Singleton<QuestManager>
         TriggerDictionary = new Dictionary<string, string>();
         for (int i = 0; i < AllQuests.Count; i++)
         {
-            if (String.IsNullOrEmpty(AllQuests[i].TriggerID1)||String.IsNullOrEmpty(AllQuests[i].TriggerID2)) continue;
+            if (String.IsNullOrEmpty(AllQuests[i].TriggerID1) || String.IsNullOrEmpty(AllQuests[i].TriggerID2)) continue;
             TriggerDictionary.Add(AllQuests[i].TriggerID1, AllQuests[i].QuestID);
             TriggerDictionary.Add(AllQuests[i].TriggerID2, AllQuests[i].QuestID);
         }
     }
-    
+
     /// <summary>
     /// Npc에게 조건에 부합하는 퀘스트를 Npc 리스트로 전달 => key를 전달하도록 수정
     /// </summary>
@@ -76,19 +84,16 @@ public class QuestManager : Singleton<QuestManager>
     }
     public void SetQuestType(string triggerId)
     {
+
+        IsEndingTrigger(triggerId);
+        Debug.Log($" 진입 {triggerId}");
         // 트리거명으로 QuestID를 찾기
-        if (!TriggerDictionary.TryGetValue(triggerId, out var questId))
-        {
-            Debug.LogWarning($"[QuestType] TriggerDictionary에 triggerId({triggerId}) 없음");
-            return;
-        }
+        if (triggerId == "VEND") { return; }
+        if (!TriggerDictionary.TryGetValue(triggerId, out var questId)) { return; }
 
         // QuestID로 QuestDictionary에서 QuestData를 찾기
-        if (!QuestDictionary.TryGetValue(questId, out var meta))
-        {
-            Debug.LogWarning($"[QuestType] QuestDictionary에 questId({questId}) 없음");
-            return;
-        }
+        if (!QuestDictionary.TryGetValue(questId, out var meta)) { return; }
+        //  엔딩 분기를 활성화 하는지 체크
 
         // 코드로 들어올 때 사용한 트리거를 딕셔너리에서 삭제
         TriggerDictionary.Remove(triggerId);
@@ -110,7 +115,9 @@ public class QuestManager : Singleton<QuestManager>
                 break;
             case QuestStatus.Completed:
                 Debug.Log("[QuestType] Completed");
-                CloseQuest(meta.QuestID);
+                {
+                    CloseQuest(meta.QuestID);
+                }
                 break;
             case QuestStatus.Closed:
                 Debug.Log("[QuestType] Closed");
@@ -142,7 +149,7 @@ public class QuestManager : Singleton<QuestManager>
             }
         }
     }
-    
+
     /// <summary>
     /// 전체 퀘스트의 데이터 리스트를 등록/초기화합니다.
     /// </summary>
@@ -180,7 +187,7 @@ public class QuestManager : Singleton<QuestManager>
 
     private void CheckItemQuest(QuestData meta) //추가 작성된 부분
     {
-        if(meta.Type == QuestType.Delivery)
+        if (meta.Type == QuestType.Delivery)
         {
             AcceptedItemQuestList.Add(meta);
             int.TryParse(meta.RequiredItemID, out int req);
@@ -215,7 +222,7 @@ public class QuestManager : Singleton<QuestManager>
         OnQuestCompleted?.Invoke(meta, null);
 
         // TODO: 보상 지급
-        
+
         return true;
     }
     /// <summary>
@@ -356,5 +363,22 @@ public class QuestManager : Singleton<QuestManager>
         }
 
         Debug.Log($"[SetQuestDictionary] QuestDictionary.Count = {QuestDictionary.Count}");
+    }
+    public void IsEndingTrigger(string triggerId)
+    {
+        Debug.Log("실행");
+        //  TODO Trigger End cheak
+        if (triggerId == "VENDABLE")
+        {
+            SetVEnd(); // 자경단 엔딩 플래그 ON
+            Debug.Log("VEND 플래그 ON");
+            return;
+        }
+        if (triggerId == "CENDABLE")
+        {
+            SetCEnd(); // 군대 엔딩 플래그 ON
+            Debug.Log("CEND 플래그 ON");
+            return;
+        }
     }
 }
