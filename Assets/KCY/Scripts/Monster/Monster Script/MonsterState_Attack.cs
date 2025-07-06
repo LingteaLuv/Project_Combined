@@ -71,7 +71,7 @@ public class Monster_Attack : MonsterState_temp, IAttackable
     {
         Debug.Log("[어택이벤트 호출] - 애니메이션 타이밍 맞춰 데미지 적용");
 
-        Collider[] hits = Physics.OverlapSphere(monster.HandDetector.transform.position, 3f, monster.PlayerLayerMask);
+        Collider[] hits = Physics.OverlapSphere(monster.HandDetector.transform.position, 0.2f, monster.PlayerLayerMask);
         foreach (var hit in hits)
         {
             IDamageable damageTarget = hit.GetComponent<IDamageable>();
