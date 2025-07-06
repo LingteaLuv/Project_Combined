@@ -18,8 +18,8 @@ public class Monster_GoToEvent : MonsterState_temp
 
     public override void Enter()
     {
+       var currentTime = TimeManager1.Instance.CurrentTimeOfDay.Value;
 
-        var currentTime = TimeManager1.Instance.CurrentTimeOfDay.Value;
         _hasArrive = false;
         Debug.Log($"[GoToEvent] Enter 직전 TempPoint: {monster.TempPoint}");
         Debug.Log("사운드 감지 :  해당 지역으로 이동합니다.");
@@ -36,16 +36,12 @@ public class Monster_GoToEvent : MonsterState_temp
             if (TimeManager1.Instance.CurrentTimeOfDay.Value == DayTime.Night || TimeManager1.Instance.CurrentTimeOfDay.Value == DayTime.MidNight)
             {
                 _agent.speed = monster.Info.NightChaseMoveSpeed;
-                Debug.Log(" 밤 >> 추격 시간 적용");
-                Debug.Log($"[GoToEvent] 시간대: {currentTime} → NightChase 속도 적용: {_agent.speed:F2}");
             }
             else
             {
                 _agent.speed = monster.Info.ChaseMoveSpeed;
-                Debug.Log(" 낮, 아침 >> 일반 추적 속도");
-                Debug.Log($"[GoToEvent] 시간대: {currentTime} → 기본 속도 적용: {_agent.speed:F2}");
+
             }
-            Debug.Log($"[GoToEvent] 목적지: {monster.TempPoint} / 이동 시작");
             bool result = _agent.SetDestination(_eventPos);
             if (!result)
             {
@@ -65,13 +61,23 @@ public class Monster_GoToEvent : MonsterState_temp
         if (_agent == null || !_agent.isOnNavMesh || _hasArrive)
             return;
 
+        if (_eventPos != monster.TempPoint && monster.TempPoint != Vector3.zero)
+        {
+            _eventPos = monster.TempPoint;
+            _agent.SetDestination(_eventPos);
+        }
+        if (_ani != null)
+        {
+            _ani.SetBool("isChasing", true);
+            _ani.SetBool("isPatrol", false);
+        }
+
         float distance = _agent.remainingDistance;
         float speed = _agent.velocity.sqrMagnitude;
 
         if (!_agent.pathPending && distance <= _compareDis)
         {
             _hasArrive = true;
-
             _agent.isStopped = true;
             _agent.ResetPath();
             monster.Rigid.velocity = Vector3.zero;
@@ -91,8 +97,6 @@ public class Monster_GoToEvent : MonsterState_temp
         yield return new WaitForSeconds(2f);
         if (!monster.IsEventActive)
         {
-            Debug.Log("감지 종료 확인 :Patrol로 전환 + TempPoint를 순찰 기준으로 사용");
-
             monster.BasePoint = monster.TempPoint;
             monster.TempPoint = Vector3.zero;
             monster._monsterMerchine.ChangeState(monster._monsterMerchine.StateDic[Estate.Patrol]);
