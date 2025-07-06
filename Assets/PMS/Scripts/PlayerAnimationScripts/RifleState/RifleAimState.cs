@@ -36,7 +36,7 @@ public class RifleAimState : StateMachineBehaviour
         if (flag != false) _playerAttack.UpdateAim();
 
         //만약 왼쪽키를 누를 때 공격 할 수 있다.
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !UIManager.Instance.IsUIOpened.Value)
             _playerAttack.RightCurrentWeapon.Attack();
 
         //만약 우클릭을 하면 flag값이 false가 되어 궤적보이는 효과를 없애고 조준모드를 해제

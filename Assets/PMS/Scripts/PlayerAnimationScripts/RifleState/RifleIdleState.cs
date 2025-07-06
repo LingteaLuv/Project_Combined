@@ -21,7 +21,7 @@ public class RifleIdleState : StateMachineBehaviour
     //마우스 우클릭을 통해 조준상태 돌입
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (Input.GetMouseButtonDown(1) && flag)
+        if (Input.GetMouseButtonDown(1) && !UIManager.Instance.IsUIOpened.Value &&flag)
         {
             _playerAttack.ToggleAimMode();
             animator.SetBool("IsAim", true);
