@@ -16,7 +16,6 @@ public class MonsterHandDetector : MonoBehaviour
     }
     private void Start()
     {
-         Debug.Log("[MonsterHandDetector] Start 호출됨");
         // Layer가 설정되지 않았다면 "Player"로 자동 설정
         if (playerLayer == 0)
         {
@@ -27,7 +26,6 @@ public class MonsterHandDetector : MonoBehaviour
         _monster = GetComponentInParent<Monster_temp>();
         if (_monster == null)
         {
-            Debug.LogError("MonsterHandDetector: Monster_temp를 찾을 수 없습니다.");
             return;
         }
 
@@ -35,7 +33,6 @@ public class MonsterHandDetector : MonoBehaviour
         attackLogic = _monster as IAttackable;
         if (attackLogic == null)
         {
-            Debug.LogError("MonsterHandDetector: IAttackable 구현체를 찾을 수 없습니다.");
             return;
         }
 
@@ -47,13 +44,13 @@ public class MonsterHandDetector : MonoBehaviour
     {
         if (_monster == null || _monster._isDead) return;
 
+        // 상태 누락 방지
         if (_monster._monsterMerchine == null || _monster._monsterMerchine.CurState == null)
         {
-            Debug.LogWarning("상태머신 초기화 전 > 감지 중단");
             return;
         }
 
-
+        // 중복 호출 방지
         if (_monster._monsterMerchine.CurState != _monster._monsterMerchine.StateDic[Estate.Attack])
             return;
     }

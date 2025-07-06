@@ -34,13 +34,9 @@ public class Monster_Patrol : MonsterState_temp
         BasePoint = monster.TempPoint != Vector3.zero ? monster.TempPoint : SpawnPoint;
         // 패트롤 모드에서는 몬스터의 시야각이 상승한다. 기획서엔 2배라고 되어있는데 지금 각 60도 이기 때문에 2배면 240도다
         // 나중에 피드백 받고 수정할 것
-        
-        Debug.Log($"[패트롤 Init] BasePoint: {BasePoint}");
-        Debug.Log($"[추가 확인] SpawnPoint 위치: {SpawnPoint}, TempPoint 위치: {monster.TempPoint}");
         // 유효성 검사(에이전트 보유, 내비 이탈 - 다음을 리턴)
         if (_agent == null || !_agent.isOnNavMesh)
         {
-            Debug.Log("NavMeshAgent가 NavMesh 위에 없습니다.");
             return;
         }
         // 아이들 모드에서 -> 패트롤 모드로 전환시 에이전트 움직임 재개 및 경로 재탐색
@@ -75,18 +71,15 @@ public class Monster_Patrol : MonsterState_temp
             Vector3 basePos = BasePoint;
             basePos.y = 0f;
             Vector3 destination = BasePoint + new Vector3(randomPatrolpoint.x, 0, randomPatrolpoint.y);
-            Debug.Log($"[ 시도 {i + 1}] 생성된 점: {destination}");
+  
             // destination 이치 근처 내비메쉬 확인하고 해당 내비의 위치를 인자로 반환 
             if (NavMesh.SamplePosition(destination, out NavMeshHit hit, 4f, NavMesh.AllAreas))
             {
-                Debug.Log($"[ 유효한 내비 위치]: {hit.position}");
                 // 해당 점이 내비위에 있어도 갈 수 없으면 고장난다 따라서 해당 점으로 진짜 갈 수 있는지 유효성 검사
                 if (_agent.CalculatePath(hit.position, path) && path.status == NavMeshPathStatus.PathComplete)
                 {
-                    Debug.Log($"패트롤 성공 목적지: {hit.position}");
                     result = hit.position;
                     result.y = monster.transform.position.y;
-                    Debug.Log($"패트롤 목적지 확정: {result}");
                     return true;
                 }
                 else
@@ -101,9 +94,6 @@ public class Monster_Patrol : MonsterState_temp
     }
     public override void Enter()
     {
-        Debug.Log(" 패트롤 상태 진입");
-        Debug.Log($"몬스터에서 참조 중인 TimeManager1 인스턴스: {TimeManager1.Instance.GetInstanceID()}");
-
         // 몬스터 시야 반지름 길이는 몬스터 시야 거리 *  패트롤 사이트 배율
         monster.SightCol.radius = monster.SightRange * PatrolSight;
 
@@ -112,13 +102,10 @@ public class Monster_Patrol : MonsterState_temp
       TimeManager1.Instance.CurrentTimeOfDay.Value == DayTime.MidNight)
         {
             _agent.speed = monster.Info.NightMoveSpeed;
-            Debug.Log("여기 나와주세요 요요요요요요요요요요요요요요요요ㅛ요요요요요 룰룰");
-            Debug.Log(" 밤 >>  적용");
         }
         else
         {
             _agent.speed = monster.Info.ChaseMoveSpeed;
-            Debug.Log(" 낮, 아침 >> 일반 속도");
         }
 
 
@@ -130,7 +117,6 @@ public class Monster_Patrol : MonsterState_temp
         {
             monster.Ani.ResetTrigger("Attack");
             monster.Ani.SetBool("isPatrol", true);
-            Debug.Log(">> 걷기 애니메이션 ON 설정됨");
             monster.Ani.SetBool("isChasing", false);
         }
         // 감지 딜레이 초기화
@@ -147,25 +133,20 @@ public class Monster_Patrol : MonsterState_temp
     }
     public override void Update()
     {
-        Debug.Log($" 디버그 IsSightDetecting 상태: {monster.IsSightDetecting}");
         StartSearchTime += Time.deltaTime; // 회귀 시간 누적
         StayTimer += Time.deltaTime; // 머무는 시간 누적
         // 고장방지 유효성 검사
         // 에이전트 있는지, 내비매쉬 위에 있는지 확인하기 -> 현 상태에선 둘 중 하나 없으면 멈춤
         if (_agent == null || !_agent.isOnNavMesh)
         {
-            Debug.Log("패트롤 상태 오류 : 어젠트가 없거나 내비 위 존재 안함 -> 리셋 상태로 이동");
             monster._monsterMerchine.ChangeState(monster._monsterMerchine.StateDic[Estate.Reset]);
             return;
         }
-        Debug.Log("경로 1111111111111111111111111111111111111111");
         // 경로가 아직 생성되지 않았을 경우 리턴한다.
         if (_agent.pathPending)
         {
-            Debug.Log("경로 문제문제문젬누제문제문제문제ㅐ문제문제ㅜ멪문제ㅐ1111111111111111111111111111111111111111");
             return;
         }
-        Debug.Log("여기 되나요`1111111111111111111111111111111111111111");
         // 시야 우선순위로 인한 감지 불가 회귀 >> 시야와 청각이 겹치는 경우에는 레이로 쏴서 플레이어가 사라진 뒤에 남겨진 사운드 오브젝트를 따라간다.
         if (!monster.IsSightDetecting)
         {
@@ -179,7 +160,6 @@ public class Monster_Patrol : MonsterState_temp
                         monster.transform.rotation = Quaternion.LookRotation(dir);
                     monster.TempPoint = hit.transform.position;
                     monster._monsterMerchine.ChangeState(monster._monsterMerchine.StateDic[Estate.GoToEvent]);
-                    Debug.Log("좀 움직이라고 이아아아아아아아아아ㅏㅇ");
                     break;
                 }
             }
@@ -189,7 +169,6 @@ public class Monster_Patrol : MonsterState_temp
                 stopDetectTimer += Time.deltaTime;
                 if (stopDetectTimer > 2f)  // 2초 이상 멈춰 있을 때만 강제 리셋
                 {
-                    Debug.Log("Agent 장시간 정지 감지 > 강제 리셋");
                     _agent.ResetPath();
                     _agent.isStopped = false;
                     if (RandomPatrolPoint(out Vector3 nextPos))
@@ -214,7 +193,6 @@ public class Monster_Patrol : MonsterState_temp
         // 이게 우선순위 이게 먼저 실행되야 더 안돈다 (<< 버그 확인)
         if (StartSearchTime >= SearchTime)
         {
-            Debug.Log("순찰시간이 초과되었으니 리스폰 지역으로 복귀합니다.");
             monster.TempPoint = Vector3.zero;
             monster._monsterMerchine.ChangeState(monster._monsterMerchine.StateDic[Estate.ReturnToSpawn]);
             return;
@@ -223,7 +201,6 @@ public class Monster_Patrol : MonsterState_temp
         // 목적지에 거의 다 왔을 경우 다음 목적지로
         if (_agent.remainingDistance <= _compareDis && _agent.velocity.sqrMagnitude <= 0.1f)
         {
-            Debug.Log($"1111111111111111111111111111111111111111111111111111111111111111. 지금은 여기 주입입니다. [도달 체크] Distance: {_agent.remainingDistance}, Speed: {_agent.velocity.sqrMagnitude}");
             // 목적지에 다왔을 때 정지해 있는 모션
             monster.Ani.SetBool("isPatrol", false);
             // 고개 돌리기 (10초 마다)_ 대충 해당 시간 안에 고개 돌리고 봐야함
@@ -231,10 +208,8 @@ public class Monster_Patrol : MonsterState_temp
             {
                 monster.Ani.SetBool("isHeadTurn", true);
                 monster.Ani.SetTrigger("Turn");
-                Debug.Log("돌아");
                 monster.StartCoroutine(SmoothTurn(1f));
                 monster.transform.rotation = Quaternion.Euler(0,180f, 0);
-                Debug.Log("제발 돌라고 이 ");
                 monster.StartCoroutine(ResetHeadTurn());
                 isHeadRot = true;
             }
@@ -243,7 +218,6 @@ public class Monster_Patrol : MonsterState_temp
             {
                 if (RandomPatrolPoint(out Vector3 nextPos))
                 {
-                    Debug.Log("나와주세요 제발요나와주세요 제발요나와주세요 제발요나와주세요 제발요나와주세요 제발요나와주세요 제발요나와주세요 제발요나와주세요 제발요나와주세요 제발요나와주세요 제발요나와주세요 제발요나와주세요 제발요");
                     // 해당 지점으로 고개 돌리기
                     Vector3 dir = (nextPos - monster.transform.position).normalized;
                     if (dir != Vector3.zero)
@@ -253,7 +227,6 @@ public class Monster_Patrol : MonsterState_temp
                     _agent.SetDestination(nextPos);
                     monster.Ani.ResetTrigger("Attack");
                     monster.Ani.SetBool("isPatrol", true);
-                    Debug.Log(">> 걷기 애니메이션 ON 설정됨");
                     isHeadRot = false;
                 }
                 monster.Ani.SetBool("isPatrol", true);
