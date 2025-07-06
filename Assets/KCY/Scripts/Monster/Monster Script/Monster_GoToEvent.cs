@@ -18,7 +18,7 @@ public class Monster_GoToEvent : MonsterState_temp
 
     public override void Enter()
     {
-       var currentTime = TimeManager1.Instance.CurrentTimeOfDay.Value;
+       var currentTime = TimeManager.Instance.CurrentTimeOfDay.Value;
 
         _hasArrive = false;
         Debug.Log($"[GoToEvent] Enter 직전 TempPoint: {monster.TempPoint}");
@@ -33,7 +33,7 @@ public class Monster_GoToEvent : MonsterState_temp
         {
             _agent.autoBraking = true;
             _agent.isStopped = false;
-            if (TimeManager1.Instance.CurrentTimeOfDay.Value == DayTime.Night || TimeManager1.Instance.CurrentTimeOfDay.Value == DayTime.MidNight)
+            if (TimeManager.Instance.CurrentTimeOfDay.Value == DayTime.Night || TimeManager.Instance.CurrentTimeOfDay.Value == DayTime.MidNight)
             {
                 _agent.speed = monster.Info.NightChaseMoveSpeed;
             }

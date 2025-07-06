@@ -9,14 +9,14 @@ public class MonsterHandDetector : MonoBehaviour
     private IAttackable attackLogic;
     private Monster_temp _monster;
 
-    private void OnDrawGizmosSelected()
+    /*private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, 3f); 
-    }
+    }*/
     private void Start()
     {
-         Debug.Log("[MonsterHandDetector] Start 호출됨");
+         //Debug.Log("[MonsterHandDetector] Start 호출됨");
         // Layer가 설정되지 않았다면 "Player"로 자동 설정
         if (playerLayer == 0)
         {
@@ -27,7 +27,7 @@ public class MonsterHandDetector : MonoBehaviour
         _monster = GetComponentInParent<Monster_temp>();
         if (_monster == null)
         {
-            Debug.LogError("MonsterHandDetector: Monster_temp를 찾을 수 없습니다.");
+            //Debug.LogError("MonsterHandDetector: Monster_temp를 찾을 수 없습니다.");
             return;
         }
 
@@ -35,7 +35,7 @@ public class MonsterHandDetector : MonoBehaviour
         attackLogic = _monster as IAttackable;
         if (attackLogic == null)
         {
-            Debug.LogError("MonsterHandDetector: IAttackable 구현체를 찾을 수 없습니다.");
+            //Debug.LogError("MonsterHandDetector: IAttackable 구현체를 찾을 수 없습니다.");
             return;
         }
 
@@ -49,7 +49,7 @@ public class MonsterHandDetector : MonoBehaviour
 
         if (_monster._monsterMerchine == null || _monster._monsterMerchine.CurState == null)
         {
-            Debug.LogWarning("상태머신 초기화 전 > 감지 중단");
+            //Debug.LogWarning("상태머신 초기화 전 > 감지 중단");
             return;
         }
 
