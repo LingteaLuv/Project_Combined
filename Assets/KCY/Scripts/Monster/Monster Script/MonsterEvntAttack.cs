@@ -11,12 +11,10 @@ public class MonsterEvntAttack : MonoBehaviour
         monster = GetComponentInParent<Monster_temp>();
     }
 
-    
     public void AttackEvent()
     {
         if (monster != null)
         {
-            Debug.Log("제발 나와주세요,제발 나와주세요,제발 나와주세요,제발 나와주세요,제발 나와주세요");
             monster.AttackEvent(); 
         }
     }
