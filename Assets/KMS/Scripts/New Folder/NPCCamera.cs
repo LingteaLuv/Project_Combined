@@ -43,7 +43,7 @@ public class NPCCamera : MonoBehaviour
 
         
         transform.rotation = Quaternion.identity;
-        transform.LookAt(middle);
+        transform.LookAt(middle + Vector3.up);
         _vc.Priority = 20;
 
 

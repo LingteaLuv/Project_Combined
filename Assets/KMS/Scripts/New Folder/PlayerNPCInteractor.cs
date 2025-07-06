@@ -85,7 +85,7 @@ public class PlayerNPCInteractor : MonoBehaviour
     public bool TryInteract()
     {
         if (_interactable == null) return false;
-        OnInteract?.Invoke(gameObject.transform.root, _interactable.transform.root);
+        OnInteract?.Invoke(gameObject.transform.root, _interactable.transform);
         OnInteract2?.Invoke();
         OnInteract3?.Invoke(_interactable.ID);
         DialogueManager.Instance.SetDialogue(_interactable.Dialogue);
