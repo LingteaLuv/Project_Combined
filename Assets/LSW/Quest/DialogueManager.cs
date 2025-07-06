@@ -36,7 +36,8 @@ public class DialogueManager : Singleton<DialogueManager>
     private Coroutine _dialogueCoroutine;
     private WaitForSeconds _delay;
     private NPCDialogue _curNPC;
-    
+    private HashSet<int> endingBranchDialogueIds = new HashSet<int> { 7181 };
+
     public Dictionary<int, DialogueSO> DialogueDic { get; private set; }
     public Dictionary<string, DialogueChoiceSO> ChoiceDic { get; private set; }
 
@@ -141,7 +142,14 @@ public class DialogueManager : Singleton<DialogueManager>
             
             if (DialogueDic[startId].TriggerID != null)
                 QuestManager.Instance.SetQuestType(DialogueDic[startId].TriggerID);
-            
+
+            // 엔딩 분기 지점에서 엔딩 선택지 노출
+            if (endingBranchDialogueIds.Contains(startId))
+            {
+                ShowEndingChoices();
+                yield break;
+            }
+
             // 다음 대사 ID 변경s
             if (!String.IsNullOrEmpty(DialogueDic[startId].DialogueChoiceID))
             {
@@ -270,7 +278,6 @@ public class DialogueManager : Singleton<DialogueManager>
 
 
     /// 엔딩 추가 부분
-    
     /// <summary>
     /// 엔딩 분기 진입 시 호출: 활성화된 엔딩만 선택지로 노출
     /// </summary>
@@ -360,7 +367,7 @@ public class DialogueManager : Singleton<DialogueManager>
     /// </summary>
     private void PlayDoctorEnding()
     {
-        Debug.Log("의사 엔딩");
+        Debug.Log("의사 엔딩 ");
         // TODO: 엔딩 씬 전환, UI 등
     }
 
