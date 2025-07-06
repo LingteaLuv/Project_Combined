@@ -23,7 +23,7 @@ public class Monster_Hit : MonsterState_temp, IDamageable
     // 피격 인터페이스 구성
     public void Damaged(float PlayerAttackDamage)
     {
-        Debug.Log(" 몬스터 피격 확인");
+        Debug.Log("몬스터 피격 확인");
         // 죽어있거나 피격 쿨타임의 경우 안맞는다.
         if (monster._isDead || _isInvincible) return;
        
