@@ -102,13 +102,13 @@ public class CreateQuestSO : EditorWindow
             string type = parts[1];
             switch (type)
             {
-                case "Talk" :
-                    quest.Type = QuestType.Talk;
+                case "GiveItem" :
+                    quest.Type = QuestType.Collect;
                     break;
                 case "Delivery" :
                     quest.Type = QuestType.Delivery;
                     break;
-                case "Collect" :
+                case "Recall" :
                     quest.Type = QuestType.Collect;
                     break;
             }
@@ -129,8 +129,9 @@ public class CreateQuestSO : EditorWindow
             }
             quest.NextQuestID = parts[11];
             quest.EndDescription = parts[12];
-            quest.TriggerID1 = parts[13];
-            quest.TriggerID2 = parts[14];
+            quest.DeliveryNpcID = parts[13];
+            quest.TriggerID1 = parts[14];
+            quest.TriggerID2 = parts[15];
             
             string assetPath = $"{folderPath}/Quest_{questId}.Asset";
             AssetDatabase.CreateAsset(quest, assetPath);

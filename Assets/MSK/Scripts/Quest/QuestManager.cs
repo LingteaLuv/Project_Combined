@@ -14,7 +14,7 @@ public class QuestManager : Singleton<QuestManager>
     /// <summary>
     /// 전체 퀘스트의 데이터 리스트입니다.
     /// </summary>
-    [SerializeField] private List<QuestData> allQuests = new List<QuestData>();
+    [SerializeField] private List<QuestData> allQuests;
     public List<QuestData> AllQuests => allQuests;
 
     /// <summary>
@@ -226,15 +226,22 @@ public class QuestManager : Singleton<QuestManager>
     public bool CloseQuest(string questId)
     {
         if (!QuestDictionary.TryGetValue(questId, out var meta))
+        {
+            Debug.Log("진입1");
             return false;
+        }
+
         if (meta.Status != QuestStatus.Completed)
+        {
+            Debug.Log("진입2");
             return false;
+        }
         if (meta.RewardItemQuantity > InventoryManager.Instance.GetNullSpaceCount())
         {
             TextManager.Instance.PopupTextForSecond("2002", 3);
             return false;
         }
-
+        Debug.Log("진입3");
         meta.Status = QuestStatus.Closed;
         if (int.TryParse(meta.RequiredItemID, out int req))
         {

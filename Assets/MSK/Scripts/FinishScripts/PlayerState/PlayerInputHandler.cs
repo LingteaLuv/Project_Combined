@@ -14,17 +14,27 @@ public class PlayerInputHandler : MonoBehaviour
     public bool RunPressed { get; private set; }
     public bool TestKey { get; private set; }
 
+    [SerializeField] private LayerMask _doorLayerMask;
+    
     private DoorInteractable _currentDoor;
+    
+    private void Awake()
+    {
+        _doorLayerMask = LayerMask.GetMask("Door");
+    }
+    
     private void DoorFind()
     {
+        
         DoorInteractable door = null;
         // Raycast로 문 감지
         Ray ray = new Ray(transform.position + Vector3.up * 1.0f, transform.forward);
-        if (Physics.Raycast(ray, out RaycastHit doorHit, 1f))
+        if (Physics.Raycast(ray, out RaycastHit doorHit, 1f,_doorLayerMask))
         {
             door = doorHit.collider.GetComponentInParent<DoorInteractable>();
+            if (door == null)
+                door = doorHit.collider.GetComponent<DoorInteractable>();
         }
-
         if (door != _currentDoor)
         {
             if (_currentDoor != null)

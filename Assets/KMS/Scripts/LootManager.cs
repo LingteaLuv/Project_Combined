@@ -57,6 +57,7 @@ public class LootManager : Singleton<LootManager>
     {
         UIManager.Instance.ToggleUI(ModalUI.lootTable);
         LootTableUpdate();
+        InventoryManager.Instance.Renderer.RenderInventory();
 
     }
 
