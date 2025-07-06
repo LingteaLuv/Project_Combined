@@ -70,15 +70,16 @@ public class Monster_Attack : MonsterState_temp, IAttackable
     // 이벤트 함수에서 호출 > 콜라로이드로 감지한 후 > ㅈ
     public void AttackEvent()
     {
-        Collider[] hits = Physics.OverlapSphere(monster.HandDetector.transform.position,3f, monster.PlayerLayerMask);
+        Collider[] hits = Physics.OverlapSphere(monster.HandDetector.transform.position,0.2f, monster.PlayerLayerMask);
 
         foreach (var hit in hits)
         {
             IDamageable damageTarget = hit.GetComponent<IDamageable>();
             if (damageTarget == null)
                 damageTarget = hit.GetComponentInParent<IDamageable>();
-
-            if (damageTarget != null && hit.gameObject.activeInHierarchy)
+            Vector3 distance = hit.transform.position - monster.HandDetector.transform.position;
+            
+            if (damageTarget != null && hit.gameObject.activeInHierarchy && distance.magnitude < 1.5f)
             {
                 try
                 {
