@@ -39,25 +39,18 @@ public class TimeManager1 : Singleton<TimeManager1>
     #region Unity MonoBehavior
     private void Start()
     {
-        Debug.Log($"TimeManager1 실제 인스턴스: {this.GetInstanceID()}");
+       // Debug.Log($"TimeManager1 실제 인스턴스: {this.GetInstanceID()}");
 
         // 시간대 변경 시 디버그 로그 출력 (테스트용)
         CurrentTimeOfDay.OnChanged += time =>
         {
-            Debug.Log($"[TimeManager] 시간대 변경됨 → {time}");
+           // Debug.Log($"[TimeManager] 시간대 변경됨 → {time}");
         };
     }
 
     private void Update()
     {
-        Debug.Log($"현재 시각: {CurrentHour.Value}:{(int)CurrentMinute.Value}, 상태: {CurrentTimeOfDay.Value}");
-        Debug.Log($"현재 시각: {CurrentHour.Value}:{(int)CurrentMinute.Value}, 상태: {CurrentTimeOfDay.Value}");
-        Debug.Log($"현재 시각: {CurrentHour.Value}:{(int)CurrentMinute.Value}, 상태: {CurrentTimeOfDay.Value}");
-        Debug.Log($"현재 시각: {CurrentHour.Value}:{(int)CurrentMinute.Value}, 상태: {CurrentTimeOfDay.Value}");
-        Debug.Log($"현재 시각: {CurrentHour.Value}:{(int)CurrentMinute.Value}, 상태: {CurrentTimeOfDay.Value}");
-        Debug.Log($"현재 시각: {CurrentHour.Value}:{(int)CurrentMinute.Value}, 상태: {CurrentTimeOfDay.Value}");
-        Debug.Log($"현재 시각: {CurrentHour.Value}:{(int)CurrentMinute.Value}, 상태: {CurrentTimeOfDay.Value}");
-        Debug.Log($"현재 시각: {CurrentHour.Value}:{(int)CurrentMinute.Value}, 상태: {CurrentTimeOfDay.Value}");
+       
         UpdateGameTime();
         UpdateDayNightCycle();
     }
