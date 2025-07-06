@@ -43,6 +43,7 @@ public class PlayerMovement : MonoBehaviour
 
     private float _waterSpeedMultiplier = 0.6f;
     private float _fallMultiplier = 5f;
+    private Coroutine _hitInWaterCoroutine;
 
     private void Awake() => Init();
 
@@ -248,6 +249,13 @@ public class PlayerMovement : MonoBehaviour
     public void SetWater(bool water)
     {
         IsWater = water;
+        if (water)
+            _hitInWaterCoroutine = StartCoroutine(Property.HitInWater(20));
+        else
+        {
+            StopCoroutine(_hitInWaterCoroutine);
+            _hitInWaterCoroutine = null;
+        }
     }
 
     //  방향 설정

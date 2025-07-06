@@ -40,7 +40,6 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler,
     private const float MaxStaminaTimer = 5f;
 
     private WaitForSeconds _delay;
-    private Coroutine _hitInWaterCoroutine;
 
     private bool _isOnCorHunger;
     private bool _isOnCorThirsty;
@@ -112,22 +111,9 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler,
         ParameterAct();
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Water") && _hitInWaterCoroutine == null)
-        {
-            _hitInWaterCoroutine = StartCoroutine(HitInWater(20));
-        }
-    }
+    private void OnTriggerEnter() { }
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Water") && _hitInWaterCoroutine != null)
-        {
-            StopCoroutine(_hitInWaterCoroutine);
-            _hitInWaterCoroutine = null;
-        }
-    }
+    private void OnTriggerExit() { }
 
     private void ParameterAct()
     {
@@ -399,7 +385,7 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler,
             IsPcDied();
         }
     }
-    private IEnumerator HitInWater(float damage)
+    public IEnumerator HitInWater(float damage)
     {
         while (true)
         {
@@ -416,7 +402,7 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler,
             OnDied?.Invoke();
         }
     }
-    
+
     public void Damaged(float hitDamage)
     {
         // 이미 죽었다면 처리 할 필요가 없음
