@@ -21,9 +21,7 @@ public class Monster_GoToEvent : MonsterState_temp
        var currentTime = TimeManager.Instance.CurrentTimeOfDay.Value;
 
         _hasArrive = false;
-        Debug.Log($"[GoToEvent] Enter 직전 TempPoint: {monster.TempPoint}");
-        Debug.Log("사운드 감지 :  해당 지역으로 이동합니다.");
-
+   
         if (monster.TempPoint != Vector3.zero)
         {
             _eventPos = monster.TempPoint;
@@ -104,7 +102,6 @@ public class Monster_GoToEvent : MonsterState_temp
         }
         else
         {
-            Debug.Log("감지 유지 중 : 계속 정지 상태");
             _hasArrive = false; // 대기 연장
         }
     }

@@ -154,11 +154,9 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
         {
             Debug.LogError("NavMeshAgent가 NavMesh 위에 없음!");
         }
-
-
         if (Input.GetKeyDown(KeyCode.F8))
         {
-            //Debug.Log("쥭움");
+
             _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.Dead]);
         }
 
@@ -185,7 +183,6 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
         // 상태머신 업데이트
         _monsterMerchine?.Update();
 
-        //Debug.Log($"Update_canDetect = {_canDetect}, 쿨타임 = {_detectCoolTime}");
         // 벽에 맞았을 때 토글시켜 탐지를 방어하고, 시간초를 업데이트에서 누적시켜 자동 토글로 디텍트를 다시 온으로 만든다/ 오프로 만드는 스위치는 벽에 닿는 것 
         if (!_canDetect)
         {
@@ -195,7 +192,6 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
             {
                 _canDetect = true;
                 _detectCoolTime = 0f;
-                //Debug.Log(" 쿨타임 종료  _canDetect true로 변경됨");
             }
         }
     }
@@ -248,7 +244,6 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
         // 레이어를 통한 플레이어 확인 방어 코드 , 플레이어 캐릭터가 아니면 리턴  >>> 건물을 포함하지 않으면 건물을 캐치할 수 없어요
         if (((1 << other.gameObject.layer) & (PlayerLayerMask | BuildingLayerMask)) == 0)
         {
-            //Debug.Log($"레이어 무시// 감지된 오브젝트: {other.name}, 레이어: {other.gameObject.layer}");
             return;
         }
 
@@ -257,7 +252,6 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
         // 빌딩에서 탈출하기 위한 패트롤용
         if (!_canDetect)
         {
-            //Debug.Log("현재 디텍트는 on 아직 건물에 안만남");
             return;
         }
 
@@ -268,10 +262,9 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
         // 레어어가 현 상태가 패트롤이 아닌경우 감지 무시 (패트롤의 경우만 감지하고, 공격상태일땐 거리로 측정함, 아이들 모드 역시 무시중)
         if (_monsterMerchine.CurState != _monsterMerchine.StateDic[Estate.Patrol])
         {
-            //Debug.Log("Patrol 상태가 아니라 감지 무시");
             return;
         }
-        //Debug.Log("3. 벽 회피 체크 시작");
+
         // 빌딩에 때문에 막혔을 때 ->  해당 지역에 대한 감지 실패 지역을 기억하고 다시 감지하는 것을 무시하는 것//
         // 벽에의한 무한루프 방지? - 추적 중 탈출을 위한 준비
         // 위치 비교를 위한 값을 설정해 비교하고, 사이의 거리값이 비교 값보다 작으면 감지 종료
@@ -281,7 +274,6 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
             float distance = Vector3.Distance(transform.position, _buildingSite);
             if (distance < _retryDis)
             {
-                //Debug.Log("벽 근처 감지 무시");
                 return;
             }
         }
@@ -291,10 +283,9 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
 
         // 몬스터 정면을 중심으로  플레이어어 위치까지의 각도 대해 
         float angle = Vector3.Angle(transform.forward, dirToPlayer);
-        //Debug.Log("5. 시야각 체크 시작");
         if (angle > SightAngle)
         {
-            //Debug.Log("좀비 시야에서 벗어났으니까 추격하지 않습니다.");
+
             return;
         }
 
@@ -316,26 +307,17 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
 
             if (((1 << hit.collider.gameObject.layer) & BuildingLayerMask) != 0)
             {
-                //Debug.Log($"Raycast 충돌한 오브젝트: {hit.collider.gameObject.name}, 레이어: {hit.collider.gameObject.layer}");
                 // 벽에 부딫힌 횟수 감지
                 // 벽에 5번 부딫히면 그냥 집으로 와라
                 _wallHitCount++;
-                //Debug.Log($"벽 충돌 {_wallHitCount}회 / 제한 {_wallLimitedCount}회 (충돌 오브젝트: {hit.collider.name})");
-
-
-                //Debug.Log($"좀 나와라 ㅇㅁㄴ어롬ㄴ아ㅓ로미ㅏㄴ어로마ㅣㄴ어로미나어로머ㅏㅣㄴㅇ로{_wallHitCount}");
+    
 
                 if (_wallHitCount >= _wallLimitedCount)
                 {
-                    //Debug.Log("벽에 너무 많이 부딫히니까 돌아와");
                     //_monsterMerchine.ChangeState(HitState); >>>  확인
                     _wallHitCount = 0;
                     return;
                 }
-
-
-                // 시작 시의 감지를 통한 확인
-                //Debug.Log("건물이랑 붙었다 다시 탐지 하면 안되요");
 
                 // 해당 위치를 저장한다.
                 _buildingSite = transform.position;
@@ -373,14 +355,12 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
                 // 감지하면 돌린다.
                 transform.rotation = Quaternion.LookRotation(LookDir);
             }
-
-            //Debug.Log($" 플레이어 감지됨 ({other.name}) Chase 상태로 전이");
             _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.Chase]);
 
         }
         else
         {
-            //Debug.Log($"플레이어가 아님 → 감지만 하고 무시: {other.name}, 레이어 = {LayerMask.LayerToName(other.gameObject.layer)}");
+            Debug.Log($"플레이어가 아님 무시");
         }
 
 
@@ -399,18 +379,13 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
             {
                 transform.rotation = Quaternion.LookRotation(dirToPlayer);
             }
-
-            //Debug.Log("플레이어의 위치를 소리로 확인하였다 - 돌아보자");
             return;
         }
-
 
         if (IsSightDetecting)
         {
-            //Debug.Log("시야 감지 중 사운드 감지 중단");
             return;
         }
-
 
         // 소리로 소리 아이템을 확인한 경우
         if (((1 << other.gameObject.layer) & SoundLayerMask) != 0)
@@ -434,7 +409,6 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
 
     public void AttackEvent()
     {
-        //Debug.Log("[Monster_temp] AttackEvent 호출됨");
         if (_monsterMerchine.CurState is Monster_Attack attackState)
         {
             attackState.AttackEvent();

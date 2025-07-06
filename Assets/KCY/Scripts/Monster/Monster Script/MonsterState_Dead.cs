@@ -26,16 +26,11 @@ public class Monster_Dead : MonsterState_temp
 
     public override void Enter()
     {
-        Debug.Log("몬스터 죽음  몬스터 죽음 몬스터 죽음 몬스터 죽음 몬스터 죽음");
-
         // 죽으면 멈춰서 애니 실행
-
 
         // 루터블 트루
         _lootable.IsLootable = true;
         // 루터블 트루
-
-
 
         _ani.SetBool("isPatrol", false);
         _ani.SetBool("isChasing", false);

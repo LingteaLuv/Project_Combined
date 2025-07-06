@@ -19,9 +19,6 @@ public class Monster_ReturnToSpawn : MonsterState_temp
 
     public override void Enter()
     {
-        //Debug.Log("스폰지역으로 다시 돌아가는 중입니다.");
-        //Debug.Log($"[ReturnToSpawn:Enter] 현재 SpawnPoint 위치: {monster.SpawnPoint}");
-
         // 고개는 돌리고 가자
         Vector3 dir = (_spawnPoint - monster.transform.position).normalized;
         if (dir != Vector3.zero)
@@ -50,7 +47,6 @@ public class Monster_ReturnToSpawn : MonsterState_temp
 
     public override void Update()
     {
-        //Debug.Log("호출 확인용,호출 확인용,호출 확인용,호출 확인용,호출 확인용,호출 확인용,호출 확인용");
 
         if (_agent == null || !_agent.isOnNavMesh)
         {
