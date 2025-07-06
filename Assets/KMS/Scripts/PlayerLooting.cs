@@ -16,7 +16,7 @@ public class PlayerLooting : MonoBehaviour
     private Lootable _lootable = null;
     private void OnTriggerEnter(Collider other) //레이어 6 콜라이더랑 만났을 경우 리스트에 추가
     {
-        if (other.gameObject.layer == 6)
+        if (other.gameObject.layer == 6 || other.gameObject.layer == 13)
         {
             _colliders.Add(other);
             _lootables.Add(other, other.GetComponentInChildren<Lootable>());
@@ -78,7 +78,7 @@ public class PlayerLooting : MonoBehaviour
     }
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.layer == 6)
+        if (other.gameObject.layer == 6 || other.gameObject.layer == 13)
         {
             _colliders.Remove(other);
             _lootables.Remove(other);
