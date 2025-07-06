@@ -50,8 +50,8 @@ public class MonsterSpawn : MonoBehaviour
     private void Start()
     {
         // 일단 구독하고
-        TimeManager1.Instance.CurrentTimeOfDay.OnChanged += OnTimeOfDaySpawnMonster;
-        OnTimeOfDaySpawnMonster(TimeManager1.Instance.CurrentTimeOfDay.Value);
+        TimeManager.Instance.CurrentTimeOfDay.OnChanged += OnTimeOfDaySpawnMonster;
+        OnTimeOfDaySpawnMonster(TimeManager.Instance.CurrentTimeOfDay.Value);
     }
 
 
