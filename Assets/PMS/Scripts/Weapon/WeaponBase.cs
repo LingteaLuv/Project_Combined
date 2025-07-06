@@ -7,7 +7,7 @@ public abstract class WeaponBase : MonoBehaviour
 {
     //아이템 클래스를 가져온다 -> 나중에 인벤토리에 있는 데이터를 읽고 쓰기 위해서
     public Item _item;
-    private ItemType _itemType;
+    protected ItemType _itemType;
     //플레이어 손위치에 소환도되야하는 위치 local위치를 변경해야 할 것 같음 -> 나중에 고민해보자
     [SerializeField] protected GameObject _weaponSpawnPos;   
 

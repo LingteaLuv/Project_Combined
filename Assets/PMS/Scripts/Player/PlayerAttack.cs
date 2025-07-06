@@ -213,8 +213,7 @@ public class PlayerAttack : MonoBehaviour
 
     private void StartThrowAttack()
     {
-        _animator.SetTrigger("Throw");
-        _animator.SetLayerWeight(3, 1); //Throw Layer 
+        Debug.Log("투척 공격");
     }
 
     /// <summary>
