@@ -23,10 +23,13 @@ public class RandomLootTable : MonoBehaviour
 
     private void Awake()
     {
+        if (GetComponent<LootItems>().InitType == LootItems.LootInitType.RandomGrid)
+        {
+            GenerateItem();
+        }
        //todo 몬스터 도감이 완성되면 참조 걸고 주석 해제
        //_id = _monsterDic.monsterInfo[_monsterID].LootID;
        //_gridId = _monsterDic.monsterInfo[_monsterID].LootGridChanceID;
-        GenerateItem();
     }
     
     public void GenerateItem()
@@ -44,13 +47,6 @@ public class RandomLootTable : MonoBehaviour
         _itemStack = new List<int>();
         _itemWeight = new List<int>();
 
-        for (int i = 0; i < _lootDic.LootTable[_id].Count; i+=3)
-        {
-            _itemId.Add(_lootDic.LootTable[_id][i]);
-            _itemStack.Add(_lootDic.LootTable[_id][i+1]);
-            _itemWeight.Add(_lootDic.LootTable[_id][i+2]);
-        }
-
         foreach (MonsterInfo mi in _monsterInfo)
         {
             int.TryParse(_monsterID, out int mid);
@@ -61,9 +57,14 @@ public class RandomLootTable : MonoBehaviour
                 break;
             }
         }
-
         
-
+        for (int i = 0; i < _lootDic.LootTable[_id].Count; i+=3)
+        {
+            _itemId.Add(_lootDic.LootTable[_id][i]);
+            _itemStack.Add(_lootDic.LootTable[_id][i+1]);
+            _itemWeight.Add(_lootDic.LootTable[_id][i+2]);
+        }
+        
         _itemCount = _itemId.Count;
     }
     
