@@ -7,19 +7,30 @@ using UnityEngine;
 //다양한 총관련 시스템, 1인칭 Zoom 공격
 public abstract class GunWeaponBase : WeaponBase
 {
+    /*
+        public int AtkDamage;
+        public int Rof;
+        public int BulletPerShot;
+        public float Range;
+        public int AmmoID;
+        public int AmmoCapacity;
+        public AudioClip ShotSoundResource;
+        public AudioClip ReloadSoundResource;
+        public float NoiseLevel;
+    */
     [SerializeField] protected GunItem _gunData; //건 데이터
     //사용 할 불릿 프리팹
     //추후 프리팹 매니저 관리
     [SerializeField] protected GameObject _bulletPrefab;
     //총 본체 관련 변수
-    [SerializeField] protected int _damage => _gunData.AtkDamage;     // 총의 데미지
-    [SerializeField] protected float _range => _gunData.Range;        // 총의 유효 사거리
+    protected int _damage => _gunData.AtkDamage;     // 총의 데미지
+    protected float _range => _gunData.Range;        // 총의 유효 사거리
 
     //총알 제어 관련 변수
-    [SerializeField] protected int _maxAmmoCount => _gunData.AmmoCapacity;       //최대 탄약수
-    [SerializeField] protected float _reloadTime;       // 재장전 속도. 총의 종류마다 다름.
-    [SerializeField] protected float _fireDelay = 1.5f; //총 발사 딜레이
-    [SerializeField] protected Transform _firePoint;    //총알 발사 지점
+    protected int _maxAmmoCount => _gunData.AmmoCapacity;       //최대 탄약수
+    protected float _reloadTime;       // 재장전 속도. 총의 종류마다 다름.
+    protected float _fireDelay = 1.5f; //총 발사 딜레이
+    [SerializeField]protected Transform _firePoint;    //총알 발사 지점
 
     //궤적 설정 관련 변수
     public LineRenderer _lineRenderer;
@@ -70,9 +81,9 @@ public abstract class GunWeaponBase : WeaponBase
         // 무기 방향 → 카메라 방향
         /*transform.rotation = Quaternion.Euler
         (_camera.transform.eulerAngles.x, _camera.transform.eulerAngles.y, 0);*/
-        // 발사체 방향 = 무기 방향
-        //bullet.transform.rotation = transform.rotation;
-         float speed = bulletSpeed;
+    // 발사체 방향 = 무기 방향
+    //bullet.transform.rotation = transform.rotation;
+    float speed = bulletSpeed;
         // 궤적 및 발사체 시작 속도
         Vector3 startVel = transform.forward * speed;
         // 궤적 발사체 운동 동기화, 계산

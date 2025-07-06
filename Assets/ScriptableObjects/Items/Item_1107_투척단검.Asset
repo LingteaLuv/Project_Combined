@@ -9,15 +9,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c595e4266a9e0844b98a7762cfcaad79, type: 3}
+  m_Script: {fileID: 11500000, guid: e84fb7e0c473c6c448a07ac2244c03f4, type: 3}
   m_Name: "Item_1107_\uD22C\uCC99\uB2E8\uAC80"
   m_EditorClassIdentifier: 
   ItemID: 1107
   Name: "\uD22C\uCC99\uB2E8\uAC80"
-  Description: "\uD22C\uCC99\uB2E8\uAC80\uC785\uB2C8\uB2E4."
-  Type: 0
+  Description: "\uB358\uC9C0\uAE30\uC5D0 \uC6A9\uC774\uD55C; \uAC00\uBCCD\uACE0 \uB0A0\uCE74\uB85C\uC6B4
+    \uB2E8\uAC80.\\n\uD55C\uBC88 \uC0AC\uC6A9\uD558\uBA74 \uD68C\uC218\uD560 \uC218
+    \uC5C6\uC9C0\uB9CC; \uD070 \uD53C\uD574\uB97C \uC785\uD790 \uC218 \uC788\uB2E4."
+  Type: 6
   Sprite: {fileID: 21300000, guid: d371c32b9a354484480f168c2481b3f9, type: 3}
-  MaxDurability: 50
+  MaxStack: 12
   AtkDamage: 60
-  AtkSpeed: 1
-  AtkSoundResources: {fileID: 8300000, guid: a957d1d1af4eb624bbabda7c649c46c3, type: 3}
+  AtkSpeed: 3
+  MinSpeed: 1
+  MaxSpeed: 5
+  MaxChargeTime: 2
+  MinRotateValue: 10
+  MaxRotateValue: 30
+  ThrowSoundResource: {fileID: 8300000, guid: a957d1d1af4eb624bbabda7c649c46c3, type: 3}

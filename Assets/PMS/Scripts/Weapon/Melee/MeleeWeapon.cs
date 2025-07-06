@@ -14,7 +14,7 @@ public class MeleeWeapon : WeaponBase
     [Tooltip("기획분들이 설정해주시면 좋겠습니다.")]
     [Header("직접 셋팅해야 하는 값")]
     [SerializeField] private float _attackRange;        //근거리 무기의 유효 범위
-    [SerializeField] private float _attackAngle;        //근거리 무기 유효 각도
+    [SerializeField] private float _attackAngle;        //근거리 무기 유효 각도  
 
     private void Reset()
     {
@@ -86,7 +86,8 @@ public class MeleeWeapon : WeaponBase
         // 가장 가까운 적이 있다면 데미지 부여 로직 실행
         if (closeGameObject != null)//(closestDamageable != null)
         {
-            closeGameObject.GetComponent<IDamageable>().Damaged(_meleeData.AtkDamage);
+            closeGameObject.gameObject.transform.root.GetComponent<IDamageable>().Damaged(_meleeData.AtkDamage);
+            //closeGameObject.GetComponent<IDamageable>().Damaged(_meleeData.AtkDamage);
             //TODO - 시각적 디버깅용 코드 추후 제거 예정
             StartCoroutine(DamageRoutine(closeGameObject.gameObject));
         }

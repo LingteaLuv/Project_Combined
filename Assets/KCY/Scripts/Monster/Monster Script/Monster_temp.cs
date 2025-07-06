@@ -1,4 +1,3 @@
-using Palmmedia.ReportGenerator.Core.Reporting.Builders;
 using System;
 using UnityEngine;
 using UnityEngine.AI;
@@ -76,19 +75,19 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
     public float NightChaseMoveSpeed => _info.NightChaseMoveSpeed;
     public int EnemyID => _info.EnemyID;
     public string Name => _info.Name;
-    public string AtkType => _info.AtkType;
-    public float AtkSpeed => _info.AtkSpeed;
+    //public string AtkType => _info.AtkType;
+    //public float AtkSpeed => _info.AtkSpeed;
     public float NightMoveSpeed => _info.NightMoveSpeed;
     public string EnemyLootId => _info.EnemyLootID;
     public string EnemyLootGridChanceID => _info.EnemyLootGridChanceID;
-    public string IdleSfx1 => _info.IdleSfx1;
-    public string IdleSfx2 => _info.IdleSfx2;
-    public string IdleSfxRange => _info.IdleSfxRange; 
-    public string AtkSfx => _info.AtkSfx; 
-    public string HitSfx => _info.HitSfx; 
-    public string DieSfx => _info.DieSfx;
-    public string ChaseSfx1 => _info.ChaseSfx1;
-    public string ChaseSfx2 => _info.ChaseSfx2;
+    public AudioClip IdleSfx1 => _info.IdleSfx1;
+    public AudioClip IdleSfx2 => _info.IdleSfx2;
+    public float IdleSfxRange => _info.IdleSfxRange; 
+    public AudioClip AtkSfx => _info.AtkSfx; 
+    public AudioClip HitSfx => _info.HitSfx; 
+    public AudioClip DieSfx => _info.DieSfx;
+    public AudioClip ChaseSfx1 => _info.ChaseSfx1;
+    public AudioClip ChaseSfx2 => _info.ChaseSfx2;
 
 
 

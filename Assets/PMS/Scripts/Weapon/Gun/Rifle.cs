@@ -90,6 +90,7 @@ public class Rifle : GunWeaponBase
             }
             bulletObj.SetActive(true); //해당 총알을 활성화시킴
             _bulletcaseParticle.Play();
+            CamaraShaker.Instance.GunShootShake();
         }
         else
         {
