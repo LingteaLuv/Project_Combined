@@ -53,7 +53,10 @@ public class MeleeWeapon : WeaponBase
         // 충돌체를 저장한 배열을 순회하며 가장 가까운 적 찾기
         foreach (Collider targetCollider in colliders)
         {
+            Debug.Log(targetCollider.gameObject.name);
+
             IDamageable damageable = targetCollider.GetComponent<IDamageable>();
+
             if (damageable != null)
             {
                 float y = _playerPos.transform.eulerAngles.y;

@@ -4,7 +4,8 @@ using UnityEngine;
 
 public enum EmonsterType
 {
-    NormalZombie,
+    None = -1,
+    NormalZombie = 0,
     HeavyZombie,
     RangeZombie
 }
