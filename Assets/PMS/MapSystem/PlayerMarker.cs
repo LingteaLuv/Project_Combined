@@ -8,7 +8,7 @@ public class PlayerMarker : MonoBehaviour
 
     private void Start()
     {
-        //player = GameObject.FindWithTag("Player").transform;
+        player = GameObject.FindWithTag("Player").transform;
     }
     private void Update()
     {

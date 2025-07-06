@@ -14,7 +14,7 @@ public class MeleeWeapon : WeaponBase
     [Tooltip("기획분들이 설정해주시면 좋겠습니다.")]
     [Header("직접 셋팅해야 하는 값")]
     [SerializeField] private float _attackRange;        //근거리 무기의 유효 범위
-    [SerializeField] private float _attackAngle;        //근거리 무기 유효 각도
+    [SerializeField] private float _attackAngle;        //근거리 무기 유효 각도  
 
     private void Reset()
     {

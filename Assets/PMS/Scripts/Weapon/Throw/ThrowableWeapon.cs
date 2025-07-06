@@ -5,18 +5,21 @@ using UnityEngine.Animations.Rigging;
 
 public class ThrowableWeapon : WeaponBase
 {
-
+    private Animator _animator; 
     [Tooltip("SO데이터")]
     [SerializeField] private ThrowItem _throwData;
     private float _damage => _throwData.AtkDamage;
+    private float _range => _throwData.Range;
+    //private float _range = 5.0f;
+    private Vector3 _startPos;
 
     [Header("References Value")]
     [SerializeField] private Transform cam;                  //카메라 시점
-    [SerializeField] private Transform attackPoint;          //투척 포인트
-    [SerializeField][Range(0, 20)] private float _moveSpeed; //인스펙터 창에서 값조절하기
+    //[SerializeField] private Transform attackPoint;          //투척 포인트
+    private float _moveSpeed; //인스펙터 창에서 값조절하기
 
     private Vector3 targetDir;               //타겟 방향 Direction
-    private bool readyToThrow;               //던지가 가능한지
+    private bool isThrowing;               //던지가 가능한지
     private int throwCooldown = 3;           //던지기 쿨다운
     private Coroutine throwCorouine;         //throw코루틴 저장
 
@@ -33,47 +36,63 @@ public class ThrowableWeapon : WeaponBase
     private float MinthrowRotationValue = 1;   //돌아가는 회전값의 최소
 
     //LineRender Value
-    public float projectileSpeed = 10f;     //라인렌더러가 사용하는 speed값인데 변경필요
-    public int lineSegmentCount = 30;       //정점의 개수
-    public float timeStep = 0.1f;           //0.1초마다 한번씩 찍기
+    private float projectileSpeed = 10f;     //라인렌더러가 사용하는 speed값인데 변경필요
+    private int lineSegmentCount = 30;       //정점의 개수
+    private float timeStep = 0.1f;           //0.1초마다 한번씩 찍기
     private LineRenderer lineRenderer;      //라인렌더러 변수
     private Vector3 gravity;                //중력값
     private Rigidbody rb;                   //리지드바디
-
+    private bool flag = true;
     // 차징 관련 변수
     private float chargeStartTime;
     private float currentChargeTime;
     private float currentPower;
     private float currentRotationValue;
-    private bool isCharging;
+    public bool isCharging;
 
-    private void Start() => readyToThrow = true;
+    private void Start()
+    {
+        _animator = transform.root.GetComponent<Animator>();
+    }
 
+    private void Awake()
+    {
+        cam = Camera.main.transform;
+        base.Init();
+        lineRenderer = GetComponent<LineRenderer>();
+        rb = gameObject.GetComponent<Rigidbody>();
+        gravity = Physics.gravity;
+        _itemType = ItemType.Throw;
+    }
 
     private void Update()
     {
         HandleInput();
         UpdateCharging();
     }
-    private void HandleInput()
+    public void HandleInput()
     {
+        if (Input.GetMouseButton(0) && flag == true) 
+        {
+            _animator.SetTrigger("Throw");
+            _animator.SetBool("IsCharging", true);
+            flag = false;
+        }
         if (Input.GetMouseButtonDown(0))  // (Input.GetMouseButton(0)) 
         {
             StartCharging();
         }
         if (Input.GetMouseButtonUp(0) && isCharging)
         {
+            _animator.SetBool("IsCharging", false);
             ExecuteAttack();
             StopCharging();
         }
-    }
-
-    private void Awake()
-    {
-        base.Init();
-        lineRenderer = GetComponent<LineRenderer>();
-        rb = gameObject.GetComponent<Rigidbody>();
-        gravity = Physics.gravity;
+        /*if(isThrowing)
+        {
+            if (_range < Vector3.Distance(_startPos, transform.position))
+            Destroy(gameObject);
+        }*/
     }
 
     public override void Attack()
@@ -91,7 +110,7 @@ public class ThrowableWeapon : WeaponBase
         Debug.Log("차징 시작!");
     }
 
-    private void UpdateCharging()
+    public void UpdateCharging()
     {
         if (!isCharging) return;
 
@@ -112,7 +131,7 @@ public class ThrowableWeapon : WeaponBase
         float rotationValue = Mathf.Lerp(MinthrowRotationValue, MaxthrowRotationValue, currentRotationValue);
 
         // 디버그 정보 출력 (옵션)
-        Debug.Log($"차징 시간: {currentChargeTime:F2}s, 파워: {currentPower:F2}, 속도: {currentSpeed:F2}, 회전속도: {rotationValue:F2}");
+        //Debug.Log($"차징 시간: {currentChargeTime:F2}s, 파워: {currentPower:F2}, 속도: {currentSpeed:F2}, 회전속도: {rotationValue:F2}");
     }
 
     private void StopCharging()
@@ -126,6 +145,8 @@ public class ThrowableWeapon : WeaponBase
     {
         transform.parent = null; // 손에서 분리
 
+        _startPos = transform.position;
+
         rb.isKinematic = false;
 
         rb.useGravity = true;
@@ -133,48 +154,24 @@ public class ThrowableWeapon : WeaponBase
         float finalSpeed = Mathf.Lerp(minSpeed, maxSpeed, currentPower);
         float rotationValue = Mathf.Lerp(MinthrowRotationValue, MaxthrowRotationValue, currentRotationValue);
 
-        targetDir = transform.forward * finalSpeed;
+        targetDir = cam.transform.forward * finalSpeed;
         rb.velocity = targetDir;    
 
         // TODO - speed값에 따라 회전 값을 다르게 해줘야 할 것 같다.
         rb.maxAngularVelocity = throwRotationMaxValue;
 
-        rb.angularVelocity = transform.right * rotationValue;
+        rb.angularVelocity = cam.transform.forward * rotationValue;
 
         Debug.Log($"투척 실행! 최종 속도: {finalSpeed:F2}, 회전값 : {rotationValue:F2}");
 
 
-        Invoke(nameof(ResetThrow), throwCooldown); 
+        //Invoke(nameof(ResetThrow), throwCooldown); 
         Destroy(gameObject, 10.0f);
     }
 
-    private IEnumerator HoldThrow()
-    { 
+    private void ResetThrow()
+    {
 
-        yield return new WaitUntil(() => Input.GetMouseButtonUp(0));
-
-        /*Rigidbody rb = gameObject.GetComponent<Rigidbody>();
-
-        transform.parent = null; // 손에서 분리
-
-        rb.isKinematic = false;
-
-        rb.useGravity = true;
-
-        //transform.rotation = cam.transform.rotation;
-
-        targetRot = transform.forward * _moveSpeed;
-
-        rb.velocity = targetRot;
-        
-        rb.maxAngularVelocity = 1;
-
-        rb.angularVelocity = transform.right * 1;
-
-
-        Invoke(nameof(ResetThrow), throwCooldown); //이런 식으로 간단한 쿨타임 구현이 가능
-        //해당 오브젝트 파괴 시점을 고려해봐야 할것 같다.
-        Destroy(gameObject, 10.0f);*/
     }
 
     //포물선 궤적 그리는 함수
@@ -187,7 +184,7 @@ public class ThrowableWeapon : WeaponBase
             Mathf.Lerp(minSpeed, maxSpeed, currentPower) :
             minSpeed;
 
-        Vector3 startVelocity = transform.forward * trajectorySpeed;
+        Vector3 startVelocity = cam.transform.forward * trajectorySpeed;
 
         Vector3[] points = new Vector3[lineSegmentCount];
 
@@ -201,21 +198,6 @@ public class ThrowableWeapon : WeaponBase
 
         lineRenderer.positionCount = lineSegmentCount;
         lineRenderer.SetPositions(points);
-        /*Vector3 startPos = transform.position;
-        Vector3 startVelocity = transform.forward * _moveSpeed;
-
-        Vector3[] points = new Vector3[lineSegmentCount];
-
-        for (int i = 0; i < lineSegmentCount; i++)
-        {
-            float t = i * timeStep;
-            //포물선 궤적(Projectile motion)
-            Vector3 point = startPos + startVelocity * t + 0.5f * gravity * t * t;
-            points[i] = point;
-        }
-
-        lineRenderer.positionCount = lineSegmentCount;
-        lineRenderer.SetPositions(points);*/
     }
 
     private void ClearTrajectory()
@@ -228,83 +210,8 @@ public class ThrowableWeapon : WeaponBase
         //패턴 매칭
         if (collision.gameObject.GetComponent<IDamageable>() is IDamageable damageable)
         {
-            damageable.Damaged(1/*_throwData.AtkDamage*/);
+            damageable.Damaged(_damage);
         }
         gameObject.SetActive(false);
     }
-
-    /*private void Throw()
-    {
-        readyToThrow = false;
-
-        //Instantiate object to throw
-        GameObject projectile = Instantiate(objectToThrow, attackPoint.position, cam.rotation);
-
-        //get rigidbody component
-        Rigidbody projectileRb = projectile.GetComponent<Rigidbody>();
-
-        // calulate direction
-        Vector3 forceDirection = cam.transform.forward;
-
-        RaycastHit hit;
-
-        if (Physics.Raycast(cam.position, cam.forward, out hit, 500f))
-        {
-            forceDirection = (hit.point - attackPoint.position).normalized;
-        }
-
-        //add force
-        Vector3 forceToAdd = forceDirection * throwForce + transform.up * throwUpwardForce; //(방향→ * 던지는 힘) + (방향↑ * 던지는 힘) 
-
-        projectileRb.AddForce(cam.forward * 10.0f ,ForceMode.Impulse);
-       
-
-        //implement throwCooldown
-        Invoke(nameof(ResetThrow), throwCooldown); //이런 식으로 간단한 쿨타임 구현이 가능
-    }*/
-
-    private void ResetThrow()
-    {
-        readyToThrow = true;
-    }
-
-    private void Reset()
-    {
-        ItemType = ItemType.Throw;
-    }
-
-    /*protected override void ExecuteAttack()
-    {
-        //StartCoroutine(WaifForInput());
-
-        Rigidbody rb = gameObject.GetComponent<Rigidbody>();
-
-        transform.parent = null; // 손에서 분리
-
-        rb.isKinematic = false;
-
-        rb.useGravity = true;
-
-        transform.rotation = cam.transform.rotation;
-
-        //
-        //카메라 -> 에임시스템? -> 어려울것같다
-        //방향 * 힘 ?
-
-        targetRot = transform.forward * _moveSpeed;
-        //targetRot = ((transform.forward * 1f) + (transform.up * 0.05f)).normalized;
-
-        rb.velocity = targetRot;
-
-        rb.maxAngularVelocity = 100;
-
-        rb.angularVelocity = transform.right * 100;*/
-
-        //rb.AddTorque(transform.right * 100);
-        //rb.AddForce(cam.forward * 1/*_throwData.Rof*/, ForceMode.VelocityChange);
-        //rb.AddTorque(cam.right* 300 , ForceMode.Impulse);
-
-        //Invoke(nameof(ResetThrow), throwCooldown); //이런 식으로 간단한 쿨타임 구현이 가능
-        //해당 오브젝트 파괴 시점을 고려해봐야 할것 같다.
-        //Destroy(gameObject,10.0f)};
 }
