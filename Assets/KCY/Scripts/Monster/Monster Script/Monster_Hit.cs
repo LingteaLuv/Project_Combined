@@ -34,12 +34,12 @@ public class Monster_Hit : MonsterState_temp, IDamageable
         {
             monster._isDead = true;
             stateMerchine.ChangeState(stateMerchine.StateDic[Estate.Dead]);
+            return;
         }
 
         // if문 위에 두면 맞는 모션 나오고 죽는 모션나온다 바꾸자
         _ani.SetTrigger("IsHit");
         monster.StartCoroutine(InvTime());
-
     }
 
     private IEnumerator InvTime()

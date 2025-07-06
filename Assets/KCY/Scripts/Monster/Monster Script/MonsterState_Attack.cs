@@ -79,7 +79,7 @@ public class Monster_Attack : MonsterState_temp, IAttackable
                 damageTarget = hit.GetComponentInParent<IDamageable>();
             Vector3 distance = hit.transform.position - monster.HandDetector.transform.position;
             
-            if (damageTarget != null && hit.gameObject.activeInHierarchy && distance.magnitude < 1.5f)
+            if (damageTarget != null && hit.gameObject.activeInHierarchy && distance.magnitude < 2f)
             {
                 try
                 {
