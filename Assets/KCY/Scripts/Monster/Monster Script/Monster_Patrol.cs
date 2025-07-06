@@ -35,12 +35,12 @@ public class Monster_Patrol : MonsterState_temp
         // 패트롤 모드에서는 몬스터의 시야각이 상승한다. 기획서엔 2배라고 되어있는데 지금 각 60도 이기 때문에 2배면 240도다
         // 나중에 피드백 받고 수정할 것
         
-        Debug.Log($"[패트롤 Init] BasePoint: {BasePoint}");
-        Debug.Log($"[추가 확인] SpawnPoint 위치: {SpawnPoint}, TempPoint 위치: {monster.TempPoint}");
+        //Debug.Log($"[패트롤 Init] BasePoint: {BasePoint}");
+        //Debug.Log($"[추가 확인] SpawnPoint 위치: {SpawnPoint}, TempPoint 위치: {monster.TempPoint}");
         // 유효성 검사(에이전트 보유, 내비 이탈 - 다음을 리턴)
         if (_agent == null || !_agent.isOnNavMesh)
         {
-            Debug.Log("NavMeshAgent가 NavMesh 위에 없습니다.");
+            //Debug.Log("NavMeshAgent가 NavMesh 위에 없습니다.");
             return;
         }
         // 아이들 모드에서 -> 패트롤 모드로 전환시 에이전트 움직임 재개 및 경로 재탐색
@@ -53,7 +53,7 @@ public class Monster_Patrol : MonsterState_temp
         }
         else
         {
-            Debug.LogWarning("Patrol 위치 생성 실패 → 다음 프레임에 재시도");
+            //Debug.LogWarning("Patrol 위치 생성 실패 → 다음 프레임에 재시도");
         }
     }
     /// <summary>
@@ -75,23 +75,23 @@ public class Monster_Patrol : MonsterState_temp
             Vector3 basePos = BasePoint;
             basePos.y = 0f;
             Vector3 destination = BasePoint + new Vector3(randomPatrolpoint.x, 0, randomPatrolpoint.y);
-            Debug.Log($"[ 시도 {i + 1}] 생성된 점: {destination}");
+            //Debug.Log($"[ 시도 {i + 1}] 생성된 점: {destination}");
             // destination 이치 근처 내비메쉬 확인하고 해당 내비의 위치를 인자로 반환 
             if (NavMesh.SamplePosition(destination, out NavMeshHit hit, 4f, NavMesh.AllAreas))
             {
-                Debug.Log($"[ 유효한 내비 위치]: {hit.position}");
+                //Debug.Log($"[ 유효한 내비 위치]: {hit.position}");
                 // 해당 점이 내비위에 있어도 갈 수 없으면 고장난다 따라서 해당 점으로 진짜 갈 수 있는지 유효성 검사
                 if (_agent.CalculatePath(hit.position, path) && path.status == NavMeshPathStatus.PathComplete)
                 {
-                    Debug.Log($"패트롤 성공 목적지: {hit.position}");
+                    //Debug.Log($"패트롤 성공 목적지: {hit.position}");
                     result = hit.position;
                     result.y = monster.transform.position.y;
-                    Debug.Log($"패트롤 목적지 확정: {result}");
+                    //Debug.Log($"패트롤 목적지 확정: {result}");
                     return true;
                 }
                 else
                 {
-                    Debug.Log("경로 계산 실패");
+                    //Debug.Log("경로 계산 실패");
                 }
             }
         }
@@ -200,7 +200,7 @@ public class Monster_Patrol : MonsterState_temp
                     }
                     else
                     {
-                        Debug.LogWarning("‼ 다음 경로 재설정 실패");
+                        //Debug.LogWarning("‼ 다음 경로 재설정 실패");
                     }
                     stopDetectTimer = 0f; // 리셋 후 타이머 초기화
                 }
