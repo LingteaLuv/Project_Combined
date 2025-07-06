@@ -7,7 +7,7 @@ public class LootItems : MonoBehaviour
     public bool[] ItemBlocked = new bool[6];
     public Item[] Items;
 
-    public LootInitType InitType = LootInitType.Fixed;
+    public LootInitType InitType;
     private int[] Percentages = new int[6];
 
     private RandomLootTable _rlt;

@@ -6125,6 +6125,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 034bc47afcbf5e141a58d5c20b7808e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1325312120 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 857930600214226490, guid: 2681100dc612c134d94c55a0b47fda2e, type: 3}
+  m_PrefabInstance: {fileID: 1763760401}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f9eb153661ae514e81eca5a109e621f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1328866419
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7612,6 +7623,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 88132413660393126, guid: 2681100dc612c134d94c55a0b47fda2e, type: 3}
+      propertyPath: m_Radius
+      value: 0.45
+      objectReference: {fileID: 0}
+    - target: {fileID: 857930600214226490, guid: 2681100dc612c134d94c55a0b47fda2e, type: 3}
+      propertyPath: DestroyAfterLooting
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 994688290833120001, guid: 2681100dc612c134d94c55a0b47fda2e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -7652,6 +7671,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1952945701435465877, guid: 2681100dc612c134d94c55a0b47fda2e, type: 3}
+      propertyPath: lootable
+      value: 
+      objectReference: {fileID: 1325312120}
     - target: {fileID: 1952945701435465877, guid: 2681100dc612c134d94c55a0b47fda2e, type: 3}
       propertyPath: SpawnPointLink
       value: 
@@ -7703,6 +7726,10 @@ PrefabInstance:
     - target: {fileID: 8769731257621114290, guid: 2681100dc612c134d94c55a0b47fda2e, type: 3}
       propertyPath: InitType
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8915673510380680224, guid: 2681100dc612c134d94c55a0b47fda2e, type: 3}
+      propertyPath: m_Layer
+      value: 13
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

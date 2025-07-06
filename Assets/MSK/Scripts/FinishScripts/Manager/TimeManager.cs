@@ -64,7 +64,7 @@ public class TimeManager : Singleton<TimeManager>
             {
                 CurrentHour.Value = 0;
                 DayCount++;
-                Debug.Log($"{DayCount} 일차");
+                //Debug.Log($"{DayCount} 일차");
             }
         }
     }
