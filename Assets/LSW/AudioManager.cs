@@ -1,34 +1,37 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 
 public class AudioManager : Singleton<AudioManager>
 {
-    [Header("Drag&Drop")] 
+    [Header("Drag&Drop")]
     [SerializeField] private GameObject _sfxPrefab;
     [SerializeField] private GameObject _uiSfxPrefab;
     [SerializeField] private AudioSource _bgmSource;
     [SerializeField] private List<AudioClip> _sfxList;
-    
+    //  석규 추가
+    [SerializeField] private List<AudioClip> _bgmList;
+
     private Dictionary<string, AudioClip> _bgmDic;
     public Dictionary<string, AudioClip> _sfxDic;
-    
+
     private Queue<AudioSource> _sfxPool;
     private Queue<AudioSource> _uiSfxPool;
-    
+
     private bool _isPlayed;
     private int _amount;
     private float _curBGMVolume;
     private float _curSFXVolume;
+    // 석규 추가
+    private Queue<AudioClip> _bgmQueue = new Queue<AudioClip>();
 
     protected override void Awake()
     {
         base.Awake();
         Init();
     }
-    
+
     private void Start()
     {
         _curBGMVolume = SettingManager.Instance.BGMSound.Value;
@@ -36,18 +39,18 @@ public class AudioManager : Singleton<AudioManager>
         SettingManager.Instance.BGMSound.OnChanged += BGMSoundUpdate;
         SettingManager.Instance.SFXSound.OnChanged += SFXSoundUpdate;
     }
-    
+
     private void BGMSoundUpdate(float value)
     {
         _curBGMVolume = value;
         _bgmSource.volume = _curBGMVolume;
     }
-    
+
     private void SFXSoundUpdate(float value)
     {
         _curSFXVolume = value;
     }
-    
+
     private void OnDestroy()
     {
         if (Application.isPlaying)
@@ -56,14 +59,17 @@ public class AudioManager : Singleton<AudioManager>
             SettingManager.Instance.SFXSound.OnChanged -= SFXSoundUpdate;
         }
     }
-    
-    public void PlayBGM(string clipName, bool loop)
+
+    public void PlayBGM(AudioClip clipName, bool loop)
     {
-        if(_bgmDic.TryGetValue(clipName, out AudioClip audioClip))
+        Debug.Log("브금 1");
+        //if (_bgmDic.TryGetValue(clipName, out AudioClip audioClip))
         {
-            if (_isPlayed && _bgmSource.clip == audioClip) return;
+            Debug.Log("브금 2");
+            if (_isPlayed && _bgmSource.clip == clipName) return;
+            Debug.Log("브금 3");
             _bgmSource.spatialBlend = 0;
-            _bgmSource.clip = audioClip;
+            _bgmSource.clip = clipName;
             _bgmSource.loop = loop;
             _bgmSource.Play();
             StartCoroutine(BGMFadeIn(_bgmSource, 3f));
@@ -79,7 +85,7 @@ public class AudioManager : Singleton<AudioManager>
 
     public void PlaySFX(AudioClip audioClip, Vector3 position)
     {
-        if(audioClip != null)
+        if (audioClip != null)
         {
             AudioSource audioSource = GetSfxSource();
             audioSource.transform.position = position;
@@ -89,10 +95,10 @@ public class AudioManager : Singleton<AudioManager>
             StartCoroutine(WaitSFX(audioClip.length, audioSource));
         }
     }
-    
+
     public void PlaySFX(string clipName, Vector3 position)
     {
-        if(_sfxDic.ContainsKey(clipName))
+        if (_sfxDic.ContainsKey(clipName))
         {
             AudioSource audioSource = GetSfxSource();
             audioSource.transform.position = position;
@@ -102,10 +108,10 @@ public class AudioManager : Singleton<AudioManager>
             StartCoroutine(WaitSFX(_sfxDic[clipName].length, audioSource));
         }
     }
-    
+
     public void PlayUISFX(AudioClip audioClip)
     {
-        if(audioClip != null)
+        if (audioClip != null)
         {
             AudioSource audioSource = GetUISfxSource();
             audioSource.volume = _curSFXVolume;
@@ -114,7 +120,7 @@ public class AudioManager : Singleton<AudioManager>
             StartCoroutine(WaitSFX(audioClip.length, audioSource, true));
         }
     }
-    
+
     private AudioSource GetUISfxSource()
     {
         if (_uiSfxPool.Count > 0)
@@ -125,7 +131,7 @@ public class AudioManager : Singleton<AudioManager>
         GameObject temp = Instantiate(_uiSfxPrefab);
         return temp.GetComponent<AudioSource>();
     }
-    
+
     private AudioSource GetSfxSource()
     {
         if (_sfxPool.Count > 0)
@@ -136,7 +142,7 @@ public class AudioManager : Singleton<AudioManager>
         GameObject temp = Instantiate(_sfxPrefab);
         return temp.GetComponent<AudioSource>();
     }
-    
+
     private IEnumerator WaitSFX(float delay, AudioSource source, bool isUI = false)
     {
         yield return new WaitForSeconds(delay);
@@ -151,7 +157,7 @@ public class AudioManager : Singleton<AudioManager>
             _sfxPool.Enqueue(source);
         }
     }
-    
+
     private IEnumerator BGMFadeIn(AudioSource source, float fadeTime)
     {
         float timer = 0f;
@@ -177,7 +183,7 @@ public class AudioManager : Singleton<AudioManager>
         source.Stop();
         source.volume = _curBGMVolume;
     }
-    
+
     private void Init()
     {
         _amount = 10;
@@ -194,8 +200,39 @@ public class AudioManager : Singleton<AudioManager>
         _sfxDic = new Dictionary<string, AudioClip>();
         for (int i = 0; i < _sfxList.Count; i++)
         {
-            _sfxDic.Add(_sfxList[i].name,_sfxList[i]);
+            _sfxDic.Add(_sfxList[i].name, _sfxList[i]);
+        }
+        EnqueueBGM();
+    }
+
+    // 석규 추가
+    public void EnqueueBGM()
+    {
+        foreach (var bgmName in _bgmList)
+        {
+            _bgmQueue.Enqueue(bgmName);
+        }
+    }
+
+    // 다음 BGM 재생
+    public void PlayNextBGMInQueue()
+    {
+        if (_bgmQueue.Count == 0) return;
+        AudioClip nextClip = _bgmQueue.Dequeue();
+        PlayBGM(nextClip, false);
+
+        //  꺼낸 곡을 다시 큐 뒤에 추가
+        _bgmQueue.Enqueue(nextClip);
+    }
+
+    // 자동 재생 
+    public void PlayBgms(bool bgmPlay)
+    {
+        if (_bgmSource == null) return;
+
+        if (_bgmSource.isPlaying == false && _bgmQueue.Count > 0)
+        {
+            PlayNextBGMInQueue();
         }
     }
 }
-

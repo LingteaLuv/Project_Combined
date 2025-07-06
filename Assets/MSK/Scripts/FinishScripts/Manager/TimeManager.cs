@@ -64,7 +64,11 @@ public class TimeManager : Singleton<TimeManager>
             {
                 CurrentHour.Value = 0;
                 DayCount++;
-                Debug.Log($"{DayCount} 일차");
+                if(DayCount == 7)
+                {
+                    //TODO : 7일 엔딩 진입
+                    Debug.Log("7일차 엔딩 진입");
+                }
             }
         }
     }
