@@ -1,3 +1,4 @@
+using Palmmedia.ReportGenerator.Core.Reporting.Builders;
 using System;
 using UnityEngine;
 using UnityEngine.AI;
@@ -67,6 +68,9 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
     private float _detectDur = 3f;
     private int _wallHitCount = 0;
     private int _wallLimitedCount = 5;
+
+
+    [SerializeField] public Lootable lootable;
 
 
     public float NightChaseMoveSpeed => _info.NightChaseMoveSpeed;
@@ -149,6 +153,14 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.F8))
+        {
+            Debug.Log("쥭움");
+            _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.Dead]);
+        }
+
+
+
        // Debug.Log($" Update /// 객체 이름: {this.name}, _canDetect = {_canDetect}, 쿨타임 = {_detectCoolTime}");
 
         //Debug.Log($"[Patrol] 시야 감지 여부: {IsSightDetecting}");
@@ -201,6 +213,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
         // 처음 시작은 아이들 모드로 시작
         _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.Idle]);
     }
+
 
     // 외부에서 호출: 몬스터가 플레이어를 공격하도록 설정
     public void Attack(IDamageable target)
@@ -312,7 +325,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
                 if (_wallHitCount >= _wallLimitedCount)
                 {
                     Debug.Log("벽에 너무 많이 부딫히니까 돌아와");
-                    _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.ReturnToSpawn]);
+                    //_monsterMerchine.ChangeState(HitState); >>>  확인
                     _wallHitCount = 0;
                     return;
                 }

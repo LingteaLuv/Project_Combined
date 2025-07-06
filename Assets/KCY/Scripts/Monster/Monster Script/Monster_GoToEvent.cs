@@ -66,6 +66,7 @@ public class Monster_GoToEvent : MonsterState_temp
             _eventPos = monster.TempPoint;
             _agent.SetDestination(_eventPos);
         }
+
         if (_ani != null)
         {
             _ani.SetBool("isChasing", true);
