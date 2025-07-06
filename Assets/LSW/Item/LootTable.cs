@@ -6,11 +6,11 @@ public class RandomLootTable : MonoBehaviour
 {
     [SerializeField] private LootDictionary _lootDic;
     [SerializeField] private ItemDictionary _itemDic;
-    // [SerializeField] private MonsterDictionary _monsterDic; 
+    [SerializeField] private List<MonsterInfo> _monsterInfo;
     [SerializeField] private string _monsterID;
 
-    private string _id = "8001";
-    private string _gridId = "7001";
+    private string _id;
+    private string _gridId;
     
     public List<int> _itemId;
     public List<int> _itemStack;
@@ -23,9 +23,9 @@ public class RandomLootTable : MonoBehaviour
 
     private void Awake()
     {
-        //todo 몬스터 도감이 완성되면 참조 걸고 주석 해제
-        //_id = _monsterDic.monsterInfo[_monsterID].LootID;
-        //_gridId = _monsterDic.monsterInfo[_monsterID].LootGridChanceID;
+       //todo 몬스터 도감이 완성되면 참조 걸고 주석 해제
+       //_id = _monsterDic.monsterInfo[_monsterID].LootID;
+       //_gridId = _monsterDic.monsterInfo[_monsterID].LootGridChanceID;
         GenerateItem();
     }
     
@@ -50,6 +50,19 @@ public class RandomLootTable : MonoBehaviour
             _itemStack.Add(_lootDic.LootTable[_id][i+1]);
             _itemWeight.Add(_lootDic.LootTable[_id][i+2]);
         }
+
+        foreach (MonsterInfo mi in _monsterInfo)
+        {
+            int.TryParse(_monsterID, out int mid);
+            if (mi.EnemyID == mid)
+            {
+                _id = mi.EnemyLootID;
+                _gridId = mi.EnemyLootGridChanceID;
+                break;
+            }
+        }
+
+        
 
         _itemCount = _itemId.Count;
     }
