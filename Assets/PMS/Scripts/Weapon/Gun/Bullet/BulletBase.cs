@@ -56,13 +56,11 @@ public class BulletBase : MonoBehaviour
         if (collision.gameObject.CompareTag("Player")) return;
 
         //IDamageable을 가지고 있는 객체를 담는다.
-        IDamageable damageable = collision.gameObject.GetComponent<IDamageable>();
+        IDamageable damageable = collision.gameObject.transform.root.GetComponent<IDamageable>();
 
         //피해를 받을 객체가 있다면
         if (damageable != null)
         {
-            //피해 대상자 확인용 Log 디버깅
-            Debug.Log(collision.gameObject.name);
             damageable.Damaged(_currentBulletDamage);  // 먼저 데미지 처리
             gameObject.SetActive(false);               // 그 다음 비활성화
         }
