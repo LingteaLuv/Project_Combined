@@ -83,7 +83,8 @@ public class MeleeWeapon : WeaponBase
         // 가장 가까운 적이 있다면 데미지 부여 로직 실행
         if (closeGameObject != null)//(closestDamageable != null)
         {
-            closeGameObject.GetComponent<IDamageable>().Damaged(_meleeData.AtkDamage);
+            closeGameObject.gameObject.transform.root.GetComponent<IDamageable>().Damaged(_meleeData.AtkDamage);
+            //closeGameObject.GetComponent<IDamageable>().Damaged(_meleeData.AtkDamage);
             //TODO - 시각적 디버깅용 코드 추후 제거 예정
             StartCoroutine(DamageRoutine(closeGameObject.gameObject));
         }
