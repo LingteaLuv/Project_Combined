@@ -50,6 +50,8 @@ public class ThrowableWeapon : WeaponBase
     private float currentRotationValue;
     public bool isCharging;
 
+    private bool finish_attack = false;
+
     private void Start()
     {
         _animator = transform.root.GetComponent<Animator>();
@@ -208,10 +210,10 @@ public class ThrowableWeapon : WeaponBase
     private void OnCollisionEnter(Collision collision)
     {
         //패턴 매칭
-        if (collision.gameObject.GetComponent<IDamageable>() is IDamageable damageable)
+        if (collision.gameObject.GetComponent<IDamageable>() is IDamageable damageable && !finish_attack)
         {
             damageable.Damaged(_damage);
+            finish_attack = true;
         }
-        gameObject.SetActive(false);
     }
 }
