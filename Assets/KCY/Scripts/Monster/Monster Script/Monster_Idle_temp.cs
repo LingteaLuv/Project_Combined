@@ -46,11 +46,11 @@ public class Monster_Idle : MonsterState_temp
             monster.IsDetecting = false;
             monster.TargetPosition = null;
 
-            Debug.Log("아이들 모드 정지");
+            //Debug.Log("아이들 모드 정지");
         }
         else
         {
-            Debug.LogWarning("[Idle] NavMeshAgent가 NavMesh 위에 없거나 null입니다!");
+            //Debug.LogWarning("[Idle] NavMeshAgent가 NavMesh 위에 없거나 null입니다!");
         }
         
     }
@@ -58,12 +58,12 @@ public class Monster_Idle : MonsterState_temp
 
     public override void Update()
     {
-        Debug.Log("idle MOde");
+        //Debug.Log("idle MOde");
         _idleTimer += Time.deltaTime;
-        Debug.Log($"[Idle] 상태 Update() 호출됨 - 경과시간: {_idleTimer:F2}");
+        //Debug.Log($"[Idle] 상태 Update() 호출됨 - 경과시간: {_idleTimer:F2}");
         if (_idleTimer >= _idleDuration)
         {
-            Debug.Log("[Idle] 타이머 종료 → Patrol 상태로 전이");
+            //Debug.Log("[Idle] 타이머 종료 → Patrol 상태로 전이");
             stateMachine.ChangeState(stateMachine.StateDic[Estate.Patrol]);
         }
     }
@@ -77,13 +77,13 @@ public class Monster_Idle : MonsterState_temp
         {
             _navMeshAgent.isStopped = false;
             _navMeshAgent.ResetPath();
-            Debug.Log("idle 나감");
+            //Debug.Log("idle 나감");
             monster.Ani.SetBool("isPatrol", true);
             _ani.ResetTrigger("Attack");
         }
         else
         {
-            Debug.Log("idle 나갈때 뭔가 잘못됬다 확인해라");
+            //Debug.Log("idle 나갈때 뭔가 잘못됬다 확인해라");
         }
 
         //monster.HearingCol.radius = _info.HearingRange;

@@ -15,9 +15,9 @@ public class MonsterStateMachine_temp
 
     public void ChangeState(BaseState_temp changedState)
     {
-        UnityEngine.Debug.Log($"[상태 전이 시도] 현재: {CurState?.GetType().Name}, 변경 대상: {changedState?.GetType().Name}");
-        UnityEngine.Debug.Log($"[상태 전이 시도] 현재: {CurState?.GetType().Name}, 변경 대상: {changedState?.GetType().Name}");
-        UnityEngine.Debug.Log($"[상태 전이 완료] 현재: {CurState?.GetType().Name}, 이전: {PrevState?.GetType().Name}");
+        //UnityEngine.Debug.Log($"[상태 전이 시도] 현재: {CurState?.GetType().Name}, 변경 대상: {changedState?.GetType().Name}");
+        //UnityEngine.Debug.Log($"[상태 전이 시도] 현재: {CurState?.GetType().Name}, 변경 대상: {changedState?.GetType().Name}");
+        //UnityEngine.Debug.Log($"[상태 전이 완료] 현재: {CurState?.GetType().Name}, 이전: {PrevState?.GetType().Name}");
 
 
         if (CurState == changedState)

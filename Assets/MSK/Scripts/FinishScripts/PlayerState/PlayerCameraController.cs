@@ -40,7 +40,7 @@ public class PlayerCameraController : MonoBehaviour
         SettingManager.Instance.MouseXSpeed.OnChanged += MouseXSpeedUpdate;
         SettingManager.Instance.MouseYSpeed.OnChanged += MouseYSpeedUpdate;
 
-        GameManager.Instance.OnGameOver += Unsubscribe;
+
     }
     
     private void Unsubscribe()

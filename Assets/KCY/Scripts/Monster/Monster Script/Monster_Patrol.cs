@@ -37,6 +37,7 @@ public class Monster_Patrol : MonsterState_temp
         // 유효성 검사(에이전트 보유, 내비 이탈 - 다음을 리턴)
         if (_agent == null || !_agent.isOnNavMesh)
         {
+
             return;
         }
         // 아이들 모드에서 -> 패트롤 모드로 전환시 에이전트 움직임 재개 및 경로 재탐색
@@ -49,7 +50,7 @@ public class Monster_Patrol : MonsterState_temp
         }
         else
         {
-            Debug.LogWarning("Patrol 위치 생성 실패 → 다음 프레임에 재시도");
+            //Debug.LogWarning("Patrol 위치 생성 실패 → 다음 프레임에 재시도");
         }
     }
     /// <summary>
@@ -84,7 +85,7 @@ public class Monster_Patrol : MonsterState_temp
                 }
                 else
                 {
-                    Debug.Log("경로 계산 실패");
+                    //Debug.Log("경로 계산 실패");
                 }
             }
         }
@@ -98,8 +99,8 @@ public class Monster_Patrol : MonsterState_temp
         monster.SightCol.radius = monster.SightRange * PatrolSight;
 
 
-        if (TimeManager1.Instance.CurrentTimeOfDay.Value == DayTime.Night ||
-      TimeManager1.Instance.CurrentTimeOfDay.Value == DayTime.MidNight)
+        if (TimeManager.Instance.CurrentTimeOfDay.Value == DayTime.Night ||
+      TimeManager.Instance.CurrentTimeOfDay.Value == DayTime.MidNight)
         {
             _agent.speed = monster.Info.NightMoveSpeed;
         }
@@ -179,7 +180,7 @@ public class Monster_Patrol : MonsterState_temp
                     }
                     else
                     {
-                        Debug.LogWarning("‼ 다음 경로 재설정 실패");
+                        //Debug.LogWarning("‼ 다음 경로 재설정 실패");
                     }
                     stopDetectTimer = 0f; // 리셋 후 타이머 초기화
                 }

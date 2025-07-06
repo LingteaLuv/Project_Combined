@@ -2,12 +2,15 @@ using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 
 public class NPCInteractable : MonoBehaviour
 {
     [SerializeField] public NPCDialogue Dialogue;
+
+    [SerializeField] public NPCMark Mark;
 
     [SerializeField] private GameObject _ballon;
     [SerializeField] private TMP_Text _ballonText;
@@ -22,6 +25,8 @@ public class NPCInteractable : MonoBehaviour
     }
     private void Start()
     {
+        Mark.gameObject.transform.rotation = Quaternion.Euler(90, 90, 0);
+        Mark.SetNone();
         _ballon.SetActive(false);
 
         QuestManager.Instance.OnQuestAccepted += SetAcceptedText;
@@ -46,6 +51,7 @@ public class NPCInteractable : MonoBehaviour
             if (QuestManager.Instance.QuestDictionary[s].Status == QuestStatus.Available)
             {
                 _ballonText.text = "?";
+                Mark.SetAvailable();
                 break;
             }
         }
@@ -64,6 +70,7 @@ public class NPCInteractable : MonoBehaviour
         if (qd.StartNPCID == ID)
         {
             _ballonText.text = "...";
+            Mark.SetNone();
         }
     }
     private void SetCompletedText(QuestData qd, QuestProgress qp)
@@ -71,6 +78,7 @@ public class NPCInteractable : MonoBehaviour
         if (qd.EndNPCID == ID)
         {
             _ballonText.text = "!";
+            Mark.SetCompleted();
         }
     }
     private void SetClosedText(QuestData qd, QuestProgress qp)
@@ -78,6 +86,7 @@ public class NPCInteractable : MonoBehaviour
         if (qd.EndNPCID == ID)
         {
             _ballonText.text = "...";
+            Mark.SetNone();
         }
     }
 

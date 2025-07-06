@@ -131,7 +131,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
 
     private void Start()
     {
-        Debug.Log("Monster Start()");
+        //Debug.Log("Monster Start()");
         StateMachineInit();
 
         if (SightCol != null)
@@ -144,10 +144,8 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
             //Debug.LogError(" SightCol이 할당되지 않았습니다. Monster_temp에 연결하세요!");
         }
 
-        TimeManager1.Instance.CurrentTimeOfDay.OnChanged += OnTimeOfDayChanged;
-        OnTimeOfDayChanged(TimeManager1.Instance.CurrentTimeOfDay.Value);
-
-
+        TimeManager.Instance.CurrentTimeOfDay.OnChanged += OnTimeOfDayChanged;
+        OnTimeOfDayChanged(TimeManager.Instance.CurrentTimeOfDay.Value);
     }
 
     private void Update()
@@ -156,9 +154,9 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
         {
             Debug.LogError("NavMeshAgent가 NavMesh 위에 없음!");
         }
-
         if (Input.GetKeyDown(KeyCode.F8))
         {
+
             _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.Dead]);
         }
 
@@ -184,9 +182,11 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
 
         // 상태머신 업데이트
         _monsterMerchine?.Update();
+
         // 벽에 맞았을 때 토글시켜 탐지를 방어하고, 시간초를 업데이트에서 누적시켜 자동 토글로 디텍트를 다시 온으로 만든다/ 오프로 만드는 스위치는 벽에 닿는 것 
         if (!_canDetect)
         {
+            //Debug.Log($"쿨타임 진행 중 {_detectCoolTime:F2} / {_detectDur}");
             _detectCoolTime += Time.deltaTime;
             if (_detectCoolTime >= _detectDur)
             {
@@ -264,6 +264,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
         {
             return;
         }
+
         // 빌딩에 때문에 막혔을 때 ->  해당 지역에 대한 감지 실패 지역을 기억하고 다시 감지하는 것을 무시하는 것//
         // 벽에의한 무한루프 방지? - 추적 중 탈출을 위한 준비
         // 위치 비교를 위한 값을 설정해 비교하고, 사이의 거리값이 비교 값보다 작으면 감지 종료
@@ -284,6 +285,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
         float angle = Vector3.Angle(transform.forward, dirToPlayer);
         if (angle > SightAngle)
         {
+
             return;
         }
 

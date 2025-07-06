@@ -12,7 +12,7 @@ public class SightCollider : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("SightCollider.OnTriggerEnter 호출됨");
+        //Debug.Log("SightCollider.OnTriggerEnter 호출됨");
         _monster.SightDetectPlayer(other);
     }
 
@@ -27,8 +27,8 @@ public class SightCollider : MonoBehaviour
 
         if (_monster.IsDetecting && _monster.TargetPosition == other.transform)
         {
-            Debug.Log(" 플레이어 감지 해제 Idle 상태 복귀");
-            Debug.Log(" 제발 돌아와 이 ㅆ");
+            //Debug.Log(" 플레이어 감지 해제 Idle 상태 복귀");
+            //Debug.Log(" 제발 돌아와 이 ㅆ");
           
             _monster.IsDetecting = false;
             _monster.IsSightDetecting = false;

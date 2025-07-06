@@ -9,11 +9,11 @@ public class MonsterHandDetector : MonoBehaviour
     private IAttackable attackLogic;
     private Monster_temp _monster;
 
-    private void OnDrawGizmosSelected()
+    /*private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, 3f); 
-    }
+    }*/
     private void Start()
     {
         // Layer가 설정되지 않았다면 "Player"로 자동 설정

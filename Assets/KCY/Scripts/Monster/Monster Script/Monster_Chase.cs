@@ -52,23 +52,23 @@ public class Monster_Chase : MonsterState_temp
     {
 
         monster.SightCol.radius = monster.SightRange * ChaseSight;
-        var currentTime = TimeManager1.Instance.CurrentTimeOfDay.Value;
-        if (TimeManager1.Instance.CurrentTimeOfDay.Value == DayTime.Night || TimeManager1.Instance.CurrentTimeOfDay.Value == DayTime.MidNight)
+        var currentTime = TimeManager.Instance.CurrentTimeOfDay.Value;
+        if (TimeManager.Instance.CurrentTimeOfDay.Value == DayTime.Night || TimeManager.Instance.CurrentTimeOfDay.Value == DayTime.MidNight)
         {
             _agent.speed = monster.Info.NightChaseMoveSpeed;
-            Debug.Log(" 밤 >> 추격 시간 적용");
-            Debug.Log($"[Chase] 시간대: {currentTime} → NightChase 속도 적용: {_agent.speed:F2}");
+            //Debug.Log(" 밤 >> 추격 시간 적용");
+            //Debug.Log($"[Chase] 시간대: {currentTime} → NightChase 속도 적용: {_agent.speed:F2}");
         }
         else
         {
             _agent.speed = monster.Info.ChaseMoveSpeed;
-            Debug.Log(" 낮, 아침 >> 일반 추적 속도");
-            Debug.Log($"[Chase] 시간대: {currentTime} → 기본 Chase 속도 적용: {_agent.speed:F2}");
+            //Debug.Log(" 낮, 아침 >> 일반 추적 속도");
+            //Debug.Log($"[Chase] 시간대: {currentTime} → 기본 Chase 속도 적용: {_agent.speed:F2}");
         }
 
 
-        Debug.Log("체이싱 상태 진입");
-        Debug.Log($"[Chase] 상태 진입 완료 / 추적 대상: {monster.TargetPosition?.name}");
+        //Debug.Log("체이싱 상태 진입");
+        //Debug.Log($"[Chase] 상태 진입 완료 / 추적 대상: {monster.TargetPosition?.name}");
         _missingTime = 0f;
 
         // 몬스터 애니메이션 용 방어코드
@@ -117,7 +117,7 @@ public class Monster_Chase : MonsterState_temp
         // 1. 공격 사거리 도달
         if (distance <= monster.AtkRange)
         {
-            Debug.Log(" 공격 범위 도달 > Attack 상태 전이");
+            //Debug.Log(" 공격 범위 도달 > Attack 상태 전이");
             stateMachine.ChangeState(stateMachine.StateDic[Estate.Attack]);
             return;
         }
@@ -125,7 +125,7 @@ public class Monster_Chase : MonsterState_temp
         // 2. 경로 유효성 확인
         if (_agent.pathStatus == NavMeshPathStatus.PathInvalid)
         {
-            Debug.LogWarning("경로 생성 실패 > Reset 상태로 전이");
+            //Debug.LogWarning("경로 생성 실패 > Reset 상태로 전이");
             stateMachine.ChangeState(stateMachine.StateDic[Estate.Reset]);
             return;
         }
@@ -137,7 +137,7 @@ public class Monster_Chase : MonsterState_temp
             _missingTime += Time.deltaTime;
             if (_missingTime >= 1.5f)
             {
-                Debug.LogWarning("경로 멈춤 감지 > Reset 상태 전이");
+                //Debug.LogWarning("경로 멈춤 감지 > Reset 상태 전이");
                 stateMachine.ChangeState(stateMachine.StateDic[Estate.Reset]);
                 return;
             }
