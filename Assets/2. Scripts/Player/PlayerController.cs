@@ -1,5 +1,6 @@
 using System;
 using System.Xml;
+using UnityEditor.VersionControl;
 using UnityEngine;
 
 /// <summary>
@@ -43,6 +44,7 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        _movement.Property.OnHited += OnPlayyerHided;
         _movement.Property.OnDied += OnPlayerDied;
         _fsm.ChangeState(IdleState);
     }
@@ -109,7 +111,7 @@ public class PlayerController : MonoBehaviour
         bool isGrounded = _movement.IsGrounded;
         _animator.SetBool("IsGround", isGrounded);
     }
-    private void OnPlayerDamaged(int damage)
+    private void OnPlayyerHided()
     {
         _fsm.ChangeState(HitState);
     }

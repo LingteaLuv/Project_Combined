@@ -6,51 +6,19 @@ using UnityEngine;
 /// </summary>
 public class PlayerHitState : PlayerState
 {
-    private float _hitDuration = 0.3f;
     private float _timer;
-    private int _damageAmount;
-    private bool _damageApplied;
-
     public PlayerHitState(PlayerStateMachine fsm, PlayerMovement movement)
         : base(fsm, movement) { }
 
-    /// <summary>
-    /// 피격 시 받을 데미지를 설정합니다.
-    /// </summary>
-    public void SetDamage(int amount)
-    {
-        _damageAmount = amount;
-    }
+    public override void Enter() {   }
 
-    public override void Enter()
-    {
-        var controller = _movement?.Controller;
-
-        var animator = controller?._animator;
-
-        _timer = _hitDuration;
-        controller.IsInHit = true;
-        _damageApplied = false;
-    }
-
-    public override void Exit()
-    {
-        var controller = _movement?.Controller;
-        if (controller != null)
-            controller.IsInHit = false;
-    }
+    public override void Exit()   {    }
 
     public override void FixedTick() { }
 
     public override void Tick()
     {
         var controller = _movement?.Controller;
-        var health = _movement.Property.Hp;
-
-        if (controller == null || health == null)
-            return;
-
-        _timer -= Time.deltaTime;
         if (_timer <= 0f)
         {
             _fsm.ChangeState(_movement.MoveInput == Vector3.zero
