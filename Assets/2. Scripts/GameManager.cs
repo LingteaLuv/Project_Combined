@@ -7,13 +7,19 @@ using UnityEngine.SceneManagement;
 public class GameManager : Singleton<GameManager>
 {
     public event Action OnGameOver;
+    public event Action OnGameClear;
     
     protected override void Awake()
     {
         base.Awake();
         Init();
     }
+    public void GameClear()
+    {
+        OnGameClear?.Invoke();
+    }
 
+    
     public void GameOver()
     {
         // Todo : 게임 오버 메서드

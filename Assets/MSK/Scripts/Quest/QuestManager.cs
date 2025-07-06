@@ -9,6 +9,7 @@ using UnityEngine;
 /// - 퀘스트 등록/조회/상태 변화/보상/저장/불러오기 등 처리
 /// - Singleton 패턴 적용(Instance)
 /// </summary>
+
 public class QuestManager : Singleton<QuestManager>
 {
     /// <summary>
@@ -31,13 +32,12 @@ public class QuestManager : Singleton<QuestManager>
     /// </summary>  
     public Chapter CurrentChapter { get; set; } = Chapter.Chapter1;
 
-
     #region Ending
-    public bool IsAEnd { get; private set; }    //  자경단 플래그
-    public bool IsCEnd { get; private set; }    //  군대 플래그
+    public bool IsCEnd { get; private set; }    //  자경단 플래그
+    public bool IsVEnd { get; private set; }    //  군대 플래그
 
-    public void SetAEnd() => IsAEnd = true;
     public void SetCEnd() => IsCEnd = true;
+    public void SetVEnd() => IsVEnd = true;
     #endregion
 
     #region 이벤트
@@ -120,7 +120,10 @@ public class QuestManager : Singleton<QuestManager>
                 break;
             case QuestStatus.Completed:
                 Debug.Log("[QuestType] Completed");
-                CloseQuest(meta.QuestID);
+                {   
+                    CloseQuest(meta.QuestID);
+                    //TODO : 엔딩 퀘스트면 엔딩으로 전달하기
+                }
                 break;
             case QuestStatus.Closed:
                 Debug.Log("[QuestType] Closed");
@@ -369,15 +372,16 @@ public class QuestManager : Singleton<QuestManager>
     }
     private void IsEndingTrigger(string triggerId)
     {
-        if (triggerId == "CEND_ON")
+        //  TODO Trigger End cheak
+        if (triggerId == "CENDABLE")
         {
-            SetAEnd(); // 자경단 엔딩 플래그 ON
+            SetCEnd(); // 자경단 엔딩 플래그 ON
             Debug.Log("CEND 플래그 ON");
             return;
         }
-        if (triggerId == "VEND_ON")
+        if (triggerId == "VENDABLE")
         {
-            SetCEnd(); // 군대 엔딩 플래그 ON
+            SetVEnd(); // 군대 엔딩 플래그 ON
             Debug.Log("VEND 플래그 ON");
             return;
         }

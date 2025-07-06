@@ -267,4 +267,118 @@ public class DialogueManager : Singleton<DialogueManager>
     {
         StartCoroutine(PrintOut(dialogueId));
     }
+
+
+    /// 엔딩 추가 부분
+    
+    /// <summary>
+    /// 엔딩 분기 진입 시 호출: 활성화된 엔딩만 선택지로 노출
+    /// </summary>
+    public void ShowEndingChoices()
+    {
+        List<string> availableEndings = new List<string>();
+
+        if (QuestManager.Instance.IsCEnd)
+            availableEndings.Add("CENDING");    // 의사 엔딩
+        if (QuestManager.Instance.IsVEnd)
+            availableEndings.Add("VENDING");    // 자경단장 엔딩
+        availableEndings.Add("NENDING");        // 기본 엔딩 (누구와도 연락X)
+
+        DisplayEndingChoices(availableEndings);
+    }
+
+    /// <summary>
+    /// 엔딩 선택지 UI 세팅
+    /// </summary>
+    private void DisplayEndingChoices(List<string> endings)
+    {
+        // 임의 예시: 최대 3개 엔딩만 노출, label에 각 엔딩 이름 표시
+        // 실제 구현은 DialogueChoiceSO 활용 or 직접 텍스트 작성 등 가능
+
+        HideAllButtons();
+
+        if (endings.Count > 0)
+            SetEndingChoiceButton(_button1Obj, Button1, Button1Text, endings[0]);
+        if (endings.Count > 1)
+            SetEndingChoiceButton(_button2Obj, Button2, Button2Text, endings[1]);
+        if (endings.Count > 2)
+            SetEndingChoiceButton(_button3Obj, Button3, Button3Text, endings[2]);
+    }
+
+    /// <summary>
+    /// 엔딩 선택 버튼 세팅 (엔딩 선택 시 OnEndingSelected 호출)
+    /// </summary>
+    private void SetEndingChoiceButton(GameObject buttonObj, Button btn, TMP_Text btnText, string endingKey)
+    {
+        buttonObj.SetActive(true);
+        btnText.text = GetEndingLabel(endingKey);  // 엔딩 이름 보기 좋게 변환
+
+        btn.onClick.RemoveAllListeners();
+        btn.onClick.AddListener(() =>
+        {
+            OnEndingSelected(endingKey);
+            HideAllButtons();
+        });
+    }
+
+    /// <summary>
+    /// 엔딩 표시용 이름 변환 (선택지 텍스트 용)
+    /// </summary>
+    private string GetEndingLabel(string endingKey)
+    {
+        switch (endingKey)
+        {
+            case "CENDING": return "의사에게 연락한다";
+            case "VENDING": return "자경단장에게 연락한다";
+            case "NENDING": return "아무에게도 연락하지 않는다";
+            default: return endingKey;
+        }
+    }
+
+    /// <summary>
+    /// 엔딩 선택시 엔딩별 연출 처리
+    /// </summary>
+    public void OnEndingSelected(string endingKey)
+    {
+        switch (endingKey)
+        {
+            case "CENDING":
+                PlayDoctorEnding();
+                break;
+            case "VENDING":
+                PlayVigilanteEnding();
+                break;
+            case "NENDING":
+            default:
+                PlayNoContactEnding();
+                break;
+        }
+    }
+
+    /// <summary>
+    /// 의사 엔딩 연출
+    /// </summary>
+    private void PlayDoctorEnding()
+    {
+        Debug.Log("의사 엔딩");
+        // TODO: 엔딩 씬 전환, UI 등
+    }
+
+    /// <summary>
+    /// 자경단장 엔딩 연출
+    /// </summary>
+    private void PlayVigilanteEnding()
+    {
+        Debug.Log("자경단장 엔딩");
+        // TODO: 엔딩 씬 전환, UI 등
+    }
+
+    /// <summary>
+    /// 누구와도 연락하지 않은 엔딩 연출
+    /// </summary>
+    private void PlayNoContactEnding()
+    {
+        Debug.Log("연락X 엔딩");
+        // TODO: 엔딩 씬 전환, UI 등
+    }
 }
