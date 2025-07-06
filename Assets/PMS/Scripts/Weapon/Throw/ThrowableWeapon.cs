@@ -209,7 +209,7 @@ public class ThrowableWeapon : WeaponBase
     private void OnCollisionEnter(Collision collision)
     {
         //패턴 매칭
-        if (collision.gameObject.GetComponent<IDamageable>() is IDamageable damageable && !finish_attack)
+        if (collision.gameObject.transform.root.GetComponent<IDamageable>() is IDamageable damageable && !finish_attack)
         {
             damageable.Damaged(_damage);
             finish_attack = true;
