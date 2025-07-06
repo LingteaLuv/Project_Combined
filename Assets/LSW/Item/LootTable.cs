@@ -21,7 +21,7 @@ public class RandomLootTable : MonoBehaviour
     public List<ItemBase> _resultItems;
     public List<int> _resultItemAmount;
 
-    private void Start()
+    private void Awake()
     {
         //todo 몬스터 도감이 완성되면 참조 걸고 주석 해제
         //_id = _monsterDic.monsterInfo[_monsterID].LootID;
