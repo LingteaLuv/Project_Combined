@@ -184,7 +184,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2497800535005898093
 Transform:
   m_ObjectHideFlags: 0
@@ -344,12 +344,7 @@ Animator:
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
-  m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
-    are already bound by a Humanoid avatar. These transforms can only be changed
-    by Humanoid clips.\n\tTransform 'IndexFinger_02'\n\tTransform 'Finger_02 1'\n\tTransform
-    'Elbow_R'\n\tTransform 'Finger_02'\n\tTransform 'Finger_03'\n\tTransform 'Ball_L'\n\tTransform
-    'Finger_03 1'\n\tTransform 'Thumb_02'\n\tTransform 'Ball_R'\n\tTransform 'Clavicle_L'\n\tand
-    more ..."
+  m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
@@ -445,6 +440,8 @@ MonoBehaviour:
   _player: {fileID: 0}
   _start: {fileID: 8328959822116941385}
   _last: {fileID: 1448992291796081571}
+  _pni: {fileID: 0}
+  _startNPCID: 
 --- !u!1 &1367151846858095652
 GameObject:
   m_ObjectHideFlags: 0
@@ -1009,7 +1006,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3117327354553923423}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.37696898, y: 0.06094993, z: -0.024869185, w: 0.9238837}
+  m_LocalRotation: {x: 0.40197724, y: 0.14889508, z: -0.066427626, w: 0.9010172}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.40000004, y: 0.41322315, z: 1}
   m_ConstrainProportionsScale: 0
