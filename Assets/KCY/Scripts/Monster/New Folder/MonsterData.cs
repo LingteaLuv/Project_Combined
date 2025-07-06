@@ -4,15 +4,9 @@ using UnityEngine;
 
 public class MonsterData : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public int EnemyID;
+    public string Name;
+    public float LootChance;
+    public string EnemyLootID;
+    public string EnemyRootGridChanceID;
 }

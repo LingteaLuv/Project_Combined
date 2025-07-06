@@ -56,31 +56,5 @@ public class MonsterHandDetector : MonoBehaviour
 
         if (_monster._monsterMerchine.CurState != _monster._monsterMerchine.StateDic[Estate.Attack])
             return;
-
-       
-        Collider[] hits = Physics.OverlapSphere(transform.position, detectRadius, playerLayer);
-        Debug.Log($"[OverlapSphere] 감지된 수: {hits.Length}");
-
-        foreach (var hit in hits)
-        {
-            
-            IDamageable damageTarget = hit.GetComponent<IDamageable>();
-            if (damageTarget == null)
-            {
-                damageTarget = hit.GetComponentInParent<IDamageable>();
-            }
-
-            if (damageTarget != null)
-            {
-                Debug.Log($"[HandSensor] 감지된 대상 타입: {damageTarget.GetType().Name}, 이름: {((MonoBehaviour)damageTarget).gameObject.name}");
-                Debug.Log("[HandSensor] 플레이어 감지됨 → 공격 시도");
-                attackLogic.Attack(damageTarget);
-                break;
-            }
-            else
-            {
-                Debug.Log($"[OverlapSphere] IDamageable 없음: {hit.name}");
-            }
-        }
     }
 }

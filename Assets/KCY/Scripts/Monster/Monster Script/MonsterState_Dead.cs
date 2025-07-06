@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UIElements;
@@ -12,6 +13,7 @@ public class Monster_Dead : MonsterState_temp
         _agent = monster.MonsterAgent;
         stateMerchine = monster._monsterMerchine;
         _obj = monster.MonObject;
+        _lootable = monster.lootable;
     }
 
     private int _hp;
@@ -19,6 +21,7 @@ public class Monster_Dead : MonsterState_temp
     private Animator _ani;
     private GameObject _obj;
     protected MonsterStateMachine_temp stateMerchine;
+    private Lootable _lootable;
 
 
     public override void Enter()
@@ -26,6 +29,16 @@ public class Monster_Dead : MonsterState_temp
         Debug.Log("몬스터 죽음  몬스터 죽음 몬스터 죽음 몬스터 죽음 몬스터 죽음");
 
         // 죽으면 멈춰서 애니 실행
+
+
+        // 루터블 트루
+        _lootable.IsLootable = true;
+        // 루터블 트루
+
+
+
+        _ani.SetBool("isPatrol", false);
+        _ani.SetBool("isChasing", false);
         _agent.velocity = Vector3.zero;
         _agent.isStopped = true;
         _ani.SetTrigger("Dead");

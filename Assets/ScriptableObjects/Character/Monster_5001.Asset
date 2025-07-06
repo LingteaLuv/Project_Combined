@@ -14,24 +14,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EnemyID: 5001
   Name: BasicZombie(Male)
-  MaxHP: 100
+  MaxHP: 10
   AtkType: Melee
-  AtkDamage: 1
+  AtkDamage: 50
   AtkCoolDown: 2
   AtkSpeed: 0
   AtkRange: 1.5
   CastTime: 0
   RecoveryFrame: 0
-  MoveSpeed: 1
+  MoveSpeed: 0.5
   ChaseMoveSpeed: 1
-  NightMoveSpeed: 0
-  SightRange: 0
+  NightMoveSpeed: 1.2
+  SightRange: 4
   SightAngle: 60
-  HearingRange: 0
-  PatrolSight: 0
-  ChaseSight: 2
-  DeactivateHearing: 0
+  HearingRange: 3
+  PatrolSight: 1.2
+  ChaseSight: 1.2
+  DeactivateHearing: 1.2
   PatrolRadius: 6
   SearchTime: 60
   EnemyLootID: BasicZombie
   EnemyLootGridChanceID: BasicZombieGrid
+  IdleSfx1: 
+  IdleSfx2: 
+  IdleSfxRange: 
+  AtkSfx: 
+  HitSfx: 
+  DieSfx: 
+  NightAtkCoolDown: 1.5
+  NightChaseMoveSpeed: 1.5
+  ChaseSfx1: 
+  ChaseSfx2: 
