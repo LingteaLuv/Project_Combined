@@ -28,8 +28,17 @@ public class QuestManager : Singleton<QuestManager>
     public Dictionary<string, string> TriggerDictionary { get; private set; }
     /// <summary>
     /// 플레이어의 현재 챕터(비트 플래그)
-    /// </summary>
+    /// </summary>  
     public Chapter CurrentChapter { get; set; } = Chapter.Chapter1;
+
+
+    #region Ending
+    public bool IsAEnd { get; private set; }    //  자경단 플래그
+    public bool IsCEnd { get; private set; }    //  군대 플래그
+
+    public void SetAEnd() => IsAEnd = true;
+    public void SetCEnd() => IsCEnd = true;
+    #endregion
 
     #region 이벤트
     /// <summary>퀘스트 수락 시 알림 이벤트</summary>
@@ -89,7 +98,8 @@ public class QuestManager : Singleton<QuestManager>
             Debug.LogWarning($"[QuestType] QuestDictionary에 questId({questId}) 없음");
             return;
         }
-
+        //  엔딩 분기를 활성화 하는지 체크
+        IsEndingTrigger(triggerId);
         // 코드로 들어올 때 사용한 트리거를 딕셔너리에서 삭제
         TriggerDictionary.Remove(triggerId);
 
@@ -356,5 +366,20 @@ public class QuestManager : Singleton<QuestManager>
         }
 
         Debug.Log($"[SetQuestDictionary] QuestDictionary.Count = {QuestDictionary.Count}");
+    }
+    private void IsEndingTrigger(string triggerId)
+    {
+        if (triggerId == "CEND_ON")
+        {
+            SetAEnd(); // 자경단 엔딩 플래그 ON
+            Debug.Log("CEND 플래그 ON");
+            return;
+        }
+        if (triggerId == "VEND_ON")
+        {
+            SetCEnd(); // 군대 엔딩 플래그 ON
+            Debug.Log("VEND 플래그 ON");
+            return;
+        }
     }
 }

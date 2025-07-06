@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 /// <summary>
@@ -10,6 +9,7 @@ public class TimeManager : Singleton<TimeManager>
     public Property<DayTime> CurrentTimeOfDay { get; private set; } = new Property<DayTime>(DayTime.None);   //  초기  열거형 값
     public Property<int> CurrentHour { get; private set; } = new Property<int>(6);                              //  초기  시간값
     public Property<float> CurrentMinute { get; private set; } = new Property<float>(0f);                       //  초기  분값
+    public int DayCount { get; private set; } = 1;
     #endregion
 
     #region Private Properties
@@ -61,7 +61,11 @@ public class TimeManager : Singleton<TimeManager>
             CurrentHour.Value++;
 
             if (CurrentHour.Value >= _hoursPerDay)
+            {
                 CurrentHour.Value = 0;
+                DayCount++;
+                Debug.Log($"{DayCount} 일차");
+            }
         }
     }
 
@@ -77,7 +81,9 @@ public class TimeManager : Singleton<TimeManager>
         if (hour >= 0 && hour < 6)
             newTimeOfDay = DayTime.MidNight;
         else if (hour >= 6 && hour < 12)
+        {
             newTimeOfDay = DayTime.Morning;
+        }
         else if (hour >= 12 && hour < 18)
             newTimeOfDay = DayTime.Day;
         else
