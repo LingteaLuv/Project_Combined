@@ -150,6 +150,17 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
 
     private void Update()
     {
+        if (!MonsterAgent.isOnNavMesh)
+        {
+            Debug.LogError("NavMeshAgent가 NavMesh 위에 없음!");
+        }
+
+        if (transform.position.y < -10f || transform.position.y < 1f)
+        {
+            Debug.LogWarning($"몬스터가 날아감 현재 위치: {transform.position}");
+        }
+
+
         if (Input.GetKeyDown(KeyCode.F8))
         {
             //Debug.Log("쥭움");
