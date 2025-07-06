@@ -24,12 +24,12 @@ public class WatertankTimelineControl : TimelineControl
     }
     private void Start()
     {
-        _pni.OnInteract3 += StartTL;
+        //_pni.OnInteract3 += StartTL;
     }
 
-    private void StartTL(string id)
+    public void StartTL()
     {
-        if (!_hasRun && id == _startNPCID)
+        if (!_hasRun)
         {
             _hasRun = true;
             _pd.Play();

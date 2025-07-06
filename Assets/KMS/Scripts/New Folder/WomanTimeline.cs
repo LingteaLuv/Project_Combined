@@ -27,4 +27,22 @@ public class WomanTimeline : TimelineControl
             StartCoroutine(DisableControl());
         }
     }
+
+    protected override IEnumerator DisableControl()
+    {
+        UIManager.Instance.OffHUI();
+        UIManager.Instance.OffQuickslot();
+        yield return _wfs;
+        UIManager.Instance.UnlockUIUpdate();
+        UIManager.Instance.OffHUI();
+
+        UIManager.Instance.OffQuickslot();
+        UISceneLoader.Instance.Playerattack.IsAttacking = false;
+        _pm.MoveLock();
+        _pcc.PauseCamera();
+    }
+
+
+
+
 }

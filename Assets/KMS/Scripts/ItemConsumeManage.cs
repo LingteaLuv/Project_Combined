@@ -99,12 +99,24 @@ public class ItemConsumeManage : MonoBehaviour
 
     public bool Reload() //현재 오른손에 든 총의 리로드 개수 만큼 있으면 지우고 장전, 없으면 false
     {
+        int bullid = (_model.InvItems[_control.EquippedSlotIndex[0]].Data as GunItem).AmmoID;
+        int myBullCount = _craft.CountByID[bullid];
+        if (myBullCount <= 0) return false;
         int MaxCount = (_model.InvItems[_control.EquippedSlotIndex[0]].Data as GunItem).AmmoCapacity;
         int CurCount = _model.InvItems[_control.EquippedSlotIndex[0]].CurrentAmmoCount;
         int need = MaxCount - CurCount;
         if (need == 0) return false;
-        if (_craft.RemoveItemByID((_model.InvItems[_control.EquippedSlotIndex[0]].Data as GunItem).AmmoID, need))
+        if (myBullCount < need)
         {
+            _craft.RemoveItemByID(bullid, myBullCount);
+            _model.InvItems[_control.EquippedSlotIndex[0]].SetAmmoCount(CurCount + myBullCount);
+            AudioManager.Instance.PlaySFX(AudioManager.Instance._sfxDic["Pump_Reload"], UISceneLoader.Instance.Player.position);
+            return true;
+
+        }
+        else if (myBullCount >= need)
+        {
+            _craft.RemoveItemByID(bullid, need);
             _model.InvItems[_control.EquippedSlotIndex[0]].SetAmmoCount(MaxCount);
             AudioManager.Instance.PlaySFX(AudioManager.Instance._sfxDic["Pump_Reload"], UISceneLoader.Instance.Player.position);
             return true;
