@@ -9,7 +9,6 @@ public class ThrowableWeapon : WeaponBase
     [Tooltip("SO데이터")]
     [SerializeField] private ThrowItem _throwData;
     private float _damage => _throwData.AtkDamage;
-    private float _range => _throwData.Range;
     //private float _range = 5.0f;
     private Vector3 _startPos;
 
@@ -74,13 +73,13 @@ public class ThrowableWeapon : WeaponBase
     }
     public void HandleInput()
     {
-        if (Input.GetMouseButton(0) && flag == true) 
+        if (Input.GetMouseButton(0) && flag == true && !UIManager.Instance.IsUIOpened.Value) 
         {
             _animator.SetTrigger("Throw");
             _animator.SetBool("IsCharging", true);
             flag = false;
         }
-        if (Input.GetMouseButtonDown(0))  // (Input.GetMouseButton(0)) 
+        if (Input.GetMouseButtonDown(0) && !UIManager.Instance.IsUIOpened.Value)  // (Input.GetMouseButton(0)) 
         {
             StartCharging();
         }

@@ -101,7 +101,6 @@ public class PlayerAttack : MonoBehaviour
 
     void Update()
     {
-        Debug.Log(IsAttacking);
         if (Input.GetMouseButtonDown(0))
         {
             TryAttack();
