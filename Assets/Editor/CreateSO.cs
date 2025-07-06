@@ -411,10 +411,8 @@ public class CreateSO : EditorWindow
         if (throwData.ContainsKey(int.Parse(itemId)))
         {
             string[] throwDataParts = throwData[int.Parse(itemId)];
-            throwItem.AtkDamage = int.Parse(throwDataParts[2]);
-            throwItem.Rof = int.Parse(throwDataParts[3]);
-            throwItem.Range = float.Parse(throwDataParts[4]);
             throwItem.MaxStack = int.Parse(throwDataParts[5]);
+            throwItem.AtkDamage = int.Parse(throwDataParts[2]);
             throwItem.ThrowSoundResource = throwDataParts[6];
         }
         

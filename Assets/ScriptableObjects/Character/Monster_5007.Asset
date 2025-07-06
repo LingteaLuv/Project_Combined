@@ -10,29 +10,29 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a29ae967d63e079449186e4b2d57f748, type: 3}
-  m_Name: Monster_5001
+  m_Name: Monster_5007
   m_EditorClassIdentifier: 
-  EnemyID: 5001
-  Name: BasicZombieMale
-  MaxHP: 100
-  AtkDamage: 20
+  EnemyID: 5007
+  Name: SoundZombie
+  MaxHP: 150
+  AtkDamage: 30
   AtkCoolDown: 1
   AtkRange: 5
-  MoveSpeed: 7
-  ChaseMoveSpeed: 8
-  NightMoveSpeed: 10
-  NightChaseMoveSpeed: 11
+  MoveSpeed: 15
+  ChaseMoveSpeed: 16
+  NightMoveSpeed: 18
+  NightChaseMoveSpeed: 19
   NightAtkCoolDown: 1.5
-  SightRange: 50
-  SightAngle: 45
-  HearingRange: 25
+  SightRange: 10
+  SightAngle: 10
+  HearingRange: 50
   DeactivateHearing: 1.5
   PatrolSight: 1
   ChaseSight: 2
   PatrolRadius: 100
   SearchTime: 30
-  EnemyLootID: BasicZombie
-  EnemyLootGridChanceID: BasicZombieGrid
+  EnemyLootID: SoundZombie
+  EnemyLootGridChanceID: SoundZombieGrid
   IdleSfx1: {fileID: 8300000, guid: abae699df1078e749aa469a1d3e3e1a6, type: 3}
   IdleSfx2: {fileID: 8300000, guid: ad12fd7e5cd362d4eb21f9ccfe803f55, type: 3}
   IdleSfxRange: 50
