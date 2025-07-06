@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a29ae967d63e079449186e4b2d57f748, type: 3}
+  m_Name: Monster_5003
+  m_EditorClassIdentifier: 
+  EnemyID: 5003
+  Name: BabyZombie
+  MaxHP: 60
+  AtkDamage: 15
+  AtkCoolDown: 1
+  AtkRange: 5
+  MoveSpeed: 10
+  ChaseMoveSpeed: 11
+  NightMoveSpeed: 13
+  NightChaseMoveSpeed: 14
+  NightAtkCoolDown: 1.5
+  SightRange: 50
+  SightAngle: 45
+  HearingRange: 25
+  DeactivateHearing: 1.5
+  PatrolSight: 1
+  ChaseSight: 2
+  PatrolRadius: 100
+  SearchTime: 30
+  EnemyLootID: BabyZombie
+  EnemyLootGridChanceID: BabyZombieGrid
+  IdleSfx1: {fileID: 8300000, guid: abae699df1078e749aa469a1d3e3e1a6, type: 3}
+  IdleSfx2: {fileID: 8300000, guid: ad12fd7e5cd362d4eb21f9ccfe803f55, type: 3}
+  IdleSfxRange: 50
+  ChaseSfx1: {fileID: 8300000, guid: 36716ea6a07b6d34d804d379773223d1, type: 3}
+  ChaseSfx2: {fileID: 8300000, guid: bfbe5e539e3c9f345b255ca9251c9abf, type: 3}
+  AtkSfx: {fileID: 8300000, guid: 1289237937c21764aa5958b030281c8d, type: 3}
+  HitSfx: {fileID: 8300000, guid: bd4a42148b188b3409482d205a505f79, type: 3}
+  DieSfx: {fileID: 8300000, guid: 0bbf22d4ccaa8c24a8d01aa4d48c33ed, type: 3}
