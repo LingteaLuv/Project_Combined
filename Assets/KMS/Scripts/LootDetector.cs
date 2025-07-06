@@ -10,7 +10,7 @@ public class LootDetector : MonoBehaviour
     private List<Lootable> _lootables = new List<Lootable>();
     private void OnTriggerEnter(Collider other) //레이어 6 콜라이더랑 만났을 경우 리스트에 추가
     {
-        if (other.gameObject.layer == 6)
+        if (other.gameObject.layer == 6 || other.gameObject.layer == 13)
         {
             _lootables.Add(other.GetComponentInChildren<Lootable>());
         }
@@ -34,7 +34,7 @@ public class LootDetector : MonoBehaviour
     }
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.layer == 6)
+        if (other.gameObject.layer == 6 || other.gameObject.layer == 13)
         {
             Lootable temp = other.GetComponentInChildren<Lootable>();
             temp.FUIController.OffFUI();

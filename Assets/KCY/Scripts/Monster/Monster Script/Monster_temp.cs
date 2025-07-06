@@ -1,3 +1,5 @@
+using Palmmedia.ReportGenerator.Core.Reporting.Builders;
+using System;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -68,22 +70,25 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
     private int _wallLimitedCount = 5;
 
 
+    [SerializeField] public Lootable lootable;
+
+
     public float NightChaseMoveSpeed => _info.NightChaseMoveSpeed;
     public int EnemyID => _info.EnemyID;
     public string Name => _info.Name;
-    public string AtkType => _info.AtkType;
-    public float AtkSpeed => _info.AtkSpeed;
+    //public string AtkType => _info.AtkType;
+    //public float AtkSpeed => _info.AtkSpeed;
     public float NightMoveSpeed => _info.NightMoveSpeed;
     public string EnemyLootId => _info.EnemyLootID;
     public string EnemyLootGridChanceID => _info.EnemyLootGridChanceID;
-    public string IdleSfx1 => _info.IdleSfx1;
-    public string IdleSfx2 => _info.IdleSfx2;
-    public string IdleSfxRange => _info.IdleSfxRange; 
-    public string AtkSfx => _info.AtkSfx; 
-    public string HitSfx => _info.HitSfx; 
-    public string DieSfx => _info.DieSfx;
-    public string ChaseSfx1 => _info.ChaseSfx1;
-    public string ChaseSfx2 => _info.ChaseSfx2;
+    public AudioClip IdleSfx1 => _info.IdleSfx1;
+    public AudioClip IdleSfx2 => _info.IdleSfx2;
+    public float IdleSfxRange => _info.IdleSfxRange; 
+    public AudioClip AtkSfx => _info.AtkSfx; 
+    public AudioClip HitSfx => _info.HitSfx; 
+    public AudioClip DieSfx => _info.DieSfx;
+    public AudioClip ChaseSfx1 => _info.ChaseSfx1;
+    public AudioClip ChaseSfx2 => _info.ChaseSfx2;
 
 
 
@@ -100,12 +105,12 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
         if (timeOfDay == DayTime.Night || timeOfDay == DayTime.MidNight)
         {
             CoolDown = AtkCoolDown / NightAtkCoolDownRate;
-            Debug.Log($"[쿨다운 변경] 시간대: {timeOfDay} → NightRate 적용됨, 최종 쿨다운: {CoolDown:F2}");
+           // Debug.Log($"[쿨다운 변경] 시간대: {timeOfDay} → NightRate 적용됨, 최종 쿨다운: {CoolDown:F2}");
         }
         else
         {
             CoolDown = AtkCoolDown;
-            Debug.Log($"[쿨다운 변경] 시간대: {timeOfDay} → 기본 쿨다운 유지: {CoolDown:F2}");
+           // Debug.Log($"[쿨다운 변경] 시간대: {timeOfDay} → 기본 쿨다운 유지: {CoolDown:F2}");
         }
     }
 
@@ -137,7 +142,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
         }
         else
         {
-            Debug.LogError(" SightCol이 할당되지 않았습니다. Monster_temp에 연결하세요!");
+            //Debug.LogError(" SightCol이 할당되지 않았습니다. Monster_temp에 연결하세요!");
         }
 
         TimeManager1.Instance.CurrentTimeOfDay.OnChanged += OnTimeOfDayChanged;
@@ -148,9 +153,17 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
 
     private void Update()
     {
-        Debug.Log($" Update /// 객체 이름: {this.name}, _canDetect = {_canDetect}, 쿨타임 = {_detectCoolTime}");
+        if (Input.GetKeyDown(KeyCode.F8))
+        {
+            Debug.Log("쥭움");
+            _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.Dead]);
+        }
 
-        Debug.Log($"[Patrol] 시야 감지 여부: {IsSightDetecting}");
+
+
+       // Debug.Log($" Update /// 객체 이름: {this.name}, _canDetect = {_canDetect}, 쿨타임 = {_detectCoolTime}");
+
+        //Debug.Log($"[Patrol] 시야 감지 여부: {IsSightDetecting}");
    
 
         if (IsSightDetecting)
@@ -201,6 +214,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
         _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.Idle]);
     }
 
+
     // 외부에서 호출: 몬스터가 플레이어를 공격하도록 설정
     public void Attack(IDamageable target)
     {
@@ -225,8 +239,8 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
 
     public void SightDetectPlayer(Collider other)
     {
-        Debug.Log($"[SightDetectPlayer 진입] 객체 이름: {this.name}");
-        Debug.Log(" SightDetectPlayer 함수 진입함");
+       // Debug.Log($"[SightDetectPlayer 진입] 객체 이름: {this.name}");
+        //Debug.Log(" SightDetectPlayer 함수 진입함");
 
         // 레이어를 통한 플레이어 확인 방어 코드 , 플레이어 캐릭터가 아니면 리턴  >>> 건물을 포함하지 않으면 건물을 캐치할 수 없어요
         if (((1 << other.gameObject.layer) & (PlayerLayerMask | BuildingLayerMask)) == 0)
@@ -244,8 +258,8 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
             return;
         }
 
-        Debug.Log("1. State 체크 시작");
-        Debug.Log($"State 현재 상태: {_monsterMerchine.CurState}, 필요 상태: {_monsterMerchine.StateDic[Estate.Patrol]}");
+       // Debug.Log("1. State 체크 시작");
+       //Debug.Log($"State 현재 상태: {_monsterMerchine.CurState}, 필요 상태: {_monsterMerchine.StateDic[Estate.Patrol]}");
 
 
         // 레어어가 현 상태가 패트롤이 아닌경우 감지 무시 (패트롤의 경우만 감지하고, 공격상태일땐 거리로 측정함, 아이들 모드 역시 무시중)
@@ -281,7 +295,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
             return;
         }
 
-        Debug.Log("레이ㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣ");
+        //Debug.Log("레이ㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣ");
 
 
         // 좀비 머리 위에서 좀비와 플레이어를 가리키는 방향으로 레이를 쏴서 맞춘 레이어가 빌딩이면 아이들 모드로 가고 - 자연스럽게 패트롤 모드로 갈 수 있도록 유도
@@ -294,8 +308,8 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
 
         if (Physics.CapsuleCast(CapsuleStart, CapsuleEnd, capsuleRadius, forward, out RaycastHit hit, capDis))
         {
-            Debug.Log("맞음"); //  이 로그가 찍혀야 레이가 맞은 것
-            Debug.Log($"Raycast 충돌 오브젝트: {hit.collider.name}, 레이어: {hit.collider.gameObject.layer}");
+            //Debug.Log("맞음"); //  이 로그가 찍혀야 레이가 맞은 것
+           // Debug.Log($"Raycast 충돌 오브젝트: {hit.collider.name}, 레이어: {hit.collider.gameObject.layer}");
 
             if (((1 << hit.collider.gameObject.layer) & BuildingLayerMask) != 0)
             {
@@ -311,7 +325,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
                 if (_wallHitCount >= _wallLimitedCount)
                 {
                     Debug.Log("벽에 너무 많이 부딫히니까 돌아와");
-                    _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.ReturnToSpawn]);
+                    //_monsterMerchine.ChangeState(HitState); >>>  확인
                     _wallHitCount = 0;
                     return;
                 }
@@ -404,11 +418,13 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
                 transform.rotation = Quaternion.LookRotation(dirToSound);
             }
 
-            Debug.Log("해당 위치에서 소리를 확인하여 돌아봅니다");
-
             TempPoint = other.transform.position;
-            Debug.Log($"TempPoint 설정됨 새 위치: {TempPoint}");
-            _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.GoToEvent]);
+            IsEventActive = true;
+
+            if (_monsterMerchine.CurState != _monsterMerchine.StateDic[Estate.GoToEvent])
+            {
+                _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.GoToEvent]);
+            }
         }
 
     }

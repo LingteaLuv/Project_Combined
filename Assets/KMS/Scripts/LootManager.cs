@@ -26,6 +26,8 @@ public class LootManager : Singleton<LootManager>
 
     private Lootable _lootable = null;
 
+    public Action AfterLoot;
+
     protected override bool ShouldDontDestroy => false;
     protected override void Awake()
     {
@@ -161,6 +163,13 @@ public class LootManager : Singleton<LootManager>
 
     public void AfterLooting()
     {
+        if (_lootable.LootItems.InitType == LootItems.LootInitType.RandomGrid)
+        {
+        }
+        if (_lootable.GetComponentInParent<Monster_temp>() != null)
+        {
+            AfterLoot?.Invoke();
+        }
         _lootable.IsLootable = false;
         if (UIManager.Instance.Current == ModalUI.lootTable) ToggleUI();
         if (_lootable.DestroyAfterLooting) // 루팅 완료 시 파괴

@@ -13,7 +13,13 @@ public class MonsterSpawn : MonoBehaviour
 
     private void OnTimeOfDaySpawnMonster(DayTime timeOfDay)
     {
-        if (timeOfDay == DayTime.Night && _isSpawn == true)
+        if (timeOfDay == DayTime.MidNight)
+        {
+            //SpawnMon
+        }
+
+
+        if (timeOfDay == DayTime.MidNight && _isSpawn == true)
         {
             SpawnMonster();
         }
