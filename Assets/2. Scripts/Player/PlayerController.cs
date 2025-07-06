@@ -129,6 +129,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     public void PlayJumpAnimation()
     {
+        AudioManager.Instance.PlaySFX("Whoosh 08", transform.position);
         _animator.SetTrigger("IsJump");
     }
     public void PlayClimbAnimation()
@@ -159,6 +160,11 @@ public class PlayerController : MonoBehaviour
     public void StopRunning()
     {
         _animator.SetBool("IsRunning", false);
+    }
+    public void PlayHited()
+    {
+        // AudioManager.Instance.PlaySFX("Hit 14", transform.position);
+        _animator.SetTrigger("IsHit");
     }
     #endregion
 }
