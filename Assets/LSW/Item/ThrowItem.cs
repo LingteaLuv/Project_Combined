@@ -6,7 +6,12 @@ using UnityEngine;
 public class ThrowItem : ItemBase
 {
     public int MaxStack;
-    public int AtkDamage;
-    public int AtkSpeed;
-    public string ThrowSoundResource;
+    public float AtkDamage;
+    public float AtkSpeed;
+    public float MinSpeed;
+    public float MaxSpeed;
+    public float MaxChargeTime;
+    public float MinRotateValue;
+    public float MaxRotateValue;
+    public AudioClip ThrowSoundResource;
 }

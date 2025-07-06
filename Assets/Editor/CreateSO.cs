@@ -140,6 +140,7 @@ public class CreateSO : EditorWindow
             string itemId = parts[0];
             string name = parts[1];
             string description = parts[2];
+            Debug.Log(parts[3]);
             string itemType = parts[3];
             string icon = parts[4];
 
@@ -411,11 +412,16 @@ public class CreateSO : EditorWindow
         if (throwData.ContainsKey(int.Parse(itemId)))
         {
             string[] throwDataParts = throwData[int.Parse(itemId)];
-            throwItem.MaxStack = int.Parse(throwDataParts[5]);
-            throwItem.AtkDamage = int.Parse(throwDataParts[2]);
-            throwItem.ThrowSoundResource = throwDataParts[6];
+            throwItem.MaxStack = int.Parse(throwDataParts[2]);
+            throwItem.AtkDamage = float.Parse(throwDataParts[3]);
+            throwItem.AtkSpeed = float.Parse(throwDataParts[4]);
+            throwItem.MinSpeed = float.Parse(throwDataParts[5]);
+            throwItem.MaxSpeed = float.Parse(throwDataParts[6]);
+            throwItem.MaxChargeTime = float.Parse(throwDataParts[7]);
+            throwItem.MinRotateValue = float.Parse(throwDataParts[8]);
+            throwItem.MaxRotateValue = float.Parse(throwDataParts[9]); 
+            throwItem.ThrowSoundResource = FileFinder.FindSFXByName(throwDataParts[10]);
         }
-        
         return throwItem;
     }
 }
