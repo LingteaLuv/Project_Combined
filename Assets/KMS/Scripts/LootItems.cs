@@ -25,21 +25,14 @@ public class LootItems : MonoBehaviour
         }
         else
         {
-            _rlt = GetComponent<RandomLootTable>();
-            RandomInit();
         }
     }
-
-    private void FixedInit()
+    private void Start()
     {
-        for (int i = 0; i < Items.Length; i++)
+        if (InitType == LootInitType.RandomGrid)
         {
-            if (ItemDatas[i] == null) continue;
-            ItemBlocked[i] = true;
-            Items[i] = new Item(ItemDatas[i]);
-            Items[i].SetCount(ItemAmounts[i]);
-            float a = UnityEngine.Random.Range(0.6f, 1.0f);
-            Items[i].SetDur((int)(Items[i].MaxDurability * a));
+            _rlt = GetComponent<RandomLootTable>();
+            RandomInit();
         }
     }
 
@@ -50,6 +43,18 @@ public class LootItems : MonoBehaviour
             ItemBlocked[i] = true;
             Items[i] = new Item(_rlt._resultItems[i]);
             Items[i].SetCount(_rlt._resultItemAmount[i]);
+            float a = UnityEngine.Random.Range(0.6f, 1.0f);
+            Items[i].SetDur((int)(Items[i].MaxDurability * a));
+        }
+    }
+    private void FixedInit()
+    {
+        for (int i = 0; i < Items.Length; i++)
+        {
+            if (ItemDatas[i] == null) continue;
+            ItemBlocked[i] = true;
+            Items[i] = new Item(ItemDatas[i]);
+            Items[i].SetCount(ItemAmounts[i]);
             float a = UnityEngine.Random.Range(0.6f, 1.0f);
             Items[i].SetDur((int)(Items[i].MaxDurability * a));
         }
