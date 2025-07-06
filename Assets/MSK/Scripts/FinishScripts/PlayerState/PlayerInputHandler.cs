@@ -25,6 +25,7 @@ public class PlayerInputHandler : MonoBehaviour
     
     private void DoorFind()
     {
+        
         DoorInteractable door = null;
         // Raycast로 문 감지
         Ray ray = new Ray(transform.position + Vector3.up * 1.0f, transform.forward);
