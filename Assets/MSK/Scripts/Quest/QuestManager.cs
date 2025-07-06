@@ -88,6 +88,7 @@ public class QuestManager : Singleton<QuestManager>
         IsEndingTrigger(triggerId);
         Debug.Log($" 진입 {triggerId}");
         // 트리거명으로 QuestID를 찾기
+        if (triggerId == "VEND") { return; }
         if (!TriggerDictionary.TryGetValue(triggerId, out var questId)) { return; }
 
         // QuestID로 QuestDictionary에서 QuestData를 찾기
