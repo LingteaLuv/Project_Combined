@@ -25,7 +25,18 @@ public class FogCollisionFadeIn : MonoBehaviour
         }
     }
 
-    void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
+    {
+        gameObject.SetActive(false);
+        /*// 충돌 시 페이드 아웃 시작
+        if (!_iscollision)
+        {
+            _isFading = true;
+            _iscollision = true;
+            _fadeTimer = 0f;
+        }*/
+    }
+    /*void OnCollisionEnter(Collision collision)
     {
         // 충돌 시 페이드 아웃 시작
         if (!_iscollision)
@@ -34,9 +45,9 @@ public class FogCollisionFadeIn : MonoBehaviour
             _iscollision = true;
             _fadeTimer = 0f;
         }
-    }
+    }*/
 
-    void Update()
+    /*void Update()
     {
         if (_isFading && _render != null)
         {
@@ -50,5 +61,5 @@ public class FogCollisionFadeIn : MonoBehaviour
                 Destroy(gameObject);
             }
         }
-    }
+    }*/
 }
