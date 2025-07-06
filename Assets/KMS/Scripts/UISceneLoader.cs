@@ -14,7 +14,7 @@ public class UISceneLoader : Singleton<UISceneLoader>
     protected override void Awake()
     {
         base.Awake();
-        SceneManager.LoadScene("Demo_City_Universal_RenderPipeline", LoadSceneMode.Additive);
+        SceneManager.LoadScene("LSW_map", LoadSceneMode.Additive);
         
         SceneManager.LoadSceneAsync("UIScene", LoadSceneMode.Additive);
         //StartCoroutine(DStart());
