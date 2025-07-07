@@ -168,5 +168,9 @@ public class PlayerController : MonoBehaviour
     {
         AudioManager.Instance.PlaySFX("Light Armor Running 2_01", this.transform.position);
     }
+    public void PlayRunSound()
+    {
+        AudioManager.Instance.PlaySFX("Light Armor Running 2_01", this.transform.position);
+    }
     #endregion
 }
