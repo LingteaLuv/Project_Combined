@@ -63,7 +63,7 @@ public class SoundCollider : MonoBehaviour
         if (_monster.TargetPosition == other.transform || _monster.IsEventActive)
         {
             _monster.IsEventActive = false;
-            Debug.Log("사운드 감지 종료 IsEventActive = false");
+            //Debug.Log("사운드 감지 종료 IsEventActive = false");
             // TempPoint 감지하던 위치로 고정
             _monster.TempPoint = other.transform.position;
             // 상태 리셋 (Patrol은 GoToEvent에서 자체적으로 전환됨)

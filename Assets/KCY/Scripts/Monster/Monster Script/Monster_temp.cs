@@ -94,6 +94,8 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
     public float AtkCoolDown => _info.AtkCoolDown;
     public float NightAtkCoolDownRate => _info.NightAtkCoolDown;
 
+    private float _curHP;
+
     private void OnTimeOfDayChanged(DayTime timeOfDay)
     {
 
@@ -120,6 +122,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
             SpawnPoint = SpawnPointLink.position;
         }
 
+        _curHP = MaxHp;
         // target = this as IAttackable; 피격 실험용으로 사용한 코드입니다 나중에 사용할 때 활성화 시켜주면 됩니다.
     }
 
@@ -186,6 +189,17 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
         }
     }
 
+    private void OnDestroy()
+    {
+        MonsterManager.Instance.Unregister(gameObject);
+    }
+
+    private void LateUpdate()
+    {
+        float distance = Vector3.Distance(transform.position, GameManager.Instance.Player.transform.position);
+        gameObject.SetActive(distance < 10f);
+    }
+
     private void StateMachineInit()
     {
         _monsterMerchine = new MonsterStateMachine_temp();
@@ -217,6 +231,20 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
     {
         if (_isDead) return;
         PrevState = _monsterMerchine.CurState;
+        
+        //Debug.Log("몬스터 피격 확인");
+        // 죽어있거나 피격 쿨타임의 경우 안맞는다.
+       
+        _curHP -= damage;
+        //Debug.Log("맞음");
+        // 죽을때
+        if (_curHP <= 0 && !_isDead)
+        {
+            _isDead = true;
+            _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.Dead]);
+            return;
+        }
+        
         // 데미지를 Hit 상태로 위임 (중계)
         if (_monsterMerchine.StateDic[Estate.Hit] is Monster_Hit hitState)
         {
@@ -225,8 +253,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
         }
     }
 
-
-    /*public void SightDetectPlayer(Collider other)
+    public void SightDetectPlayer(Collider other)
     {
        // Debug.Log($"[SightDetectPlayer 진입] 객체 이름: {this.name}");
         //Debug.Log(" SightDetectPlayer 함수 진입함");
@@ -352,7 +379,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
         {
             Debug.Log($"플레이어가 아님 무시");
         }
-    }*/
+    }
 
     public void SoundDetectPlayer(Collider other)
     {
@@ -370,13 +397,13 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
             return;
         }
 
-        /*if (IsSightDetecting)
+        if (IsSightDetecting)
         {
             return;
-        }*/
+        }
 
         // 소리로 소리 아이템을 확인한 경우
-        /*if (((1 << other.gameObject.layer) & SoundLayerMask) != 0)
+        if (((1 << other.gameObject.layer) & SoundLayerMask) != 0)
         {
             Vector3 dirToSound = (other.transform.position - transform.position).normalized;
             if (dirToSound != Vector3.zero)
@@ -391,7 +418,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
             {
                 _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.GoToEvent]);
             }
-        }*/
+        }
 
     }
 
