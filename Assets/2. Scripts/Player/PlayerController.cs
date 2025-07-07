@@ -33,8 +33,6 @@ public class PlayerController : MonoBehaviour
     private PlayerCameraController _cameraController;
     private PlayerMovement _movement;
     private PlayerStateMachine _fsm;
-    private Vector3 _lastMoveInput = Vector3.zero;
-    private bool _isJumping = false;
     #endregion
 
     #region Unity MonoBehaviour
@@ -93,16 +91,12 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void UpdateMoveAnimation()
     {
-        //Vector3 currentInput = _movement.MoveInput;
         bool isMoving = _movement.MoveInput != Vector3.zero;
-        //(_lastMoveInput != Vector3.zero) != isMoving
         if (!_movement.IsOnLadder)
         {
             _animator.SetBool("IsMove", isMoving);
-            //_animator.speed = _animator.speed = _movement.GetAnimatorSpeedMultiplier();
         }
         UpdateGroundParameter();
-        //_lastMoveInput = currentInput;
     }
     private void UpdateGroundParameter()
     {
@@ -161,8 +155,7 @@ public class PlayerController : MonoBehaviour
     }
     public void PlayHited()
     {
-        //TODO : 피격 소리 오면 사운드 교체하기
-        AudioManager.Instance.PlaySFX("AR_3p_01", this.transform.position);
+        AudioManager.Instance.PlaySFX("Hit 14", this.transform.position);
         _animator.SetTrigger("IsHit");
     }
     public void PlayMoveSound()
