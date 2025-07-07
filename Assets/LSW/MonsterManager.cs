@@ -5,7 +5,7 @@ using UnityEngine;
 public class MonsterManager : MonoBehaviour
 {
     [SerializeField] private GameObject _player;
-    [SerializeField] private List<GameObject> _monsters;
+    [SerializeField] public List<GameObject> _monsters;
     
 
     private void Update()

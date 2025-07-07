@@ -192,7 +192,6 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
     private void LateUpdate()
     {
         float distance = Vector3.Distance(transform.position, GameManager.Instance.Player.transform.position);
-        Debug.Log(distance);
         gameObject.SetActive(distance < 10f);
     }
 
