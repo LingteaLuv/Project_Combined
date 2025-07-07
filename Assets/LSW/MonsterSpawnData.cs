@@ -26,4 +26,25 @@ public class MonsterSpawnData : ScriptableObject
     public int Day7;
     public int Enemy7ID;
     public int Weight7;
+    
+    public Dictionary<int,int[]> _dictionary;
+
+    public int[] _enemyIds;
+
+
+    public void SetList()
+    {
+        if (_dictionary.Count != 0) return;
+        _dictionary = new Dictionary<int, int[]>();
+        _dictionary.Add(Enemy1ID, new int[2] { Day1, Weight1 });
+        _dictionary.Add(Enemy2ID, new int[2] { Day2, Weight1 });
+        _dictionary.Add(Enemy3ID, new int[2] { Day3, Weight1 });
+        _dictionary.Add(Enemy4ID, new int[2] { Day4, Weight1 });
+        _dictionary.Add(Enemy5ID, new int[2] { Day5, Weight1 });
+        _dictionary.Add(Enemy6ID, new int[2] { Day6, Weight1 });
+        _dictionary.Add(Enemy7ID, new int[2] { Day7, Weight1 });
+
+        if (_enemyIds.Length != 0) return;
+        _enemyIds = new int[7] { Enemy1ID, Enemy2ID, Enemy3ID, Enemy4ID, Enemy5ID, Enemy6ID, Enemy7ID };
+    }
 }
