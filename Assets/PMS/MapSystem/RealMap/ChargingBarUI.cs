@@ -33,7 +33,7 @@ public class ChargingBarUI : MonoBehaviour
             return;
         }
 
-        if (currentWeapon.isCharging && !currentWeapon.IsCoolTime)
+        if (currentWeapon.isCharging)
         {
             float normalizedTime = currentWeapon.CurrentChargeNormalized;
             Show();

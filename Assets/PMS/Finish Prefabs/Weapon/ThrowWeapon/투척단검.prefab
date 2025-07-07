@@ -102,7 +102,7 @@ MeshCollider:
     serializedVersion: 2
     m_Bits: 26302975
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
@@ -123,7 +123,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _weaponSpawnPos: {fileID: 0}
   _fixedWeapon: 0
-  _throwPrefab: {fileID: 4693546778107774290, guid: a7f261b525a67084c97baf8e69196ee2, type: 3}
+  _recycle: {fileID: 0}
   _throwData: {fileID: 11400000, guid: 69d257379bba3fd44806cfa85c83e921, type: 2}
   cam: {fileID: 0}
   minSpeed: 1
@@ -154,6 +154,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   isCharging: 0
+  IsCoolTime: 1
 --- !u!54 &602891635555661422
 Rigidbody:
   m_ObjectHideFlags: 0

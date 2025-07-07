@@ -50,8 +50,6 @@ public class ThrowableWeapon : WeaponBase
     private float currentRotationValue;
     public bool isCharging;
 
-    public bool IsCoolTime;
-
     private bool finish_attack = false;
 
     //차징 시간 UI보여줄 목적
@@ -60,7 +58,6 @@ public class ThrowableWeapon : WeaponBase
     private void Start()
     {
         _animator = transform.root.GetComponent<Animator>();
-        IsCoolTime = false;
     }
 
     private void Awake()
@@ -75,8 +72,7 @@ public class ThrowableWeapon : WeaponBase
 
     private void Update()
     {
-        Debug.Log(IsCoolTime);
-        if (!IsCoolTime)
+        if (!_animator.GetBool("IsThrow") && !finish_attack)
         {
             HandleInput();
             UpdateCharging();
@@ -96,15 +92,14 @@ public class ThrowableWeapon : WeaponBase
         }
         if (Input.GetMouseButtonUp(0) && isCharging)
         {
-            IsCoolTime = true;
+            //왜 던지기 전에 호출해야지 Item 스택이 잘깎이는 걸까?
+            InventoryManager.Instance.Controller.ReduceEquippedItem(0, 1);
             _animator.SetBool("IsCharging", false);
             ExecuteAttack();
-            StopCharging();         //false
+            StopCharging();         
 
-            Debug.Log(_item.StackCount);
-            InventoryManager.Instance.Controller.ReduceEquippedItem(0, 1);
-            GetInstanceID();
-            StartCoroutine(Delay());
+            //InventoryManager.Instance.Controller.ReduceEquippedItem(0, 1);
+            //StartCoroutine(Delay());
         }
         /*if(isThrowing)
         {
@@ -155,6 +150,7 @@ public class ThrowableWeapon : WeaponBase
     private void StopCharging()
     {
         isCharging = false;
+        finish_attack = true;
         ClearTrajectory();
     }
 
@@ -178,6 +174,7 @@ public class ThrowableWeapon : WeaponBase
         // TODO - speed값에 따라 회전 값을 다르게 해줘야 할 것 같다.
         rb.maxAngularVelocity = throwRotationMaxValue;
 
+        transform.rotation = cam.transform.rotation;
         rb.angularVelocity = cam.transform.forward * rotationValue;
 
         Debug.Log($"투척 실행! 최종 속도: {finalSpeed:F2}, 회전값 : {rotationValue:F2}");
@@ -223,14 +220,15 @@ public class ThrowableWeapon : WeaponBase
         lineRenderer.positionCount = 0; // 정점을 0개로 만들어 화면에서 사라지게
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
+        Debug.Log(other.gameObject.name);
         //패턴 매칭
-        if (collision.gameObject.transform.root.GetComponent<IDamageable>() is IDamageable damageable && !finish_attack)
+        if (other.gameObject.transform.root.GetComponent<IDamageable>() is IDamageable damageable)
         {
             damageable.Damaged(_damage);
-            finish_attack = true;
         }
+        Destroy(gameObject);
     }
     private IEnumerator Delay()
     {
@@ -239,7 +237,7 @@ public class ThrowableWeapon : WeaponBase
     }
 
 
-    private IEnumerator OneFrame()
+    /*private IEnumerator OneFrame()
     {
         yield return new WaitForEndOfFrame();
         if (_item.StackCount == 1)
@@ -261,6 +259,6 @@ public class ThrowableWeapon : WeaponBase
         yield return new WaitForEndOfFrame();
 
         PlayerWeaponManager.Instance.UpdateCurrentWeapon();
-    }
+    }*/
 
 }

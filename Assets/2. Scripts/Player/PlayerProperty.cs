@@ -411,14 +411,16 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler,
         // 루팅중이라면 아이템 파밍 초기화
         LootManager.Instance.CancelBlockHolding();
 
+        Debug.Log(PlayerWeaponManager.Instance.LeftCurrentWeapon is IDefendable defendableWeapo);
         //패턴 일치
-        if (PlayerWeaponManager.Instance.LeftCurrentWeapon is IDefendable defendableWeapon)
+        if (PlayerWeaponManager.Instance.LeftCurrentWeapon is IDefendable defendableWeapon 
+            && PlayerWeaponManager.Instance.LeftCurrentWeapon != null)
         {
             //만약 방패가 있다면 해당 방패의 방어력 만큼 hitDamage감소
             hitDamage -= defendableWeapon.GetDefenseAmount();
             InventoryManager.Instance.DecreaseShieldDurability();
+            
         }
-
         //방어력이 더크면 힐되므로 0보다 작으면 데미지 0처리
         hitDamage = Mathf.Max(0, hitDamage);
 
