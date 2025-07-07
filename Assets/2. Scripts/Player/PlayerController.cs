@@ -161,6 +161,7 @@ public class PlayerController : MonoBehaviour
     }
     public void PlayHited()
     {
+        //TODO : 피격 소리 오면 사운드 교체하기
         AudioManager.Instance.PlaySFX("AR_3p_01", this.transform.position);
         _animator.SetTrigger("IsHit");
     }
