@@ -668,6 +668,11 @@ public class InventoryController : MonoBehaviour
         _renderer.RenderInventory();
     }
 
+    public void ReEquip()
+    {
+        Equip(EquippedSlotIndex[0]);
+    }
+
 
 
 }

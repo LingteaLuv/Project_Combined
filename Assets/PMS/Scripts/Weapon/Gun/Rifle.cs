@@ -86,6 +86,8 @@ public class Rifle : GunWeaponBase
                 // 총구의 회전값을 총알에 적용
                 Quaternion fireRotation = _firePoint.rotation;
 
+                bullet.SetRange(_gunData.Range);
+                bullet.SetSpeed(_gunData.Rof);
                 bullet.SetDirection(fireDirection,fireRotation);
             }
             bulletObj.SetActive(true); //해당 총알을 활성화시킴
