@@ -15,7 +15,7 @@ public class RandomLootTable : MonoBehaviour
     public List<int> _itemId;
     public List<int> _itemStack;
     public List<int> _itemWeight;
-
+    
     private int _itemCount;
     
     public List<ItemBase> _resultItems;
