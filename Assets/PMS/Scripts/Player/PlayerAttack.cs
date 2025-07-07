@@ -86,7 +86,7 @@ public class PlayerAttack : MonoBehaviour
 
     private void UpdateRifleReference(WeaponBase weapon)
     {
-        if (weapon.ItemType == ItemType.Gun)
+        if (weapon != null && weapon.ItemType == ItemType.Gun )
         {
             _animator.SetTrigger("IsWeaponChange");
             _animator.SetBool("IsGun",true);

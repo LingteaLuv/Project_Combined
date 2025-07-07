@@ -69,7 +69,7 @@ public abstract class GunWeaponBase : WeaponBase
     /// </summary>
     /// <param name="bullet"> bullet 객체 </param>
     /// <param name="bulletSpeed">bullet 객체의 스피드 </param>
-    public void UpdateTrajectory(GameObject bullet, float bulletSpeed)
+    public void UpdateTrajectory(GameObject bullet, int bulletSpeed)
     {
         // 궤적을 그리는데 사용될 정점 개수
         int pointCount = 30;

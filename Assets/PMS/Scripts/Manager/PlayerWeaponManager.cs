@@ -19,6 +19,15 @@ public class PlayerWeaponManager : Singleton<PlayerWeaponManager>
     public static event Action<WeaponBase> OnRightWeaponChanged;
     public static event Action<WeaponBase> OnLeftWeaponChanged;
 
+    /*private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.K))
+        {
+            InventoryManager.Instance.Controller.ReduceEquippedItem(0, 1);
+        }
+        Debug.Log(RightCurrentWeapon);
+        Debug.Log(LeftCurrentWeapon);
+    }*/
 
     //외부에서 참조할 현재 플레이어가 들고 있어야할 웨폰을 받아서
     //다시 한번 내 구독자들 한테 뿌림
