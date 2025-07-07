@@ -154,7 +154,7 @@ public class PlayerController : MonoBehaviour
         _animator.SetBool("IsInteracting", false);
     }
     public void PlayRunning()
-    {
+    {   
         _animator.SetBool("IsRunning", true);
     }
     public void StopRunning()
@@ -165,6 +165,10 @@ public class PlayerController : MonoBehaviour
     {
         // AudioManager.Instance.PlaySFX("Hit 14", transform.position);
         _animator.SetTrigger("IsHit");
+    }
+    public void PlayMoveSound()
+    {
+        AudioManager.Instance.PlaySFX("Light Armor Running 2_01", this.transform.position);
     }
     #endregion
 }
