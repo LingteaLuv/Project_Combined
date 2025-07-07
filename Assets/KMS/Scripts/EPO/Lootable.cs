@@ -35,9 +35,16 @@ public class Lootable : MonoBehaviour
     }
     private void Start()
     {
-        StartCoroutine(Init());
+        if (_lootItems.InitType != LootItems.LootInitType.RandomGrid)
+        {
+            StartCoroutine(Init());
+        }
     }
 
+    public void MonsterInit()
+    {
+        StartCoroutine(Init());
+    }
     private IEnumerator Init()
     {
         yield return null;
