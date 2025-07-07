@@ -5,7 +5,6 @@ using UnityEngine.Animations.Rigging;
 
 public class ThrowableWeapon : WeaponBase
 {
-    [SerializeField]private GameObject _recycle;
     private Animator _animator; 
     [Tooltip("SO데이터")]
     [SerializeField] private ThrowItem _throwData;
@@ -149,6 +148,10 @@ public class ThrowableWeapon : WeaponBase
 
     private void StopCharging()
     {
+        if (_throwData.ThrowSoundResource)
+        {
+            AudioManager.Instance.PlaySFX(_throwData.ThrowSoundResource, _animator.transform.position);
+        }
         isCharging = false;
         finish_attack = true;
         ClearTrajectory();
