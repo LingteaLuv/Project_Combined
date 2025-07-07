@@ -16,10 +16,10 @@ public class EndingVideo : MonoBehaviour
         switch (index)
         {
             case 1:
-                videoPlayer.clip = videoClip3;
+                videoPlayer.clip = videoClip1;
                 break;
             case 2:
-                videoPlayer.clip = videoClip3;
+                videoPlayer.clip = videoClip2;
                 break;
             case 3:
                 videoPlayer.clip = videoClip3;
@@ -27,7 +27,6 @@ public class EndingVideo : MonoBehaviour
             default:
                 return;
         }
-        videoPlayer.loopPointReached -= OnVideoEnd;
         videoPlayer.loopPointReached += OnVideoEnd;
         videoPlayer.Play();
     }
