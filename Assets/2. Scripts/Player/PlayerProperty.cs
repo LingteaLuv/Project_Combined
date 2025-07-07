@@ -411,7 +411,6 @@ public class PlayerProperty : MonoBehaviour, IParameterHandler, IConsumeHandler,
         // 루팅중이라면 아이템 파밍 초기화
         LootManager.Instance.CancelBlockHolding();
 
-        Debug.Log(PlayerWeaponManager.Instance.LeftCurrentWeapon is IDefendable defendableWeapo);
         //패턴 일치
         if (PlayerWeaponManager.Instance.LeftCurrentWeapon is IDefendable defendableWeapon 
             && PlayerWeaponManager.Instance.LeftCurrentWeapon != null)
