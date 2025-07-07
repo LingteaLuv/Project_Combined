@@ -26,7 +26,7 @@ public class Monster_Attack : MonsterState_temp, IAttackable
 
     public void Attack(IDamageable target)
     {
-        if (!IsAttackAvailable())
+        if (!IsAttackAvailable() || monster._isDead)
         {
             return;
         }
@@ -79,7 +79,7 @@ public class Monster_Attack : MonsterState_temp, IAttackable
                 damageTarget = hit.GetComponentInParent<IDamageable>();
             Vector3 distance = hit.transform.position - monster.HandDetector.transform.position;
             
-            if (damageTarget != null && hit.gameObject.activeInHierarchy && distance.magnitude < 2f)
+            if (damageTarget != null && hit.gameObject.activeInHierarchy && distance.magnitude < 2.2f)
             {
                 try
                 {
@@ -131,18 +131,15 @@ public class Monster_Attack : MonsterState_temp, IAttackable
                 monster.transform.rotation = Quaternion.LookRotation(dir);
             }
         }
-
-      
+        
         if (_attackCoroutine != null)
         {
             monster.StopCoroutine(_attackCoroutine);
         }
-        monster.StartCoroutine(PleaseStopMonster());
         _attackCoroutine = monster.StartCoroutine(AttackCoroutine());
     }
-    private IEnumerator PleaseStopMonster()
+    private void PleaseStopMonster()
     {
-        yield return null; // 다음 프레임까지 대기
         if (_agent != null && _agent.isOnNavMesh)
         {
             _agent.isStopped = true;
@@ -153,32 +150,36 @@ public class Monster_Attack : MonsterState_temp, IAttackable
 
     private IEnumerator AttackCoroutine()
     {
-        yield return new WaitUntil(() => _curTarget != null);
-
         if (Time.time - _lastAttackTime < monster.CoolDown)
         {
             stateMachine.ChangeState(stateMachine.StateDic[Estate.Chase]);
             _attackCoroutine = null;
             yield break;
         }
-
         _lastAttackTime = Time.time;
-
+        PleaseStopMonster();
         yield return new WaitForSeconds(1.0f); // 애니메이션 길이 + 후딜
-
+        PleaseStopMonster();
+        yield return new WaitForSeconds(0.5f); // 정지 유지 시간
+        
         if (_agent != null && _agent.isOnNavMesh)
         {
             _agent.isStopped = true;
             _agent.ResetPath();
+        } 
+
+        if (!monster._isDead)
+        {
+            stateMachine.ChangeState(stateMachine.StateDic[Estate.Chase]);
+            yield break;
         }
-
-        yield return new WaitForSeconds(0.8f); // 정지 유지 시간
-
-        if (!monster._isDead && stateMachine.CurState == this)
+        
+        Vector3 targetPos = monster.TargetPosition.position;
+        float distance = Vector3.Distance(monster.transform.position, targetPos);
+        if (distance > monster.AtkRange)
         {
             stateMachine.ChangeState(stateMachine.StateDic[Estate.Chase]);
         }
-
         _attackCoroutine = null;
     }
 
@@ -187,64 +188,21 @@ public class Monster_Attack : MonsterState_temp, IAttackable
         if (_ani == null || _agent == null || !_agent.isOnNavMesh) return;
 
         AnimatorStateInfo stateInfo = _ani.GetCurrentAnimatorStateInfo(0);
-
         // 공격 애니메이션 중일 땐 멈춤 유지
         if (stateInfo.IsTag("Attack") || _ani.IsInTransition(0))
         {
             _agent.isStopped = true;
             _agent.velocity = Vector3.zero;
             _agent.ResetPath();
-            return;
         }
-
         // 애니 끝났으면 Agent 재시작
         if (_agent.isStopped)
         {
             _agent.isStopped = false;
         }
-
-        // 타겟 추적/공격 처리
-        if (stateMachine.CurState == this && _curTarget is MonoBehaviour target)
+        if (_attackCoroutine == null && IsAttackAvailable() && _curTarget!= null)
         {
-            float distance = Vector3.Distance(monster.transform.position, target.transform.position);
-
-            if (distance <= monster.AtkRange + 0.3f)
-            {
-                Vector3 dir = (target.transform.position - monster.transform.position).normalized;
-                dir.y = 0f;
-                float angle = Vector3.Angle(monster.transform.forward, dir);
-
-                // 공격 각은 10으로 시야각보다 작게하여 부드럽게 하기
-                if (angle > 10f)
-                {
-                    // 회전 먼저 수행, 공격은 보류
-                    monster.transform.rotation = Quaternion.Slerp(
-                        monster.transform.rotation,
-                        Quaternion.LookRotation(dir),
-                        10f * Time.deltaTime
-                    );
-         
-                    return;
-                }
-
-                //  회전 완료 ,쿨타임 OK 공격 시도
-                if (IsAttackAvailable())
-                {
-                    Attack(_curTarget);
-                }
-                else
-                {
-                    Debug.Log("쿨타임 대기 중");
-                }
-            }
-            else
-            {
-                stateMachine.ChangeState(stateMachine.StateDic[Estate.Chase]);
-            }
-        }
-        else if (_curTarget == null)
-        {
-            stateMachine.ChangeState(stateMachine.StateDic[Estate.Chase]);
+            _attackCoroutine = monster.StartCoroutine(AttackCoroutine());
         }
     }
 

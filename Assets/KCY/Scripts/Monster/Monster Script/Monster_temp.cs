@@ -160,9 +160,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
             _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.Dead]);
         }
 
-
-
-       // Debug.Log($" Update /// 객체 이름: {this.name}, _canDetect = {_canDetect}, 쿨타임 = {_detectCoolTime}");
+        // Debug.Log($" Update /// 객체 이름: {this.name}, _canDetect = {_canDetect}, 쿨타임 = {_detectCoolTime}");
 
         //Debug.Log($"[Patrol] 시야 감지 여부: {IsSightDetecting}");
    
@@ -226,7 +224,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
     public void Damaged(float damage)
     {
         if (_isDead) return;
-
+        PrevState = _monsterMerchine.CurState;
         // 데미지를 Hit 상태로 위임 (중계)
         if (_monsterMerchine.StateDic[Estate.Hit] is Monster_Hit hitState)
         {

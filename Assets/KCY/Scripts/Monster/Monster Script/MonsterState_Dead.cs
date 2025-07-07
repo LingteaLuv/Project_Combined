@@ -31,7 +31,9 @@ public class Monster_Dead : MonsterState_temp
         // 루터블 트루
         _lootable.IsLootable = true;
         // 루터블 트루
-
+        monster.StopAllCoroutines();
+        _ani.ResetTrigger("Attack");
+        _ani.ResetTrigger("IsHit");
         _ani.SetBool("isPatrol", false);
         _ani.SetBool("isChasing", false);
         _agent.velocity = Vector3.zero;
