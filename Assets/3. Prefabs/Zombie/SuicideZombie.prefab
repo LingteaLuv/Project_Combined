@@ -200,7 +200,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec1cb0d0eb497d74295414c0bca81d1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _info: {fileID: 11400000, guid: 7efcb36bb75203f41905ac87787e3796, type: 2}
+  _info: {fileID: 11400000, guid: ca30bdd1bf32a0343af092af0adfb684, type: 2}
   MonsterAgent: {fileID: 5064285746335260897}
   TargetPosition: {fileID: 0}
   PlayerLayerMask:
@@ -236,6 +236,134 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1437151221569413265}
     m_Modifications:
+    - target: {fileID: 1516476545681701830, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: _monsterID
+      value: 5006
+      objectReference: {fileID: 0}
+    - target: {fileID: 1516476545681701830, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: _itemId.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1516476545681701830, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: _itemId.Array.data[0]
+      value: 4002
+      objectReference: {fileID: 0}
+    - target: {fileID: 1516476545681701830, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: _itemId.Array.data[1]
+      value: 4003
+      objectReference: {fileID: 0}
+    - target: {fileID: 1516476545681701830, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: _itemId.Array.data[2]
+      value: 4013
+      objectReference: {fileID: 0}
+    - target: {fileID: 1516476545681701830, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: _itemId.Array.data[3]
+      value: 4006
+      objectReference: {fileID: 0}
+    - target: {fileID: 1516476545681701830, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: _itemId.Array.data[4]
+      value: 4006
+      objectReference: {fileID: 0}
+    - target: {fileID: 1516476545681701830, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: _itemStack.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1516476545681701830, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: _itemWeight.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1516476545681701830, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: _monsterInfo.Array.size
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1516476545681701830, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: _resultItems.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1516476545681701830, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: _itemStack.Array.data[1]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1516476545681701830, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: _itemStack.Array.data[2]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1516476545681701830, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: _itemStack.Array.data[3]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1516476545681701830, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: _itemStack.Array.data[4]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1516476545681701830, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: _itemWeight.Array.data[0]
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 1516476545681701830, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: _itemWeight.Array.data[1]
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1516476545681701830, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: _itemWeight.Array.data[2]
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 1516476545681701830, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: _itemWeight.Array.data[3]
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1516476545681701830, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: _itemWeight.Array.data[4]
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1516476545681701830, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: _monsterInfo.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 7efcb36bb75203f41905ac87787e3796, type: 2}
+    - target: {fileID: 1516476545681701830, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: _monsterInfo.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: 44db2d197b52af748a088beb9e48d254, type: 2}
+    - target: {fileID: 1516476545681701830, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: _monsterInfo.Array.data[2]
+      value: 
+      objectReference: {fileID: 11400000, guid: fef563220c0440d4eae9ddf6e3d7fc9d, type: 2}
+    - target: {fileID: 1516476545681701830, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: _monsterInfo.Array.data[3]
+      value: 
+      objectReference: {fileID: 11400000, guid: 58478f6c730871241ae16d327316c517, type: 2}
+    - target: {fileID: 1516476545681701830, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: _monsterInfo.Array.data[4]
+      value: 
+      objectReference: {fileID: 11400000, guid: e72c1236ad2d9d94783e0fb8a9b6d8da, type: 2}
+    - target: {fileID: 1516476545681701830, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: _monsterInfo.Array.data[5]
+      value: 
+      objectReference: {fileID: 11400000, guid: ca30bdd1bf32a0343af092af0adfb684, type: 2}
+    - target: {fileID: 1516476545681701830, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: _monsterInfo.Array.data[6]
+      value: 
+      objectReference: {fileID: 11400000, guid: 0e0ae1502648d2b4aa04e9ff1ec74bcf, type: 2}
+    - target: {fileID: 1516476545681701830, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: _resultItems.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 0da3d81b523046b4fbada939daf92458, type: 2}
+    - target: {fileID: 1516476545681701830, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: _resultItems.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: 26edbd3caef0d9a4db2482fb0e42b203, type: 2}
+    - target: {fileID: 1516476545681701830, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: _resultItemAmount.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1516476545681701830, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: _resultItemAmount.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1516476545681701830, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: _resultItemAmount.Array.data[1]
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2273503982419426834, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -279,6 +407,14 @@ PrefabInstance:
     - target: {fileID: 3477683226162477495, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
       propertyPath: m_Name
       value: Lootable
+      objectReference: {fileID: 0}
+    - target: {fileID: 4238681759243675254, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: InitType
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5224582191735123454, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: DestroyAfterLooting
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -430,7 +566,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d751d3ee11646da4e810a9b5b04ec06e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detectRadius: 2
   playerLayer:
     serializedVersion: 2
     m_Bits: 4096
@@ -550,7 +685,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d751d3ee11646da4e810a9b5b04ec06e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detectRadius: 2
   playerLayer:
     serializedVersion: 2
     m_Bits: 4096
