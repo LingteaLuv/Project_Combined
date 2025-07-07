@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-/*
+
 public class SightCollider : MonoBehaviour
 {
     private Monster_temp _monster;
@@ -29,10 +29,10 @@ public class SightCollider : MonoBehaviour
             _detectCor = StartCoroutine(DetectPlayer());
         }
         
-        /*if (_monster.IsEventActive && Time.time - _detectTime > 1f)
+        if (_monster.IsEventActive && Time.time - _detectTime > 1f)
         {
             _monster.IsEventActive = true;
-        }#1#
+        }
     }
     
     private IEnumerator DetectPlayer()
@@ -47,10 +47,10 @@ public class SightCollider : MonoBehaviour
         _detectCor = null;
     }
     
-    /*private void OnTriggerStay(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         _monster.SightDetectPlayer(other);
-    }#1#
+    }
     
     private void OnTriggerExit(Collider other)
     {
@@ -72,4 +72,3 @@ public class SightCollider : MonoBehaviour
     }
 
 }
-*/

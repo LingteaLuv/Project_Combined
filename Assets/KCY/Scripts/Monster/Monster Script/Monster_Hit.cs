@@ -16,27 +16,12 @@ public class Monster_Hit : MonsterState_temp, IDamageable
     private float _hp;
     private NavMeshAgent _agent;
     private Animator _ani;
-    private bool _isInvincible = false;
     protected MonsterStateMachine_temp stateMerchine;
     private Coroutine _hitCoroutine;
 
     // 피격 인터페이스 구성
     public void Damaged(float PlayerAttackDamage)
     {
-        //Debug.Log("몬스터 피격 확인");
-        // 죽어있거나 피격 쿨타임의 경우 안맞는다.
-        if (monster._isDead || _isInvincible) return;
-       
-        _hp -= PlayerAttackDamage;
-        //Debug.Log("맞음");
-        // 죽을때
-        if (_hp <= 0 && !monster._isDead)
-        {
-            monster._isDead = true;
-            stateMerchine.ChangeState(stateMerchine.StateDic[Estate.Dead]);
-            return;
-        }
-
         // if문 위에 두면 맞는 모션 나오고 죽는 모션나온다 바꾸자
         _ani.SetTrigger("IsHit");
         if (_hitCoroutine == null)
@@ -55,6 +40,8 @@ public class Monster_Hit : MonsterState_temp, IDamageable
         {
             stateMerchine.ChangeState(monster.PrevState);
         }
+
+        _hitCoroutine = null;
     }
     public override void Enter()
     {
