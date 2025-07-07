@@ -30,6 +30,7 @@ public class Monster_Dead : MonsterState_temp
 
         // 루터블 트루
         _lootable.IsLootable = true;
+        _lootable.MonsterInit();
         // 루터블 트루
         monster.StopAllCoroutines();
         _ani.ResetTrigger("Attack");
