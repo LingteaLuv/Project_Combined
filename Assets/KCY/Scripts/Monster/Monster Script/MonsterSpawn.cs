@@ -1,24 +1,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Assertions.Must;
 
 public class MonsterSpawn : MonoBehaviour
 {
 
     [Header("Please in zombie and playr prefab")] 
     [SerializeField] private GameObject[] _spawnPos;
+    [SerializeField] private GameObject[] _zombiePrefabs;
+    [SerializeField] private MonsterSpawnData _data;
     
-    public GameObject[] ZombiePrefabs;
-    private NavMeshAgent _agent;
-    private bool _isSpawn = false;
-    private List<int> _weightSums;
-    
-    
-    
-    private MonsterSpawnData _data;
     private int _spawnCount;
-    private GameObject _selectPrefab;
+    private NavMeshAgent _agent;
+    private Dictionary<int, GameObject> _zombieDic;
 
     private void Awake()
     {
@@ -26,48 +20,44 @@ public class MonsterSpawn : MonoBehaviour
     }
     private void Init()
     {
+        _zombieDic = new Dictionary<int, GameObject>();
+        for (int i = 0; i < _zombiePrefabs.Length; i++)
+        {
+            _zombieDic.Add(_zombiePrefabs[i].GetComponent<Monster_temp>().Info.EnemyID, _zombiePrefabs[i]);
+        }
         _data.SetList();
-        _weightSums = new List<int>();
+      
     }
-    // 1일차에는
-    // day가 1인 것들만
-    // 가중치를 더하고
-    // 가중치를 더한 것들을 비교해서
-    // 아이템 선택
-    // 2일차에는
-    // day가 2이하인 것들만 더해서
-    // 가중치를 더하고
-    // 가중치를 더한 것들을 비교해서
-    // 아이템 선택
-    private void SetWeight()
+
+    private int SetWeight()
     {
-        int volume = _data._enemyIds.Length;
-        int weights = 0;
-        for (int j = 0; j < volume; j++)
+        List<int> weights = new List<int>();
+        for (int j = 0; j < 7; j ++)
         {
             if (_data._dictionary[j][0] <= TimeManager.Instance.DayCount)
             {
-                weights += _data._dictionary[j][1];
+                weights.Add(_data._dictionary[j][2]);
             }
-            _weightSums.Add += 
         }
+
+        int volume = weights.Count;
+        
+        int[] weightSums = new int[volume];
+
+        weightSums[0] = weights[0];
+        for (int i = 1; i < volume; i++)
+        {
+            weightSums[i] = weightSums[i - 1] + weights[i];
+        }
+        
+        int rndNum = Random.Range(0, weightSums[volume - 1]);
         
         for (int i = 0; i < volume; i++)
         {
-            for (int j = 0; j < volume; j++)
-            {
-                if (_data._dictionary[j][0] <= TimeManager.Instance.DayCount)
-                {
-                    weightSums[i] += _data._dictionary[j][1];
-                }
-            }
+            if (rndNum < weightSums[i]) return _data._enemyIds[i];
         }
-        int rndNum = Random.Range(0, weightSums);
-        
-        for (int i = 0; i < volume; i++)
-        {
-            if (rndNum < _weightSums) return i < _itemCount ? i : _itemCount;
-        }
+
+        return -1;
     }
     
     private void OnTimeOfDaySpawnMonster(DayTime timeOfDay)
@@ -78,17 +68,22 @@ public class MonsterSpawn : MonoBehaviour
         }
     }
 
-    private void SetMonster()
-    {
-        
-    }
-    
     private void SpawnMonster()
     {
         for (int i = 0; i < _spawnPos.Length; i++)
         {
-            GameObject zombiePrefab = Instantiate(_selectPrefab);
+            int index = SetWeight();
+            if (index < 0 || !_zombieDic.ContainsKey(index))
+            {
+                Debug.Log($"인덱스 이상 : {index}");
+                continue;
+            }
+
+            GameObject zombiePrefab = Instantiate(_zombieDic[index]);
             zombiePrefab.transform.position = _spawnPos[i].transform.position;
+            zombiePrefab.GetComponent<Monster_temp>().SpawnPointLink = _spawnPos[i].transform;
+            Debug.Log($"좀비 : {_zombieDic[index].name}, 위치 : {_spawnPos[i].transform.position}");
+        
             _agent = zombiePrefab.GetComponent<NavMeshAgent>();
             if (_agent == null || !_agent.isOnNavMesh && _spawnCount < 5)
             {
@@ -96,17 +91,18 @@ public class MonsterSpawn : MonoBehaviour
                 _spawnCount++;
                 SpawnMonster();
             }
+
             if (_spawnCount == 5)
             {
-                Debug.Log($"위치 : {_spawnPos[i].transform.position} 좀비 생성 실패");\
+                Debug.Log($"위치 : {_spawnPos[i].transform.position} 좀비 생성 실패");
             }
+
             _spawnCount = 0;
         }
     }
 
     private void Start()
     {
-        // 일단 구독하고
         TimeManager.Instance.CurrentTimeOfDay.OnChanged += OnTimeOfDaySpawnMonster;
         OnTimeOfDaySpawnMonster(TimeManager.Instance.CurrentTimeOfDay.Value);
     }
