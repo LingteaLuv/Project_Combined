@@ -12,8 +12,7 @@ public class NPCInteractable : MonoBehaviour
 
     [SerializeField] public NPCMark Mark;
 
-    [SerializeField] private GameObject _ballon;
-    [SerializeField] private TMP_Text _ballonText;
+    [SerializeField] private BallonRotate _ballon;
 
     public bool IsInteractable;
 
@@ -27,7 +26,8 @@ public class NPCInteractable : MonoBehaviour
     {
         Mark.gameObject.transform.rotation = Quaternion.Euler(90, 90, 0);
         Mark.SetNone();
-        _ballon.SetActive(false);
+        _ballon.SetNone();
+        _ballon.gameObject.SetActive(false);
 
         QuestManager.Instance.OnQuestAccepted += SetAcceptedText;
         QuestManager.Instance.OnQuestCompleted += SetCompletedText;
@@ -50,7 +50,7 @@ public class NPCInteractable : MonoBehaviour
         {
             if (QuestManager.Instance.QuestDictionary[s].Status == QuestStatus.Available)
             {
-                _ballonText.text = "?";
+                _ballon.SetAvailable();
                 Mark.SetAvailable();
                 break;
             }
@@ -62,14 +62,14 @@ public class NPCInteractable : MonoBehaviour
     {
         if (qd.StartNPCID == ID)
         {
-            _ballonText.text = "?";
+            _ballon.SetAvailable();
         }
     }
     private void SetAcceptedText(QuestData qd, QuestProgress qp)
     {
         if (qd.StartNPCID == ID)
         {
-            _ballonText.text = "...";
+            _ballon.SetNone();
             Mark.SetNone();
         }
     }
@@ -77,7 +77,7 @@ public class NPCInteractable : MonoBehaviour
     {
         if (qd.EndNPCID == ID)
         {
-            _ballonText.text = "!";
+            _ballon.SetCompleted();
             Mark.SetCompleted();
         }
     }
@@ -85,7 +85,7 @@ public class NPCInteractable : MonoBehaviour
     {
         if (qd.EndNPCID == ID)
         {
-            _ballonText.text = "...";
+            _ballon.SetNone();
             Mark.SetNone();
         }
     }
@@ -93,11 +93,11 @@ public class NPCInteractable : MonoBehaviour
 
     public void OnBallon()
     {
-        _ballon.SetActive(true);
+        _ballon.gameObject.SetActive(true);
     }
     public void OffBallon()
     {
-        _ballon.SetActive(false);
+        _ballon.gameObject.SetActive(false);
     }
 
 

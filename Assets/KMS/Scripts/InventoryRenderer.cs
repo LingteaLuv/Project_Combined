@@ -80,7 +80,7 @@ public class InventoryRenderer : MonoBehaviour
         }
         if (current != -1 && _model.InvItems[current].Data.Type != ItemType.Quest)
         {
-            _model.InvSlotPanelImages[current].color = new Color(1f, 1f, 1f);
+            _model.InvSlotPanelImages[current].color = new Color(1f, 1f, 1f, 1f);
             _model.TrashButton.SetActive(true);
         }
         else
@@ -99,7 +99,7 @@ public class InventoryRenderer : MonoBehaviour
             return;
         }
         _model.Desc.enabled = true;
-        string str = $"Name:{_model.InvItems[index].Data.Name}\nDesc:{_model.InvItems[index].Data.Description}";
+        string str = $"{_model.InvItems[index].Data.Name}\n{_model.InvItems[index].Data.Description}";
         _model.Desc.text = str;
     }
 
