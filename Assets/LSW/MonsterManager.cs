@@ -1,13 +1,18 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MonsterManager : MonoBehaviour
+public class MonsterManager : Singleton<MonsterManager>
 {
     [SerializeField] private GameObject _player;
     [SerializeField] public List<GameObject> _monsters;
-    
 
+    public void Unregister(GameObject monster)
+    {
+        _monsters.Remove(monster);
+    }
+    
     private void Update()
     {
         foreach (var monster in _monsters)
@@ -24,5 +29,4 @@ public class MonsterManager : MonoBehaviour
             }
         }
     }
-
 }

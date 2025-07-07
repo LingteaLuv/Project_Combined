@@ -189,6 +189,11 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
         }
     }
 
+    private void OnDestroy()
+    {
+        MonsterManager.Instance.Unregister(gameObject);
+    }
+
     private void LateUpdate()
     {
         float distance = Vector3.Distance(transform.position, GameManager.Instance.Player.transform.position);

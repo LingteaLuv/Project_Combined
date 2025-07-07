@@ -8,7 +8,6 @@ public class MonsterSpawn : MonoBehaviour
     [SerializeField] private GameObject[] _spawnPos;
     [SerializeField] private GameObject[] _zombiePrefabs;
     [SerializeField] private MonsterSpawnData _data;
-    [SerializeField] private MonsterManager _monsterManager;
     
     private int _spawnCount;
     private NavMeshAgent _agent;
@@ -99,7 +98,8 @@ public class MonsterSpawn : MonoBehaviour
             _spawnCount = 0;
             if (zombiePrefab != null)
             {
-                _monsterManager._monsters.Add(zombiePrefab);
+                MonsterManager.Instance._monsters.Add(zombiePrefab);
+                Destroy(zombiePrefab,TimeManager.Instance._dayDurationInMinutes * 60);
             }
         }
     }
