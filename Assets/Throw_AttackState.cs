@@ -11,11 +11,13 @@ public class Throw_AttackState : StateMachineBehaviour
         {
             _playerAttack = animator.GetComponent<PlayerAttack>();
         }
+        //animator.SetBool("IsThrow", true);
     }
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         animator.SetLayerWeight(3, 0f);
         _playerAttack.IsAttacking = false;
+        //animator.SetBool("IsThrow", false);
     }
 }

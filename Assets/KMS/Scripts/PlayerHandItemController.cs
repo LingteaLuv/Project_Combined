@@ -82,6 +82,19 @@ public class PlayerHandItemController : MonoBehaviour
         StartCoroutine(UW());
     }
 
+    public void UpdateThrow()
+    {
+        int rightIndex = _control.EquippedSlotIndex[0];
+        if (_model.InvItems[rightIndex] == null)
+        {
+            StartCoroutine(UW());
+            return;
+        }
+        HoldItem(HandType.right, _model.InvItems[rightIndex].Data.ItemID);
+        StartCoroutine(UW());
+
+    }
+
     public void UpdateItems()
     {
         DeholdBoth();
@@ -128,6 +141,10 @@ public class PlayerHandItemController : MonoBehaviour
                 if (_model.InvItems[_control.EquippedSlotIndex[0]].Data.Type == ItemType.Gun) //만약 들린게 총이면
                 {
                     CurrentRightItem.GetComponent<GunWeaponBase>()._item = _model.InvItems[_control.EquippedSlotIndex[0]]; //Item정보를 줌(현재탄약수등)
+                }
+                else if(_model.InvItems[_control.EquippedSlotIndex[0]].Data.Type == ItemType.Throw) //만약 들린게 총이면
+                {
+                    CurrentRightItem.GetComponent<ThrowableWeapon>()._item = _model.InvItems[_control.EquippedSlotIndex[0]]; //Item정보를 줌(현재탄약수등)
                 }
             }
         }

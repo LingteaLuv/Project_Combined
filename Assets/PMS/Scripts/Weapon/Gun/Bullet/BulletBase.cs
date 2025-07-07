@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class BulletBase : MonoBehaviour
 {
-    [SerializeField] private int _currentBulletDamage;
-    [SerializeField][Range(0.1f,10f)] public float _speed; //총알 스피드
-    [SerializeField] private float _distance = 50f; //총알 유효 사거리
+    private int _currentBulletDamage;
+    public int _speed; //총알 스피드
+    private float _distance; //총알 유효 사거리
 
     private Rigidbody _rb;
     private Vector3 _fireDir = Vector3.forward; //총이 날라가는 방향
@@ -46,6 +46,16 @@ public class BulletBase : MonoBehaviour
     public void SetDamage(int damage)
     {
         _currentBulletDamage = damage;
+    }
+
+    public void SetSpeed(int speed)
+    {
+        _speed = speed;
+    }
+
+    public void SetRange(float distance)
+    {
+        _distance = distance;
     }
 
 
