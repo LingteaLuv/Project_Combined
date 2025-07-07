@@ -25,6 +25,8 @@ public class CamaraShaker : Singleton<CamaraShaker>
     [SerializeField] Volume _vol;
     private Vignette _vig;
 
+    protected override bool ShouldDontDestroy => false;
+
     protected override void Awake()
     {
         base.Awake();
