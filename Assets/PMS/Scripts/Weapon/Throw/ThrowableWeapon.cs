@@ -22,17 +22,15 @@ public class ThrowableWeapon : WeaponBase
     private int throwCooldown = 3;           //던지기 쿨다운
     private Coroutine throwCorouine;         //throw코루틴 저장
 
-    [Header("Charge Settings")]
-    [SerializeField] private float minSpeed = 1f;      // 최소 속도
-    [SerializeField] private float maxSpeed = 20f;     // 최대 속도
-    [SerializeField] private float maxChargeTime = 3f; // 최대 차징 시간
-    [SerializeField] private AnimationCurve powerCurve = AnimationCurve.EaseInOut(0, 0, 1, 1); // 파워 증가 곡선 
+    private float minSpeed => _throwData.MinSpeed;      // 최소 속도
+    private float maxSpeed => _throwData.MaxSpeed;     // 최대 속도
+    private float maxChargeTime => _throwData.MaxChargeTime; // 최대 차징 시간
+    private AnimationCurve powerCurve = AnimationCurve.EaseInOut(0, 0, 1, 1); // 파워 증가 곡선 
 
-    [Header("날아가면서 회전 횟수")]
     private float throwRotationMaxValue = 50;    //max회전값
     private float throwRotationValue;       //돌아가는 회전값
-    private float MaxthrowRotationValue = 20;    //돌아가는 회전값의 최대
-    private float MinthrowRotationValue = 1;   //돌아가는 회전값의 최소
+    private float MaxthrowRotationValue => _throwData.MaxRotateValue;    //돌아가는 회전값의 최대
+    private float MinthrowRotationValue => _throwData.MinRotateValue;   //돌아가는 회전값의 최소
 
     //LineRender Value
     private float projectileSpeed = 10f;     //라인렌더러가 사용하는 speed값인데 변경필요
@@ -164,6 +162,8 @@ public class ThrowableWeapon : WeaponBase
 
         _startPos = transform.position;
 
+        transform.rotation = cam.transform.rotation;
+
         rb.isKinematic = false;
 
         rb.useGravity = true;
@@ -177,7 +177,6 @@ public class ThrowableWeapon : WeaponBase
         // TODO - speed값에 따라 회전 값을 다르게 해줘야 할 것 같다.
         rb.maxAngularVelocity = throwRotationMaxValue;
 
-        transform.rotation = cam.transform.rotation;
         rb.angularVelocity = cam.transform.forward * rotationValue;
 
         Debug.Log($"투척 실행! 최종 속도: {finalSpeed:F2}, 회전값 : {rotationValue:F2}");
