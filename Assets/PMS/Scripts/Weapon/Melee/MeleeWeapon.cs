@@ -13,7 +13,7 @@ public class MeleeWeapon : WeaponBase
 
     [Tooltip("기획분들이 설정해주시면 좋겠습니다.")]
     private float _attackRange = 2.0f;      //2미터 고정         //근거리 무기의 유효 범위
-    private float _attackAngle = 360.0f;    //180 플레이어 전방  //근거리 무기 유효 각도  
+    private float _attackAngle = 180.0f;    //180 플레이어 전방  //근거리 무기 유효 각도  
 
     private void Reset()
     {
@@ -85,14 +85,16 @@ public class MeleeWeapon : WeaponBase
         if (closeGameObject != null)//(closestDamageable != null)
         {
             IDamageable target = closeGameObject.gameObject.transform.root.GetComponent<IDamageable>();
-            if (target == null)
+            if (target != null)
             {
+                if(_meleeData.AtkSoundResources)
+                    AudioManager.Instance.PlaySFX(_meleeData.AtkSoundResources, transform.position);
                 
+                target.Damaged(_meleeData.AtkDamage);
             }
-            target.Damaged(_meleeData.AtkDamage);
             //closeGameObject.GetComponent<IDamageable>().Damaged(_meleeData.AtkDamage);
             //TODO - 시각적 디버깅용 코드 추후 제거 예정
-            StartCoroutine(DamageRoutine(closeGameObject.gameObject));
+            //StartCoroutine(DamageRoutine(closeGameObject.gameObject));
         }
         else
         {
