@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// 게임 내 시간 흐름을 관리하고, 낮/밤 상태를 판별 및 전환하는 매니저 클래스.
@@ -10,6 +12,8 @@ public class TimeManager : Singleton<TimeManager>
     public Property<int> CurrentHour { get; private set; } = new Property<int>(6);                              //  초기  시간값
     public Property<float> CurrentMinute { get; private set; } = new Property<float>(0f);                       //  초기  분값
     public int DayCount { get; private set; } = 1;
+
+    public event Action<int> OnDayChanged;
     #endregion
 
     #region Private Properties
@@ -64,11 +68,12 @@ public class TimeManager : Singleton<TimeManager>
             {
                 CurrentHour.Value = 0;
                 DayCount++;
+                OnDayChanged?.Invoke(DayCount);
 
-                if(DayCount == 7)
+                if (DayCount == 8)
                 {
-                    //TODO : 7일 엔딩 진입
-                    Debug.Log("7일차 엔딩 진입");
+                    PlayerPrefs.SetInt("EndingIndex", 3);
+                    SceneManager.LoadScene("EndingScene");
                 }
             }
         }
