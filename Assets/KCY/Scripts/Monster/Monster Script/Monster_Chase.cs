@@ -113,11 +113,10 @@ public class Monster_Chase : MonsterState_temp
 
         Vector3 targetPos = monster.TargetPosition.position;
         float distance = Vector3.Distance(monster.transform.position, targetPos);
-
         // 1. 공격 사거리 도달
         if (distance <= monster.AtkRange)
         {
-            //Debug.Log(" 공격 범위 도달 > Attack 상태 전이");
+            Debug.Log(" 공격 범위 도달 > Attack 상태 전이");
             stateMachine.ChangeState(stateMachine.StateDic[Estate.Attack]);
             return;
         }
@@ -125,7 +124,7 @@ public class Monster_Chase : MonsterState_temp
         // 2. 경로 유효성 확인
         if (_agent.pathStatus == NavMeshPathStatus.PathInvalid)
         {
-            //Debug.LogWarning("경로 생성 실패 > Reset 상태로 전이");
+            Debug.LogWarning("경로 생성 실패 > Reset 상태로 전이");
             stateMachine.ChangeState(stateMachine.StateDic[Estate.Reset]);
             return;
         }

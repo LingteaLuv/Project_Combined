@@ -64,6 +64,7 @@ public class TimeManager : Singleton<TimeManager>
             {
                 CurrentHour.Value = 0;
                 DayCount++;
+
                 if(DayCount == 7)
                 {
                     //TODO : 7일 엔딩 진입
