@@ -80,7 +80,7 @@ public class InventoryRenderer : MonoBehaviour
         }
         if (current != -1 && _model.InvItems[current].Data.Type != ItemType.Quest)
         {
-            _model.InvSlotPanelImages[current].color = new Color(1f, 1f, 1f);
+            _model.InvSlotPanelImages[current].color = new Color(1f, 1f, 1f, 1f);
             _model.TrashButton.SetActive(true);
         }
         else

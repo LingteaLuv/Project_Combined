@@ -21,19 +21,14 @@ public class TimelineControl : MonoBehaviour
 
     protected virtual IEnumerator DisableControl()
     {
-        UIManager.Instance.LockUIUpdate();
         UIManager.Instance.OffHUI();
         UIManager.Instance.OffQuickslot();
         UISceneLoader.Instance.Playerattack.IsAttacking = true;
-        _pm.MoveLock();
-        _pcc.PauseCamera();
+        UIManager.Instance.Lock();
         yield return _wfs;
-        UIManager.Instance.UnlockUIUpdate();
-        UIManager.Instance.OffHUI();
-
-        UIManager.Instance.OffQuickslot();
+        UIManager.Instance.OnHUI();
+        UIManager.Instance.OnQuickslot();
         UISceneLoader.Instance.Playerattack.IsAttacking = false;
-        _pm.MoveLock();
-        _pcc.PauseCamera();
+        UIManager.Instance.UnLock();
     }
 }

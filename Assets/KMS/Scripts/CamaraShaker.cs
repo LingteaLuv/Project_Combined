@@ -9,6 +9,7 @@ using UnityEngine.Rendering;
 public class CamaraShaker : Singleton<CamaraShaker>
 {
 
+     
     [SerializeField] private CinemachineVirtualCamera _cmv;
     private CinemachineBasicMultiChannelPerlin _cmp;
 
