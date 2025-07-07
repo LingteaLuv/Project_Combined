@@ -83,12 +83,13 @@ public class PlayerCameraController : MonoBehaviour
 
     public void PauseCamera()
     {
-        CameraMove = !CameraMove;
+        CameraMove = false;
     }
 
     // TODO : 카메라 재개
     public void ResumeCamera()
     {
+        CameraMove = true;
     }
 
     private void Init()
