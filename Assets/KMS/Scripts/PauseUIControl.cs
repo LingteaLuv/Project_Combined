@@ -15,6 +15,8 @@ public class PauseUIControl : MonoBehaviour
     private PlayerCameraController _pcc;
     private WaitForSecondsRealtime _wait;
 
+    public bool PauseLock;
+
     private Coroutine _co;
 
     private void Awake()
@@ -34,10 +36,20 @@ public class PauseUIControl : MonoBehaviour
     void Update()
     {
         if (UIManager.Instance.IsUIOpened.Value) return;
+        if (PauseLock) return;
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             Toggle();
         }
+    }
+
+    public void LockPause()
+    {
+        PauseLock = true;
+    }
+    public void UnlockPasue()
+    {
+        PauseLock = false;
     }
 
     public void Title()

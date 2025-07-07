@@ -31,6 +31,8 @@ public class UIManager : Singleton<UIManager>
 
     [SerializeField] private GameObject _quickslot;
 
+    [SerializeField] private PauseUIControl _puc;
+
     private PlayerLooting _playerLoot;
     private PlayerNPCInteractor _playerNPCInt;
     private RectTransform _lootRect;
@@ -111,12 +113,14 @@ public class UIManager : Singleton<UIManager>
         _playerNPCInt.OnInteract2 += LockUIUpdate;
         _playerNPCInt.OnInteract2 += CursorLock;
         _playerNPCInt.OnInteract2 += LockAttacking;
+        _playerNPCInt.OnInteract2 += _puc.LockPause;
 
         DialogueManager.Instance.OffDialogue += _pcc.PauseCamera;
         DialogueManager.Instance.OffDialogue += _pm.MoveLock;
         DialogueManager.Instance.OffDialogue += UnlockUIUpdate;
         DialogueManager.Instance.OffDialogue += CursorLock;
         DialogueManager.Instance.OffDialogue += UnlockAttacking;
+        DialogueManager.Instance.OffDialogue += _puc.UnlockPasue;
 
         SetCursorLock(IsUIOpened.Value);
 
