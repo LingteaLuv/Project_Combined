@@ -300,6 +300,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: HeavyZombie
       objectReference: {fileID: 0}
+    - target: {fileID: 7397600230078508100, guid: bd3d46f1594b20e4790a759843c37319, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
     - target: {fileID: 7954718325949775203, guid: bd3d46f1594b20e4790a759843c37319, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -621,7 +625,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 0.48, y: 0.32, z: 0.1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3430474492454631165 stripped
 GameObject:
@@ -1680,7 +1684,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 0.4, y: 0.33, z: 0.19}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!137 &8821167696699612224 stripped
 SkinnedMeshRenderer:
@@ -1791,6 +1795,14 @@ PrefabInstance:
     - target: {fileID: 3477683226162477495, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
       propertyPath: m_Name
       value: Lootable
+      objectReference: {fileID: 0}
+    - target: {fileID: 4238681759243675254, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: InitType
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5224582191735123454, guid: 3d4e46d5fb1ef584980a404bfd020a30, type: 3}
+      propertyPath: DestroyAfterLooting
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
