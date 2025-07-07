@@ -4,7 +4,6 @@ using UnityEngine.AI;
 
 public class MonsterSpawn : MonoBehaviour
 {
-
     [Header("Please in zombie and playr prefab")] 
     [SerializeField] private GameObject[] _spawnPos;
     [SerializeField] private GameObject[] _zombiePrefabs;
@@ -79,8 +78,7 @@ public class MonsterSpawn : MonoBehaviour
                 continue;
             }
 
-            GameObject zombiePrefab = Instantiate(_zombieDic[index]);
-            zombiePrefab.transform.position = _spawnPos[i].transform.position;
+            GameObject zombiePrefab = Instantiate(_zombieDic[index],_spawnPos[i].transform.position,_spawnPos[i].transform.rotation);
             zombiePrefab.GetComponent<Monster_temp>().SpawnPointLink = _spawnPos[i].transform;
             Debug.Log($"좀비 : {_zombieDic[index].name}, 위치 : {_spawnPos[i].transform.position}");
         
@@ -94,7 +92,7 @@ public class MonsterSpawn : MonoBehaviour
 
             if (_spawnCount == 5)
             {
-                Debug.Log($"위치 : {_spawnPos[i].transform.position} 좀비 생성 실패");
+                //Debug.Log($"위치 : {_spawnPos[i].transform.position} 좀비 생성 실패");
             }
 
             _spawnCount = 0;

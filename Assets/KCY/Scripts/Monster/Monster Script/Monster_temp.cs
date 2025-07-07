@@ -89,10 +89,6 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
     public AudioClip ChaseSfx1 => _info.ChaseSfx1;
     public AudioClip ChaseSfx2 => _info.ChaseSfx2;
 
-
-
-
-
     public float CoolDown;
 
     public float AtkCoolDown => _info.AtkCoolDown;
@@ -112,11 +108,9 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
            // Debug.Log($"[쿨다운 변경] 시간대: {timeOfDay} → 기본 쿨다운 유지: {CoolDown:F2}");
         }
     }
-
-
+    
     private void Awake()
     {
-
         PlayerLayerMask = LayerMask.GetMask("Player");
         Ani = GetComponentInChildren<Animator>();
         HandDetector = GetComponentInChildren<MonsterHandDetector>();
@@ -175,9 +169,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
                 sightDetectTime = 0f;
             }
         }
-
-
-
+        
         // 상태머신 업데이트
         _monsterMerchine?.Update();
 
@@ -234,7 +226,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
     }
 
 
-    public void SightDetectPlayer(Collider other)
+    /*public void SightDetectPlayer(Collider other)
     {
        // Debug.Log($"[SightDetectPlayer 진입] 객체 이름: {this.name}");
         //Debug.Log(" SightDetectPlayer 함수 진입함");
@@ -340,7 +332,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
 
         // 플레이어 위치 찾고, 감지 하고 
 
-        if (((1 << other.gameObject.layer) & PlayerLayerMask) != 0)
+        if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
             TargetPosition = other.transform;
             IsDetecting = true;
@@ -360,9 +352,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
         {
             Debug.Log($"플레이어가 아님 무시");
         }
-
-
-    }
+    }*/
 
     public void SoundDetectPlayer(Collider other)
     {
@@ -380,13 +370,13 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
             return;
         }
 
-        if (IsSightDetecting)
+        /*if (IsSightDetecting)
         {
             return;
-        }
+        }*/
 
         // 소리로 소리 아이템을 확인한 경우
-        if (((1 << other.gameObject.layer) & SoundLayerMask) != 0)
+        /*if (((1 << other.gameObject.layer) & SoundLayerMask) != 0)
         {
             Vector3 dirToSound = (other.transform.position - transform.position).normalized;
             if (dirToSound != Vector3.zero)
@@ -401,7 +391,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
             {
                 _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.GoToEvent]);
             }
-        }
+        }*/
 
     }
 
