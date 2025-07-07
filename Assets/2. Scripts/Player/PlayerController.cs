@@ -152,7 +152,7 @@ public class PlayerController : MonoBehaviour
         _animator.SetBool("IsInteracting", false);
     }
     public void PlayRunning()
-    {
+    {   
         _animator.SetBool("IsRunning", true);
     }
     public void StopRunning()
@@ -161,8 +161,17 @@ public class PlayerController : MonoBehaviour
     }
     public void PlayHited()
     {
-        // AudioManager.Instance.PlaySFX("Hit 14", transform.position);
+        //TODO : 피격 소리 오면 사운드 교체하기
+        AudioManager.Instance.PlaySFX("AR_3p_01", this.transform.position);
         _animator.SetTrigger("IsHit");
+    }
+    public void PlayMoveSound()
+    {
+        AudioManager.Instance.PlaySFX("Light Armor Running 2_01", this.transform.position);
+    }
+    public void PlayRunSound()
+    {
+        AudioManager.Instance.PlaySFX("Light Armor Running 2_01", this.transform.position);
     }
     #endregion
 }
