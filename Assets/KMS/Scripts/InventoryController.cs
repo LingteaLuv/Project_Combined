@@ -645,11 +645,12 @@ public class InventoryController : MonoBehaviour
     {
         int temp = EquippedSlotIndex[index];
         ReduceItem(temp, count);
-        if (_model.InvItems[temp] == null) //줄였더니 비게 된 상황 (포션 다 처먹음)
-        {
-            UnEquipAfterRemove(temp);
-            _renderer.RenderInventory();
-        }
+        _hand.UpdateThrow();
+        //if (_model.InvItems[temp] == null) //줄였더니 비게 된 상황 (포션 다 처먹음)
+        //{
+        //    UnEquipAfterRemove(temp);
+        //    _renderer.RenderInventory();
+        //}
 
     }
     public void ReduceItem(int index, int count) //해당 칸 위치 아이템 개수만큼 (뺄 수 있는 만큼만) 지움

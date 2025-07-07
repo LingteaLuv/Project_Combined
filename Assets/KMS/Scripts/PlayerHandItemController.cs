@@ -82,6 +82,19 @@ public class PlayerHandItemController : MonoBehaviour
         StartCoroutine(UW());
     }
 
+    public void UpdateThrow()
+    {
+        int rightIndex = _control.EquippedSlotIndex[0];
+        if (_model.InvItems[rightIndex] == null)
+        {
+            StartCoroutine(UW());
+            return;
+        }
+        HoldItem(HandType.right, _model.InvItems[rightIndex].Data.ItemID);
+        StartCoroutine(UW());
+
+    }
+
     public void UpdateItems()
     {
         DeholdBoth();
