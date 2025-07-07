@@ -161,7 +161,7 @@ public class PlayerController : MonoBehaviour
     }
     public void PlayHited()
     {
-        AudioManager.Instance.PlaySFX("Hit 14", transform.position);
+        AudioManager.Instance.PlaySFX("AR_3p_01", this.transform.position);
         _animator.SetTrigger("IsHit");
     }
     public void PlayMoveSound()

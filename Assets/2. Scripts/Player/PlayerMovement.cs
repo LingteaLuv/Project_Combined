@@ -63,6 +63,7 @@ public class PlayerMovement : MonoBehaviour
         Controller = GetComponent<PlayerController>();
         Property = GetComponent<PlayerProperty>();
         _delay = new WaitForSeconds(1f);
+        Property.OnHited += Controller.PlayHited;
     }
     private void Update()
     {
