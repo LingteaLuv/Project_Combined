@@ -72,7 +72,6 @@ public class TimeManager : Singleton<TimeManager>
 
                 if (DayCount == 8)
                 {
-                    Debug.Log("7일차 엔딩 진입");
                     PlayerPrefs.SetInt("EndingIndex", 3);
                     SceneManager.LoadScene("EndingScene");
                 }

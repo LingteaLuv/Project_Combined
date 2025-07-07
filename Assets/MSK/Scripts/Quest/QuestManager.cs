@@ -87,7 +87,7 @@ public class QuestManager : Singleton<QuestManager>
 
         IsEndingTrigger(triggerId);
         // 트리거명으로 QuestID를 찾기
-        if (triggerId == "VENDING") { return; }
+        if (triggerId == "VENDING") { return; }//자경단장 예외처리
         if (!TriggerDictionary.TryGetValue(triggerId, out var questId)) { return; }
 
         // QuestID로 QuestDictionary에서 QuestData를 찾기
@@ -97,32 +97,32 @@ public class QuestManager : Singleton<QuestManager>
         // 코드로 들어올 때 사용한 트리거를 딕셔너리에서 삭제
         TriggerDictionary.Remove(triggerId);
 
-        Debug.Log($"[QuestType] questId: {questId}, 현재 상태: {meta.Status}");
+        //Debug.Log($"[QuestType] questId: {questId}, 현재 상태: {meta.Status}");
 
         switch (meta.Status)
         {
             case QuestStatus.Locked:
-                Debug.Log("[QuestType] Locked");
+             //   Debug.Log("[QuestType] Locked");
                 break;
             case QuestStatus.Available:
-                Debug.Log("[QuestType] Available");
+            //    Debug.Log("[QuestType] Available");
                 AcceptQuest(meta.QuestID);
                 break;
             case QuestStatus.Active:
-                Debug.Log("[QuestType] Active");
+           //     Debug.Log("[QuestType] Active");
                 CompleteQuest(meta.QuestID);
                 break;
             case QuestStatus.Completed:
-                Debug.Log("[QuestType] Completed");
+             //   Debug.Log("[QuestType] Completed");
                 {
                     CloseQuest(meta.QuestID);
                 }
                 break;
             case QuestStatus.Closed:
-                Debug.Log("[QuestType] Closed");
+             //   Debug.Log("[QuestType] Closed");
                 break;
             default:
-                Debug.Log("[QuestType] 기타");
+            //    Debug.Log("[QuestType] 기타");
                 break;
         }
     }
@@ -233,13 +233,13 @@ public class QuestManager : Singleton<QuestManager>
     {
         if (!QuestDictionary.TryGetValue(questId, out var meta))
         {
-            Debug.Log("진입1");
+        //    Debug.Log("진입1");
             return false;
         }
 
         if (meta.Status != QuestStatus.Completed)
         {
-            Debug.Log("진입2");
+         //   Debug.Log("진입2");
             return false;
         }
         if (meta.RewardItemQuantity > InventoryManager.Instance.GetNullSpaceCount())
@@ -247,7 +247,7 @@ public class QuestManager : Singleton<QuestManager>
             TextManager.Instance.PopupTextForSecond("2002", 3);
             return false;
         }
-        Debug.Log("진입3");
+       // Debug.Log("진입3");
         meta.Status = QuestStatus.Closed;
         if (int.TryParse(meta.RequiredItemID, out int req))
         {
@@ -369,13 +369,13 @@ public class QuestManager : Singleton<QuestManager>
         if (triggerId == "VENDABLE")
         {
             SetVEnd(); // 자경단 엔딩 플래그 ON
-            Debug.Log("VEND 플래그 ON");
+           // Debug.Log("VEND 플래그 ON");
             return;
         }
         if (triggerId == "CENDABLE")
         {
             SetCEnd(); // 군대 엔딩 플래그 ON
-            Debug.Log("CEND 플래그 ON");
+           // Debug.Log("CEND 플래그 ON");
             return;
         }
     }
