@@ -99,7 +99,7 @@ public class InventoryRenderer : MonoBehaviour
             return;
         }
         _model.Desc.enabled = true;
-        string str = $"Name:{_model.InvItems[index].Data.Name}\nDesc:{_model.InvItems[index].Data.Description}";
+        string str = $"{_model.InvItems[index].Data.Name}\n{_model.InvItems[index].Data.Description}";
         _model.Desc.text = str;
     }
 
