@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Assertions.Must;
 
 public class MonsterSpawn : MonoBehaviour
 {
@@ -8,10 +9,34 @@ public class MonsterSpawn : MonoBehaviour
     public GameObject[] ZombiePrefabs;
     private NavMeshAgent _agent;
     private bool _isSpawn = false;
+    
     private MonsterSpawnData _data;
     private int spawncount = 0;
     private GameObject _selectPrefab;
 
+    private void Awake()
+    {
+        Init();
+    }
+    private void Init()
+    {
+        _data.SetList();
+    }
+
+    private void SetWeight()
+    {
+        int volume = _data._enemyIds.Length;
+        int[] weightSums = new int[volume];
+        for (int i = 0; i < volume; i++)
+        {
+            if (_data._dictionary[i][0] == TimeManager.Instance.DayCount)
+            {
+                //weightSums
+            }
+        }
+        
+    }
+    
     private void OnTimeOfDaySpawnMonster(DayTime timeOfDay)
     {
         if (timeOfDay == DayTime.MidNight)
