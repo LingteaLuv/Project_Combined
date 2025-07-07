@@ -72,26 +72,44 @@ public class UIManager : Singleton<UIManager>
     }
     public void OffQuickslot()
     {
-        if (_quickslot.activeSelf)
-        {
-            _quickslot.SetActive(false);
-        }
-        else
-        {
+        _quickslot.SetActive(false);
+    }
+    public void OnQuickslot()
+    {
+
             _quickslot.SetActive(true);
-        }
+
     }
     public void OffHUI()
     {
-        if (_propHUI.gameObject.activeSelf)
-        {
             _propHUI.gameObject.SetActive(false);
-        }
-        else
-        {
-            _propHUI.gameObject.SetActive(true);
-        }
+
         
+    }
+    public void OnHUI()
+    {
+            _propHUI.gameObject.SetActive(true);
+
+    }
+
+
+    public void Lock()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        _pm.MoveLock();
+        _pcc.PauseCamera();
+        _puc.LockPause();
+        LockUIUpdate();
+    }
+    public void UnLock()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        _pm.MoveUnLock();
+        _pcc.ResumeCamera();
+        _puc.UnlockPasue();
+        UnlockUIUpdate();
     }
     private void Start() //다꺼줌
     {
@@ -111,12 +129,12 @@ public class UIManager : Singleton<UIManager>
         _playerNPCInt.OnInteract2 += _pcc.PauseCamera;
         _playerNPCInt.OnInteract2 += _pm.MoveLock;
         _playerNPCInt.OnInteract2 += LockUIUpdate;
-        _playerNPCInt.OnInteract2 += CursorLock;
+        _playerNPCInt.OnInteract2 += CursorUnlock;
         _playerNPCInt.OnInteract2 += LockAttacking;
         _playerNPCInt.OnInteract2 += _puc.LockPause;
 
-        DialogueManager.Instance.OffDialogue += _pcc.PauseCamera;
-        DialogueManager.Instance.OffDialogue += _pm.MoveLock;
+        DialogueManager.Instance.OffDialogue += _pcc.ResumeCamera;
+        DialogueManager.Instance.OffDialogue += _pm.MoveUnLock;
         DialogueManager.Instance.OffDialogue += UnlockUIUpdate;
         DialogueManager.Instance.OffDialogue += CursorLock;
         DialogueManager.Instance.OffDialogue += UnlockAttacking;
@@ -130,38 +148,34 @@ public class UIManager : Singleton<UIManager>
 
     private void CursorLock()
     {
-        if (Cursor.lockState == CursorLockMode.None)
-        {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
-        }
-        else if (Cursor.lockState == CursorLockMode.Locked)
-        {
+    }
+    public void CursorUnlock()
+    {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-        }
     }
-    private void SetMoveLock(bool b)
+    private void SetMoveLock(bool isUIOpened)
     {
-        _pm.MoveLock();
+        if (!isUIOpened)
+        {
+            _pm.MoveUnLock();
+        }
+        else
+        {
+            _pm.MoveLock();
+        }
     }
     private void SetCameraLock(bool isUIOpened) {
         if (!isUIOpened)
         {
-            _pcc.PauseCamera();
+            _pcc.ResumeCamera();
         }
         else
         {
             _pcc.PauseCamera();
         }
-    }
-    private void LockAttacking()
-    {
-        UISceneLoader.Instance.Playerattack.IsAttacking = true;
-    }
-    private void UnlockAttacking()
-    {
-        UISceneLoader.Instance.Playerattack.IsAttacking = false;
     }
     private void SetAttackLock(bool isUIOpened)
     {
@@ -174,7 +188,6 @@ public class UIManager : Singleton<UIManager>
             UISceneLoader.Instance.Playerattack.IsAttacking = true;
         }
     }
-    
     private void SetCursorLock(bool isUIOpened)
     {
         if (!isUIOpened)
@@ -188,6 +201,15 @@ public class UIManager : Singleton<UIManager>
             Cursor.visible = true;
         }
     }
+    private void LockAttacking()
+    {
+        UISceneLoader.Instance.Playerattack.IsAttacking = true;
+    }
+    private void UnlockAttacking()
+    {
+        UISceneLoader.Instance.Playerattack.IsAttacking = false;
+    }
+   
 
     public void LockUIUpdate()
     {
@@ -236,25 +258,25 @@ public class UIManager : Singleton<UIManager>
         if (Current == ModalUI.inventory)
         {
             InvUI.SetActive(true);
-            SetUIPos(_invRect, 750, 450);
+            SetUIPos(_invRect, 0, -100);
         }
         else if (Current == ModalUI.lootTable)
         {
             LootUI.SetActive(true);
-            SetUIPos(_lootRect, 500, 600);
+            SetUIPos(_lootRect, -200, 0);
             InvUI.SetActive(true);
-            SetUIPos(_invRect, 1100, 450);
+            SetUIPos(_invRect, 350, -100);
         }
         else if (Current == ModalUI.quest)
         {
             QuestLogUI.SetActive(true);
             LayoutRebuilder.ForceRebuildLayoutImmediate(QuestCont.transform as RectTransform);
-            SetUIPos(_questRect, 600, 150);
+            SetUIPos(_questRect, 0, 0);
         }
         else if (Current == ModalUI.map)
         {
             MapUI.SetActive(true);
-            SetUIPos(_mapRect, 960, 540);
+            SetUIPos(_mapRect, 0, 0);
         }
 
         if (_coroutine != null)
@@ -290,7 +312,8 @@ public class UIManager : Singleton<UIManager>
 
     private void SetUIPos(RectTransform UITrs, int x, int y)
     {
-        UITrs.position = new Vector3(x, y, 0); 
+        //UITrs.position = new Vector3(x, y, 0); 
+        UITrs.localPosition = new Vector3(x, y, 0);
     }
     private IEnumerator FadeIn()
     {

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class DialogueManager : Singleton<DialogueManager>
@@ -362,30 +363,24 @@ public class DialogueManager : Singleton<DialogueManager>
         }
     }
 
-    /// <summary>
-    /// 의사 엔딩 연출
-    /// </summary>
     private void PlayDoctorEnding()
     {
         Debug.Log("의사 엔딩 ");
-        // TODO: 엔딩 씬 전환, UI 등
+        PlayerPrefs.SetInt("EndingIndex", 1);
+        SceneManager.LoadScene("EndingScene");
     }
 
-    /// <summary>
-    /// 자경단장 엔딩 연출
-    /// </summary>
     private void PlayVigilanteEnding()
     {
         Debug.Log("자경단장 엔딩");
-        // TODO: 엔딩 씬 전환, UI 등
+        PlayerPrefs.SetInt("EndingIndex", 2);
+        SceneManager.LoadScene("EndingScene");
     }
 
-    /// <summary>
-    /// 누구와도 연락하지 않은 엔딩 연출
-    /// </summary>
     private void PlayNoContactEnding()
     {
         Debug.Log("연락X 엔딩");
-        // TODO: 엔딩 씬 전환, UI 등
+        PlayerPrefs.SetInt("EndingIndex", 3);
+        SceneManager.LoadScene("EndingScene");
     }
 }
