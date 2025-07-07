@@ -271,5 +271,7 @@ public class PlayerMovement : MonoBehaviour
             StateSphereCollider.radius = radius;
     }
     public void SetGravity(bool enabled) => Rigidbody.useGravity = enabled;
-    public void MoveLock() => CanMove = !CanMove;
+    public void MoveLock() { CanMove = false; }
+    public void MoveUnLock() { CanMove = true; }
+
 }

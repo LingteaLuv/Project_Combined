@@ -236,25 +236,25 @@ public class UIManager : Singleton<UIManager>
         if (Current == ModalUI.inventory)
         {
             InvUI.SetActive(true);
-            SetUIPos(_invRect, 750, 450);
+            SetUIPos(_invRect, 0, -100);
         }
         else if (Current == ModalUI.lootTable)
         {
             LootUI.SetActive(true);
-            SetUIPos(_lootRect, 500, 600);
+            SetUIPos(_lootRect, -200, 0);
             InvUI.SetActive(true);
-            SetUIPos(_invRect, 1100, 450);
+            SetUIPos(_invRect, 350, -100);
         }
         else if (Current == ModalUI.quest)
         {
             QuestLogUI.SetActive(true);
             LayoutRebuilder.ForceRebuildLayoutImmediate(QuestCont.transform as RectTransform);
-            SetUIPos(_questRect, 600, 150);
+            SetUIPos(_questRect, 0, 0);
         }
         else if (Current == ModalUI.map)
         {
             MapUI.SetActive(true);
-            SetUIPos(_mapRect, 960, 540);
+            SetUIPos(_mapRect, 0, 0);
         }
 
         if (_coroutine != null)
@@ -290,7 +290,8 @@ public class UIManager : Singleton<UIManager>
 
     private void SetUIPos(RectTransform UITrs, int x, int y)
     {
-        UITrs.position = new Vector3(x, y, 0); 
+        //UITrs.position = new Vector3(x, y, 0); 
+        UITrs.localPosition = new Vector3(x, y, 0);
     }
     private IEnumerator FadeIn()
     {
