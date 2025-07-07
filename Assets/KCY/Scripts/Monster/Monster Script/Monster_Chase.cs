@@ -45,7 +45,7 @@ public class Monster_Chase : MonsterState_temp
         _agent.stoppingDistance = 0.8f;
         _agent.ResetPath();
         _agent.SetDestination(_targetPos.position);
-        Debug.Log($" 추적 시작: {_targetPos.position}");
+        //Debug.Log($" 추적 시작: {_targetPos.position}");
     }
 
     public override void Enter()
