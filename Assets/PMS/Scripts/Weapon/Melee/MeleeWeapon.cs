@@ -55,7 +55,7 @@ public class MeleeWeapon : WeaponBase
         {
             Debug.Log(targetCollider.gameObject.name);
 
-            IDamageable damageable = targetCollider.GetComponent<IDamageable>();
+            IDamageable damageable = targetCollider.transform.root.GetComponent<IDamageable>();
 
             if (damageable != null)
             {
@@ -65,7 +65,6 @@ public class MeleeWeapon : WeaponBase
                 Vector3 directionToTarget = (targetCollider.transform.position - _playerPos.transform.position).normalized;
                 // 플레이어의 앞쪽 방향과 타겟 방향 사이의 각도 계산
                 float angle = Vector3.Angle(playerForward, directionToTarget);
-                Debug.Log(angle);
                 // 각도 안에 존재하는지 확인
                 if (angle <= (_attackAngle / 2))
                 {
@@ -76,7 +75,7 @@ public class MeleeWeapon : WeaponBase
                     {
                         minDistance = distance;
                         //closestDamageable = damageable;
-                        Debug.Log("맞을 사람 모임 -> " + targetCollider.name);
+                        //Debug.Log("맞을 사람 모임 -> " + targetCollider.name);
                         closeGameObject = targetCollider.gameObject;
                     }
                 }
@@ -86,7 +85,12 @@ public class MeleeWeapon : WeaponBase
         // 가장 가까운 적이 있다면 데미지 부여 로직 실행
         if (closeGameObject != null)//(closestDamageable != null)
         {
-            closeGameObject.gameObject.transform.root.GetComponent<IDamageable>().Damaged(_meleeData.AtkDamage);
+            IDamageable target = closeGameObject.gameObject.transform.root.GetComponent<IDamageable>();
+            if (target == null)
+            {
+                
+            }
+            target.Damaged(_meleeData.AtkDamage);
             //closeGameObject.GetComponent<IDamageable>().Damaged(_meleeData.AtkDamage);
             //TODO - 시각적 디버깅용 코드 추후 제거 예정
             StartCoroutine(DamageRoutine(closeGameObject.gameObject));

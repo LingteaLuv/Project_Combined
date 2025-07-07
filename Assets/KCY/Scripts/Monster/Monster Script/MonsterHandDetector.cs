@@ -2,9 +2,8 @@ using UnityEngine;
 
 public class MonsterHandDetector : MonoBehaviour
 {
-    [SerializeField] private float detectRadius = 2f;
     [SerializeField] private LayerMask playerLayer; // 플레이어 레이어
-    [SerializeField] private float detectInterval = 0.1f;
+    [SerializeField] private float detectInterval;
 
     private IAttackable attackLogic;
     private Monster_temp _monster;
