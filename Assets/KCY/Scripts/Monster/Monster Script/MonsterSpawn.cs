@@ -5,11 +5,12 @@ public class MonsterSpawn : MonoBehaviour
 {
 
     [Header("Please in zombie and playr prefab")]
-    public GameObject ZombiePrefab;
-    public Transform  SpawnPosition;
+    public GameObject[] ZombiePrefabs;
     private NavMeshAgent _agent;
     private bool _isSpawn = false;
-
+    private MonsterSpawnData _data;
+    private int spawncount = 0;
+    private GameObject _selectPrefab;
 
     private void OnTimeOfDaySpawnMonster(DayTime timeOfDay)
     {
@@ -21,42 +22,33 @@ public class MonsterSpawn : MonoBehaviour
 
         if (timeOfDay == DayTime.MidNight && _isSpawn == true)
         {
-            SpawnMonster();
+            //SpawnMonster();
         }
     
     }
 
-
-    public void SpawnMonster()
+    private void SetMonster()
     {
-
-        if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 4f, NavMesh.AllAreas))
-        {
-            GameObject zombiePrefab = Instantiate(ZombiePrefab.gameObject, hit.position, Quaternion.identity);
-
-            _agent = zombiePrefab.GetComponent<NavMeshAgent>();
-
-            if (_agent == null || !_agent.isOnNavMesh)
-            {
-                Destroy(zombiePrefab);
-            }
-
-            _isSpawn = false;
-        }
-
-   
+        
     }
+    
+    /*public void SpawnMonster()
+    {
+        GameObject zombiePrefab = Instantiate(_selectPrefab);
+        _agent = zombiePrefab.GetComponent<NavMeshAgent>();
+        if (_agent == null || !_agent.isOnNavMesh && count < 5)
+        {
+            Destroy(zombiePrefab);
+            count++;
+            SpawnMonster();
+        }
+        count = 0;
+    }*/
 
     private void Start()
     {
         // 일단 구독하고
         TimeManager.Instance.CurrentTimeOfDay.OnChanged += OnTimeOfDaySpawnMonster;
         OnTimeOfDaySpawnMonster(TimeManager.Instance.CurrentTimeOfDay.Value);
-    }
-
-
-    private void Update()
-    {
-
     }
 }
