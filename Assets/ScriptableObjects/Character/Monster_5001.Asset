@@ -14,28 +14,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EnemyID: 5001
   Name: BasicZombieMale
-  MaxHP: 100
-  AtkDamage: 20
+  MaxHP: 10
+  AtkDamage: 10
   AtkCoolDown: 1
-  AtkRange: 5
-  MoveSpeed: 7
-  ChaseMoveSpeed: 8
-  NightMoveSpeed: 10
-  NightChaseMoveSpeed: 11
+  AtkRange: 0.7
+  MoveSpeed: 1
+  ChaseMoveSpeed: 1.5
+  NightMoveSpeed: 2
+  NightChaseMoveSpeed: 3
   NightAtkCoolDown: 1.5
-  SightRange: 50
+  SightRange: 5
   SightAngle: 45
-  HearingRange: 25
+  HearingRange: 4
   DeactivateHearing: 1.5
   PatrolSight: 1
   ChaseSight: 2
-  PatrolRadius: 100
+  PatrolRadius: 6
   SearchTime: 30
   EnemyLootID: BasicZombie
   EnemyLootGridChanceID: BasicZombieGrid
   IdleSfx1: {fileID: 8300000, guid: abae699df1078e749aa469a1d3e3e1a6, type: 3}
   IdleSfx2: {fileID: 8300000, guid: ad12fd7e5cd362d4eb21f9ccfe803f55, type: 3}
-  IdleSfxRange: 50
+  IdleSfxRange: 5
   ChaseSfx1: {fileID: 8300000, guid: 36716ea6a07b6d34d804d379773223d1, type: 3}
   ChaseSfx2: {fileID: 8300000, guid: bfbe5e539e3c9f345b255ca9251c9abf, type: 3}
   AtkSfx: {fileID: 8300000, guid: 1289237937c21764aa5958b030281c8d, type: 3}

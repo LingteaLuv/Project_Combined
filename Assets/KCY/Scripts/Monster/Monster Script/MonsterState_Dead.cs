@@ -31,7 +31,9 @@ public class Monster_Dead : MonsterState_temp
         // 루터블 트루
         _lootable.IsLootable = true;
         // 루터블 트루
-
+        monster.StopAllCoroutines();
+        _ani.ResetTrigger("Attack");
+        _ani.ResetTrigger("IsHit");
         _ani.SetBool("isPatrol", false);
         _ani.SetBool("isChasing", false);
         _agent.velocity = Vector3.zero;
@@ -39,7 +41,7 @@ public class Monster_Dead : MonsterState_temp
         _ani.SetTrigger("Dead");
         monster.SightCol.enabled = false;
         monster.HearingCol.enabled = false;
-        _agent.enabled = false;
+        //_agent.enabled = false;
 
         //Object.Destroy(_obj,15f);      몬스터 소멸을 원하시는 경우에만 쓰고 아니면 해당 코드는 지우기
     }
