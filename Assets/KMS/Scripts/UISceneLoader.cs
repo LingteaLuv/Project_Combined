@@ -14,7 +14,7 @@ public class UISceneLoader : Singleton<UISceneLoader>
     protected override void Awake()
     {
         base.Awake();
-        SceneManager.LoadScene("Jihyun_Zombie2", LoadSceneMode.Additive);
+        SceneManager.LoadScene("Jihyun_Zombie", LoadSceneMode.Additive);
         
         SceneManager.LoadSceneAsync("UIScene", LoadSceneMode.Additive);
         //StartCoroutine(DStart());
