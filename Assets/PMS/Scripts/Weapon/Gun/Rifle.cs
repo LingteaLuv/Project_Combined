@@ -89,10 +89,11 @@ public class Rifle : GunWeaponBase
                 bullet.SetRange(_gunData.Range);
                 bullet.SetSpeed(_gunData.Rof);
                 bullet.SetDirection(fireDirection,fireRotation);
+                AudioManager.Instance.PlaySFX(_gunData.ShotSoundResource, _firePoint.transform.position);
+                _bulletcaseParticle.Play();
+                CamaraShaker.Instance.GunShootShake();
+                bulletObj.SetActive(true); //해당 총알을 활성화시킴
             }
-            bulletObj.SetActive(true); //해당 총알을 활성화시킴
-            _bulletcaseParticle.Play();
-            CamaraShaker.Instance.GunShootShake();
         }
         else
         {
