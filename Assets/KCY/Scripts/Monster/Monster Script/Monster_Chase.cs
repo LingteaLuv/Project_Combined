@@ -27,7 +27,7 @@ public class Monster_Chase : MonsterState_temp
 
         if (_targetPos == null)
         {
-            Debug.LogWarning("타겟이 존재하지 않아 추적 불가");
+            //Debug.LogWarning("타겟이 존재하지 않아 추적 불가");
             return;
         }
 
@@ -40,7 +40,7 @@ public class Monster_Chase : MonsterState_temp
             }
             else
             {
-                Debug.LogWarning("NavMesh 위에 없음 → 이동 불가");
+                //Debug.LogWarning("NavMesh 위에 없음 → 이동 불가");
                 return;
             }
         }
@@ -49,7 +49,7 @@ public class Monster_Chase : MonsterState_temp
         _agent.stoppingDistance = 0.8f;
         _agent.ResetPath();
         _agent.SetDestination(_targetPos.position);
-        Debug.Log($" 추적 시작: {_targetPos.position}");
+        //Debug.Log($" 추적 시작: {_targetPos.position}");
     }
 
     public override void Enter()
@@ -120,7 +120,7 @@ public class Monster_Chase : MonsterState_temp
         // 1. 공격 사거리 도달
         if (distance <= monster.AtkRange + 0.3f)
         {
-            Debug.Log(" 공격 범위 도달 > Attack 상태 전이");
+            //Debug.Log(" 공격 범위 도달 > Attack 상태 전이");
             stateMachine.ChangeState(stateMachine.StateDic[Estate.Attack]);
             return;
         }
@@ -128,7 +128,7 @@ public class Monster_Chase : MonsterState_temp
         // 2. 경로 유효성 확인
         if (_agent.pathStatus == NavMeshPathStatus.PathInvalid)
         {
-            Debug.LogWarning("경로 생성 실패 > Reset 상태로 전이");
+            //Debug.LogWarning("경로 생성 실패 > Reset 상태로 전이");
             stateMachine.ChangeState(stateMachine.StateDic[Estate.Reset]);
             return;
         }
@@ -160,7 +160,7 @@ public class Monster_Chase : MonsterState_temp
                 _lastSetDestination = targetPos;
                 _nextPathUpdateTime = Time.time + _pathUpdateInterval;
 
-                Debug.Log($"[SetDestination 호출] 대상까지 거리: {distance:F2} / 갱신 거리 차: {distToLastSet:F2}");
+                //Debug.Log($"[SetDestination 호출] 대상까지 거리: {distance:F2} / 갱신 거리 차: {distToLastSet:F2}");
             }
         }
     }
