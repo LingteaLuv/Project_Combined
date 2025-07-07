@@ -5,6 +5,7 @@ using UnityEngine.Animations.Rigging;
 
 public class ThrowableWeapon : WeaponBase
 {
+    [SerializeField]private GameObject _recycle;
     private Animator _animator; 
     [Tooltip("SO데이터")]
     [SerializeField] private ThrowItem _throwData;
@@ -49,11 +50,17 @@ public class ThrowableWeapon : WeaponBase
     private float currentRotationValue;
     public bool isCharging;
 
+    public bool IsCoolTime;
+
     private bool finish_attack = false;
+
+    //차징 시간 UI보여줄 목적
+    public float CurrentChargeNormalized => Mathf.Clamp01(currentChargeTime / maxChargeTime);
 
     private void Start()
     {
         _animator = transform.root.GetComponent<Animator>();
+        IsCoolTime = false;
     }
 
     private void Awake()
@@ -68,8 +75,12 @@ public class ThrowableWeapon : WeaponBase
 
     private void Update()
     {
-        HandleInput();
-        UpdateCharging();
+        Debug.Log(IsCoolTime);
+        if (!IsCoolTime)
+        {
+            HandleInput();
+            UpdateCharging();
+        }
     }
     public void HandleInput()
     {
@@ -85,9 +96,15 @@ public class ThrowableWeapon : WeaponBase
         }
         if (Input.GetMouseButtonUp(0) && isCharging)
         {
+            IsCoolTime = true;
             _animator.SetBool("IsCharging", false);
             ExecuteAttack();
-            StopCharging();
+            StopCharging();         //false
+
+            Debug.Log(_item.StackCount);
+            InventoryManager.Instance.Controller.ReduceEquippedItem(0, 1);
+            GetInstanceID();
+            StartCoroutine(Delay());
         }
         /*if(isThrowing)
         {
@@ -215,4 +232,35 @@ public class ThrowableWeapon : WeaponBase
             finish_attack = true;
         }
     }
+    private IEnumerator Delay()
+    {
+        yield return new WaitForSeconds(2.0f);
+        InventoryManager.Instance.Controller.ReEquip();
+    }
+
+
+    private IEnumerator OneFrame()
+    {
+        yield return new WaitForEndOfFrame();
+        if (_item.StackCount == 1)
+        {
+            Debug.Log("리턴하면안댐");
+        }
+        else if (_item.StackCount >= 2)
+        {
+            _recycle = Instantiate(PlayerWeaponManager.Instance._throwDagger,
+                PlayerWeaponManager.Instance._right_Hand_target.transform);
+        }
+
+        InventoryManager.Instance.Controller.ReduceEquippedItem(0, 1);
+        if (_recycle != null)
+        {
+            _recycle.GetComponent<ThrowableWeapon>()._item = _item;
+        }
+
+        yield return new WaitForEndOfFrame();
+
+        PlayerWeaponManager.Instance.UpdateCurrentWeapon();
+    }
+
 }

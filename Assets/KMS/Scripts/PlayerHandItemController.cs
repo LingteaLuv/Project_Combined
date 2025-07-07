@@ -129,6 +129,10 @@ public class PlayerHandItemController : MonoBehaviour
                 {
                     CurrentRightItem.GetComponent<GunWeaponBase>()._item = _model.InvItems[_control.EquippedSlotIndex[0]]; //Item정보를 줌(현재탄약수등)
                 }
+                else if(_model.InvItems[_control.EquippedSlotIndex[0]].Data.Type == ItemType.Throw) //만약 들린게 총이면
+                {
+                    CurrentRightItem.GetComponent<ThrowableWeapon>()._item = _model.InvItems[_control.EquippedSlotIndex[0]]; //Item정보를 줌(현재탄약수등)
+                }
             }
         }
         //생성된 프리팹의 정보를 받도록
