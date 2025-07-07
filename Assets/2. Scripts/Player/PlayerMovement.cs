@@ -16,177 +16,167 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float _jumpForce = 10f;
     [SerializeField] private float _groundCheckDistance = 0.05f;
 
+    private float StepCheckHeight = 0.1f;
+    private float StepCheckMid = 0.15f;
+    private float StepCheckUp = 0.3f;
+    private float StepCheckDistance = 0.2f;
+    private float SlopeMaxAngle = 45f;
+    private float SlopeForce = 10f;
+    private float WaterSpeedMultiplier = 0.6f;
+    private float FallMultiplier = 5f;
+    private float _lastYPos = 0f;
+    private float _yStableTime = 0f;
+    private float _yStableThreshold = 0.02f;    
+    private float _kneeHeight = 0.5f;        
+    private float _stepUpAmount = 0.15f;   
+    private float _stableTimeRequired = 1f;  
+
     public PlayerClimb PlayerClimbHandler { get; private set; }
     public PlayerController Controller { get; private set; }
     public Rigidbody Rigidbody { get; private set; }
     public PlayerProperty Property { get; private set; }
-    #region Public
-    public bool IsOnLadder { get; private set; }
-    public bool IsGrounded { get; private set; }
-    public bool IsWater { get; private set; }
-    public bool IsRunning { get; private set; }
-    public bool CanMove { get; private set; }
-    public bool CanRun { get; private set; }
-    public bool IsConsumingStamina { get; private set; }
+    public SphereCollider StateSphereCollider => _stateSphereCollider;
+
+    public bool IsRunning => _inputHandler.RunPressed && _inputHandler.MoveInput.z > 0.1f && CanRun;
+    public bool CanRun => Property.Stamina.Value >= 5f && !Property.IsDied;
+
     public Vector3 MoveInput => _inputHandler.MoveInput;
     public bool JumpPressed => _inputHandler.JumpPressed;
     public bool CrouchHeld => _inputHandler.CrouchHeld;
     public bool InteractPressed => _inputHandler.InteractPressed;
 
-    public SphereCollider StateSphereCollider => _stateSphereCollider;
-    #endregion
+    public bool IsOnLadder { get; private set; }
+    public bool IsGrounded { get; private set; }
+    public bool IsWater { get; private set; }
+    public bool IsConsumingStamina { get; private set; }
+    public bool CanMove { get; private set; } = true;
 
     private bool _jumpConsumedThisFrame;
     private bool _isCrouching;
-    private WaitForSeconds _delay;
-    private Vector3 _currentRotation;
-
-    private float _waterSpeedMultiplier = 0.6f;
-    private float _fallMultiplier = 5f;
     private Coroutine _hitInWaterCoroutine;
+    private WaitForSeconds _delay;
 
-    private void Awake() => Init();
-
-    private void Init()
+    private void Awake()
     {
         Rigidbody = GetComponent<Rigidbody>();
         PlayerClimbHandler = GetComponent<PlayerClimb>();
         Controller = GetComponent<PlayerController>();
         Property = GetComponent<PlayerProperty>();
-
-        CanMove = true;
         _delay = new WaitForSeconds(1f);
     }
-
     private void Update()
     {
-        if (Property.IsDied == true)
-            return;
-        _jumpConsumedThisFrame = false;
+        if (Property.IsDied) return;
 
-        // Raycast로 지면 체크
+        _jumpConsumedThisFrame = false;
+        UpdateGroundAndLadderState();
+        TryStartStaminaCoroutine();
+    }
+    private void UpdateGroundAndLadderState()
+    {
         IsGrounded = Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, _groundCheckDistance + 0.1f);
         IsOnLadder = _inputHandler.IsOnLadder;
-
-        if (_inputHandler.RunPressed && _inputHandler.MoveInput.z > 0.1f)
-            IsRunning = true;
-        else
-            IsRunning = false;
-
-        if (Property.Stamina.Value < 5f)
-            CanRun = false;
-        else
-            CanRun = true;
-
-        if (IsRunning && !IsConsumingStamina && (Property.Stamina.Value > 5f))
+    }
+    private void TryStartStaminaCoroutine()
+    {
+        if (IsRunning && !IsConsumingStamina)
             StartCoroutine(StaminaConsumePerSecond());
     }
-
     private IEnumerator StaminaConsumePerSecond()
     {
         IsConsumingStamina = true;
-        while (true)
+        while (IsRunning)
         {
-            if (!IsRunning || Property.Stamina.Value < 5f)
+            if (Property.Stamina.Value < 5f)
                 break;
             Property.StaminaConsume(Property.StaminaCostRun);
             yield return _delay;
         }
         IsConsumingStamina = false;
     }
-
     private void FixedUpdate()
     {
-        if (Property.IsDied == true)
-            return;
-        if (!IsOnLadder && IsGrounded)
-        {
-            HandleMovement(MoveInput);
-        }
-        if (!IsOnLadder)
-        {
-            HandleGravity();
-        }
-    }
+        if (Property.IsDied) return;
 
+        if (!IsOnLadder && IsGrounded)
+            HandleMovement(MoveInput);
+
+        if (!IsOnLadder)
+            HandleGravity();
+    }
     public void HandleMovement(Vector3 inputDir)
     {
-        Camera cam = Camera.main;
-        if (!CanMove)   //  CanMove가 False면 이동 제한
-            return;
+        if (!CanMove) return;
+        var cam = Camera.main;
         if (cam == null) return;
-        // 카메라 기준 이동 벡터
+
         Vector3 moveDir = cam.transform.forward * inputDir.z + cam.transform.right * inputDir.x;
         moveDir.y = 0f;
         moveDir.Normalize();
 
         if (inputDir.sqrMagnitude < 0.01f)
         {
-            // 입력이 거의 없을 경우 멈춤 처리
-            Vector3 stopVelocity = new Vector3(0, Rigidbody.velocity.y, 0);
-            Rigidbody.velocity = Vector3.MoveTowards(Rigidbody.velocity, stopVelocity, 100 * Time.fixedDeltaTime);
+            Rigidbody.velocity = Vector3.MoveTowards(Rigidbody.velocity, new Vector3(0, Rigidbody.velocity.y, 0), 100 * Time.fixedDeltaTime);
+            return;
         }
-        else
+
+        // 경사면 보정
+        moveDir = GetSlopeAdjustedMoveDirection(moveDir);
+
+        // 속도 계산 공식
+        float speed = Property.MoveSpeed.Value
+                      * (_isCrouching ? Property.CrouchSpeed : 1f)
+                      * (IsWater ? WaterSpeedMultiplier : 1f)
+                      * (IsRunning ? Property.RunSpeed : 1f);
+
+        Vector3 targetVelocity = moveDir * speed;
+        targetVelocity.y = Rigidbody.velocity.y;
+        Rigidbody.velocity = Vector3.MoveTowards(Rigidbody.velocity, targetVelocity, 100 * Time.fixedDeltaTime);
+
+        // 이동 방향 회전
+        if (moveDir != Vector3.zero)
         {
-            // 경사면 보정 이동
-            moveDir = GetSlopeAdjustedMoveDirection(moveDir);
+            Quaternion targetRot = Quaternion.LookRotation(moveDir);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 10f);
+        }
 
-            //  속도 계산 공식 
-            float speed = Property.MoveSpeed.Value
-                * (_isCrouching ? Property.CrouchSpeed : 1f)
-                * (IsWater ? _waterSpeedMultiplier : 1f)
-                * (IsRunning && (Property.Stamina.Value > 5f) ? Property.RunSpeed : 1f);
+        // 턱 오르기
+        if (CheckRay(transform.position, transform.forward, StepCheckDistance, StepCheckHeight)
+            && CheckRay(transform.position, transform.forward, StepCheckDistance, StepCheckMid)
+            && !CheckRay(transform.position, transform.forward, StepCheckDistance, StepCheckUp))
+        {
+            Rigidbody.position += Vector3.up * 0.1f;
+        }
 
-            Vector3 targetVelocity = moveDir * speed;
-            targetVelocity.y = Rigidbody.velocity.y; // 수직 속도 유지
-            Rigidbody.velocity = Vector3.MoveTowards(Rigidbody.velocity, targetVelocity, 100 * Time.fixedDeltaTime);
 
-            // 이동 방향 회전
-            if (moveDir != Vector3.zero)
+
+        // 경사면에서 미끄러짐 방지
+        if (IsGrounded && Physics.Raycast(transform.position, Vector3.down, out RaycastHit slopeHit, _groundCheckDistance + 0.3f))
+        {
+            if (slopeHit.normal != Vector3.up && Vector3.Angle(slopeHit.normal, Vector3.up) <= SlopeMaxAngle)
             {
-                Quaternion targetRot = Quaternion.LookRotation(moveDir);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 10f);
-            }
-
-            // 작은 턱 오르기 처리
-            bool downRay = Physics.Raycast(transform.position + Vector3.up * 0.1f, transform.forward, 0.2f);
-            bool middleRay = Physics.Raycast(transform.position + Vector3.up * 0.15f, transform.forward, 0.2f);
-            bool upRay = Physics.Raycast(transform.position + Vector3.up * 0.3f, transform.forward, 0.2f);
-
-            if (downRay && middleRay && !upRay)
-            {
-                Rigidbody.position += Vector3.up * 0.1f;
-            }
-
-            // 경사면에 붙도록 아래 방향 힘 가함
-            if (IsGrounded && Physics.Raycast(transform.position, Vector3.down, out RaycastHit slopeHit, _groundCheckDistance + 0.3f))
-            {
-                if (slopeHit.normal != Vector3.up && Vector3.Angle(slopeHit.normal, Vector3.up) <= 45f)
-                {
-                    Rigidbody.AddForce(-slopeHit.normal * 10f, ForceMode.Force);
-                }
+                Rigidbody.AddForce(-slopeHit.normal * SlopeForce, ForceMode.Force);
             }
         }
     }
 
-    //  중력 관련 
+    private bool CheckRay(Vector3 origin, Vector3 direction, float distance, float heightOffset = 0f)
+    {
+        return Physics.Raycast(origin + Vector3.up * heightOffset, direction, distance);
+    }
     private void HandleGravity()
     {
         if (!IsGrounded && Rigidbody.velocity.y < 0.1f)
         {
             float wallCheckDistance = 0.5f;
             Vector3 origin = transform.position + Vector3.up * 0.5f;
-            Vector3[] directions = {
-            transform.forward, -transform.forward,
-            transform.right, -transform.right
-        };
+            Vector3[] directions = { transform.forward, -transform.forward, transform.right, -transform.right };
 
             foreach (var dir in directions)
             {
                 if (Physics.Raycast(origin, dir, out RaycastHit hit, wallCheckDistance, LayerMask.GetMask("Default")))
                 {
-                    float pushStrength = 4f;
-                    Rigidbody.velocity = new Vector3(0f, Rigidbody.velocity.y, 0f) + hit.normal * pushStrength;
+                    Rigidbody.velocity = new Vector3(0f, Rigidbody.velocity.y, 0f) + hit.normal * 4f;
                     return;
                 }
             }
@@ -196,95 +186,89 @@ public class PlayerMovement : MonoBehaviour
                 if (Physics.Raycast(origin, dir, out RaycastHit hit, wallCheckDistance, LayerMask.GetMask("Default")))
                 {
                     Vector3 gravityDownWall = Vector3.ProjectOnPlane(Vector3.down, hit.normal).normalized;
-                    Rigidbody.velocity += gravityDownWall * Physics.gravity.y * (_fallMultiplier - 1f) * Time.fixedDeltaTime;
+                    Rigidbody.velocity += gravityDownWall * Physics.gravity.y * (FallMultiplier - 1f) * Time.fixedDeltaTime;
                     return;
                 }
             }
-            Rigidbody.velocity += Vector3.up * Physics.gravity.y * (_fallMultiplier - 1f) * Time.fixedDeltaTime;
+            Rigidbody.velocity += Vector3.up * Physics.gravity.y * (FallMultiplier - 1f) * Time.fixedDeltaTime;
         }
+
+        // ------ y 고정 & 무릎 Ray 보정 (떨어지는 중에만) ------
+        float currentY = transform.position.y;
+
+        // 떨어지는 중에 y 변화가 없으면 누적, 아니면 리셋
+        bool isFalling = !IsGrounded && Rigidbody.velocity.y < 0.1f;
+        if (isFalling && Mathf.Abs(currentY - _lastYPos) < _yStableThreshold)
+        {
+            _yStableTime += Time.fixedDeltaTime;
+            if (_yStableTime >= _stableTimeRequired)
+            {
+                Vector3 kneeOrigin = transform.position + Vector3.up * _kneeHeight;
+                bool frontClear = !Physics.Raycast(kneeOrigin, transform.forward, 0.25f);
+                if (frontClear)
+                {
+                    Rigidbody.position += Vector3.up * _stepUpAmount;
+                    _yStableTime = 0f;
+                }
+            }
+        }
+        else
+        {
+            _yStableTime = 0f;
+        }
+        _lastYPos = currentY;
     }
 
-
-    //  경사면 미끄러짐 방지
     private Vector3 GetSlopeAdjustedMoveDirection(Vector3 moveDir)
     {
         if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, _groundCheckDistance + 0.3f))
         {
             Vector3 normal = hit.normal;
             if (normal != Vector3.up)
-            {
                 return Vector3.ProjectOnPlane(moveDir, normal).normalized;
-            }
         }
         return moveDir;
     }
-
-
-    //  점프 가능 여부 반환
     public bool CanJump()
     {
         if (Property.Stamina.Value < 10f)
             return false;
-        else
-            return CanMove && !_jumpConsumedThisFrame && JumpPressed && IsGrounded && !IsJumpAnimationPlaying();
+        return CanMove && !_jumpConsumedThisFrame && JumpPressed && IsGrounded && !IsJumpAnimationPlaying();
     }
 
-    //  점프 
     public void Jump()
     {
-        if (Property.Stamina.Value < 10f)
-            return;
+        if (Property.Stamina.Value < 10f) return;
         _jumpConsumedThisFrame = true;
         Property.StaminaConsume(Property.StaminaCostJump);
         Rigidbody.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
     }
 
-    // 웅크렸는지 체크
-    public void SetCrouch(bool crouch)
-    {
-        _isCrouching = crouch;
-    }
-
-    //  물에 들어갔는제 체크
+    public void SetCrouch(bool crouch) => _isCrouching = crouch;
     public void SetWater(bool water)
     {
         IsWater = water;
         if (water)
+        {
             _hitInWaterCoroutine = StartCoroutine(Property.HitInWater(20));
+        }
         else
         {
-            StopCoroutine(_hitInWaterCoroutine);
-            _hitInWaterCoroutine = null;
+            if (_hitInWaterCoroutine != null)
+            {
+                StopCoroutine(_hitInWaterCoroutine);
+                _hitInWaterCoroutine = null;
+            }
         }
     }
+    public void SetRotation(float offset) => transform.rotation = Quaternion.Euler(0f, offset, 0f);
 
-    //  방향 설정
-    public void SetRotation(float offset)
-    {
-        transform.rotation = Quaternion.Euler(0f, offset, 0f);
-    }
-
-    // 점프 애니메이션이 끝났는지 체크 
-    public bool IsJumpAnimationPlaying()
-    {
-        bool isPlaying = Controller._animator.GetCurrentAnimatorStateInfo(0).IsName("Jump");
-        return isPlaying;
-    }
-
-    //  소음 콜라이더
+    public bool IsJumpAnimationPlaying() => Controller._animator.GetCurrentAnimatorStateInfo(0).IsName("Jump");
     public void SetStateColliderRadius(float radius)
     {
         if (StateSphereCollider != null)
             StateSphereCollider.radius = radius;
     }
-    //  중력 ON/OFF
-    public void SetGravity(bool enabled)
-    {
-        Rigidbody.useGravity = enabled;
-    }
-    //  움직임 On/Off
-    public void MoveLock()
-    {
-        CanMove = !CanMove;
-    }
+    public void SetGravity(bool enabled) => Rigidbody.useGravity = enabled;
+    public void MoveLock() => CanMove = !CanMove;
 }
