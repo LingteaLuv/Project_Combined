@@ -112,7 +112,9 @@ public class CreateQuestSO : EditorWindow
                     quest.Type = QuestType.Collect;
                     break;
             }
-            quest.Description = parts[2];
+            string str = "";
+            str += parts[2].Replace("\\n", "\n");
+            quest.Description = str;
             quest.StartNPCID = parts[3];
             quest.StartDialogueID = int.Parse(parts[4]);
             quest.EndNPCID = parts[5];
