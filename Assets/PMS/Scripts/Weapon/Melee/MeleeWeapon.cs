@@ -36,7 +36,7 @@ public class MeleeWeapon : WeaponBase
     /// Physics.OverlapSphere + 범위 + 애니메이션 Event를 통한 특정 프레임 이벤트 호출, 각도 체크O - 플레이어기준 
     /// // TODO - Physics.OverlapSphere 콜라이더 범위 - y축 신경 X
     /// </summary>
-    protected override void ExecuteAttack() 
+    protected override void ExecuteAttack()
     {
         // 무기에 달려있는 _attack를 중심으로 범위를 설정하고 타겟레이어와 충돌검사
         Collider[] colliders = Physics.OverlapSphere(_attackPointPos.position, _attackRange, _targetLayer);
@@ -52,9 +52,10 @@ public class MeleeWeapon : WeaponBase
         // 충돌체를 저장한 배열을 순회하며 가장 가까운 적 찾기
         foreach (Collider targetCollider in colliders)
         {
-            //Debug.Log(targetCollider.gameObject.name);
+            //Debug.Log("충돌 감지" + targetCollider.gameObject.name);
 
-            IDamageable damageable = targetCollider.transform.root.GetComponent<IDamageable>();
+            IDamageable damageable = targetCollider.transform.parent.GetComponent<IDamageable>();
+            Debug.Log(damageable);
 
             if (damageable != null)
             {
@@ -67,11 +68,13 @@ public class MeleeWeapon : WeaponBase
                 // 각도 안에 존재하는지 확인
                 if (angle <= (_attackAngle / 2))
                 {
+                    Debug.Log("각도 계산" + targetCollider.name);
                     // 현재 공격 지점과 타겟 간의 거리 계산
                     float distance = Vector3.Distance(_attackPointPos.position, targetCollider.transform.position);
                     // 만약 현재 타겟이 이전에 찾은 타겟보다 더 가깝다면
                     if (distance < minDistance)
                     {
+                        Debug.Log("거리 계산" + targetCollider.name);
                         minDistance = distance;
                         //closestDamageable = damageable;
                         //Debug.Log("맞을 사람 모임 -> " + targetCollider.name);
@@ -79,17 +82,18 @@ public class MeleeWeapon : WeaponBase
                     }
                 }
             }
+            //Debug.Log("인터페이스?" + targetCollider.name);
         }
 
         // 가장 가까운 적이 있다면 데미지 부여 로직 실행
         if (closeGameObject != null)//(closestDamageable != null)
         {
-            IDamageable target = closeGameObject.gameObject.transform.root.GetComponent<IDamageable>();
+            IDamageable target = closeGameObject.gameObject.transform.parent.GetComponent<IDamageable>();
             if (target != null)
             {
-                if(_meleeData.AtkSoundResources)
+                if (_meleeData.AtkSoundResources)
                     AudioManager.Instance.PlaySFX(_meleeData.AtkSoundResources, transform.position);
-                
+
                 target.Damaged(_meleeData.AtkDamage);
             }
             //closeGameObject.GetComponent<IDamageable>().Damaged(_meleeData.AtkDamage);
@@ -174,7 +178,7 @@ public class MeleeWeapon : WeaponBase
     }*/
     #endregion
 
-    #region 기즈모 출력 - 플레이어 기준
+    /*#region 기즈모 출력 - 플레이어 기준
     private void OnDrawGizmos()
     {
         //왼쪽 라인 플레이어로 부터 
@@ -187,17 +191,17 @@ public class MeleeWeapon : WeaponBase
         //오버랩 스피어 범위
         Gizmos.DrawWireSphere(transform.transform.position, _attackRange);
     }
-    #endregion
+    #endregion*/
 
     #region 기즈모 출력 - 무기 기준
-    /*private void OnDrawGizmos()
+    private void OnDrawGizmos()
     {
         //오버랩 스피어 범위
         Gizmos.DrawWireSphere(_attackPointPos.transform.transform.position, _attackRange);
-    }*/
-    #endregion
+    }
+    #endregion  
 
-    #region 피격 시 색깔 변화 코루틴 - 디버깅용
+    /*#region 피격 시 색깔 변화 코루틴 - 디버깅용
     WaitForSeconds delay = new(0.2f);
     IEnumerator DamageRoutine(GameObject gameObject)
     {
@@ -209,5 +213,5 @@ public class MeleeWeapon : WeaponBase
         yield return delay;
         renderer.material.color = originColor;
     }
-    #endregion
+    #endregion*/
 }
