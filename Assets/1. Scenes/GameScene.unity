@@ -6845,6 +6845,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ca9adb6c31c173d43aa009cf7bdb6c2d, type: 3}
+--- !u!1 &439742779 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2857231508862886146, guid: 34a97b93f0633d148877937c5e9ec298, type: 3}
+  m_PrefabInstance: {fileID: 1012858866}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &441050266
 GameObject:
   m_ObjectHideFlags: 0
@@ -7338,6 +7343,11 @@ Transform:
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: 2141837099176495031, guid: 84d49e0cceb2662409e4baef3d39ff09, type: 3}
   m_PrefabInstance: {fileID: 1706297727}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &500009270 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 8315687122926166255, guid: 34a97b93f0633d148877937c5e9ec298, type: 3}
+  m_PrefabInstance: {fileID: 1012858866}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &502204145 stripped
 GameObject:
@@ -14659,6 +14669,71 @@ MonoBehaviour:
   _data: {fileID: 11400000, guid: f5d8c91e727e5a345aec54ea1b46816f, type: 2}
   _startQuest: []
   _endQuest: []
+--- !u!1001 &1012858866
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 242592634608396639, guid: 34a97b93f0633d148877937c5e9ec298, type: 3}
+      propertyPath: outlineTargets.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 242592634608396639, guid: 34a97b93f0633d148877937c5e9ec298, type: 3}
+      propertyPath: outlineTargets.Array.data[1].renderer
+      value: 
+      objectReference: {fileID: 500009270}
+    - target: {fileID: 534740503379290583, guid: 34a97b93f0633d148877937c5e9ec298, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 534740503379290583, guid: 34a97b93f0633d148877937c5e9ec298, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 534740503379290583, guid: 34a97b93f0633d148877937c5e9ec298, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -270
+      objectReference: {fileID: 0}
+    - target: {fileID: 534740503379290583, guid: 34a97b93f0633d148877937c5e9ec298, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 534740503379290583, guid: 34a97b93f0633d148877937c5e9ec298, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 534740503379290583, guid: 34a97b93f0633d148877937c5e9ec298, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 534740503379290583, guid: 34a97b93f0633d148877937c5e9ec298, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 534740503379290583, guid: 34a97b93f0633d148877937c5e9ec298, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 534740503379290583, guid: 34a97b93f0633d148877937c5e9ec298, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 534740503379290583, guid: 34a97b93f0633d148877937c5e9ec298, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2857231508862886146, guid: 34a97b93f0633d148877937c5e9ec298, type: 3}
+      propertyPath: m_Name
+      value: BasicZombieWoman
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 34a97b93f0633d148877937c5e9ec298, type: 3}
 --- !u!1001 &1013973227
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15956,7 +16031,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df77055879fc942479831d6cf34bf63f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _dayDurationInMinutes: 10
+  _dayDurationInMinutes: 1
   _hoursPerDay: 24
   _morningStartHour: 6
   _dayStartHour: 12
@@ -31613,7 +31688,7 @@ MonoBehaviour:
   _player: {fileID: 909699819}
   _monsters:
   - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 439742779}
   - {fileID: 1427890886}
   - {fileID: 926766348}
   - {fileID: 859915596}
@@ -34082,3 +34157,4 @@ SceneRoots:
   - {fileID: 930156400}
   - {fileID: 613404351}
   - {fileID: 1030640731}
+  - {fileID: 1012858866}

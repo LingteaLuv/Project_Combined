@@ -7,6 +7,8 @@ public class MonsterManager : Singleton<MonsterManager>
 {
     [SerializeField] private GameObject _player;
     [SerializeField] public List<GameObject> _monsters;
+
+    private float _timer = 0;
     protected override bool ShouldDontDestroy => false;
     public void Unregister(GameObject monster)
     {
@@ -27,6 +29,13 @@ public class MonsterManager : Singleton<MonsterManager>
                     monster.SetActive(active);
                 }
             }
+        }
+
+        _timer += Time.deltaTime;
+        if (_timer > 5f)
+        {
+            _monsters.RemoveAll(m => m == null);
+            _timer = 0f;
         }
     }
 }
