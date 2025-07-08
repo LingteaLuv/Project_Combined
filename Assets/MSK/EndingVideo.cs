@@ -38,7 +38,6 @@ public class EndingVideo : MonoBehaviour
     private void Start()
     {
         int endingIndex = PlayerPrefs.GetInt("EndingIndex", 3);
-        PlayEndingVideo(endingIndex);
     }
     private void Update()
     {
