@@ -65,7 +65,7 @@ public class InventoryModel : MonoBehaviour
         HoldSlotItemImage = InventoryManager.Instance.HoldSlot.GetComponentInChildren<Image>();
         HoldSlotItemAmountText = InventoryManager.Instance.HoldSlot.GetComponentInChildren<TMP_Text>();
 
-        SlotColor = InvSlotPanelImages[0].color;
+        SlotColor = InvSlotPanelImages[6].color;
     }
 
 

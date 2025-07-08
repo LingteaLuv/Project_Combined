@@ -68,10 +68,8 @@ public class PauseUIControl : MonoBehaviour
         IsPaused.Value = true;
         PauseUI.SetActive(true);
         SettingUI.SetActive(true);
-        _pcc.PauseCamera();
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-        UIManager.Instance.LockUIUpdate();
+        UIManager.Instance.CameraLock();
+        UIManager.Instance.CursorUnlock();
         if (_co != null)
         {
             StopCoroutine(_co);
@@ -122,8 +120,8 @@ public class PauseUIControl : MonoBehaviour
         IsPaused.Value = false;
         SettingUI.SetActive(false);
         PauseUI.SetActive(false);
-        UIManager.Instance.UnlockUIUpdate();
-        _pcc.PauseCamera();
+        UIManager.Instance.CameraUnlock();
+        UIManager.Instance.CursorLock();
         Time.timeScale = 1f;
     }
 }
