@@ -191,7 +191,10 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
 
     private void OnDestroy()
     {
-        MonsterManager.Instance.Unregister(gameObject);
+        if (gameObject != null)
+        {
+            MonsterManager.Instance.Unregister(gameObject);
+        }
     }
 
     private void LateUpdate()
