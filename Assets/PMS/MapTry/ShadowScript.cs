@@ -29,7 +29,7 @@ public class ShadowScript : MonoBehaviour
         //맞은 객체가 shadowLayer레이러를 가지고 있고 트리거든 콜라이더든 상관없이 찾아낸다.
         if (Physics.Raycast(r,out hit, 1000, shadowLayer, QueryTriggerInteraction.Collide))
         {
-            Debug.Log("RAY");
+            //Debug.Log("RAY");
             //모든 정점을 순회?
             for(int i = 0; i < vectices.Length; i++)
             {
