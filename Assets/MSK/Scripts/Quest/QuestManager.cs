@@ -30,7 +30,7 @@ public class QuestManager : Singleton<QuestManager>
     /// 플레이어의 현재 챕터(비트 플래그)
     /// </summary>  
     public Chapter CurrentChapter { get; set; } = Chapter.Chapter1;
-
+    protected override bool ShouldDontDestroy => false;
     #region Ending
     public bool IsCEnd { get; private set; }
     public bool IsVEnd { get; private set; }

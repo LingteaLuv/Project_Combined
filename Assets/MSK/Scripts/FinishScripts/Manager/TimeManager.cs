@@ -14,6 +14,7 @@ public class TimeManager : Singleton<TimeManager>
     public int DayCount { get; private set; } = 1;
 
     public event Action<int> OnDayChanged;
+    protected override bool ShouldDontDestroy => false;
     #endregion
 
     #region Private Properties
