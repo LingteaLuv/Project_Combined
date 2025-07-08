@@ -14,6 +14,7 @@ public class TimeManager : Singleton<TimeManager>
     public int DayCount { get; private set; } = 1;
 
     public event Action<int> OnDayChanged;
+    protected override bool ShouldDontDestroy => false;
     #endregion
 
     #region Private Properties
@@ -64,9 +65,9 @@ public class TimeManager : Singleton<TimeManager>
             CurrentMinute.Value -= 60f;
             CurrentHour.Value++;
 
-            if (CurrentHour.Value >= _hoursPerDay)
+            if (CurrentHour.Value == 6)
             {
-                CurrentHour.Value = 0;
+
                 DayCount++;
                 OnDayChanged?.Invoke(DayCount);
 
@@ -75,6 +76,11 @@ public class TimeManager : Singleton<TimeManager>
                     PlayerPrefs.SetInt("EndingIndex", 3);
                     SceneManager.LoadScene("EndingScene");
                 }
+            }
+
+            if (CurrentHour.Value >= _hoursPerDay)
+            {
+                CurrentHour.Value = 0;
             }
         }
     }
