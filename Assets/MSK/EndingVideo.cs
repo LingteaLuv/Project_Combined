@@ -16,13 +16,13 @@ public class EndingVideo : MonoBehaviour
         switch (index)
         {
             case 1:
-                videoPlayer.clip = videoClip1;
+                videoPlayer.clip = videoClip1;  // 의사        
                 break;
             case 2:
-                videoPlayer.clip = videoClip2;
+                videoPlayer.clip = videoClip2;  // 자경단      
                 break;
             case 3:
-                videoPlayer.clip = videoClip3;
+                videoPlayer.clip = videoClip3;  // 나홀로
                 break;
             default:
                 return;
