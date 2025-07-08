@@ -88,7 +88,7 @@ public class QuestManager : Singleton<QuestManager>
         IsEndingTrigger(triggerId);
         // 트리거명으로 QuestID를 찾기
         if (!TriggerDictionary.TryGetValue(triggerId, out var questId)) { return; }
-        if (triggerId != "VENDING") { return; }//자경단장 예외처리
+        if (triggerId == "VENDING") { return; }//자경단장 예외처리
         // QuestID로 QuestDictionary에서 QuestData를 찾기
         if (!QuestDictionary.TryGetValue(questId, out var meta)) { return; }
         //  엔딩 분기를 활성화 하는지 체크
