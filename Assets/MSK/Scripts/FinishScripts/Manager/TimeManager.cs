@@ -23,7 +23,7 @@ public class TimeManager : Singleton<TimeManager>
 
     [Header("Time Settings")]
     [Tooltip("게임 내 하루가 몇 분 동안 지속되는지 설정합니다.")]
-    [SerializeField] private float _dayDurationInMinutes = 10f; //  기본 10분 = 1일
+    [SerializeField] public float _dayDurationInMinutes = 10f; //  기본 10분 = 1일
 
     [Tooltip("하루를 몇 시간으로 구성할지 설정합니다.")]
     [SerializeField] private int _hoursPerDay = 24;             //  24H

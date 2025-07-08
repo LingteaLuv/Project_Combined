@@ -4,7 +4,6 @@ using UnityEngine.AI;
 
 public class MonsterSpawn : MonoBehaviour
 {
-
     [Header("Please in zombie and playr prefab")] 
     [SerializeField] private GameObject[] _spawnPos;
     [SerializeField] private GameObject[] _zombiePrefabs;
@@ -75,14 +74,13 @@ public class MonsterSpawn : MonoBehaviour
             int index = SetWeight();
             if (index < 0 || !_zombieDic.ContainsKey(index))
             {
-                Debug.Log($"인덱스 이상 : {index}");
+                //Debug.Log($"인덱스 이상 : {index}");
                 continue;
             }
 
-            GameObject zombiePrefab = Instantiate(_zombieDic[index]);
-            zombiePrefab.transform.position = _spawnPos[i].transform.position;
+            GameObject zombiePrefab = Instantiate(_zombieDic[index],_spawnPos[i].transform.position,_spawnPos[i].transform.rotation);
             zombiePrefab.GetComponent<Monster_temp>().SpawnPointLink = _spawnPos[i].transform;
-            Debug.Log($"좀비 : {_zombieDic[index].name}, 위치 : {_spawnPos[i].transform.position}");
+            //Debug.Log($"좀비 : {_zombieDic[index].name}, 위치 : {_spawnPos[i].transform.position}");
         
             _agent = zombiePrefab.GetComponent<NavMeshAgent>();
             if (_agent == null || !_agent.isOnNavMesh && _spawnCount < 5)
@@ -94,10 +92,15 @@ public class MonsterSpawn : MonoBehaviour
 
             if (_spawnCount == 5)
             {
-                Debug.Log($"위치 : {_spawnPos[i].transform.position} 좀비 생성 실패");
+                //Debug.Log($"위치 : {_spawnPos[i].transform.position} 좀비 생성 실패");
             }
 
             _spawnCount = 0;
+            if (zombiePrefab != null)
+            {
+                MonsterManager.Instance._monsters.Add(zombiePrefab);
+                Destroy(zombiePrefab,TimeManager.Instance._dayDurationInMinutes * 60);
+            }
         }
     }
 

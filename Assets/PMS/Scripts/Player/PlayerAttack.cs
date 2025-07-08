@@ -127,7 +127,7 @@ public class PlayerAttack : MonoBehaviour
     {
         IsAttacking = true;
 
-        Debug.Log("애니메이션 실행");
+        //Debug.Log("애니메이션 실행");
         _animator.SetTrigger("DownAttack");
 
         float playerAttackSpeed = _playerProperty.AtkSpeed.Value;
@@ -135,7 +135,7 @@ public class PlayerAttack : MonoBehaviour
         if (playerAttackSpeed <= 0)
         {
             playerAttackSpeed = 1;
-            Debug.Log("플레이어의 공격속도가 0보다 작기 때문에 공격 할 수 없습니다.");
+            //Debug.Log("플레이어의 공격속도가 0보다 작기 때문에 공격 할 수 없습니다.");
             /*_isAttacking = false;
             _canAttack = true;
             _currentAttackCoroutine = null;
@@ -147,9 +147,9 @@ public class PlayerAttack : MonoBehaviour
         float coolTime = 1 / playerAttackSpeed;
 
         //디버깅용 코드
-        Debug.Log($"애니메이션 기본시간 {currentTime}");
-        Debug.Log($"애니메이션 실제재생시간 {(currentTime) / playerAttackSpeed}");
-        Debug.Log($"실제 재생시간 + 공격 속도에 따른 쿨타임 {(currentTime) / playerAttackSpeed + coolTime}");
+        //Debug.Log($"애니메이션 기본시간 {currentTime}");
+        //Debug.Log($"애니메이션 실제재생시간 {(currentTime) / playerAttackSpeed}");
+        //Debug.Log($"실제 재생시간 + 공격 속도에 따른 쿨타임 {(currentTime) / playerAttackSpeed + coolTime}");
 
         yield return new WaitForSeconds((currentTime) / playerAttackSpeed * 0.8f);
         InventoryManager.Instance.DecreaseWeaponDurability();
@@ -165,7 +165,7 @@ public class PlayerAttack : MonoBehaviour
 
         if (RightCurrentWeapon == null)
         {
-            Debug.Log("현재 손에 공격무기가 없습니다");
+            //Debug.Log("현재 손에 공격무기가 없습니다");
             return;
         }
 
@@ -182,7 +182,7 @@ public class PlayerAttack : MonoBehaviour
                 StartThrowAttack();
                 break;
             default:
-                Debug.Log($"알 수 없는 무기 타입: {RightCurrentWeapon.ItemType}");
+                //Debug.Log($"알 수 없는 무기 타입: {RightCurrentWeapon.ItemType}");
                 break;
         }
     }
@@ -213,7 +213,7 @@ public class PlayerAttack : MonoBehaviour
 
     private void StartThrowAttack()
     {
-        Debug.Log("투척 공격");
+        //Debug.Log("투척 공격");
     }
 
     /// <summary>
@@ -225,21 +225,21 @@ public class PlayerAttack : MonoBehaviour
     {
         if (layerIndex >= _animator.layerCount || layerIndex < 0)
         {
-            Debug.LogError($"잘못된 레이어 인덱스: {layerIndex}. 총 레이어 수: {_animator.layerCount}");
+            //Debug.LogError($"잘못된 레이어 인덱스: {layerIndex}. 총 레이어 수: {_animator.layerCount}");
             return;
         }
 
         // Base Layer (인덱스 0)의 가중치는 항상 1이므로 변경할 수 없음
         if (layerIndex == 0)
         {
-            Debug.LogWarning("Base Layer의 가중치는 변경할 수 없습니다!");
+            //Debug.LogWarning("Base Layer의 가중치는 변경할 수 없습니다!");
             return;
         }
 
         weight = Mathf.Clamp01(weight); // 0~1 범위로 제한
         _animator.SetLayerWeight(layerIndex, weight);
 
-        Debug.Log($"레이어 {layerIndex}의 가중치를 {weight}로 설정했습니다.");
+        //Debug.Log($"레이어 {layerIndex}의 가중치를 {weight}로 설정했습니다.");
     }
 
     private void WeaponLogicStopAndAnimationStop()

@@ -14,6 +14,10 @@ public class Monster_Chase : MonsterState_temp
     private NavMeshAgent _agent;
     private float _missingTime = 0f;
     protected MonsterStateMachine_temp stateMachine;
+    
+    private float _nextPathUpdateTime = 0f;
+    private float _pathUpdateInterval = 0.3f; // 최소 0.3초는 두세요
+    private Vector3 _lastSetDestination = Vector3.positiveInfinity;
 
     private float ChaseSight => _info.ChaseSight;
 
@@ -23,7 +27,7 @@ public class Monster_Chase : MonsterState_temp
 
         if (_targetPos == null)
         {
-            Debug.LogWarning("타겟이 존재하지 않아 추적 불가");
+            //Debug.LogWarning("타겟이 존재하지 않아 추적 불가");
             return;
         }
 
@@ -36,7 +40,7 @@ public class Monster_Chase : MonsterState_temp
             }
             else
             {
-                Debug.LogWarning("NavMesh 위에 없음 → 이동 불가");
+                //Debug.LogWarning("NavMesh 위에 없음 → 이동 불가");
                 return;
             }
         }
@@ -110,13 +114,13 @@ public class Monster_Chase : MonsterState_temp
             monster._monsterMerchine.ChangeState(monster._monsterMerchine.StateDic[Estate.Idle]);
           
         }
-
+        
         Vector3 targetPos = monster.TargetPosition.position;
         float distance = Vector3.Distance(monster.transform.position, targetPos);
         // 1. 공격 사거리 도달
-        if (distance <= monster.AtkRange)
+        if (distance <= monster.AtkRange + 0.3f)
         {
-            Debug.Log(" 공격 범위 도달 > Attack 상태 전이");
+            //Debug.Log(" 공격 범위 도달 > Attack 상태 전이");
             stateMachine.ChangeState(stateMachine.StateDic[Estate.Attack]);
             return;
         }
@@ -124,7 +128,7 @@ public class Monster_Chase : MonsterState_temp
         // 2. 경로 유효성 확인
         if (_agent.pathStatus == NavMeshPathStatus.PathInvalid)
         {
-            Debug.LogWarning("경로 생성 실패 > Reset 상태로 전이");
+            //Debug.LogWarning("경로 생성 실패 > Reset 상태로 전이");
             stateMachine.ChangeState(stateMachine.StateDic[Estate.Reset]);
             return;
         }
@@ -147,7 +151,18 @@ public class Monster_Chase : MonsterState_temp
         }
 
         // 4. 계속 목표 위치 업데이트
-        _agent.SetDestination(targetPos);
+        if (Time.time >= _nextPathUpdateTime)
+        {
+            float distToLastSet = Vector3.Distance(_lastSetDestination, targetPos);
+            if (distToLastSet > 0.5f)
+            {
+                _agent.SetDestination(targetPos);
+                _lastSetDestination = targetPos;
+                _nextPathUpdateTime = Time.time + _pathUpdateInterval;
+
+                //Debug.Log($"[SetDestination 호출] 대상까지 거리: {distance:F2} / 갱신 거리 차: {distToLastSet:F2}");
+            }
+        }
     }
 
     public override void Exit()

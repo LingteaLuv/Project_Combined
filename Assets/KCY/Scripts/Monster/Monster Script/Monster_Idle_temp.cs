@@ -40,8 +40,6 @@ public class Monster_Idle : MonsterState_temp
             _navMeshAgent.ResetPath();
             _navMeshAgent.isStopped = true;
             _navMeshAgent.velocity = Vector3.zero;
-            monster.Rigid.velocity = Vector3.zero;
-            monster.Rigid.angularVelocity = Vector3.zero;
 
             monster.IsDetecting = false;
             monster.TargetPosition = null;

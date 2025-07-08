@@ -89,14 +89,12 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
     public AudioClip ChaseSfx1 => _info.ChaseSfx1;
     public AudioClip ChaseSfx2 => _info.ChaseSfx2;
 
-
-
-
-
     public float CoolDown;
 
     public float AtkCoolDown => _info.AtkCoolDown;
     public float NightAtkCoolDownRate => _info.NightAtkCoolDown;
+
+    private float _curHP;
 
     private void OnTimeOfDayChanged(DayTime timeOfDay)
     {
@@ -112,11 +110,9 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
            // Debug.Log($"[쿨다운 변경] 시간대: {timeOfDay} → 기본 쿨다운 유지: {CoolDown:F2}");
         }
     }
-
-
+    
     private void Awake()
     {
-
         PlayerLayerMask = LayerMask.GetMask("Player");
         Ani = GetComponentInChildren<Animator>();
         HandDetector = GetComponentInChildren<MonsterHandDetector>();
@@ -126,6 +122,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
             SpawnPoint = SpawnPointLink.position;
         }
 
+        _curHP = MaxHp;
         // target = this as IAttackable; 피격 실험용으로 사용한 코드입니다 나중에 사용할 때 활성화 시켜주면 됩니다.
     }
 
@@ -175,9 +172,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
                 sightDetectTime = 0f;
             }
         }
-
-
-
+        
         // 상태머신 업데이트
         _monsterMerchine?.Update();
 
@@ -192,6 +187,17 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
                 _detectCoolTime = 0f;
             }
         }
+    }
+
+    private void OnDestroy()
+    {
+        MonsterManager.Instance.Unregister(gameObject);
+    }
+
+    private void LateUpdate()
+    {
+        float distance = Vector3.Distance(transform.position, GameManager.Instance.Player.transform.position);
+        gameObject.SetActive(distance < 10f);
     }
 
     private void StateMachineInit()
@@ -225,6 +231,20 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
     {
         if (_isDead) return;
         PrevState = _monsterMerchine.CurState;
+        
+        //Debug.Log("몬스터 피격 확인");
+        // 죽어있거나 피격 쿨타임의 경우 안맞는다.
+       
+        _curHP -= damage;
+        //Debug.Log("맞음");
+        // 죽을때
+        if (_curHP <= 0 && !_isDead)
+        {
+            _isDead = true;
+            _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.Dead]);
+            return;
+        }
+        
         // 데미지를 Hit 상태로 위임 (중계)
         if (_monsterMerchine.StateDic[Estate.Hit] is Monster_Hit hitState)
         {
@@ -232,7 +252,6 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
             _monsterMerchine.ChangeState(hitState);  // Hit 상태로 전이
         }
     }
-
 
     public void SightDetectPlayer(Collider other)
     {
@@ -340,7 +359,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
 
         // 플레이어 위치 찾고, 감지 하고 
 
-        if (((1 << other.gameObject.layer) & PlayerLayerMask) != 0)
+        if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
             TargetPosition = other.transform;
             IsDetecting = true;
@@ -360,8 +379,6 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
         {
             Debug.Log($"플레이어가 아님 무시");
         }
-
-
     }
 
     public void SoundDetectPlayer(Collider other)
