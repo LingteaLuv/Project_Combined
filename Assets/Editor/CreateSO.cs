@@ -139,9 +139,7 @@ public class CreateSO : EditorWindow
             string[] parts = line.Split(',');
             string itemId = parts[0];
             string name = parts[1];
-            string description = "";
-            description += parts[2].Replace("\\n", "\n");
-            Debug.Log(parts[3]);
+            string description = parts[2].Replace("\\n", "\n");
             string itemType = parts[3];
             string icon = parts[4];
 

@@ -112,9 +112,7 @@ public class CreateQuestSO : EditorWindow
                     quest.Type = QuestType.Collect;
                     break;
             }
-            string str = "";
-            str += parts[2].Replace("\\n", "\n");
-            quest.Description = str;
+            quest.Description = parts[2].Replace("\\n", "\n");
             quest.StartNPCID = parts[3];
             quest.StartDialogueID = int.Parse(parts[4]);
             quest.EndNPCID = parts[5];
@@ -231,7 +229,7 @@ public class CreateQuestSO : EditorWindow
             string dialogueId = parts[0];
             dialogue.DialogueID = int.Parse(dialogueId);
             dialogue.NPCID = parts[1];
-            dialogue.DialogueText = parts[2].Replace(";", ",");
+            dialogue.DialogueText = parts[2].Replace(";", ",").Replace("\\n", "\n");
             dialogue.DialogueChoiceID = parts[3];
             if(int.TryParse(parts[4], out int loop))
             {
