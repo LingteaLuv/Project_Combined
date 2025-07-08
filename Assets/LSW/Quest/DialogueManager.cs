@@ -44,7 +44,7 @@ public class DialogueManager : Singleton<DialogueManager>
 
     public Dictionary<string, bool> TriggerDic { get; private set; }
     public Dictionary<string, NPCSO> NPCDic { get; private set; }
-    
+    protected override bool ShouldDontDestroy => false;
     protected override void Awake()
     {
         base.Awake();

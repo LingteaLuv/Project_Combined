@@ -7,7 +7,7 @@ public class MonsterManager : Singleton<MonsterManager>
 {
     [SerializeField] private GameObject _player;
     [SerializeField] public List<GameObject> _monsters;
-
+    protected override bool ShouldDontDestroy => false;
     public void Unregister(GameObject monster)
     {
         _monsters.Remove(monster);
