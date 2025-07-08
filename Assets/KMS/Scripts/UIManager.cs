@@ -146,7 +146,24 @@ public class UIManager : Singleton<UIManager>
 
     }
 
-    private void CursorLock()
+    public void CameraLock()
+    {
+        _pcc.PauseCamera();
+    }
+    public void CameraUnlock()
+    {
+        _pcc.ResumeCamera();
+    }
+    public void MoveLock()
+    {
+        _pm.MoveLock();
+    }
+    public void MoveUnlock()
+    {
+        _pm.MoveUnLock();
+    }
+
+    public void CursorLock()
     {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
@@ -201,11 +218,11 @@ public class UIManager : Singleton<UIManager>
             Cursor.visible = true;
         }
     }
-    private void LockAttacking()
+    public void LockAttacking()
     {
         UISceneLoader.Instance.Playerattack.IsAttacking = true;
     }
-    private void UnlockAttacking()
+    public void UnlockAttacking()
     {
         UISceneLoader.Instance.Playerattack.IsAttacking = false;
     }

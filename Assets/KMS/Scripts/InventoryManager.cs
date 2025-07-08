@@ -73,9 +73,14 @@ public class InventoryManager : Singleton<InventoryManager>
 
     public bool AddItem(ItemBase item, int amount, int dur)
     {
-        bool canAdd = Controller.AddItem(item, amount, dur);
-        _renderer.RenderInventory();
-        return canAdd;
+
+
+        if (Controller.AddItem(item, amount, dur))
+        {
+            StartCoroutine(CheckQuestItem());
+            return true;
+        }
+        return false;
     }
 
     public int GetNullSpaceCount()
