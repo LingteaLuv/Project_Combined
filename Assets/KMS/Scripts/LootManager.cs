@@ -166,10 +166,7 @@ public class LootManager : Singleton<LootManager>
         if (_lootable.LootItems.InitType == LootItems.LootInitType.RandomGrid)
         {
         }
-        if (_lootable.GetComponentInParent<Monster_temp>() != null)
-        {
-            AfterLoot?.Invoke();
-        }
+        AfterLoot?.Invoke();
         _lootable.IsLootable = false;
         if (UIManager.Instance.Current == ModalUI.lootTable) ToggleUI();
         if (_lootable.DestroyAfterLooting) // 루팅 완료 시 파괴
