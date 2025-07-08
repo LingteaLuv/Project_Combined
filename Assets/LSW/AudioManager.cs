@@ -62,12 +62,9 @@ public class AudioManager : Singleton<AudioManager>
 
     public void PlayBGM(AudioClip clipName, bool loop)
     {
-        Debug.Log("브금 1");
         //if (_bgmDic.TryGetValue(clipName, out AudioClip audioClip))
         {
-            Debug.Log("브금 2");
             if (_isPlayed && _bgmSource.clip == clipName) return;
-            Debug.Log("브금 3");
             _bgmSource.spatialBlend = 0;
             _bgmSource.clip = clipName;
             _bgmSource.loop = loop;
