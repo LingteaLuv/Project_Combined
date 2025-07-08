@@ -226,7 +226,7 @@ public class ThrowableWeapon : WeaponBase
     {
         Debug.Log(other.gameObject.name);
         //패턴 매칭
-        if (other.gameObject.transform.root.GetComponent<IDamageable>() is IDamageable damageable)
+        if (other.gameObject.transform.parent.GetComponent<IDamageable>() is IDamageable damageable)
         {
             damageable.Damaged(_damage);
         }
