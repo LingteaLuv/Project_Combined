@@ -144,7 +144,7 @@ public class PlayerAttack : MonoBehaviour
         _animator.SetFloat("AttackSpeed", playerAttackSpeed);
 
         float currentTime = _melee.length;
-        float coolTime = 1 / playerAttackSpeed;
+        //float coolTime = 1 / playerAttackSpeed;
 
         //디버깅용 코드
         //Debug.Log($"애니메이션 기본시간 {currentTime}");
@@ -153,7 +153,7 @@ public class PlayerAttack : MonoBehaviour
 
         yield return new WaitForSeconds((currentTime) / playerAttackSpeed * 0.8f);
         InventoryManager.Instance.DecreaseWeaponDurability();
-        yield return new WaitForSeconds((currentTime) / playerAttackSpeed * 0.2f + coolTime);
+        yield return new WaitForSeconds((currentTime) / playerAttackSpeed * 0.2f);
 
         IsAttacking = false;
         _currentAttackCoroutine = null;
