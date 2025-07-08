@@ -29,7 +29,9 @@ public class Monster_Dead : MonsterState_temp
         // 죽으면 멈춰서 애니 실행
 
         // 루터블 트루
+        _lootable.transform.parent.gameObject.layer = 6;
         _lootable.IsLootable = true;
+        
         _lootable.MonsterInit();
         // 루터블 트루
         monster.StopAllCoroutines();

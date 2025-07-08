@@ -63,20 +63,24 @@ public class BulletBase : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         //플레이어는 무시
-        if (collision.gameObject.CompareTag("Player")) return;
-
-        //IDamageable을 가지고 있는 객체를 담는다.
-        IDamageable damageable = collision.gameObject.transform.root.GetComponent<IDamageable>();
-
-        //피해를 받을 객체가 있다면
-        if (damageable != null)
+        if (collision.gameObject.CompareTag("Player"))
         {
-            damageable.Damaged(_currentBulletDamage);  // 먼저 데미지 처리
-            gameObject.SetActive(false);               // 그 다음 비활성화
+            return;
         }
         else
         {
-            gameObject.SetActive(false);  // 벽이나 다른 오브젝트와 충돌시 
+            //IDamageable을 가지고 있는 객체를 담는다.
+            IDamageable damageable = collision.gameObject.transform.parent.GetComponent<IDamageable>();
+            //피해를 받을 객체가 있다면
+            if (damageable != null)
+            {
+                damageable.Damaged(_currentBulletDamage);  // 먼저 데미지 처리
+                gameObject.SetActive(false);               // 그 다음 비활성화
+            }
+            else
+            {
+                gameObject.SetActive(false);  // 벽이나 다른 오브젝트와 충돌시 
+            }
         }
     }
 }

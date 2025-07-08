@@ -121,7 +121,7 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
         {
             SpawnPoint = SpawnPointLink.position;
         }
-
+        
         _curHP = MaxHp;
         // target = this as IAttackable; 피격 실험용으로 사용한 코드입니다 나중에 사용할 때 활성화 시켜주면 됩니다.
     }
@@ -191,7 +191,10 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
 
     private void OnDestroy()
     {
-        MonsterManager.Instance.Unregister(gameObject);
+        if (gameObject != null)
+        {
+            MonsterManager.Instance.Unregister(gameObject);
+        }
     }
 
     private void LateUpdate()
@@ -240,6 +243,11 @@ public class Monster_temp : MonoBehaviour, IAttackable, IDamageable
         // 죽을때
         if (_curHP <= 0 && !_isDead)
         {
+            if (_info.EnemyID == 5006)
+            {
+                AttackEvent();
+            }
+
             _isDead = true;
             _monsterMerchine.ChangeState(_monsterMerchine.StateDic[Estate.Dead]);
             return;
